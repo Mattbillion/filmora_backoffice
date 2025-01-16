@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { UserItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 
 export const getUsers = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<UserItemType[]>>("/users", {
+    const { body, error } = await xooxFetch<PaginatedResType<UserItemType[]>>("/users", {
       method: "GET",
       searchParams,
       cache: "no-store"
@@ -21,7 +21,7 @@ export const getUsers = async (searchParams?: QueryParams) => {
 };
 
 export const lockUser = async (id: ID) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/lock`, {
+  const { body, error } = await xooxFetch(`/users/${id}/lock`, {
     method: "POST",
     cache: "no-store"
   });
@@ -32,7 +32,7 @@ export const lockUser = async (id: ID) => {
 };
 
 export const unlockUser = async (id: ID) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/unlock`, {
+  const { body, error } = await xooxFetch(`/users/${id}/unlock`, {
     method: "POST",
     cache: "no-store"
   });

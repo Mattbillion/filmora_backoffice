@@ -1,4 +1,4 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { PaginatedResType } from "@/lib/fetch/types";
 import { OrderItemType } from "./schema";
@@ -6,7 +6,7 @@ import dayjs from "dayjs";
 
 export const getOrders = async (searchParams: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<OrderItemType[]>>("/report", {
+    const { body, error } = await xooxFetch<PaginatedResType<OrderItemType[]>>("/report", {
       method: "GET",
       searchParams,
       cache: "no-store",
@@ -22,7 +22,7 @@ export const getOrders = async (searchParams: QueryParams) => {
 };
 
 export const downloadOrders = async (searchParams: {endDate: string; startDate: string}) => {
-  const { body, error } = await goodaliFetch<{url: string}>("/report/download", {
+  const { body, error } = await xooxFetch<{url: string}>("/report/download", {
     method: "POST",
     searchParams,
     cache: "no-store",

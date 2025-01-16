@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_LECTURE, LectureBodyType, LectureItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createLecture = async (bodyData: LectureBodyType) => {
-  const { body, error } = await goodaliFetch<{data: LectureItemType}>("lecture", {
+  const { body, error } = await xooxFetch<{data: LectureItemType}>("lecture", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -19,7 +19,7 @@ export const createLecture = async (bodyData: LectureBodyType) => {
 };
 
 export const patchLecture = async ({ id, ...bodyData }: LectureBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: LectureItemType}>(`/lecture/${id}`,{
+  const { body, error } =  await xooxFetch<{data: LectureItemType}>(`/lecture/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -35,7 +35,7 @@ export const patchLecture = async ({ id, ...bodyData }: LectureBodyType & { id: 
 };
 
 export const deleteLecture = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/lecture/${id}`,{
+  const { body, error } =  await xooxFetch(`/lecture/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -51,7 +51,7 @@ export const deleteLecture = async (id: ID) => {
 
 export const getLectures = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<LectureItemType[]>>("/lecture", {
+    const { body, error } = await xooxFetch<PaginatedResType<LectureItemType[]>>("/lecture", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_LECTURE]}

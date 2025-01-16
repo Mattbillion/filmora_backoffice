@@ -1,10 +1,10 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { TagBodyType, TagItemType, RVK_TAG } from "./schema";
 import { ID } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createTag = async (bodyData: TagBodyType) => {
-  const { body, error } = await goodaliFetch<{data: TagItemType}>("/tag", { method: "POST", body: bodyData, cache: "no-store" });
+  const { body, error } = await xooxFetch<{data: TagItemType}>("/tag", { method: "POST", body: bodyData, cache: "no-store" });
 
   if(error) throw new Error(error);
 
@@ -14,7 +14,7 @@ export const createTag = async (bodyData: TagBodyType) => {
 };
 
 export const patchTag = async ({id, ...bodyData}: TagBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: TagItemType}>(
+  const { body, error } = await xooxFetch<{data: TagItemType}>(
     `/tag/${id}`,
     {
       method: "PATCH",
@@ -31,7 +31,7 @@ export const patchTag = async ({id, ...bodyData}: TagBodyType & {id: ID}) => {
 };
 
 export const deleteTag = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/tag/${id}`,{
+  const { body, error } =  await xooxFetch(`/tag/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -45,7 +45,7 @@ export const deleteTag = async (id: ID) => {
 
 export const getTags = async () => {
   try {
-    const { body, error } = await goodaliFetch<{data: TagItemType[]}>(
+    const { body, error } = await xooxFetch<{data: TagItemType[]}>(
       "/tag",
       {
         method: "GET",

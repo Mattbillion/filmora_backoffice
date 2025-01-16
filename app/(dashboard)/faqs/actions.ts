@@ -1,12 +1,12 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { FaqBodyType, FaqItemType, RVK_FAQ } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const getFaqs = async (searchParams?: QueryParams) => {
   try {
-    const { body } = await goodaliFetch<PaginatedResType<FaqItemType[]>>("faq", {
+    const { body } = await xooxFetch<PaginatedResType<FaqItemType[]>>("faq", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_FAQ]}
@@ -22,7 +22,7 @@ export const getFaqs = async (searchParams?: QueryParams) => {
 };
 
 export const createFAQ = async (bodyData: FaqBodyType) => {
-  const { body, error } = await goodaliFetch<{data: FaqItemType}>("faq", {
+  const { body, error } = await xooxFetch<{data: FaqItemType}>("faq", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -36,7 +36,7 @@ export const createFAQ = async (bodyData: FaqBodyType) => {
 };
 
 export const patchFaq = async ({ id, ...bodyData }: FaqBodyType & { id: ID; }) => {
-  const { body, error } = await goodaliFetch<{data: FaqItemType}>(`/faq/${id}`,{
+  const { body, error } = await xooxFetch<{data: FaqItemType}>(`/faq/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -50,7 +50,7 @@ export const patchFaq = async ({ id, ...bodyData }: FaqBodyType & { id: ID; }) =
 };
 
 export const deleteFaq = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/faq/${id}`,{
+  const { body, error } =  await xooxFetch(`/faq/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });

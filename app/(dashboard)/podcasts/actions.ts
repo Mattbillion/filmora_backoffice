@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_PODCAST, PodcastBodyType, PodcastItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createPodcast = async (bodyData: PodcastBodyType) => {
-  const { body, error } = await goodaliFetch<{data: PodcastItemType}>("podcast", {
+  const { body, error } = await xooxFetch<{data: PodcastItemType}>("podcast", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -19,7 +19,7 @@ export const createPodcast = async (bodyData: PodcastBodyType) => {
 };
 
 export const patchPodcast = async ({ id, ...bodyData }: PodcastBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: PodcastItemType}>(`/podcast/${id}`,{
+  const { body, error } =  await xooxFetch<{data: PodcastItemType}>(`/podcast/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -33,7 +33,7 @@ export const patchPodcast = async ({ id, ...bodyData }: PodcastBodyType & { id: 
 };
 
 export const deletePodcast = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/podcast/${id}`,{
+  const { body, error } =  await xooxFetch(`/podcast/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -47,7 +47,7 @@ export const deletePodcast = async (id: ID) => {
 
 export const getPodcasts = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<PodcastItemType[]>>("/podcast", {
+    const { body, error } = await xooxFetch<PaginatedResType<PodcastItemType[]>>("/podcast", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_PODCAST]}

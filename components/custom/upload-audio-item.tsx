@@ -41,8 +41,8 @@ export default function UploadAudioItem({
           {validAudio && (
             <audio
               src={
-                (process.env.NEXT_PUBLIC_GOODALI_DOMAIN ??
-                  "https://app.goodali.mn/api/v1") + field.value
+                (process.env.NEXT_PUBLIC_XOOX_DOMAIN ??
+                  "https://app.xoox.mn/api/v1") + field.value
               }
               controls
               className="w-full h-11"

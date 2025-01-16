@@ -15,10 +15,10 @@ export async function revalidateAll() {
   revalidatePath("/", "layout");
 }
 
-export async function revalidateGoodali({tag, type, path}: {path?: string; type?: "page" | "layout"; tag?: string}, origin: "vercel" | "goodali") {
+export async function revalidateGoodali({tag, type, path}: {path?: string; type?: "page" | "layout"; tag?: string}, origin: "vercel" | "xoox") {
   const url = {
-    vercel: "https://goodali-next-frontend.vercel.app",
-    goodali: "https://goodali.mn"
+    vercel: "https://xoox-next-frontend.vercel.app",
+    xoox: "https://xoox.mn"
   }[origin]
 
   let endpoint = `${url}/api/revalidate?secret=ps_ez&`;
@@ -64,7 +64,7 @@ export async function uploadImage(formData: FormData, size: "medium" | "small" |
     const headers = new Headers({});
 
     if (!!session?.user?.id) headers.set('Authorization', `Bearer ${session?.user?.id}`);
-    const res = await fetch(`${process.env.GOODALI_DOMAIN}/uploads/image`, {
+    const res = await fetch(`${process.env.XOOX_DOMAIN}/uploads/image`, {
       method: "POST",
       body: formData,
       headers,
@@ -107,7 +107,7 @@ export async function uploadAudio(formData: FormData) {
     const headers = new Headers({});
 
     if (!!session?.user?.id) headers.set('Authorization', `Bearer ${session?.user?.id}`);
-    const res = await fetch(`${process.env.GOODALI_DOMAIN}/uploads/audio`, {
+    const res = await fetch(`${process.env.XOOX_DOMAIN}/uploads/audio`, {
       method: "POST",
       body: formData,
       headers,

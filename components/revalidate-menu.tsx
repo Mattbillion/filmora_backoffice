@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { revalidateAll, revalidateGoodali } from "@/lib/functions";
-import { getOrigin } from "@/lib/goodali";
+import { getOrigin } from "@/lib/xoox";
 import { ListRestart, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -24,7 +24,7 @@ export default function RevalidateMenu() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Refresh goodali.mn and dashboard data"
+              tooltip="Refresh xoox.mn and dashboard data"
               disabled={loading}
               onClick={() => {
                 setLoading(true);

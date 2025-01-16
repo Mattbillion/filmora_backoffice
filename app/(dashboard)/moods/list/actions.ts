@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_MOOD_LIST, MoodListBodyType, MoodListItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createMoodList = async (bodyData: MoodListBodyType) => {
-  const { body, error } = await goodaliFetch<{data: MoodListItemType}>("mood/list", {
+  const { body, error } = await xooxFetch<{data: MoodListItemType}>("mood/list", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -19,7 +19,7 @@ export const createMoodList = async (bodyData: MoodListBodyType) => {
 };
 
 export const patchMoodList = async ({ id, ...bodyData }: MoodListBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: MoodListItemType}>(`/mood/list/${id}`,{
+  const { body, error } =  await xooxFetch<{data: MoodListItemType}>(`/mood/list/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -34,7 +34,7 @@ export const patchMoodList = async ({ id, ...bodyData }: MoodListBodyType & { id
 };
 
 export const deleteMoodList = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/mood/list/${id}`,{
+  const { body, error } =  await xooxFetch(`/mood/list/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -48,7 +48,7 @@ export const deleteMoodList = async (id: ID) => {
 
 export const getMoodLists = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<MoodListItemType[]>>("/mood/list", {
+    const { body, error } = await xooxFetch<PaginatedResType<MoodListItemType[]>>("/mood/list", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_MOOD_LIST]}
@@ -65,7 +65,7 @@ export const getMoodLists = async (searchParams?: QueryParams) => {
 
 export const getMoodListItem = async (moodListId: string) => {
   try {
-    const { body, error } = await goodaliFetch<{data: MoodListItemType}>(`/mood/list/${moodListId}`, {
+    const { body, error } = await xooxFetch<{data: MoodListItemType}>(`/mood/list/${moodListId}`, {
       method: "GET",
       next: {tags: [`${RVK_MOOD_LIST}_${moodListId}`]}
     });

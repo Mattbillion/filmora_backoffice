@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_MAGAZINE, MagazineBodyType, MagazineItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createMagazine = async (bodyData: MagazineBodyType) => {
-  const { body, error } = await goodaliFetch<{data: MagazineItemType}>("magazine", {
+  const { body, error } = await xooxFetch<{data: MagazineItemType}>("magazine", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -20,7 +20,7 @@ export const createMagazine = async (bodyData: MagazineBodyType) => {
 };
 
 export const patchMagazine = async ({ id, ...bodyData }: MagazineBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: MagazineItemType}>(`/magazine/${id}`,{
+  const { body, error } =  await xooxFetch<{data: MagazineItemType}>(`/magazine/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -34,7 +34,7 @@ export const patchMagazine = async ({ id, ...bodyData }: MagazineBodyType & { id
 };
 
 export const deleteMagazine = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/magazine/${id}`,{
+  const { body, error } =  await xooxFetch(`/magazine/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -48,7 +48,7 @@ export const deleteMagazine = async (id: ID) => {
 
 export const getMagazines = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<MagazineItemType[]>>("/magazine", {
+    const { body, error } = await xooxFetch<PaginatedResType<MagazineItemType[]>>("/magazine", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_MAGAZINE]}

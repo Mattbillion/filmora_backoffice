@@ -3,7 +3,7 @@ import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
 import { authConfig } from "./auth.config";
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { ID } from "@/lib/fetch/types";
 import { roleMap } from "@/lib/permission";
 
@@ -34,7 +34,7 @@ export const {
       credentials: {},
       async authorize({ username, password }: any) {
         
-        const { body } = await goodaliFetch<{data: LoginResType}>(
+        const { body } = await xooxFetch<{data: LoginResType}>(
           "login",
           {
             method: "POST",

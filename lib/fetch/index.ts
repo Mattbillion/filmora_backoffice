@@ -4,12 +4,12 @@
 import { auth, signOut } from "@/app/(auth)/auth";
 import { clearObj, ensureStartsWith, objToQs, QueryParams } from "../utils";
 
-const domain = process.env.GOODALI_DOMAIN
-  ? ensureStartsWith(process.env.GOODALI_DOMAIN, "https://")
+const domain = process.env.XOOX_DOMAIN
+  ? ensureStartsWith(process.env.XOOX_DOMAIN, "https://")
   : "";
 
 if (!domain) {
-  throw new Error("GOODALI_DOMAIN is not set or invalid");
+  throw new Error("XOOX_DOMAIN is not set or invalid");
 }
 
 
@@ -23,7 +23,7 @@ type FetchOptions = Omit<RequestInit, 'body'> & {
   searchParams?: QueryParams;
 };
 
-export async function goodaliFetch<T extends object & Partial<{error?: string; success?: boolean; message?: boolean; data?: any; status?: number}>>(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
+export async function xooxFetch<T extends object & Partial<{error?: string; success?: boolean; message?: boolean; data?: any; status?: number}>>(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
   try {
     const session = await auth();
 

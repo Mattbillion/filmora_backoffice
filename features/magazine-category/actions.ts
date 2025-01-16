@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { MagazineCategoryBodyType, MagazineCategoryItemType, RVK_MAGAZINE_CATEGORY } from "./schema";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 
 export const createMagazineCategory = async (bodyData: MagazineCategoryBodyType) => {
-  const { body, error } = await goodaliFetch<{data: MagazineCategoryItemType}>("/magazine/category", { method: "POST", body: bodyData, cache: "no-store" });
+  const { body, error } = await xooxFetch<{data: MagazineCategoryItemType}>("/magazine/category", { method: "POST", body: bodyData, cache: "no-store" });
 
   if(error) throw new Error(error);
 
@@ -15,7 +15,7 @@ export const createMagazineCategory = async (bodyData: MagazineCategoryBodyType)
 };
 
 export const patchMagazineCategory = async ({id, ...bodyData}: MagazineCategoryBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: MagazineCategoryItemType}>(
+  const { body, error } = await xooxFetch<{data: MagazineCategoryItemType}>(
     `/magazine/category/${id}`,
     {
       method: "PATCH",
@@ -32,7 +32,7 @@ export const patchMagazineCategory = async ({id, ...bodyData}: MagazineCategoryB
 };
 
 export const deleteMagazineCategory = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/magazine/category/${id}`,{
+  const { body, error } =  await xooxFetch(`/magazine/category/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -46,7 +46,7 @@ export const deleteMagazineCategory = async (id: ID) => {
 
 export const getMagazineCategories = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<MagazineCategoryItemType[]>>(
+    const { body, error } = await xooxFetch<PaginatedResType<MagazineCategoryItemType[]>>(
       "/magazine/category",
       {
         method: "GET",

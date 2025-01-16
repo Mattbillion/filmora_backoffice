@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_MOOD_ITEM, MoodItemBodyType, MoodItemItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createMoodItem = async (bodyData: MoodItemBodyType) => {
-  const { body, error } = await goodaliFetch<{data: MoodItemItemType}>("mood/list/item", {
+  const { body, error } = await xooxFetch<{data: MoodItemItemType}>("mood/list/item", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -19,7 +19,7 @@ export const createMoodItem = async (bodyData: MoodItemBodyType) => {
 };
 
 export const patchMoodItem = async ({ id, ...bodyData }: MoodItemBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: MoodItemItemType}>(`/mood/list/item/${id}`,{
+  const { body, error } =  await xooxFetch<{data: MoodItemItemType}>(`/mood/list/item/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -33,7 +33,7 @@ export const patchMoodItem = async ({ id, ...bodyData }: MoodItemBodyType & { id
 };
 
 export const deleteMoodItem = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/mood/list/item/${id}`,{
+  const { body, error } =  await xooxFetch(`/mood/list/item/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -47,7 +47,7 @@ export const deleteMoodItem = async (id: ID) => {
 
 export const getMoodItems = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<MoodItemItemType[]>>("/mood/list/item", {
+    const { body, error } = await xooxFetch<PaginatedResType<MoodItemItemType[]>>("/mood/list/item", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_MOOD_ITEM]}

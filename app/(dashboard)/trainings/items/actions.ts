@@ -1,4 +1,4 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { QueryParams } from "@/lib/utils";
 import { ID } from "@/lib/fetch/types";
 import { RVK_ITEM, ItemItemType, ItemBodyType } from "./schema";
@@ -6,7 +6,7 @@ import {revalidate} from "@/lib/functions";
 
 
 export const createItem = async (bodyData: ItemBodyType) => {
-  const { body, error } = await goodaliFetch<{data: ItemItemType}>("item", {
+  const { body, error } = await xooxFetch<{data: ItemItemType}>("item", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -20,7 +20,7 @@ export const createItem = async (bodyData: ItemBodyType) => {
 
 
 export const patchItem = async ({id, ...bodyData}: ItemBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: ItemItemType}>(`/item/${id}`, {
+  const { body, error } = await xooxFetch<{data: ItemItemType}>(`/item/${id}`, {
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -36,7 +36,7 @@ export const patchItem = async ({id, ...bodyData}: ItemBodyType & {id: ID}) => {
 
 
 export const deleteItem = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/item/${id}`,{
+  const { body, error } =  await xooxFetch(`/item/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -50,7 +50,7 @@ export const deleteItem = async (id: ID) => {
 
 export const getItems = async (searchParams: QueryParams = {}) => {
   try {
-    const { body, error } = await goodaliFetch<{data: ItemItemType[]}>("/item", {
+    const { body, error } = await xooxFetch<{data: ItemItemType[]}>("/item", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_ITEM]}
@@ -67,7 +67,7 @@ export const getItems = async (searchParams: QueryParams = {}) => {
 
 export const getItem = async (itemId: string) => {
   try {
-    const { body, error } = await goodaliFetch<{data: ItemItemType}>(`/item/${itemId}`, {
+    const { body, error } = await xooxFetch<{data: ItemItemType}>(`/item/${itemId}`, {
       method: "GET",
       next: {tags: [`${RVK_ITEM}_${itemId}`]}
     });

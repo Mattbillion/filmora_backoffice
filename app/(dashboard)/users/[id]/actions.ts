@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { UserType, PurchaseItemType, PurchaseTypeEnum } from "./schema";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import { INITIAL_PAGINATION } from "@/lib/utils";
 
 export const getUser = async (id: ID) => {
   try {
-    const { body, error } = await goodaliFetch<{data: UserType}>(`/users/${id}`, {
+    const { body, error } = await xooxFetch<{data: UserType}>(`/users/${id}`, {
       method: "GET",
       cache: "no-store"
     });
@@ -21,7 +21,7 @@ export const getUser = async (id: ID) => {
 
 export const getPurchases = async (searchParams?: {userId: ID; purchaseType: PurchaseTypeEnum}) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<PurchaseItemType[]>>(`/users/purchase`, {
+    const { body, error } = await xooxFetch<PaginatedResType<PurchaseItemType[]>>(`/users/purchase`, {
       method: "GET",
       searchParams,
       cache: "no-store"
@@ -37,7 +37,7 @@ export const getPurchases = async (searchParams?: {userId: ID; purchaseType: Pur
 };
 
 export const removeLecture = async (id: ID, productId: ID, purchaseId?: ID) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/remove-lecture`, {
+  const { body, error } = await xooxFetch(`/users/${id}/remove-lecture`, {
     method: "POST",
     body: {productId, purchaseId},
     cache: "no-store"
@@ -49,7 +49,7 @@ export const removeLecture = async (id: ID, productId: ID, purchaseId?: ID) => {
 };
 
 export const removeAlbum = async (id: ID, productId: ID, purchaseId?: ID) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/remove-album`, {
+  const { body, error } = await xooxFetch(`/users/${id}/remove-album`, {
     method: "POST",
     body: {productId, purchaseId},
     cache: "no-store"
@@ -61,7 +61,7 @@ export const removeAlbum = async (id: ID, productId: ID, purchaseId?: ID) => {
 };
 
 export const removeBook = async (id: ID, productId: ID, purchaseId?: ID) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/remove-book`, {
+  const { body, error } = await xooxFetch(`/users/${id}/remove-book`, {
     method: "POST",
     body: {productId, purchaseId},
     cache: "no-store"
@@ -73,7 +73,7 @@ export const removeBook = async (id: ID, productId: ID, purchaseId?: ID) => {
 };
 
 export const removeTraining = async (id: ID, productId: ID, purchaseId?: ID) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/remove-training`, {
+  const { body, error } = await xooxFetch(`/users/${id}/remove-training`, {
     method: "POST",
     body: {productId, purchaseId},
     cache: "no-store"

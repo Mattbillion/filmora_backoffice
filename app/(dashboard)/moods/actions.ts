@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_MOOD, MoodBodyType, MoodItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import {revalidate} from "@/lib/functions";
 
 export const createMood = async (bodyData: MoodBodyType) => {
-  const { body, error } = await goodaliFetch<{data: MoodItemType}>("mood", {
+  const { body, error } = await xooxFetch<{data: MoodItemType}>("mood", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -18,7 +18,7 @@ export const createMood = async (bodyData: MoodBodyType) => {
 };
 
 export const patchMood = async ({ id, ...bodyData }: MoodBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: MoodItemType}>(`/mood/${id}`,{
+  const { body, error } =  await xooxFetch<{data: MoodItemType}>(`/mood/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -32,7 +32,7 @@ export const patchMood = async ({ id, ...bodyData }: MoodBodyType & { id: ID; })
 };
 
 export const deleteMood = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/mood/${id}`,{
+  const { body, error } =  await xooxFetch(`/mood/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -46,7 +46,7 @@ export const deleteMood = async (id: ID) => {
 
 export const getMoods = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<MoodItemType[]>>("/mood", {
+    const { body, error } = await xooxFetch<PaginatedResType<MoodItemType[]>>("/mood", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_MOOD]}
@@ -63,7 +63,7 @@ export const getMoods = async (searchParams?: QueryParams) => {
 
 export const getMood = async (moodId: string) => {
   try {
-    const { body, error } = await goodaliFetch<{data: MoodItemType}>(`/mood/${moodId}`, {
+    const { body, error } = await xooxFetch<{data: MoodItemType}>(`/mood/${moodId}`, {
       method: "GET",
       next: {tags: [`${RVK_MOOD}_${moodId}`]}
     });

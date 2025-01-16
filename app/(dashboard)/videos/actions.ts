@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_VIDEO, VideoBodyType, VideoItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createVideo = async (bodyData: VideoBodyType) => {
-  const { body, error } = await goodaliFetch<{data: VideoItemType}>("video", {
+  const { body, error } = await xooxFetch<{data: VideoItemType}>("video", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -19,7 +19,7 @@ export const createVideo = async (bodyData: VideoBodyType) => {
 };
 
 export const patchVideo = async ({ id, ...bodyData }: VideoBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: VideoItemType}>(`/video/${id}`,{
+  const { body, error } =  await xooxFetch<{data: VideoItemType}>(`/video/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -33,7 +33,7 @@ export const patchVideo = async ({ id, ...bodyData }: VideoBodyType & { id: ID; 
 };
 
 export const deleteVideo = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/video/${id}`,{
+  const { body, error } =  await xooxFetch(`/video/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -47,7 +47,7 @@ export const deleteVideo = async (id: ID) => {
 
 export const getVideos = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<VideoItemType[]>>("/video", {
+    const { body, error } = await xooxFetch<PaginatedResType<VideoItemType[]>>("/video", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_VIDEO]}

@@ -120,7 +120,7 @@ export const removeHTML = (str: string = "") => str.replace(/<\/?[^>]+(>|$)|&[^;
 
 
 export const apiImage = (src?: string, size?: 'medium' | 'small' | 'large' | 'xs' | 'blur') => {
-  const domain = process.env.NEXT_PUBLIC_GOODALI_DOMAIN ?? "https://app.goodali.mn/api/v1";
+  const domain = process.env.NEXT_PUBLIC_XOOX_DOMAIN ?? "https://app.xoox.mn/api/v1";
   const sizePattern = /\/static\/img\/uploads\/(small|medium|large|xs|blur)\//i;
   const insertSizePattern = /\/static\/img\/uploads\/([^\/]+)$/i;
 

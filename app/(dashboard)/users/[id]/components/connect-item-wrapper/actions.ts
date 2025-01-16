@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import { ConnectProductType, UserType } from "./schema";
 import { PurchaseTypeEnum } from "../../schema";
 import { INITIAL_PAGINATION } from "@/lib/utils";
 
 export const addLecture = async (id: ID, lectureId: ID | string) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/add-lecture`, {
+  const { body, error } = await xooxFetch(`/users/${id}/add-lecture`, {
     method: "POST",
     body: {lectureId},
     cache: "no-store"
@@ -17,7 +17,7 @@ export const addLecture = async (id: ID, lectureId: ID | string) => {
 };
 
 export const addAlbum = async (id: ID, albumId: ID | string) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/add-album`, {
+  const { body, error } = await xooxFetch(`/users/${id}/add-album`, {
     method: "POST",
     body: {albumId},
     cache: "no-store"
@@ -29,7 +29,7 @@ export const addAlbum = async (id: ID, albumId: ID | string) => {
 };
 
 export const addTraining = async (id: ID, packageId: ID | string, date?: string) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/add-training`, {
+  const { body, error } = await xooxFetch(`/users/${id}/add-training`, {
     method: "POST",
     body: {packageId, date},
     cache: "no-store"
@@ -41,7 +41,7 @@ export const addTraining = async (id: ID, packageId: ID | string, date?: string)
 };
 
 export const addBook = async (id: ID, bookId: ID | string) => {
-  const { body, error } = await goodaliFetch(`/users/${id}/add-book`, {
+  const { body, error } = await xooxFetch(`/users/${id}/add-book`, {
     method: "POST",
     body: {bookId},
     cache: "no-store"
@@ -54,7 +54,7 @@ export const addBook = async (id: ID, bookId: ID | string) => {
 
 export const getUser = async (id: ID) => {
   try {
-    const { body, error } = await goodaliFetch<{data: UserType}>(`/users/${id}`, {
+    const { body, error } = await xooxFetch<{data: UserType}>(`/users/${id}`, {
       method: "GET",
       cache: "no-store"
     });
@@ -70,7 +70,7 @@ export const getUser = async (id: ID) => {
 
 export const getConnectProducts = async ({purchaseType,trainingId, albumId}: {purchaseType: PurchaseTypeEnum | 2, trainingId?: ID | string, albumId?: ID | string}) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<ConnectProductType[]>>("/users/active/product", {
+    const { body, error } = await xooxFetch<PaginatedResType<ConnectProductType[]>>("/users/active/product", {
       method: "GET",
       searchParams: {purchaseType: String(purchaseType), limit:100000, trainingId, albumId},
       cache: "no-store"

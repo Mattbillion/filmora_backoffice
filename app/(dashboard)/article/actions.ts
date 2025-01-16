@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_ARTICLE, ArticleBodyType, ArticleItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createPost = async (bodyData: ArticleBodyType) => {
-  const { body, error } = await goodaliFetch<{data: ArticleItemType}>("article", {
+  const { body, error } = await xooxFetch<{data: ArticleItemType}>("article", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -20,7 +20,7 @@ export const createPost = async (bodyData: ArticleBodyType) => {
 };
 
 export const patchPost = async ({ id, ...bodyData }: ArticleBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: ArticleItemType}>(`/article/${id}`,{
+  const { body, error } =  await xooxFetch<{data: ArticleItemType}>(`/article/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -34,7 +34,7 @@ export const patchPost = async ({ id, ...bodyData }: ArticleBodyType & { id: ID;
 };
 
 export const deletePost = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/article/${id}`,{
+  const { body, error } =  await xooxFetch(`/article/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -48,7 +48,7 @@ export const deletePost = async (id: ID) => {
 
 export const getArticles = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<ArticleItemType[]>>("/article", {
+    const { body, error } = await xooxFetch<PaginatedResType<ArticleItemType[]>>("/article", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_ARTICLE]}

@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_BOOK, BookBodyType, BookItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 export const createBook = async (bodyData: BookBodyType) => {
-  const { body, error } = await goodaliFetch<{data: BookItemType}>("book", {
+  const { body, error } = await xooxFetch<{data: BookItemType}>("book", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -19,7 +19,7 @@ export const createBook = async (bodyData: BookBodyType) => {
 };
 
 export const patchBook = async ({ id, ...bodyData }: BookBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: BookItemType}>(`/book/${id}`,{
+  const { body, error } =  await xooxFetch<{data: BookItemType}>(`/book/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -33,7 +33,7 @@ export const patchBook = async ({ id, ...bodyData }: BookBodyType & { id: ID; })
 };
 
 export const deleteBook = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/book/${id}`,{
+  const { body, error } =  await xooxFetch(`/book/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -47,7 +47,7 @@ export const deleteBook = async (id: ID) => {
 
 export const getBooks = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<BookItemType[]>>("/book", {
+    const { body, error } = await xooxFetch<PaginatedResType<BookItemType[]>>("/book", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_BOOK]}

@@ -1,12 +1,12 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import { RVK_BANNER, BannerItemType, BannerBodyType, BannerProductType } from "./schema";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 
 export const createBanner = async (bodyData: BannerBodyType) => {
-  const { body, error } = await goodaliFetch<{data: BannerItemType}>("banners", {
+  const { body, error } = await xooxFetch<{data: BannerItemType}>("banners", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -21,7 +21,7 @@ export const createBanner = async (bodyData: BannerBodyType) => {
 
 
 export const patchBanner = async ({id, ...bodyData}: BannerBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: BannerItemType}>(`/banners/${id}`, {
+  const { body, error } = await xooxFetch<{data: BannerItemType}>(`/banners/${id}`, {
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -37,7 +37,7 @@ export const patchBanner = async ({id, ...bodyData}: BannerBodyType & {id: ID}) 
 
 
 export const deleteBanner = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/banners/${id}`,{
+  const { body, error } =  await xooxFetch(`/banners/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -51,7 +51,7 @@ export const deleteBanner = async (id: ID) => {
 
 export const getBanners = async (searchParams: QueryParams = {}) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<BannerItemType[]>>("/banners", {
+    const { body, error } = await xooxFetch<PaginatedResType<BannerItemType[]>>("/banners", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_BANNER]}
@@ -68,7 +68,7 @@ export const getBanners = async (searchParams: QueryParams = {}) => {
 
 export const getBannerProducts = async (productType:string = "0") => {
   try {
-    const { body } = await goodaliFetch<PaginatedResType<BannerProductType[]>>("/banners/product", {
+    const { body } = await xooxFetch<PaginatedResType<BannerProductType[]>>("/banners/product", {
       method: "GET",
       searchParams: {productType, limit: 1000},
       next: {tags: [RVK_BANNER]}

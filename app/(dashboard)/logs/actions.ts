@@ -1,4 +1,4 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { LogTargetType, LogActionType, LogItemType } from "./schema";
 import { INITIAL_PAGINATION } from "@/lib/utils";
 import { PaginatedResType } from "@/lib/fetch/types";
@@ -13,7 +13,7 @@ export type LogSearchParamsType = Partial<{
 
 export const getLogs = async (searchParams?: LogSearchParamsType) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<LogItemType[]>>("/log", {
+    const { body, error } = await xooxFetch<PaginatedResType<LogItemType[]>>("/log", {
       method: "GET",
       searchParams,
       cache: 'no-store'

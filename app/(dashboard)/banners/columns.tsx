@@ -114,7 +114,7 @@ export const bannerColumns: ColumnDef<BannerItemType>[] = [
       ) : (
         <Link
           target="_blank"
-          href={"https://app.goodali.mn/api/v1" + row.original.banner}
+          href={"https://app.xoox.mn/api/v1" + row.original.banner}
         >
           {url ? url[1] : "No banner"}
         </Link>

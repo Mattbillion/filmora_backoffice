@@ -65,7 +65,7 @@ const RenderContent = ({
   body?: string;
 }) => {
   if (audioSrc)
-    return <audio src={"https://app.goodali.mn/api/v1" + audioSrc} />;
+    return <audio src={"https://app.xoox.mn/api/v1" + audioSrc} />;
 
   if (question)
     return (

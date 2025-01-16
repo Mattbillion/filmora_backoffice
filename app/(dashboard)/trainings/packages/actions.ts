@@ -1,12 +1,12 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import { RVK_PACKAGE, PackageItemType, PackageBodyType } from "./schema";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 
 export const createPackage = async (bodyData: PackageBodyType) => {
-  const { body, error } = await goodaliFetch<{data: PackageItemType}>("package", {
+  const { body, error } = await xooxFetch<{data: PackageItemType}>("package", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -20,7 +20,7 @@ export const createPackage = async (bodyData: PackageBodyType) => {
 };
 
 export const patchPackage = async ({id, ...bodyData}: PackageBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: PackageItemType}>(`/package/${id}`, {
+  const { body, error } = await xooxFetch<{data: PackageItemType}>(`/package/${id}`, {
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -34,7 +34,7 @@ export const patchPackage = async ({id, ...bodyData}: PackageBodyType & {id: ID}
 };
 
 export const deletePackage = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/package/${id}`,{
+  const { body, error } =  await xooxFetch(`/package/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -48,7 +48,7 @@ export const deletePackage = async (id: ID) => {
 
 export const getPackages = async (searchParams: QueryParams = {}) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<PackageItemType[]>>("/package", {
+    const { body, error } = await xooxFetch<PaginatedResType<PackageItemType[]>>("/package", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_PACKAGE]}

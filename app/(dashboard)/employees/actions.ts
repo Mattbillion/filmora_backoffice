@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_EMPLOYEE, EmployeeBodyType, EmployeeItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import {revalidate} from "@/lib/functions";
 
 export const createEmployee = async (bodyData: EmployeeBodyType) => {
-  const { body, error } = await goodaliFetch<{data: EmployeeItemType}>("employee", {
+  const { body, error } = await xooxFetch<{data: EmployeeItemType}>("employee", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -18,7 +18,7 @@ export const createEmployee = async (bodyData: EmployeeBodyType) => {
 };
 
 export const patchEmployee = async ({ id, ...bodyData }: EmployeeBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: EmployeeItemType}>(`/employee/${id}`,{
+  const { body, error } =  await xooxFetch<{data: EmployeeItemType}>(`/employee/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -32,7 +32,7 @@ export const patchEmployee = async ({ id, ...bodyData }: EmployeeBodyType & { id
 };
 
 export const deleteEmployee = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/employee/${id}`,{
+  const { body, error } =  await xooxFetch(`/employee/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -46,7 +46,7 @@ export const deleteEmployee = async (id: ID) => {
 
 export const getEmployees = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<EmployeeItemType[]>>("/employee", {
+    const { body, error } = await xooxFetch<PaginatedResType<EmployeeItemType[]>>("/employee", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_EMPLOYEE]}

@@ -1,4 +1,4 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import { RVK_TASK, TaskItemType, TaskBodyType } from "./schema";
@@ -6,7 +6,7 @@ import {revalidate} from "@/lib/functions";
 
 
 export const createTask = async (bodyData: TaskBodyType) => {
-  const { body, error } = await goodaliFetch<{data: TaskItemType}>("task", {
+  const { body, error } = await xooxFetch<{data: TaskItemType}>("task", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -20,7 +20,7 @@ export const createTask = async (bodyData: TaskBodyType) => {
 
 
 export const patchTask = async ({id, ...bodyData}: TaskBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: TaskItemType}>(`/task/${id}`, {
+  const { body, error } = await xooxFetch<{data: TaskItemType}>(`/task/${id}`, {
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -35,7 +35,7 @@ export const patchTask = async ({id, ...bodyData}: TaskBodyType & {id: ID}) => {
 
 
 export const deleteTask = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/task/${id}`,{
+  const { body, error } =  await xooxFetch(`/task/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -48,7 +48,7 @@ export const deleteTask = async (id: ID) => {
 
 export const getTasks = async (searchParams: QueryParams = {}) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<TaskItemType[]>>("/task", {
+    const { body, error } = await xooxFetch<PaginatedResType<TaskItemType[]>>("/task", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_TASK]}

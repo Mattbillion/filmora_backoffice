@@ -1,4 +1,4 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import { RVK_LESSON, LessonItemType, LessonBodyType } from "./schema";
@@ -6,7 +6,7 @@ import {revalidate} from "@/lib/functions";
 
 
 export const createLesson = async ({isPublic, ...bodyData}: LessonBodyType) => {
-  const { body, error } = await goodaliFetch<{data: LessonItemType}>("lesson", {
+  const { body, error } = await xooxFetch<{data: LessonItemType}>("lesson", {
     method: "POST",
     body: {...bodyData, isPublic: Number(isPublic)},
     cache: "no-store",
@@ -20,7 +20,7 @@ export const createLesson = async ({isPublic, ...bodyData}: LessonBodyType) => {
 
 
 export const patchLesson = async ({id, isPublic, ...bodyData}: LessonBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: LessonItemType}>(`/lesson/${id}`, {
+  const { body, error } = await xooxFetch<{data: LessonItemType}>(`/lesson/${id}`, {
     method: "PATCH",
     body: {...bodyData, isPublic: Number(isPublic)},
     cache: "no-store",
@@ -36,7 +36,7 @@ export const patchLesson = async ({id, isPublic, ...bodyData}: LessonBodyType & 
 
 
 export const deleteLesson = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/lesson/${id}`,{
+  const { body, error } =  await xooxFetch(`/lesson/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -50,7 +50,7 @@ export const deleteLesson = async (id: ID) => {
 
 export const getLessons = async (searchParams: QueryParams = {}) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<LessonItemType[]>>("/lesson", {
+    const { body, error } = await xooxFetch<PaginatedResType<LessonItemType[]>>("/lesson", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_LESSON]}
@@ -67,7 +67,7 @@ export const getLessons = async (searchParams: QueryParams = {}) => {
 
 export const getLesson = async (lessonId: string) => {
   try {
-    const { body, error } = await goodaliFetch<{data: LessonItemType}>(`/lesson/${lessonId}`, {
+    const { body, error } = await xooxFetch<{data: LessonItemType}>(`/lesson/${lessonId}`, {
       method: "GET",
       next: {tags: [`${RVK_LESSON}_${lessonId}`]}
     });

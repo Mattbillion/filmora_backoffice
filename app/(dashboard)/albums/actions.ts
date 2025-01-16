@@ -1,11 +1,11 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { RVK_ALBUM, AlbumBodyType, AlbumItemType } from "./schema";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
-import {executeRevalidate} from "@/lib/goodali";
+import {executeRevalidate} from "@/lib/xoox";
 
 export const createAlbum = async (bodyData: AlbumBodyType) => {
-  const { body, error } = await goodaliFetch<{data: AlbumItemType}>("album", {
+  const { body, error } = await xooxFetch<{data: AlbumItemType}>("album", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -19,7 +19,7 @@ export const createAlbum = async (bodyData: AlbumBodyType) => {
 };
 
 export const patchAlbum = async ({ id, ...bodyData }: AlbumBodyType & { id: ID; }) => {
-  const { body, error } =  await goodaliFetch<{data: AlbumItemType}>(`/album/${id}`,{
+  const { body, error } =  await xooxFetch<{data: AlbumItemType}>(`/album/${id}`,{
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -34,7 +34,7 @@ export const patchAlbum = async ({ id, ...bodyData }: AlbumBodyType & { id: ID; 
 };
 
 export const deleteAlbum = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/album/${id}`,{
+  const { body, error } =  await xooxFetch(`/album/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -48,7 +48,7 @@ export const deleteAlbum = async (id: ID) => {
 
 export const getAlbums = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<AlbumItemType[]>>("/album", {
+    const { body, error } = await xooxFetch<PaginatedResType<AlbumItemType[]>>("/album", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_ALBUM]}
@@ -65,7 +65,7 @@ export const getAlbums = async (searchParams?: QueryParams) => {
 
 export const getAlbum = async (albumId: string) => {
   try {
-    const { body, error } = await goodaliFetch<{data: AlbumItemType}>(`/album/${albumId}`, {
+    const { body, error } = await xooxFetch<{data: AlbumItemType}>(`/album/${albumId}`, {
       method: "GET",
       next: {tags: [`${RVK_ALBUM}_${albumId}`]}
     });

@@ -1,12 +1,12 @@
-import { goodaliFetch } from "@/lib/fetch";
+import { xooxFetch } from "@/lib/fetch";
 import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
 import { ID, PaginatedResType } from "@/lib/fetch/types";
 import { RVK_TRAINING, TrainingItemType, TrainingBodyType } from "./schema";
-import { executeRevalidate } from "@/lib/goodali";
+import { executeRevalidate } from "@/lib/xoox";
 
 
 export const createTraining = async (bodyData: TrainingBodyType) => {
-  const { body, error } = await goodaliFetch<{data: TrainingItemType}>("training", {
+  const { body, error } = await xooxFetch<{data: TrainingItemType}>("training", {
     method: "POST",
     body: bodyData,
     cache: "no-store",
@@ -21,7 +21,7 @@ export const createTraining = async (bodyData: TrainingBodyType) => {
 
 
 export const patchTraining = async ({id, ...bodyData}: TrainingBodyType & {id: ID}) => {
-  const { body, error } = await goodaliFetch<{data: TrainingItemType}>(`/training/${id}`, {
+  const { body, error } = await xooxFetch<{data: TrainingItemType}>(`/training/${id}`, {
     method: "PATCH",
     body: bodyData,
     cache: "no-store",
@@ -37,7 +37,7 @@ export const patchTraining = async ({id, ...bodyData}: TrainingBodyType & {id: I
 
 
 export const deleteTraining = async (id: ID) => {
-  const { body, error } =  await goodaliFetch(`/training/${id}`,{
+  const { body, error } =  await xooxFetch(`/training/${id}`,{
     method: "DELETE",
     cache: "no-store",
   });
@@ -51,7 +51,7 @@ export const deleteTraining = async (id: ID) => {
 
 export const getTrainings = async (searchParams: QueryParams = {}) => {
   try {
-    const { body, error } = await goodaliFetch<PaginatedResType<TrainingItemType[]>>("/training", {
+    const { body, error } = await xooxFetch<PaginatedResType<TrainingItemType[]>>("/training", {
       method: "GET",
       searchParams,
       next: {tags: [RVK_TRAINING]}
@@ -67,7 +67,7 @@ export const getTrainings = async (searchParams: QueryParams = {}) => {
 };
 export const getTraining = async (trainingId: string) => {
   try {
-    const { body, error } = await goodaliFetch<{data: TrainingItemType}>(`/training/${trainingId}`, {
+    const { body, error } = await xooxFetch<{data: TrainingItemType}>(`/training/${trainingId}`, {
       method: "GET",
       next: {tags: [`${RVK_TRAINING}_${trainingId}`]}
     });
