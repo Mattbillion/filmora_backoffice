@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use server";
 
-import { auth, signOut } from "@/app/(auth)/auth";
-import { clearObj, ensureStartsWith, objToQs, QueryParams } from "../utils";
+import { auth } from "@/app/(auth)/auth";
+import {clearObj, ensureStartsWith, isObject, objToQs, QueryParams} from "../utils";
 
-const domain = process.env.XOOX_DOMAIN
-  ? ensureStartsWith(process.env.XOOX_DOMAIN, "https://")
-  : "";
+const domain = process.env.XOOX_DOMAIN;
 
 if (!domain) {
   throw new Error("XOOX_DOMAIN is not set or invalid");
@@ -19,7 +17,7 @@ type FetchResult<T> = {
 };
 
 type FetchOptions = Omit<RequestInit, 'body'> & {
-  body?: Record<string, unknown>;
+  body?: Record<string, unknown> | FormData;
   searchParams?: QueryParams;
 };
 
@@ -48,25 +46,29 @@ export async function xooxFetch<T extends object & Partial<{error?: string; succ
     console.error(`Fetch error: `, error instanceof Error ? error.message : String(error));
     const errString: string = error?.error ?? error?.message ?? String(error);
 
-    if(errString.toLocaleLowerCase().includes('jwt expired')) return signOut();
+    // if(errString.toLocaleLowerCase().includes('jwt expired')) return signOut();
     throw new Error(errString);
   }
 }
 
 function genFetchParams(url: string, options: FetchOptions = {}){
-  let endpoint = `${domain}/admin${ensureStartsWith(url, "/")}`;
-  const isBodyJSON = options.body && typeof options.body === 'object';
-
+  let endpoint = `${domain}/dashboard${ensureStartsWith(url, "/")}`;
   const headers = new Headers(options.headers);
 
-  if (isBodyJSON && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json');
+
+  const isBodyObject = isObject(options.body);
+
+  if (!isBodyObject)
+    headers.delete('Content-Type'); // Content-Type will be generated automatically by fetch
+  else if (!headers.has('Content-Type'))
+    headers.set('Content-Type', 'application/json'); // Forced Content-Type
 
   const fetchOptions: FetchOptions = {
     ...options,
     headers,
   };
 
-  if (isBodyJSON) {
+  if (isBodyObject) {
     fetchOptions.body = JSON.stringify(clearObj(options.body)) as any;
   }
 

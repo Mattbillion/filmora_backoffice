@@ -120,7 +120,7 @@ export const removeHTML = (str: string = "") => str.replace(/<\/?[^>]+(>|$)|&[^;
 
 
 export const apiImage = (src?: string, size?: 'medium' | 'small' | 'large' | 'xs' | 'blur') => {
-  const domain = process.env.NEXT_PUBLIC_XOOX_DOMAIN ?? "https://app.xoox.mn/api/v1";
+  const domain = process.env.NEXT_PUBLIC_XOOX_DOMAIN ?? "http://3.95.231.68:3000/api/v1";
   const sizePattern = /\/static\/img\/uploads\/(small|medium|large|xs|blur)\//i;
   const insertSizePattern = /\/static\/img\/uploads\/([^\/]+)$/i;
 
@@ -139,3 +139,9 @@ export function clearObj(obj: Record<any, any> = {}) {
 
   return result;
 }
+
+export const isObject = (value: unknown) =>
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    !(value instanceof FormData);

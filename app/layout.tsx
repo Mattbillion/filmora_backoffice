@@ -17,8 +17,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Goodali dashboard",
-  description: "Goodali dashbaord next.js",
+  title: "XOOX dashboard",
+  description: "XOOX dashbaord next.js",
 };
 
 export default async function RootLayout({

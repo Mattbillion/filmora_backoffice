@@ -4,22 +4,10 @@ import Credentials from "next-auth/providers/credentials";
 
 import { authConfig } from "./auth.config";
 import { xooxFetch } from "@/lib/fetch";
-import { ID } from "@/lib/fetch/types";
-import { roleMap } from "@/lib/permission";
 
 type LoginResType = {
-  token: string;
-  refreshToken: string;
-  employee: {
-    id: ID;
-    created_at: string;
-    email: string;
-    username: string;
-    first_name: string;
-    last_name: string;
-    role: number;
-    created_by: ID | null;
-  }
+  access_token: string;
+  refresh_token: string;
 }
 
 export const {
@@ -33,24 +21,26 @@ export const {
     Credentials({
       credentials: {},
       async authorize({ username, password }: any) {
-        
-        const { body } = await xooxFetch<{data: LoginResType}>(
-          "login",
+        const formData = new FormData();
+        formData.append('username', username);
+        formData.append('password', password);
+
+        const { body, error } = await xooxFetch<LoginResType>(
+          "auth/employee-login",
           {
             method: "POST",
-            body: {
-              username,
-              password,
-            },
+            body: formData,
             cache: "no-store"
           },
         );
 
-        if(body?.data?.token)
+        console.log("error", error)
+        if(body?.access_token)
           return {
-            email: body?.data?.employee?.email,
-            role: body?.data?.employee?.role,
-            id: body?.data?.token,
+            access_token: body.access_token,
+            refresh_token: body.refresh_token,
+            expires_at: getExpDateFromJWT(body.access_token),
+            id: body.access_token,
           };
 
         return null;
@@ -59,54 +49,83 @@ export const {
   ],
   callbacks: {
     async jwt({ token, user }: any) {
+      // if (user) {
+      //   token.id = user.id;
+      //   token.role = (roleMap as any)[user.role] ?? "content";
+      // }
       if (user) {
-        token.id = user.id;
-        token.role = (roleMap as any)[user.role] ?? "content";
-        // backend dr rotate token hiigdeegvi tul hvcheer zaaj uguw.
-        // token.exp = getExpDateFromJWT(token.id).toISOString();
-      }
+        return {
+          ...token,
+          access_token: user.access_token,
+          expires_at: user.expires_at,
+          refresh_token: user.refresh_token,
+        }
+      } else if (Date.now() < token.expires_at * 1000) {
+        return token
+      } else {
+        try {
+          if (!token.refresh_token) throw new TypeError("Missing refresh_token")
+          const { body, error } = await xooxFetch<LoginResType>(
+              "/auth/employee-refresh-token",
+              {
+                method: "POST",
+                body: {
+                  refresh_token: token.refresh_token,
+                },
+                cache: "no-store"
+              },
+          );
 
-      return token;
-    },
-    async session({
-      session,
-      token,
-    }: {
-      session: any;
-      token: any;
-    }) {
-      if (session.user) {
-        session.user.id = token.id as string;
-        session.user.role = token.role;
+          if (error) throw new Error(error);
+
+          return {
+            ...token,
+            access_token: body.access_token,
+            expires_at: getExpDateFromJWT(body.access_token),
+            refresh_token: body.refresh_token
+                ? body.refresh_token
+                : token.refresh_token,
+          }
+        } catch (error) {
+          console.error("Error refreshing access_token", error)
+          token.error = "RefreshTokenError"
+          return token
+        }
       }
-      // if(token.exp) session.expires = token.exp;
-      
-      return session;
     },
+    // async session({
+    //   session,
+    //   token,
+    // }: {
+    //   session: any;
+    //   token: any;
+    // }) {
+    //   if (session.user) {
+    //     session.user.id = token.id as string;
+    //     session.user.role = token.role;
+    //   }
+    //
+    //   return session;
+    // },
   },
-  // session: {
-  //   strategy: "jwt",
-  //   // rotate token integrate hiiwel ustgaarai
-  //   maxAge: 24 * 60 * 60,
-  // },
 });
 
-// function getExpDateFromJWT(token: string): Date {
-//   const fallbackDate = new Date();
-//   fallbackDate.setDate(fallbackDate.getDate() + 1);
+function getExpDateFromJWT(token: string): Date {
+  const fallbackDate = new Date();
+  fallbackDate.setDate(fallbackDate.getDate() + 1);
 
-//   try {
-//     const base64Url = token.split('.')[1];
-//     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-//     const jsonPayload = JSON.parse(
-//       Buffer.from(base64, 'base64').toString('utf-8')
-//     );
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = JSON.parse(
+      Buffer.from(base64, 'base64').toString('utf-8')
+    );
 
-//     if (!jsonPayload.exp) return fallbackDate;
+    if (!jsonPayload.exp) return fallbackDate;
 
-//     return new Date(jsonPayload.exp * 1000);
-//   } catch (error) {
-//     console.error('Error decoding JWT:', error);
-//     return fallbackDate;
-//   }
-// }
+    return new Date(jsonPayload.exp * 1000);
+  } catch (error) {
+    console.error('Error decoding JWT:', error);
+    return fallbackDate;
+  }
+}

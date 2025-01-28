@@ -15,7 +15,7 @@ export async function revalidateAll() {
   revalidatePath("/", "layout");
 }
 
-export async function revalidateGoodali({tag, type, path}: {path?: string; type?: "page" | "layout"; tag?: string}, origin: "vercel" | "xoox") {
+export async function revalidateXOOX({tag, type, path}: {path?: string; type?: "page" | "layout"; tag?: string}, origin: "vercel" | "xoox") {
   const url = {
     vercel: "https://xoox-next-frontend.vercel.app",
     xoox: "https://xoox.mn"

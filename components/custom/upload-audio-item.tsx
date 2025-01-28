@@ -42,7 +42,7 @@ export default function UploadAudioItem({
             <audio
               src={
                 (process.env.NEXT_PUBLIC_XOOX_DOMAIN ??
-                  "https://app.xoox.mn/api/v1") + field.value
+                  "http://3.95.231.68:3000/api/v1") + field.value
               }
               controls
               className="w-full h-11"

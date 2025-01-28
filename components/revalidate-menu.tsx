@@ -8,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { revalidateAll, revalidateGoodali } from "@/lib/functions";
+import { revalidateAll, revalidateXOOX } from "@/lib/functions";
 import { getOrigin } from "@/lib/xoox";
 import { ListRestart, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -30,7 +30,7 @@ export default function RevalidateMenu() {
                 setLoading(true);
                 Promise.all([
                   revalidateAll(),
-                  revalidateGoodali({}, getOrigin()),
+                  revalidateXOOX({}, getOrigin()),
                 ])
                   .then(() => toast.success("Revalidate successfully"))
                   .finally(() => setLoading(false));
