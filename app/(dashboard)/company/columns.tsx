@@ -2,17 +2,14 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, ListMusic, Trash } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { Edit, Trash } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
   DeleteDialog,
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { currencyFormat } from '@/lib/utils';
 
 import { deleteCompany } from './actions';
 import { UpdateDialog } from './components';
@@ -35,7 +32,6 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
 
       <DeleteDialog
         ref={deleteDialogRef}
-        permissionSubject="companys"
         loading={loading}
         action={() => {
           setLoading(true);
@@ -50,7 +46,7 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.title}</b>?
+            <b className="text-foreground">{row.original.company_name}</b>?
           </>
         }
       >
@@ -59,25 +55,6 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
           Delete
         </Button>
       </DeleteDialog>
-    </div>
-  );
-};
-
-const ChildDatas = ({ row }: CellContext<CompanyItemType, unknown>) => {
-  const router = useRouter();
-
-  return (
-    <div className="me-2 flex justify-end gap-4">
-      <Button
-        size={'cxs'}
-        variant="outline"
-        type="button"
-        onClick={() =>
-          router.push(`/companys/lectures?companyId=${row.original.id}`)
-        }
-      >
-        <ListMusic className="h-4 w-4" /> Lectures
-      </Button>
     </div>
   );
 };
@@ -91,49 +68,25 @@ export const companyColumns: ColumnDef<CompanyItemType>[] = [
     },
   },
   {
-    accessorKey: 'title',
-    header: 'Title',
+    accessorKey: 'company_name',
+    header: 'Name',
   },
   {
-    accessorKey: 'price',
-    header: 'Price',
-    cell: ({ row }) => currencyFormat(row.original.price ?? 0),
+    accessorKey: 'company_register',
+    header: 'Register',
   },
   {
-    id: 'order',
-    header: 'Order',
-    cell: ({ row }) => row.original.order,
+    accessorKey: 'company_phone',
+    header: 'Phone',
   },
   {
-    id: 'tags',
-    header: () => 'Tag',
-    cell: ({ row }) => {
-      const tags = row.original.tags || [];
-      return (
-        <>
-          {tags
-            .slice(0, 3)
-            .map((e) => e.name)
-            .join(', ')}
-          {tags.length > 3 && (
-            <Badge variant="secondary" className="ml-2">
-              +{tags.length - 3}
-            </Badge>
-          )}
-        </>
-      );
-    },
+    accessorKey: 'company_email',
+    header: 'Email',
   },
   {
     id: 'status',
     header: 'Status',
-    cell: ({ row }) =>
-      ({ 2: 'Hidden', 1: 'Active', 0: 'Inactive' })[row.original.status] ??
-      'Unknown',
-  },
-  {
-    id: 'lecture-list',
-    cell: ChildDatas,
+    cell: ({ row }) => row.original.status ? 'Active' : 'Inactive'
   },
   {
     id: 'actions',

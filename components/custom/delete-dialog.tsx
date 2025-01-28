@@ -17,7 +17,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { /*hasPermission, Role,*/ Subject } from '@/lib/permission';
 
 export interface DeleteDialogRef {
   close: () => void;
@@ -32,7 +31,7 @@ interface DeleteDialogProps {
   cancelText?: string;
   confirmText?: string;
   loading?: boolean;
-  permissionSubject: Subject;
+  // permissionSubject: Subject;
 }
 
 export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
