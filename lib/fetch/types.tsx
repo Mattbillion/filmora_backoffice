@@ -4,7 +4,7 @@ export type ID = number;
 export type BaseType<T extends Record<string, any>> = {
   id: ID;
   created_at: string;
-  created_by?: string;
+  updated_at?: string;
 } & T;
 
 export type PaginatedResType<T> = {

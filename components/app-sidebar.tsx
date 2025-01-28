@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Suspense, useEffect } from "react";
-import { SidebarMenuGroup } from "@/components/sidebar-menu-group";
+import { useEffect } from "react";
+// import { SidebarMenuGroup } from "@/components/sidebar-menu-group";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -13,28 +13,25 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useSession } from "next-auth/react";
-import { menuData } from "./constants/menu";
-import { hasPagePermission, Role } from "@/lib/permission";
 import RevalidateMenu from "./revalidate-menu";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: session, update } = useSession();
-  const role = (session?.user as any)?.role as Role;
 
   useEffect(() => {
     update();
   }, []);
 
-  const mainMenu = menuData.navMain
-    .map((c) =>
-      hasPagePermission(role, c.url.replace("/", "") as any) ? c : null
-    )
-    .filter((c) => !!c);
-  const adminMenu = menuData.navAdmin
-    .map((c) =>
-      hasPagePermission(role, c.url.replace("/", "") as any) ? c : null
-    )
-    .filter((c) => !!c);
+  // const mainMenu = menuData.navMain
+  //   .map((c) =>
+  //     hasPagePermission(role, c.url.replace("/", "") as any) ? c : null
+  //   )
+  //   .filter((c) => !!c);
+  // const adminMenu = menuData.navAdmin
+  //   .map((c) =>
+  //     hasPagePermission(role, c.url.replace("/", "") as any) ? c : null
+  //   )
+  //   .filter((c) => !!c);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -42,16 +39,16 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        {!!mainMenu?.length && (
-          <Suspense>
-            <SidebarMenuGroup items={mainMenu} label="Dashboard" />
-          </Suspense>
-        )}
-        {!!adminMenu?.length && (
-          <Suspense>
-            <SidebarMenuGroup items={adminMenu} label="Administration" />
-          </Suspense>
-        )}
+        {/*{!!mainMenu?.length && (*/}
+        {/*  <Suspense>*/}
+        {/*    <SidebarMenuGroup items={mainMenu} label="Dashboard" />*/}
+        {/*  </Suspense>*/}
+        {/*)}*/}
+        {/*{!!adminMenu?.length && (*/}
+        {/*  <Suspense>*/}
+        {/*    <SidebarMenuGroup items={adminMenu} label="Administration" />*/}
+        {/*  </Suspense>*/}
+        {/*)}*/}
         <RevalidateMenu />
       </SidebarContent>
       <SidebarFooter>{session && <NavUser session={session} />}</SidebarFooter>
