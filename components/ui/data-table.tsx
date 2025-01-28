@@ -167,7 +167,7 @@ export function DataTable<TData, TValue>({
           {!infinite && <DataTablePagination table={table} />}
           {infinite && (
             <DataTableInfinte
-              onChange={(page) => setPageNumber(page)}
+              onChange={(p) => setPageNumber(p)}
               pageNumber={pageNumber ?? 0}
               disabled={disabled ?? false}
               setDisabled={setDisabled}

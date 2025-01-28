@@ -94,8 +94,8 @@ export default function UploadAudioItem({
                     setValue(durationFieldName, c?.data?.audioDuration);
                     clearErrors(field.name);
                   })
-                  .catch((e) => {
-                    const { message } = extractActionError(e);
+                  .catch((err) => {
+                    const { message } = extractActionError(err);
                     setError(field.name, { message }, { shouldFocus: true });
                   })
                   .finally(() => setLoading(false));

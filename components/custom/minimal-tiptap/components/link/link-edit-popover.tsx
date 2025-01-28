@@ -24,14 +24,14 @@ const LinkEditPopover = ({ editor, size, variant }: LinkEditPopoverProps) => {
   const text = editor.state.doc.textBetween(from, to, ' ');
 
   const onSetLink = React.useCallback(
-    (url: string, text?: string, openInNewTab?: boolean) => {
+    (url: string, txt?: string, openInNewTab?: boolean) => {
       editor
         .chain()
         .focus()
         .extendMarkRange('link')
         .insertContent({
           type: 'text',
-          text: text || url,
+          text: txt || url,
           marks: [
             {
               type: 'link',

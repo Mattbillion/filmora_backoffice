@@ -26,7 +26,7 @@ export const {
         formData.append('username', username);
         formData.append('password', password);
 
-        const { body, error } = await xooxFetch<LoginResType>(
+        const { body } = await xooxFetch<LoginResType>(
           'auth/employee-login',
           {
             method: 'POST',
@@ -35,7 +35,6 @@ export const {
           },
         );
 
-        console.log('error', error);
         if (body?.access_token)
           return {
             access_token: body.access_token,

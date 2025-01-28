@@ -158,8 +158,8 @@ const roles: Record<Role, Record<Subject, Record<Action, boolean>>> = {
   },
 };
 
-export const hasPermission = (role: Role, subject: Subject, action: Action) =>
-  !!roles[role]?.[subject]?.[action];
+export const hasPermission = (r: Role, subject: Subject, action: Action) =>
+  !!roles[r]?.[subject]?.[action];
 
-export const hasPagePermission = (role: Role, subject: Subject) =>
-  !!Object.values(roles[role]?.[subject] ?? {}).some((c) => !!c);
+export const hasPagePermission = (r: Role, subject: Subject) =>
+  !!Object.values(roles[r]?.[subject] ?? {}).some((c) => !!c);

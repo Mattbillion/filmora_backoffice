@@ -2,9 +2,9 @@
 
 import React, { forwardRef,useImperativeHandle, useState } from 'react';
 import { Loader2 } from 'lucide-react';
-import { User } from 'next-auth';
-import { useSession } from 'next-auth/react';
 
+// import { User } from 'next-auth';
+// import { useSession } from 'next-auth/react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +17,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { hasPermission, Role, Subject } from '@/lib/permission';
+import { /*hasPermission, Role,*/ Subject } from '@/lib/permission';
 
 export interface DeleteDialogRef {
   close: () => void;
@@ -45,11 +45,11 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
       cancelText,
       confirmText,
       loading,
-      permissionSubject,
+      // permissionSubject,
     },
     ref,
   ) => {
-    const { data: session } = useSession();
+    // const { data: session } = useSession();
     const [open, setOpen] = useState(false);
 
     useImperativeHandle(ref, () => ({
@@ -57,8 +57,8 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
       open: () => setOpen(true),
     }));
 
-    const role = (session?.user as User & { role: Role })?.role;
-    if (!hasPermission(role, permissionSubject, 'delete')) return null;
+    // const role = (session?.user as User & { role: Role })?.role;
+    // if (!hasPermission(role, permissionSubject, 'delete')) return null;
     return (
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>

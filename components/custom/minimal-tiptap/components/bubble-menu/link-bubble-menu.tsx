@@ -32,17 +32,12 @@ export const LinkBubbleMenu: React.FC<LinkBubbleMenuProps> = ({ editor }) => {
   }, [editor]);
 
   const shouldShow = React.useCallback(
-    ({ editor, from, to }: ShouldShowProps) => {
-      if (from === to) {
-        return false;
-      }
-      const { href } = editor.getAttributes('link');
+    ({ editor: e, from, to }: ShouldShowProps) => {
+      if (from === to) return false;
 
-      if (href) {
-        updateLinkState();
-        return true;
-      }
-      return false;
+      const { href } = e.getAttributes('link');
+      if (href) updateLinkState()
+      return !!href;
     },
     [updateLinkState],
   );

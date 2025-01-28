@@ -86,7 +86,7 @@ export const useMinimalTiptapEditor = ({
   ...props
 }: UseMinimalTiptapEditorProps) => {
   const throttledSetValue = useThrottle(
-    (value: Content) => onUpdate?.(value),
+    (v: Content) => onUpdate?.(v),
     throttleDelay,
   );
 
@@ -97,9 +97,7 @@ export const useMinimalTiptapEditor = ({
 
   const handleCreate = React.useCallback(
     (editor: Editor) => {
-      if (value && editor.isEmpty) {
-        editor.commands.setContent(value);
-      }
+      if (value && editor.isEmpty) editor.commands.setContent(value)
     },
     [value],
   );
@@ -119,9 +117,9 @@ export const useMinimalTiptapEditor = ({
         class: cn('focus:outline-none', editorClassName),
       },
     },
-    onUpdate: ({ editor }) => handleUpdate(editor),
-    onCreate: ({ editor }) => handleCreate(editor),
-    onBlur: ({ editor }) => handleBlur(editor),
+    onUpdate: ({ editor: e }) => handleUpdate(e),
+    onCreate: ({ editor: e }) => handleCreate(e),
+    onBlur: ({ editor: e }) => handleBlur(e),
     ...props,
   });
 

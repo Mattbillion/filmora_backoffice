@@ -52,8 +52,8 @@ const ImageEditBlock = ({
 
       close();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      setError(e.message);
+    } catch (err: any) {
+      setError(err.message);
     } finally {
       setLoading(false);
     }

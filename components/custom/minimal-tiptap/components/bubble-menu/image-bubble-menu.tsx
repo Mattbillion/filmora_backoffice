@@ -5,24 +5,12 @@ import { ShouldShowProps } from '../../types';
 import { ImagePopoverBlock } from '../image/image-popover-block';
 
 const ImageBubbleMenu = ({ editor }: { editor: Editor }) => {
-  const shouldShow = ({ editor, from, to }: ShouldShowProps) => {
-    if (from === to) {
-      return false;
-    }
+  const shouldShow = ({ editor: e, from, to }: ShouldShowProps) => {
+    if (from === to) return false
 
-    const img = editor.getAttributes('image');
-
-    if (img.src) {
-      return true;
-    }
-
-    return false;
+    return !!e.getAttributes('image').src
   };
-
-  const unSetImage = () => {
-    editor.commands.deleteSelection();
-  };
-
+  const unSetImage = () => editor.commands.deleteSelection();
   return (
     <BubbleMenu
       editor={editor}

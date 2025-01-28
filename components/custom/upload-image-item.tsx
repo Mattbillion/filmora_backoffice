@@ -80,8 +80,8 @@ export default function UploadImageItem({
                     field.onChange(c?.data?.filePath);
                     clearErrors(field.name);
                   })
-                  .catch((e) => {
-                    const { message } = extractActionError(e);
+                  .catch((err) => {
+                    const { message } = extractActionError(err);
                     setError(field.name, { message }, { shouldFocus: true });
                   })
                   .finally(() => setLoading(false));
