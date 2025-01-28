@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import NextAuth from "next-auth";
-import Credentials from "next-auth/providers/credentials";
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
 
-import { authConfig } from "./auth.config";
-import { xooxFetch } from "@/lib/fetch";
+import { xooxFetch } from '@/lib/fetch';
+
+import { authConfig } from './auth.config';
 
 type LoginResType = {
   access_token: string;
   refresh_token: string;
-}
+};
 
 export const {
   handlers: { GET, POST },
@@ -26,16 +27,16 @@ export const {
         formData.append('password', password);
 
         const { body, error } = await xooxFetch<LoginResType>(
-          "auth/employee-login",
+          'auth/employee-login',
           {
-            method: "POST",
+            method: 'POST',
             body: formData,
-            cache: "no-store"
+            cache: 'no-store',
           },
         );
 
-        console.log("error", error)
-        if(body?.access_token)
+        console.log('error', error);
+        if (body?.access_token)
           return {
             access_token: body.access_token,
             refresh_token: body.refresh_token,
@@ -59,21 +60,22 @@ export const {
           access_token: user.access_token,
           expires_at: user.expires_at,
           refresh_token: user.refresh_token,
-        }
+        };
       } else if (Date.now() < token.expires_at * 1000) {
-        return token
+        return token;
       } else {
         try {
-          if (!token.refresh_token) throw new TypeError("Missing refresh_token")
+          if (!token.refresh_token)
+            throw new TypeError('Missing refresh_token');
           const { body, error } = await xooxFetch<LoginResType>(
-              "/auth/employee-refresh-token",
-              {
-                method: "POST",
-                body: {
-                  refresh_token: token.refresh_token,
-                },
-                cache: "no-store"
+            '/auth/employee-refresh-token',
+            {
+              method: 'POST',
+              body: {
+                refresh_token: token.refresh_token,
               },
+              cache: 'no-store',
+            },
           );
 
           if (error) throw new Error(error);
@@ -83,13 +85,13 @@ export const {
             access_token: body.access_token,
             expires_at: getExpDateFromJWT(body.access_token),
             refresh_token: body.refresh_token
-                ? body.refresh_token
-                : token.refresh_token,
-          }
+              ? body.refresh_token
+              : token.refresh_token,
+          };
         } catch (error) {
-          console.error("Error refreshing access_token", error)
-          token.error = "RefreshTokenError"
-          return token
+          console.error('Error refreshing access_token', error);
+          token.error = 'RefreshTokenError';
+          return token;
         }
       }
     },
@@ -118,7 +120,7 @@ function getExpDateFromJWT(token: string): Date {
     const base64Url = token.split('.')[1];
     const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
     const jsonPayload = JSON.parse(
-      Buffer.from(base64, 'base64').toString('utf-8')
+      Buffer.from(base64, 'base64').toString('utf-8'),
     );
 
     if (!jsonPayload.exp) return fallbackDate;

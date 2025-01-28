@@ -1,4 +1,8 @@
-"use client";
+'use client';
+
+import { useState } from 'react';
+import { ListRestart, Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import {
   SidebarGroup,
@@ -7,12 +11,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
-import { revalidateAll, revalidateXOOX } from "@/lib/functions";
-import { getOrigin } from "@/lib/xoox";
-import { ListRestart, Loader2 } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
+} from '@/components/ui/sidebar';
+import { revalidateAll, revalidateXOOX } from '@/lib/functions';
+import { getOrigin } from '@/lib/xoox';
 
 export default function RevalidateMenu() {
   const [loading, setLoading] = useState(false);
@@ -28,11 +29,8 @@ export default function RevalidateMenu() {
               disabled={loading}
               onClick={() => {
                 setLoading(true);
-                Promise.all([
-                  revalidateAll(),
-                  revalidateXOOX({}, getOrigin()),
-                ])
-                  .then(() => toast.success("Revalidate successfully"))
+                Promise.all([revalidateAll(), revalidateXOOX({}, getOrigin())])
+                  .then(() => toast.success('Revalidate successfully'))
                   .finally(() => setLoading(false));
               }}
             >

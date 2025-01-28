@@ -1,32 +1,34 @@
-"use client";
+'use client';
 
-import { CellContext, ColumnDef } from "@tanstack/react-table";
-import { AlbumItemType } from "./schema";
-import { useRef, useState } from "react";
+import { useRef, useState } from 'react';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
+import { Edit, ListMusic,Trash } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+
 import {
   DeleteDialog,
   DeleteDialogRef,
-} from "@/components/custom/delete-dialog";
-import { Button } from "@/components/ui/button";
-import { Edit, Trash, ListMusic } from "lucide-react";
-import { UpdateDialog } from "./components";
-import { Badge } from "@/components/ui/badge";
-import { deleteAlbum } from "./actions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
-import { currencyFormat } from "@/lib/utils";
+} from '@/components/custom/delete-dialog';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { currencyFormat } from '@/lib/utils';
+
+import { deleteAlbum } from './actions';
+import { UpdateDialog } from './components';
+import { AlbumItemType } from './schema';
 
 const Action = ({ row }: CellContext<AlbumItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
   return (
-    <div className="flex gap-4 justify-end me-2">
+    <div className="me-2 flex justify-end gap-4">
       <UpdateDialog
         initialData={row.original}
         key={JSON.stringify(row.original)}
       >
-        <Button size={"cxs"} variant="outline">
+        <Button size={'cxs'} variant="outline">
           <Edit className="h-4 w-4" /> Edit
         </Button>
       </UpdateDialog>
@@ -47,12 +49,12 @@ const Action = ({ row }: CellContext<AlbumItemType, unknown>) => {
         }}
         description={
           <>
-            Are you sure you want to delete this{" "}
+            Are you sure you want to delete this{' '}
             <b className="text-foreground">{row.original.title}</b>?
           </>
         }
       >
-        <Button size={"cxs"}>
+        <Button size={'cxs'}>
           <Trash className="h-4 w-4" />
           Delete
         </Button>
@@ -65,9 +67,9 @@ const ChildDatas = ({ row }: CellContext<AlbumItemType, unknown>) => {
   const router = useRouter();
 
   return (
-    <div className="flex gap-4 justify-end me-2">
+    <div className="me-2 flex justify-end gap-4">
       <Button
-        size={"cxs"}
+        size={'cxs'}
         variant="outline"
         type="button"
         onClick={() =>
@@ -82,29 +84,29 @@ const ChildDatas = ({ row }: CellContext<AlbumItemType, unknown>) => {
 
 export const albumColumns: ColumnDef<AlbumItemType>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: 'id',
+    header: 'ID',
     cell: ({ row }) => {
       return <div className="px-1 py-2">{row.original.id}</div>;
     },
   },
   {
-    accessorKey: "title",
-    header: "Title",
+    accessorKey: 'title',
+    header: 'Title',
   },
   {
-    accessorKey: "price",
-    header: "Price",
+    accessorKey: 'price',
+    header: 'Price',
     cell: ({ row }) => currencyFormat(row.original.price ?? 0),
   },
   {
-    id: "order",
-    header: "Order",
+    id: 'order',
+    header: 'Order',
     cell: ({ row }) => row.original.order,
   },
   {
-    id: "tags",
-    header: () => "Tag",
+    id: 'tags',
+    header: () => 'Tag',
     cell: ({ row }) => {
       const tags = row.original.tags || [];
       return (
@@ -112,7 +114,7 @@ export const albumColumns: ColumnDef<AlbumItemType>[] = [
           {tags
             .slice(0, 3)
             .map((e) => e.name)
-            .join(", ")}
+            .join(', ')}
           {tags.length > 3 && (
             <Badge variant="secondary" className="ml-2">
               +{tags.length - 3}
@@ -123,18 +125,18 @@ export const albumColumns: ColumnDef<AlbumItemType>[] = [
     },
   },
   {
-    id: "status",
-    header: "Status",
+    id: 'status',
+    header: 'Status',
     cell: ({ row }) =>
-      ({ 2: "Hidden", 1: "Active", 0: "Inactive" }[row.original.status] ??
-      "Unknown"),
+      ({ 2: 'Hidden', 1: 'Active', 0: 'Inactive' })[row.original.status] ??
+      'Unknown',
   },
   {
-    id: "lecture-list",
+    id: 'lecture-list',
     cell: ChildDatas,
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: Action,
   },
 ];

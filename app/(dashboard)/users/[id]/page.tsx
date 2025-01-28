@@ -1,18 +1,20 @@
-import { ID } from "@/lib/fetch/types";
-import { purchaseColumns, purchaseTrainingColumns } from "./columns";
-import { Heading } from "@/components/custom/heading";
-import { Separator } from "@/components/ui/separator";
-import { DataTable } from "@/components/ui/data-table";
-import { PurchaseTypeEnum, purchaseTypeObj } from "./schema";
-import { getPurchases, getUser } from "./actions";
-import { Link } from "@/components/custom/link";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { apiImage } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Suspense } from "react";
-import { ConnectItemWrapper } from "./components";
+import { Suspense } from 'react';
 
-export const dynamic = "force-dynamic";
+import { Heading } from '@/components/custom/heading';
+import { Link } from '@/components/custom/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import { Separator } from '@/components/ui/separator';
+import { ID } from '@/lib/fetch/types';
+import { apiImage } from '@/lib/utils';
+
+import { getPurchases, getUser } from './actions';
+import { purchaseColumns, purchaseTrainingColumns } from './columns';
+import { ConnectItemWrapper } from './components';
+import { PurchaseTypeEnum, purchaseTypeObj } from './schema';
+
+export const dynamic = 'force-dynamic';
 
 export default async function UserDetail(props: {
   params: Promise<{ id: ID }>;
@@ -31,7 +33,7 @@ export default async function UserDetail(props: {
   });
 
   const purchaseType = (
-    purchaseTypeObj[searchParams.purchaseType] ?? ""
+    purchaseTypeObj[searchParams.purchaseType] ?? ''
   ).toLowerCase();
 
   const columns =
@@ -78,7 +80,7 @@ function PurchaseTypes({ userId }: { userId: ID }) {
           byParam="purchaseType"
           withChildRoutes
           activeClassName="bg-accent text-accent-foreground"
-          className="flex select-none items-center rounded-sm px-3 py-1.5 text-sm font-medium outline-none focus:bg-accent focus:text-accent-foreground hover:bg-accent hover:text-accent-foreground"
+          className="flex select-none items-center rounded-sm px-3 py-1.5 text-sm font-medium outline-none hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
         >
           {label}
         </Link>
@@ -91,11 +93,11 @@ async function UserProfile({ id }: { id: ID }) {
   const { data: dataUser } = await getUser(id);
 
   return (
-    <div className="flex items-center gap-2 bg-accent rounded-3xl py-2 px-2 pr-3">
+    <div className="flex items-center gap-2 rounded-3xl bg-accent px-2 py-2 pr-3">
       <Avatar className="h-8 w-8 rounded-full">
         <AvatarImage
-          src={apiImage(dataUser?.data?.avatar, "xs")}
-          alt={dataUser?.data?.nickname ?? ""}
+          src={apiImage(dataUser?.data?.avatar, 'xs')}
+          alt={dataUser?.data?.nickname ?? ''}
         />
         <AvatarFallback className="rounded-lg">
           {dataUser?.data?.email?.slice(0, 2)}
@@ -103,7 +105,7 @@ async function UserProfile({ id }: { id: ID }) {
       </Avatar>
       <div>
         <p className="font-bold leading-none">
-          {dataUser?.data.nickname || "Unknown"}
+          {dataUser?.data.nickname || 'Unknown'}
         </p>
         <p className="text-xs opacity-80">{dataUser?.data.email}</p>
       </div>
@@ -113,10 +115,10 @@ async function UserProfile({ id }: { id: ID }) {
 
 function UserProfileSkeleton() {
   return (
-    <div className="w-1/3 flex items-center gap-2 bg-accent rounded-3xl py-2 px-2 pr-3 animate-pulse">
+    <div className="flex w-1/3 animate-pulse items-center gap-2 rounded-3xl bg-accent px-2 py-2 pr-3">
       <div className="h-8 w-8 rounded-full bg-slate-100 opacity-50" />
       <div className="flex-1">
-        <div className="h-4 w-1/2 rounded-lg bg-slate-100 opacity-50 mb-1" />
+        <div className="mb-1 h-4 w-1/2 rounded-lg bg-slate-100 opacity-50" />
         <div className="h-2.5 w-full rounded-lg bg-slate-100 opacity-50" />
       </div>
     </div>

@@ -4,15 +4,15 @@
 // import { notFound } from "next/navigation";
 
 export default async function Layout({
-																			 children,
-																		 }: {
-	children: React.ReactNode;
+  children,
+}: {
+  children: React.ReactNode;
 }) {
-	// const session = await auth();
+  // const session = await auth();
 
-	// if (
-	//   hasPagePermission((session?.user as User & { role: Role })?.role, "companys")
-	// )
-	return children;
-	// return notFound();
+  // if (
+  //   hasPagePermission((session?.user as User & { role: Role })?.role, "companys")
+  // )
+  return children;
+  // return notFound();
 }

@@ -1,15 +1,17 @@
-import { Heading } from "@/components/custom/heading";
-import { DataTable } from "@/components/ui/data-table";
-import { Separator } from "@/components/ui/separator";
-import { SearchParams } from "@/lib/fetch/types";
-import { getAlbums } from "./actions";
-import { albumColumns } from "./columns";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { CreateDialog } from "./components";
-import { Suspense } from "react";
+import { Suspense } from 'react';
+import { Plus } from 'lucide-react';
 
-export const dynamic = "force-dynamic";
+import { Heading } from '@/components/custom/heading';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import { Separator } from '@/components/ui/separator';
+import { SearchParams } from '@/lib/fetch/types';
+
+import { getAlbums } from './actions';
+import { albumColumns } from './columns';
+import { CreateDialog } from './components';
+
+export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function Albums(props: { searchParams?: SearchParams }) {

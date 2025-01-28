@@ -1,7 +1,9 @@
-import { isNumber, NodeViewProps, NodeViewWrapper } from "@tiptap/react";
-import { useMemo } from "react";
-import { useImageLoad } from "../../../hooks/use-image-load";
-import { cn } from "@/lib/utils";
+import { useMemo } from 'react';
+import { isNumber, NodeViewProps, NodeViewWrapper } from '@tiptap/react';
+
+import { cn } from '@/lib/utils';
+
+import { useImageLoad } from '../../../hooks/use-image-load';
 
 const ImageViewBlock = ({ editor, node, getPos }: NodeViewProps) => {
   const imgSize = useImageLoad(node.attrs.src);
@@ -27,13 +29,13 @@ const ImageViewBlock = ({ editor, node, getPos }: NodeViewProps) => {
             <div className="absolute h-full w-full">
               <div
                 className={cn(
-                  "relative h-full max-h-full w-full max-w-full rounded transition-all"
+                  'relative h-full max-h-full w-full max-w-full rounded transition-all',
                 )}
                 style={{
                   boxShadow:
                     editor.state.selection.from === getPos()
-                      ? "0 0 0 1px hsl(var(--primary))"
-                      : "none",
+                      ? '0 0 0 1px hsl(var(--primary))'
+                      : 'none',
                 }}
               >
                 <div className="relative flex h-full max-h-full w-full max-w-full overflow-hidden">

@@ -31,7 +31,7 @@ export type SearchParams = Promise<{
 
 export type ReplaceType<
   BaseType,
-  Replacements extends { [K in keyof BaseType]?: any }
+  Replacements extends { [K in keyof BaseType]?: any },
 > = {
   [Key in keyof BaseType]: Key extends keyof Replacements
     ? Replacements[Key]
@@ -39,7 +39,7 @@ export type ReplaceType<
 };
 
 type CamelToSnakeCase<S extends string> = S extends `${infer T}${infer U}`
-  ? `${T extends Capitalize<T> ? "_" : ""}${Lowercase<T>}${CamelToSnakeCase<U>}`
+  ? `${T extends Capitalize<T> ? '_' : ''}${Lowercase<T>}${CamelToSnakeCase<U>}`
   : S;
 
 export type SnakeCaseKeys<T> = {

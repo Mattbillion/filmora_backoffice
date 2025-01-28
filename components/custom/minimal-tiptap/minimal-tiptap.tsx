@@ -1,23 +1,25 @@
-import * as React from "react";
-import "./styles/index.css";
+import * as React from 'react';
+import type { Content, Editor } from '@tiptap/react';
+import { EditorContent } from '@tiptap/react';
 
-import type { Content, Editor } from "@tiptap/react";
-import type { UseMinimalTiptapEditorProps } from "./hooks/use-minimal-tiptap";
-import { EditorContent } from "@tiptap/react";
-import { Separator } from "@/components/ui/separator";
-import { cn } from "@/lib/utils";
-import { SectionOne } from "./components/section/one";
-import { SectionTwo } from "./components/section/two";
-import { SectionThree } from "./components/section/three";
-import { SectionFour } from "./components/section/four";
-import { SectionFive } from "./components/section/five";
-import { TextAlignSection } from "./components/section/text-align";
-import { LinkBubbleMenu } from "./components/bubble-menu/link-bubble-menu";
-import { ImageBubbleMenu } from "./components/bubble-menu/image-bubble-menu";
-import { useMinimalTiptapEditor } from "./hooks/use-minimal-tiptap";
+import './styles/index.css';
+
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+
+import { ImageBubbleMenu } from './components/bubble-menu/image-bubble-menu';
+import { LinkBubbleMenu } from './components/bubble-menu/link-bubble-menu';
+import { SectionFive } from './components/section/five';
+import { SectionFour } from './components/section/four';
+import { SectionOne } from './components/section/one';
+import { TextAlignSection } from './components/section/text-align';
+import { SectionThree } from './components/section/three';
+import { SectionTwo } from './components/section/two';
+import type { UseMinimalTiptapEditorProps } from './hooks/use-minimal-tiptap';
+import { useMinimalTiptapEditor } from './hooks/use-minimal-tiptap';
 
 export interface MinimalTiptapProps
-  extends Omit<UseMinimalTiptapEditorProps, "onUpdate"> {
+  extends Omit<UseMinimalTiptapEditorProps, 'onUpdate'> {
   value?: Content;
   onChange?: (value: Content) => void;
   className?: string;
@@ -36,11 +38,11 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
       <SectionTwo
         editor={editor}
         activeActions={[
-          "bold",
-          "italic",
-          "strikethrough",
-          "code",
-          "clearFormatting",
+          'bold',
+          'italic',
+          'strikethrough',
+          'code',
+          'clearFormatting',
         ]}
         mainActionCount={2}
       />
@@ -53,7 +55,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
 
       <SectionFour
         editor={editor}
-        activeActions={["orderedList", "bulletList"]}
+        activeActions={['orderedList', 'bulletList']}
         mainActionCount={0}
       />
 
@@ -61,7 +63,7 @@ const Toolbar = ({ editor }: { editor: Editor }) => (
 
       <SectionFive
         editor={editor}
-        activeActions={["codeBlock", "blockquote", "horizontalRule"]}
+        activeActions={['codeBlock', 'blockquote', 'horizontalRule']}
         mainActionCount={0}
       />
     </div>
@@ -86,14 +88,14 @@ export const MinimalTiptapEditor = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex h-auto min-h-72 w-full flex-col rounded-md border border-input shadow-sm focus-within:border-primary",
-        className
+        'flex h-auto min-h-72 w-full flex-col rounded-md border border-input shadow-sm focus-within:border-primary',
+        className,
       )}
     >
       <Toolbar editor={editor} />
       <EditorContent
         editor={editor}
-        className={cn("minimal-tiptap-editor", editorContentClassName)}
+        className={cn('minimal-tiptap-editor', editorContentClassName)}
       />
       <LinkBubbleMenu editor={editor} />
       <ImageBubbleMenu editor={editor} />
@@ -101,6 +103,6 @@ export const MinimalTiptapEditor = React.forwardRef<
   );
 });
 
-MinimalTiptapEditor.displayName = "MinimalTiptapEditor";
+MinimalTiptapEditor.displayName = 'MinimalTiptapEditor';
 
 export default MinimalTiptapEditor;

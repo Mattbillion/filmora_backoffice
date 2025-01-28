@@ -1,31 +1,32 @@
-"use client";
+'use client';
 
-import { ReactNode, useRef, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { ReactNode, useRef, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useParams, useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { z } from 'zod';
+
+import DatePickerItem from '@/components/custom/datepicker-item';
+import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import FormDialog, { FormDialogRef } from "@/components/custom/form-dialog";
+} from '@/components/ui/select';
+import { ID } from '@/lib/fetch/types';
 
-import { z } from "zod";
-import { useConnectProducts } from "./context";
-import { useParams, useRouter } from "next/navigation";
-import { ID } from "@/lib/fetch/types";
-import { addTraining } from "./actions";
-import { toast } from "sonner";
-import DatePickerItem from "@/components/custom/datepicker-item";
+import { addTraining } from './actions';
+import { useConnectProducts } from './context';
 
 const trainingSchema = z.object({
   trainingId: z.string(),
@@ -46,18 +47,18 @@ export function TrainingDialog({ children }: { children: ReactNode }) {
   const form = useForm<z.infer<typeof trainingSchema>>({
     resolver: zodResolver(trainingSchema),
     defaultValues: {
-      trainingId: "",
-      packageId: "",
+      trainingId: '',
+      packageId: '',
     },
   });
-  const trainingId = form.watch("trainingId");
-  const packageId = form.watch("packageId");
+  const trainingId = form.watch('trainingId');
+  const packageId = form.watch('packageId');
 
   function onSubmit(values: TrainingBodyType) {
     startTransition(() => {
       addTraining(params.id as unknown as ID, values.packageId, values.date)
         .then(() => {
-          toast.success("Connected successfully");
+          toast.success('Connected successfully');
           dialogRef?.current?.close();
           form.reset();
           router.refresh();
@@ -74,7 +75,7 @@ export function TrainingDialog({ children }: { children: ReactNode }) {
       loading={isPending}
       title={
         <>
-          Connect training package to{" "}
+          Connect training package to{' '}
           <b>{users[params.id as unknown as ID]?.nickname}</b>
         </>
       }

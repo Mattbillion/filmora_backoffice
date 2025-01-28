@@ -1,25 +1,23 @@
 import { ReactNode } from 'react';
-import { AppSidebar } from "@/components/app-sidebar";
+
+import { AppSidebar } from '@/components/app-sidebar';
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+} from '@/components/ui/breadcrumb';
+import { Separator } from '@/components/ui/separator';
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import BreadcrumbLastPage from "./breadcrumb";
-import Dayjs from "@/lib/dayjs";
+} from '@/components/ui/sidebar';
+import Dayjs from '@/lib/dayjs';
 
-export default function DashboardLayout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+import BreadcrumbLastPage from './breadcrumb';
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
     <SidebarProvider>
       <Dayjs />
@@ -39,9 +37,7 @@ export default function DashboardLayout({
             </Breadcrumb>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-6 pt-0">
-          {children}
-        </div>
+        <div className="flex flex-1 flex-col gap-4 p-6 pt-0">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

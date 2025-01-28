@@ -1,14 +1,16 @@
-"use client";
+'use client';
 
-import { ControllerRenderProps } from "react-hook-form";
-import { NumericFormat } from "react-number-format";
+import { ControllerRenderProps } from 'react-hook-form';
+import { NumericFormat } from 'react-number-format';
+
 import {
   FormDescription,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "../ui/input";
+} from '@/components/ui/form';
+
+import { Input } from '../ui/input';
 
 export default function CurrencyItem({
   field,

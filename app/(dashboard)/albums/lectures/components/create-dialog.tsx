@@ -1,36 +1,38 @@
-"use client";
+'use client';
 
-import { ReactNode, useRef, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { ReactNode, useRef, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSearchParams } from 'next/navigation';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
+
+import CurrencyItem from '@/components/custom/currency-item';
+import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadAudioItem from '@/components/custom/upload-audio-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { toast } from "sonner";
-import FormDialog, { FormDialogRef } from "@/components/custom/form-dialog";
-import { LectureBodyType, lectureSchema } from "../schema";
-import { createLecture } from "../actions";
-import { useTags } from "@/features/tags";
-import UploadImageItem from "@/components/custom/upload-image-item";
-import HtmlTipTapItem from "@/components/custom/html-tiptap-item";
-import CurrencyItem from "@/components/custom/currency-item";
-import UploadAudioItem from "@/components/custom/upload-audio-item";
-import { useSearchParams } from "next/navigation";
-import { User } from "next-auth";
-import { hasPermission, Role } from "@/lib/permission";
-import { useSession } from "next-auth/react";
+} from '@/components/ui/select';
+import { useTags } from '@/features/tags';
+import { hasPermission, Role } from '@/lib/permission';
+
+import { createLecture } from '../actions';
+import { LectureBodyType, lectureSchema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
@@ -42,17 +44,17 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const form = useForm<LectureBodyType>({
     resolver: zodResolver(lectureSchema),
     defaultValues: {
-      title: "",
-      status: "0",
-      banner: "",
-      body: "",
-      audio: "",
-      intro: "",
+      title: '',
+      status: '0',
+      banner: '',
+      body: '',
+      audio: '',
+      intro: '',
       introDuration: 0,
       audioDuration: 0,
       order: 1,
       price: undefined,
-      albumId: Number(search.get("albumId")),
+      albumId: Number(search.get('albumId')),
       tags: [],
     },
   });
@@ -61,7 +63,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     startTransition(() => {
       createLecture(values)
         .then(() => {
-          toast.success("Created successfully");
+          toast.success('Created successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -70,7 +72,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   }
 
   const role = (session?.user as User & { role: Role })?.role;
-  if (!hasPermission(role, "albums.lectures", "create")) return null;
+  if (!hasPermission(role, 'albums.lectures', 'create')) return null;
   return (
     <FormDialog
       ref={dialogRef}

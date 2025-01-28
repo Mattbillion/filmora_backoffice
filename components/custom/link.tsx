@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import { ComponentProps } from "react";
-import NextLink from "next/link";
-import { usePathname } from "next/navigation";
+import { ComponentProps } from 'react';
+import NextLink from 'next/link';
+import { usePathname } from 'next/navigation';
 
-import { cn, objToQs, qsToObj } from "@/lib/utils";
-import { useQueryString } from "@/hooks/use-query-string";
+import { useQueryString } from '@/hooks/use-query-string';
+import { cn, objToQs, qsToObj } from '@/lib/utils';
 
 export type LinkProps = ComponentProps<typeof NextLink> & {
   activeClassName?: string;
@@ -30,15 +30,15 @@ export function Link({
     return p === pathname && qsMatch;
   };
 
-  const isNextjsPath = typeof href === "object";
+  const isNextjsPath = typeof href === 'object';
   const locationObj = {
-    pathname: isNextjsPath ? href.pathname! : href.split("?")[0],
+    pathname: isNextjsPath ? href.pathname! : href.split('?')[0],
     qs:
-      isNextjsPath && typeof href.query === "object"
+      isNextjsPath && typeof href.query === 'object'
         ? href.query || {}
         : qsToObj(
-            isNextjsPath ? ((href.query || "") as string) : href.split("?")[1]
-          ),
+          isNextjsPath ? ((href.query || '') as string) : href.split('?')[1],
+        ),
   };
 
   return (
@@ -48,12 +48,12 @@ export function Link({
         locationObj.pathname +
         (Object.values(locationObj.qs)?.length
           ? `?${objToQs({ ...params, ...locationObj.qs })}`
-          : "")
+          : '')
       }
       className={cn(className, {
-        [activeClassName ?? ""]: checkActive(
+        [activeClassName ?? '']: checkActive(
           locationObj.pathname,
-          locationObj.qs
+          locationObj.qs,
         ),
       })}
     />

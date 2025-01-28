@@ -1,7 +1,7 @@
-@import "./partials/code.css";
-@import "./partials/placeholder.css";
-@import "./partials/lists.css";
-@import "./partials/typography.css";
+@import './partials/code.css';
+@import './partials/placeholder.css';
+@import './partials/lists.css';
+@import './partials/typography.css';
 
 :root {
   --mt-font-size-regular: 0.9375rem;

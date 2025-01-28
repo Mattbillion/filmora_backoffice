@@ -1,21 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
-import { useEffect } from "react";
+import { ComponentProps,useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+
 // import { SidebarMenuGroup } from "@/components/sidebar-menu-group";
-import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { NavUser } from '@/components/nav-user';
+import { TeamSwitcher } from '@/components/team-switcher';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
-import { useSession } from "next-auth/react";
-import RevalidateMenu from "./revalidate-menu";
+} from '@/components/ui/sidebar';
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+import RevalidateMenu from './revalidate-menu';
+
+export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   const { data: session, update } = useSession();
 
   useEffect(() => {

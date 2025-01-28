@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   ColumnDef,
-  PaginationState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  PaginationState,
   useReactTable,
-} from "@tanstack/react-table";
-
-import React, { useEffect, useMemo, useState } from "react";
+} from '@tanstack/react-table';
+import { usePathname, useRouter } from 'next/navigation';
 
 import {
   Table,
@@ -19,14 +19,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Input } from "./input";
-import { ScrollArea, ScrollBar } from "./scroll-area";
-import { DataTablePagination } from "./data-table-pagination";
-import DataTableInfinte from "./data-table-infinite";
-import { usePathname, useRouter } from "next/navigation";
-import { objToQs } from "@/lib/utils";
-import { useQueryString } from "@/hooks/use-query-string";
+} from '@/components/ui/table';
+import { useQueryString } from '@/hooks/use-query-string';
+import { objToQs } from '@/lib/utils';
+
+import DataTableInfinte from './data-table-infinite';
+import { DataTablePagination } from './data-table-pagination';
+import { Input } from './input';
+import { ScrollArea, ScrollBar } from './scroll-area';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
       pageIndex,
       pageSize,
     }),
-    [pageIndex, pageSize]
+    [pageIndex, pageSize],
   );
   const table = useReactTable({
     data,
@@ -86,7 +86,7 @@ export function DataTable<TData, TValue>({
   });
   const column = useMemo(
     () => (searchKey ? table.getColumn(String(searchKey)) : undefined),
-    [table, searchKey]
+    [table, searchKey],
   );
 
   useEffect(() => {
@@ -94,7 +94,7 @@ export function DataTable<TData, TValue>({
       router.replace(
         pathname +
           `?${objToQs({ ...qsObj, page: pageIndex + 1, limit: pageSize })}`,
-        { scroll: true }
+        { scroll: true },
       );
     }
   }, [pageIndex, pageSize]);
@@ -110,7 +110,7 @@ export function DataTable<TData, TValue>({
           className="w-full md:max-w-sm"
         />
       )}
-      <ScrollArea className="rounded-md border h-[calc(100vh-268px)]">
+      <ScrollArea className="h-[calc(100vh-268px)] rounded-md border">
         <Table className="relative">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -121,9 +121,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   );
                 })}
@@ -135,13 +135,13 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}
@@ -163,7 +163,7 @@ export function DataTable<TData, TValue>({
       </ScrollArea>
 
       {!hidePagination && (
-        <div className="flex gap-2 md:flex-row flex-col-reverse items-center justify-between">
+        <div className="flex flex-col-reverse items-center justify-between gap-2 md:flex-row">
           {!infinite && <DataTablePagination table={table} />}
           {infinite && (
             <DataTableInfinte

@@ -4,10 +4,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "*.xoox.mn",
-        port: "",
-        pathname: "/**",
+        protocol: 'https',
+        hostname: '*.xoox.mn',
+        port: '',
+        pathname: '/**',
       },
     ],
   },
@@ -30,7 +30,7 @@ const nextConfig = {
         permanent: false,
         destination: '/users/:id?purchaseType=0',
       },
-    ]
+    ];
   },
 };
 

@@ -1,29 +1,33 @@
-import { xooxFetch } from "@/lib/fetch";
-import { UserItemType } from "./schema";
-import { INITIAL_PAGINATION, QueryParams } from "@/lib/utils";
-import { ID, PaginatedResType } from "@/lib/fetch/types";
+import { xooxFetch } from '@/lib/fetch';
+import { ID, PaginatedResType } from '@/lib/fetch/types';
+import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
+
+import { UserItemType } from './schema';
 
 export const getUsers = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<PaginatedResType<UserItemType[]>>("/users", {
-      method: "GET",
-      searchParams,
-      cache: "no-store"
-    });
+    const { body, error } = await xooxFetch<PaginatedResType<UserItemType[]>>(
+      '/users',
+      {
+        method: 'GET',
+        searchParams,
+        cache: 'no-store',
+      },
+    );
 
     if (error) throw new Error(error);
 
     return { data: body };
   } catch (error) {
-    console.error("Error fetching users:", error);
+    console.error('Error fetching users:', error);
     return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
   }
 };
 
 export const lockUser = async (id: ID) => {
   const { body, error } = await xooxFetch(`/users/${id}/lock`, {
-    method: "POST",
-    cache: "no-store"
+    method: 'POST',
+    cache: 'no-store',
   });
 
   if (error) throw new Error(error);
@@ -33,11 +37,11 @@ export const lockUser = async (id: ID) => {
 
 export const unlockUser = async (id: ID) => {
   const { body, error } = await xooxFetch(`/users/${id}/unlock`, {
-    method: "POST",
-    cache: "no-store"
+    method: 'POST',
+    cache: 'no-store',
   });
 
   if (error) throw new Error(error);
-  
+
   return { data: body };
 };

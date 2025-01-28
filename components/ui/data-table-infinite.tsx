@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 const DataTableInfinte = ({
   pageNumber,
@@ -18,7 +18,7 @@ const DataTableInfinte = ({
   return (
     <div className="flex items-center justify-start">
       {/* <div className="">{pageNumber}</div> */}
-      <div className="space-x-2 flex items-center w justify-between">
+      <div className="w flex items-center justify-between space-x-2">
         <Button
           variant="outline"
           size="sm"

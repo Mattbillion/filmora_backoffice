@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
-import { Button } from "@/components/ui/button";
+'use client';
+import { forwardRef, ReactNode, useImperativeHandle, useState } from 'react';
+
+import { LoaderIcon } from '@/components/custom/icons';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -9,11 +12,9 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { LoaderIcon } from "@/components/custom/icons";
-import { cn } from "@/lib/utils";
-import { forwardRef, ReactNode, useImperativeHandle, useState } from "react";
+} from '@/components/ui/dialog';
+import { Form } from '@/components/ui/form';
+import { cn } from '@/lib/utils';
 
 interface FormDialogProps {
   children: ReactNode;
@@ -45,7 +46,7 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
       title,
       onSubmit,
       form,
-      submitText = "Submit",
+      submitText = 'Submit',
       description,
       loading,
       disabled,
@@ -57,7 +58,7 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
       submitClassName,
       onOpenChange,
     },
-    ref
+    ref,
   ) => {
     const [open, setOpen] = useState(false);
 
@@ -77,7 +78,7 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
         {!!trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
         <DialogContent
           aria-describedby={undefined}
-          className={cn("max-w-[650px]", dialogContentClassName)}
+          className={cn('max-w-[650px]', dialogContentClassName)}
         >
           {(title || description) && (
             <DialogHeader>
@@ -90,13 +91,13 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
             <form onSubmit={form.handleSubmit(onSubmit, console.error)}>
               <div
                 className={cn(
-                  "space-y-4 max-h-[calc(100vh-200px)] overflow-y-scroll px-2 py-1",
-                  containerClassName
+                  'max-h-[calc(100vh-200px)] space-y-4 overflow-y-scroll px-2 py-1',
+                  containerClassName,
                 )}
               >
                 {children}
               </div>
-              <DialogFooter className={cn("pt-4 pr-2", footerClassName)}>
+              <DialogFooter className={cn('pr-2 pt-4', footerClassName)}>
                 {footerActions}
                 <Button
                   type="submit"
@@ -112,9 +113,9 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
         </DialogContent>
       </Dialog>
     );
-  }
+  },
 );
 
-FormDialog.displayName = "DeleteDialog";
+FormDialog.displayName = 'DeleteDialog';
 
 export default FormDialog;

@@ -1,31 +1,31 @@
-"use client";
+'use client';
 
-import { ReactNode, useRef, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { ReactNode, useRef, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useParams , useRouter } from 'next/navigation';
+import { toast } from 'sonner';
+import { z } from 'zod';
+
+import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import FormDialog, { FormDialogRef } from "@/components/custom/form-dialog";
+} from '@/components/ui/select';
+import { ID } from '@/lib/fetch/types';
 
-import { z } from "zod";
-import { useConnectProducts } from "./context";
-import { useParams } from "next/navigation";
-import { ID } from "@/lib/fetch/types";
-import { addLecture } from "./actions";
-import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { addLecture } from './actions';
+import { useConnectProducts } from './context';
 
 const lectureSchema = z.object({
   lectureId: z.string(),
@@ -45,16 +45,16 @@ export function LectureDialog({ children }: { children: ReactNode }) {
   const form = useForm<z.infer<typeof lectureSchema>>({
     resolver: zodResolver(lectureSchema),
     defaultValues: {
-      lectureId: "",
+      lectureId: '',
     },
   });
-  const albumId = form.watch("albumId");
+  const albumId = form.watch('albumId');
 
   function onSubmit(values: LectureBodyType) {
     startTransition(() => {
       addLecture(params.id as unknown as ID, values.lectureId)
         .then(() => {
-          toast.success("Connected successfully");
+          toast.success('Connected successfully');
           dialogRef?.current?.close();
           form.reset();
           router.refresh();
@@ -71,7 +71,7 @@ export function LectureDialog({ children }: { children: ReactNode }) {
       loading={isPending}
       title={
         <>
-          Connect lecture to{" "}
+          Connect lecture to{' '}
           <b>{users[params.id as unknown as ID]?.nickname}</b>
         </>
       }

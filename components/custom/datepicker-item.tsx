@@ -1,40 +1,40 @@
-"use client";
+'use client';
 
-import { CalendarIcon } from "lucide-react";
-import { ControllerRenderProps } from "react-hook-form";
+import { ControllerRenderProps } from 'react-hook-form';
+import dayjs from 'dayjs';
+import { CalendarIcon } from 'lucide-react';
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   FormControl,
   FormDescription,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
-import dayjs from "dayjs";
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
 
 export default function DatePickerItem({
   field,
   label,
   description,
-  disableBy = "past",
+  disableBy = 'past',
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
   label?: string;
   description?: string;
-  disableBy?: "feature" | "past" | "none";
+  disableBy?: 'feature' | 'past' | 'none';
 }) {
   const calcDisable = (date: Date) => {
-    if (disableBy === "past") return date < new Date();
-    if (disableBy === "feature") return date > new Date();
+    if (disableBy === 'past') return date < new Date();
+    if (disableBy === 'feature') return date > new Date();
     return false;
   };
   return (
@@ -44,14 +44,14 @@ export default function DatePickerItem({
         <PopoverTrigger asChild>
           <FormControl>
             <Button
-              variant={"outline"}
+              variant={'outline'}
               className={cn(
-                "w-[240px] pl-3 text-left font-normal",
-                !field.value && "text-muted-foreground"
+                'w-[240px] pl-3 text-left font-normal',
+                !field.value && 'text-muted-foreground',
               )}
             >
               {field.value ? (
-                dayjs(field.value).format("YYYY-MM-DD")
+                dayjs(field.value).format('YYYY-MM-DD')
               ) : (
                 <span>Pick a date</span>
               )}

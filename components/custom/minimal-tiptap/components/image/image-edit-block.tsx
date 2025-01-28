@@ -1,10 +1,11 @@
-import * as React from "react";
-import type { Editor } from "@tiptap/react";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
-import { uploadImage } from "@/lib/functions";
+import * as React from 'react';
+import type { Editor } from '@tiptap/react';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { uploadImage } from '@/lib/functions';
+import { cn } from '@/lib/utils';
 
 interface ImageEditBlockProps extends React.HTMLAttributes<HTMLDivElement> {
   editor: Editor;
@@ -17,10 +18,10 @@ const ImageEditBlock = ({
   close,
   ...props
 }: ImageEditBlockProps) => {
-  const [error, setError] = React.useState("");
+  const [error, setError] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
-  const [link, setLink] = React.useState<string>("");
+  const [link, setLink] = React.useState<string>('');
 
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -40,12 +41,12 @@ const ImageEditBlock = ({
 
       setLoading(true);
       const formData = new FormData();
-      formData.append("file", file);
-      formData.append("prefix", "image_block");
+      formData.append('file', file);
+      formData.append('prefix', 'image_block');
 
-      if (file?.size >= 5000000) throw new Error("Зургийн хэмжээ том байна.");
+      if (file?.size >= 5000000) throw new Error('Зургийн хэмжээ том байна.');
 
-      const { data } = (await uploadImage(formData, "large"))!;
+      const { data } = (await uploadImage(formData, 'large'))!;
 
       editor.chain().focus().setImage({ src: data.url }).run();
 
@@ -66,7 +67,7 @@ const ImageEditBlock = ({
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className={cn("space-y-6", className)} {...props}>
+      <div className={cn('space-y-6', className)} {...props}>
         <div className="space-y-1">
           <Label>Attach an image link</Label>
           <div className="flex">
@@ -84,10 +85,10 @@ const ImageEditBlock = ({
           </div>
         </div>
         <Button className="w-full" onClick={handleClick} disabled={loading}>
-          {loading ? "Uploading..." : "Upload from your computer"}
+          {loading ? 'Uploading...' : 'Upload from your computer'}
         </Button>
         {!!error && (
-          <p className="text-[0.8rem] font-medium text-destructive !mt-1">
+          <p className="!mt-1 text-[0.8rem] font-medium text-destructive">
             {error}
           </p>
         )}

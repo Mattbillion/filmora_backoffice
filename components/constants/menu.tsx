@@ -1,77 +1,77 @@
 import {
+  Archive,
+  BookHeart,
+  Disc3,
+  FolderClock,
   LayoutTemplate,
+  type LucideIcon,
+  Moon,
   Newspaper,
+  Podcast,
+  SquareLibrary,
+  SquarePlay,
+  SquareUserRound,
   TableOfContents,
   Tag,
   Trophy,
-  Disc3,
-  BookHeart,
-  Podcast,
-  SquarePlay,
-  Moon,
-  Archive,
-  SquareUserRound,
   Users,
-  SquareLibrary,
-  FolderClock,
-  type LucideIcon,
-} from "lucide-react";
+} from 'lucide-react';
 
 export type SubMenuItemType = {
   title: string;
   url: string;
   icon: LucideIcon;
   subRoutes?: boolean;
-  children?: Omit<SubMenuItemType, "children">[];
+  children?: Omit<SubMenuItemType, 'children'>[];
 };
 
 export const navMain = [
   {
-    title: "Trainings",
-    url: "/trainings",
+    title: 'Trainings',
+    url: '/trainings',
     icon: Trophy,
     subRoutes: true,
   },
   {
-    title: "Albums",
-    url: "/albums",
+    title: 'Albums',
+    url: '/albums',
     icon: Disc3,
     subRoutes: true,
   },
   {
-    title: "Moods",
-    url: "/moods",
+    title: 'Moods',
+    url: '/moods',
     icon: Moon,
     subRoutes: true,
   },
   {
-    title: "Books",
-    url: "/books",
+    title: 'Books',
+    url: '/books',
     icon: BookHeart,
   },
   {
-    title: "Article",
-    url: "/article",
+    title: 'Article',
+    url: '/article',
     icon: Newspaper,
   },
   {
-    title: "Podcasts",
-    url: "/podcasts",
+    title: 'Podcasts',
+    url: '/podcasts',
     icon: Podcast,
   },
   {
-    title: "Videos",
-    url: "/videos",
+    title: 'Videos',
+    url: '/videos',
     icon: SquarePlay,
   },
   {
-    title: "Banners",
-    url: "/banners",
+    title: 'Banners',
+    url: '/banners',
     icon: LayoutTemplate,
   },
   {
-    title: "Magazine",
-    url: "/magazines",
+    title: 'Magazine',
+    url: '/magazines',
     icon: SquareLibrary,
     subRoutes: true,
     children: [
@@ -80,8 +80,8 @@ export const navMain = [
       //   url: "/magazines/articles",
       // },
       {
-        title: "Category",
-        url: "/magazines/category",
+        title: 'Category',
+        url: '/magazines/category',
       },
     ],
   },
@@ -89,34 +89,34 @@ export const navMain = [
 
 export const navAdmin = [
   {
-    title: "Tags",
-    url: "/tags",
+    title: 'Tags',
+    url: '/tags',
     icon: Tag,
   },
   {
-    title: "FAQs",
-    url: "/faqs",
+    title: 'FAQs',
+    url: '/faqs',
     icon: TableOfContents,
   },
   {
-    title: "Employees",
-    url: "/employees",
+    title: 'Employees',
+    url: '/employees',
     icon: SquareUserRound,
   },
   {
-    title: "Users",
-    url: "/users",
+    title: 'Users',
+    url: '/users',
     icon: Users,
     subRoutes: true,
   },
   {
-    title: "Orders",
-    url: "/orders",
+    title: 'Orders',
+    url: '/orders',
     icon: Archive,
   },
   {
-    title: "Activity logs",
-    url: "/logs",
+    title: 'Activity logs',
+    url: '/logs',
     icon: FolderClock,
   },
 ] as const;

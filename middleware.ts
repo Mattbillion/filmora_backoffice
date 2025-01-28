@@ -1,6 +1,7 @@
-import NextAuth from "next-auth";
-import { authConfig } from "./app/(auth)/auth.config";
-import { NextRequest } from "next/server";
+import { NextRequest } from 'next/server';
+import NextAuth from 'next-auth';
+
+import { authConfig } from './app/(auth)/auth.config';
 
 const { auth } = NextAuth(authConfig);
 export default auth(async function middleware(req: NextRequest) {

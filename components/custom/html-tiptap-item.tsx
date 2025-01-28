@@ -1,14 +1,16 @@
-"use client";
+'use client';
+
+import { ControllerRenderProps, useFormContext } from 'react-hook-form';
 
 import {
   FormControl,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { ControllerRenderProps, useFormContext } from "react-hook-form";
-import { MinimalTiptapEditor } from "./minimal-tiptap";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/form';
+import { cn } from '@/lib/utils';
+
+import { MinimalTiptapEditor } from './minimal-tiptap';
 
 export default function HtmlTipTapItem({
   field,
@@ -25,8 +27,8 @@ export default function HtmlTipTapItem({
         <MinimalTiptapEditor
           {...field}
           throttleDelay={0}
-          className={cn("w-full", {
-            "border-destructive focus-within:border-destructive":
+          className={cn('w-full', {
+            'border-destructive focus-within:border-destructive':
               formState.errors[field.name],
           })}
           output="html"

@@ -1,23 +1,25 @@
-"use client";
+'use client';
+
+import { useState } from 'react';
+import { ControllerRenderProps, useFormContext } from 'react-hook-form';
 
 import {
   FormControl,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { ControllerRenderProps, useFormContext } from "react-hook-form";
-import { Input } from "../ui/input";
-import { useState } from "react";
-import { uploadAudio } from "@/lib/functions";
-import { extractActionError, isPath, isUri } from "@/lib/utils";
+} from '@/components/ui/form';
+import { uploadAudio } from '@/lib/functions';
+import { extractActionError, isPath, isUri } from '@/lib/utils';
+
+import { Input } from '../ui/input';
 
 export default function UploadAudioItem({
   field,
   prefix,
   label,
   maxSize = 500000000,
-  durationFieldName = "audioDuration",
+  durationFieldName = 'audioDuration',
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
@@ -42,10 +44,10 @@ export default function UploadAudioItem({
             <audio
               src={
                 (process.env.NEXT_PUBLIC_XOOX_DOMAIN ??
-                  "http://3.95.231.68:3000/api/v1") + field.value
+                  'http://3.95.231.68:3000/api/v1') + field.value
               }
               controls
-              className="w-full h-11"
+              className="h-11 w-full"
               controlsList="nodownload noremoteplayback noplaybackrate"
             />
           )}
@@ -61,15 +63,15 @@ export default function UploadAudioItem({
                 if (file?.size >= maxSize)
                   return setError(
                     field.name,
-                    { message: "Аудио хэмжээ том байна." },
-                    { shouldFocus: true }
+                    { message: 'Аудио хэмжээ том байна.' },
+                    { shouldFocus: true },
                   );
 
                 setLoading(true);
 
                 const formData = new FormData();
-                formData.append("file", file);
-                formData.append("prefix", prefix);
+                formData.append('file', file);
+                formData.append('prefix', prefix);
 
                 // const uploadURL = `http://localhost:3001/uploads/audio`;
 

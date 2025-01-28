@@ -1,15 +1,17 @@
-import { Heading } from "@/components/custom/heading";
-import { DataTable } from "@/components/ui/data-table";
-import { Separator } from "@/components/ui/separator";
-import { getLectures } from "./actions";
-import { lectureColumns } from "./columns";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { CreateDialog } from "./components";
-import { getAlbum } from "../actions";
-import { Suspense } from "react";
+import { Suspense } from 'react';
+import { Plus } from 'lucide-react';
 
-export const dynamic = "force-dynamic";
+import { Heading } from '@/components/custom/heading';
+import { Button } from '@/components/ui/button';
+import { DataTable } from '@/components/ui/data-table';
+import { Separator } from '@/components/ui/separator';
+
+import { getAlbum } from '../actions';
+import { getLectures } from './actions';
+import { lectureColumns } from './columns';
+import { CreateDialog } from './components';
+
+export const dynamic = 'force-dynamic';
 
 export default async function Lectures(props: {
   searchParams?: Promise<{ albumId: string }>;
@@ -25,7 +27,7 @@ export default async function Lectures(props: {
       <div className="flex items-start justify-between">
         <Heading
           title={`Lectures (${data?.pagination?.total ?? data?.data?.length})`}
-          description={`Album: ${albumData?.data?.title ?? "Unknown album"}`}
+          description={`Album: ${albumData?.data?.title ?? 'Unknown album'}`}
         />
         <CreateDialog>
           <Button className="text-xs md:text-sm">

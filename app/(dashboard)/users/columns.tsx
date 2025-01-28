@@ -1,10 +1,16 @@
-"use client";
+'use client';
 
-import { CellContext, ColumnDef } from "@tanstack/react-table";
-import { UserItemType } from "./schema";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Lock, Unlock, Loader2 } from "lucide-react";
+import { useState } from 'react';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
+import { Loader2,Lock, Unlock } from 'lucide-react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,17 +21,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { apiImage, isPath, isUri } from "@/lib/utils";
-import Image from "next/image";
-import { lockUser, unlockUser } from "./actions";
-import { toast } from "sonner";
-import dayjs from "dayjs";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { hasPagePermission, hasPermission, Role } from "@/lib/permission";
-import { User } from "next-auth";
-import { useSession } from "next-auth/react";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { hasPagePermission, hasPermission, Role } from '@/lib/permission';
+import { apiImage, isPath, isUri } from '@/lib/utils';
+
+import { lockUser, unlockUser } from './actions';
+import { UserItemType } from './schema';
 
 const Action = ({ row }: CellContext<UserItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
@@ -35,32 +37,32 @@ const Action = ({ row }: CellContext<UserItemType, unknown>) => {
 
   const dialogContent = {
     locked: {
-      btnText: "Unlock",
+      btnText: 'Unlock',
       description: `Unlock current user "${row.original.nickname}"`,
     },
     active: {
-      btnText: "Lock",
+      btnText: 'Lock',
       description: `Lock current user "${row.original.nickname}"`,
     },
-  }[row.original.status === 2 ? "locked" : "active"];
+  }[row.original.status === 2 ? 'locked' : 'active'];
 
   const role = (session?.user as User & { role: Role })?.role;
 
   return (
-    <div className="flex gap-4 justify-end me-2">
-      {hasPagePermission(role, "users.detail") && (
+    <div className="me-2 flex justify-end gap-4">
+      {hasPagePermission(role, 'users.detail') && (
         <Button
-          size={"cxs"}
+          size={'cxs'}
           onClick={() => router.push(`/users/${row.original.id}`)}
         >
           Detail
         </Button>
       )}
-      {hasPermission(role, "users.toggleLock", "create") &&
+      {hasPermission(role, 'users.toggleLock', 'create') &&
         (row.original.status !== 3 ? (
           <AlertDialog>
             <AlertDialogTrigger asChild>
-              <Button size={"cxs"}>
+              <Button size={'cxs'}>
                 {row.original.status === 2 ? (
                   <Unlock className="h-4 w-4" />
                 ) : (
@@ -89,7 +91,7 @@ const Action = ({ row }: CellContext<UserItemType, unknown>) => {
                       lockAction(row.original.id)
                         .then((c) => {
                           toast.success(
-                            c.data.message || c.data.error || c.data.data
+                            c.data.message || c.data.error || c.data.data,
                           );
                           router.refresh();
                         })
@@ -106,7 +108,7 @@ const Action = ({ row }: CellContext<UserItemType, unknown>) => {
             </AlertDialogContent>
           </AlertDialog>
         ) : (
-          <Button size={"cxs"} disabled>
+          <Button size={'cxs'} disabled>
             Deleted
           </Button>
         ))}
@@ -116,8 +118,8 @@ const Action = ({ row }: CellContext<UserItemType, unknown>) => {
 
 export const userColumns: ColumnDef<UserItemType>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: 'id',
+    header: 'ID',
     cell: ({ row }) => {
       return (
         <Link className="px-1 py-2" href={`/users/${row.original.id}`}>
@@ -127,8 +129,8 @@ export const userColumns: ColumnDef<UserItemType>[] = [
     },
   },
   {
-    id: "avatar",
-    header: "Avatar",
+    id: 'avatar',
+    header: 'Avatar',
     cell: ({ row }) => {
       const noAvatar =
         !isPath(row.original.avatar) && !isUri(row.original.avatar);
@@ -141,8 +143,8 @@ export const userColumns: ColumnDef<UserItemType>[] = [
           target="__blank"
         >
           <Image
-            src={apiImage(row.original.avatar, "xs")}
-            className="rounded-full aspect-square object-cover"
+            src={apiImage(row.original.avatar, 'xs')}
+            className="aspect-square rounded-full object-cover"
             alt="banner"
             width={32}
             height={32}
@@ -152,29 +154,29 @@ export const userColumns: ColumnDef<UserItemType>[] = [
     },
   },
   {
-    id: "nickname",
-    header: "Nick name",
+    id: 'nickname',
+    header: 'Nick name',
     cell: ({ row }) => (
       <Link href={`/users/${row.original.id}`}>{row.original.nickname}</Link>
     ),
   },
   {
-    id: "email",
-    header: "Email",
+    id: 'email',
+    header: 'Email',
     cell: ({ row }) => row.original.email,
   },
   {
-    id: "date",
-    header: "Created At",
-    cell: ({ row }) => dayjs(row.original.created_at).format("YYYY-MM-DD"),
+    id: 'date',
+    header: 'Created At',
+    cell: ({ row }) => dayjs(row.original.created_at).format('YYYY-MM-DD'),
   },
   {
-    id: "creator",
-    header: "Created By",
+    id: 'creator',
+    header: 'Created By',
     cell: ({ row }) => row.original.created_by,
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: Action,
   },
 ];

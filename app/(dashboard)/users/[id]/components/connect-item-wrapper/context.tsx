@@ -1,16 +1,18 @@
-"use client";
+'use client';
 
 import React, {
   createContext,
+  ReactNode,
   useContext,
   useState,
-  ReactNode,
   useTransition,
-} from "react";
-import { ConnectProductType, UserType } from "./schema";
-import { getConnectProducts, getUser } from "./actions";
-import { ID } from "@/lib/fetch/types";
-import { toast } from "sonner";
+} from 'react';
+import { toast } from 'sonner';
+
+import { ID } from '@/lib/fetch/types';
+
+import { getConnectProducts, getUser } from './actions';
+import { ConnectProductType, UserType } from './schema';
 
 type ProductAPIParams = Parameters<typeof getConnectProducts>[0];
 
@@ -20,13 +22,13 @@ const ConnectProductsContext = createContext<{
   loading: boolean;
   getProducts: (params: ProductAPIParams) => void;
   getUser: (type: ID) => void;
-}>({
-  users: {},
-  products: {},
-  loading: true,
-  getProducts: () => false,
-  getUser: () => false,
-});
+    }>({
+      users: {},
+      products: {},
+      loading: true,
+      getProducts: () => false,
+      getUser: () => false,
+    });
 
 export const ConnectProductsProvider = ({
   children,

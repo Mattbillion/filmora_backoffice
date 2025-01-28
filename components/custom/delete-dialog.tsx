@@ -1,6 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState, useImperativeHandle, forwardRef } from "react";
+import React, { forwardRef,useImperativeHandle, useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,12 +15,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { User } from "next-auth";
-import { hasPermission, Role, Subject } from "@/lib/permission";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { hasPermission, Role, Subject } from '@/lib/permission';
 
 export interface DeleteDialogRef {
   close: () => void;
@@ -46,7 +47,7 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
       loading,
       permissionSubject,
     },
-    ref
+    ref,
   ) => {
     const { data: session } = useSession();
     const [open, setOpen] = useState(false);
@@ -57,36 +58,36 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
     }));
 
     const role = (session?.user as User & { role: Role })?.role;
-    if (!hasPermission(role, permissionSubject, "delete")) return null;
+    if (!hasPermission(role, permissionSubject, 'delete')) return null;
     return (
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {title || "Are you absolutely sure?"}
+              {title || 'Are you absolutely sure?'}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {description || "This action cannot be undone."}
+              {description || 'This action cannot be undone.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
               <Button variant="outline" disabled={loading}>
-                {cancelText || "Cancel"}
+                {cancelText || 'Cancel'}
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button onClick={action} disabled={loading}>
                 {loading && <Loader2 size={10} className="animate-spin" />}
-                {confirmText || "Continue"}
+                {confirmText || 'Continue'}
               </Button>
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     );
-  }
+  },
 );
 
-DeleteDialog.displayName = "DeleteDialog";
+DeleteDialog.displayName = 'DeleteDialog';

@@ -1,15 +1,16 @@
+import { z } from 'zod';
+
 import { TagItemType } from '@/features/tags';
 import { BaseType, ID, PrettyType } from '@/lib/fetch/types';
-import {z} from 'zod';
 
 export const albumSchema = z.object({
   title: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: 'Name must be at least 2 characters.',
   }),
   body: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: 'Name must be at least 2 characters.',
   }),
-  status: z.enum(["0", "1", "2"]),
+  status: z.enum(['0', '1', '2']),
   banner: z.string(),
   intro: z.string().optional(),
   introDuration: z.number().optional(),
@@ -22,11 +23,8 @@ export type AlbumBodyType = z.infer<typeof albumSchema>;
 
 export type AlbumItemType = PrettyType<
   BaseType<
-    Omit<
-      AlbumBodyType, 
-     "tags" | "status" | "intro" | "introDuration"
-    > & { 
-      tags: Pick<TagItemType, "id" | "name">[];
+    Omit<AlbumBodyType, 'tags' | 'status' | 'intro' | 'introDuration'> & {
+      tags: Pick<TagItemType, 'id' | 'name'>[];
       status: number;
       audio: string;
       audio_duration: number | null;
@@ -36,4 +34,4 @@ export type AlbumItemType = PrettyType<
   >
 >;
 
-export const RVK_ALBUM = "albums";
+export const RVK_ALBUM = 'albums';

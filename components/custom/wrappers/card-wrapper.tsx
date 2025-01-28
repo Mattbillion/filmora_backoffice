@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -9,9 +9,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Form } from "@/components/ui/form";
-import { LoaderIcon } from "../icons";
+} from '@/components/ui/card';
+import { Form } from '@/components/ui/form';
+
+import { LoaderIcon } from '../icons';
 
 interface CardWrapperProps {
   children: React.ReactNode;

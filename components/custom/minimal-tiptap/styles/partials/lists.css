@@ -42,7 +42,10 @@
   @apply flex flex-row items-start;
 }
 
-.minimal-tiptap-editor .ProseMirror li[data-type='taskItem'] .taskItem-checkbox-container {
+.minimal-tiptap-editor
+  .ProseMirror
+  li[data-type='taskItem']
+  .taskItem-checkbox-container {
   @apply relative pr-2;
 }
 
@@ -76,7 +79,15 @@
   @apply min-w-0 flex-1;
 }
 
-.minimal-tiptap-editor .ProseMirror li[data-checked='true'] .taskItem-content > :not([data-type='taskList']),
-.minimal-tiptap-editor .ProseMirror li[data-checked='true'] .taskItem-content .taskItem-checkbox {
+.minimal-tiptap-editor
+  .ProseMirror
+  li[data-checked='true']
+  .taskItem-content
+  > :not([data-type='taskList']),
+.minimal-tiptap-editor
+  .ProseMirror
+  li[data-checked='true']
+  .taskItem-content
+  .taskItem-checkbox {
   @apply opacity-75;
 }

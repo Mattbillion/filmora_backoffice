@@ -1,6 +1,9 @@
-import { ChevronsUpDown, LogOut, Moon, Sun } from "lucide-react";
+import { ChevronsUpDown, LogOut, Moon, Sun } from 'lucide-react';
+import { Session } from 'next-auth';
+import { signOut } from 'next-auth/react';
+import { useTheme } from 'next-themes';
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,17 +12,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu';
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
-import { Session } from "next-auth";
-import { signOut } from "next-auth/react";
-import { useTheme } from "next-themes";
-import { apiImage } from "@/lib/utils";
+} from '@/components/ui/sidebar';
+import { apiImage } from '@/lib/utils';
 
 export function NavUser({ session }: { session: Session }) {
   const { isMobile } = useSidebar();
@@ -36,8 +36,8 @@ export function NavUser({ session }: { session: Session }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={apiImage(session?.user?.image ?? "", "xs")}
-                  alt={session?.user?.name ?? ""}
+                  src={apiImage(session?.user?.image ?? '', 'xs')}
+                  alt={session?.user?.name ?? ''}
                 />
                 <AvatarFallback className="rounded-lg">
                   {session?.user?.email?.slice(0, 2)}
@@ -45,10 +45,10 @@ export function NavUser({ session }: { session: Session }) {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {session?.user?.name ?? ""}
+                  {session?.user?.name ?? ''}
                 </span>
                 <span className="truncate text-xs">
-                  {session?.user?.email ?? ""}
+                  {session?.user?.email ?? ''}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -56,7 +56,7 @@ export function NavUser({ session }: { session: Session }) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "right"}
+            side={isMobile ? 'bottom' : 'right'}
             align="end"
             sideOffset={4}
           >
@@ -64,20 +64,20 @@ export function NavUser({ session }: { session: Session }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={session?.user?.image ?? ""}
-                    alt={session?.user?.name ?? ""}
+                    src={session?.user?.image ?? ''}
+                    alt={session?.user?.name ?? ''}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {" "}
+                    {' '}
                     {session?.user?.email?.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {session?.user?.name ?? ""}
+                    {session?.user?.name ?? ''}
                   </span>
                   <span className="truncate text-xs">
-                    {session?.user?.email ?? ""}
+                    {session?.user?.email ?? ''}
                   </span>
                 </div>
               </div>
@@ -88,18 +88,18 @@ export function NavUser({ session }: { session: Session }) {
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => {
-                  setTheme(theme === "dark" ? "light" : "dark");
+                  setTheme(theme === 'dark' ? 'light' : 'dark');
                 }}
               >
-                {theme === "dark" ? <Moon /> : <Sun />}
-                {` ${theme === "light" ? "Dark" : "Light"} mode`}
+                {theme === 'dark' ? <Moon /> : <Sun />}
+                {` ${theme === 'light' ? 'Dark' : 'Light'} mode`}
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
 
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => signOut({ redirectTo: "/login" })}
+              onClick={() => signOut({ redirectTo: '/login' })}
             >
               <LogOut />
               Log out

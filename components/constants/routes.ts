@@ -1,8 +1,8 @@
-export const AUTH_ROUTES = ["/login", "/forgot"];
+export const AUTH_ROUTES = ['/login', '/forgot'];
 
 export const PRIVATE_ROUTES = [
-  "/dashboard/:path*",
-  "/dashboard",
+  '/dashboard/:path*',
+  '/dashboard',
   // "/users",
   // "/users/:path*",
   // "/reporting",
@@ -16,8 +16,8 @@ export const PRIVATE_ROUTES = [
   // "/referral-partners/",
   // "/referral-partners/:path*",
   // "/device-log",
-  "/article",
-  "/banner",
-  "/faq",
-  "/tag",
+  '/article',
+  '/banner',
+  '/faq',
+  '/tag',
 ];

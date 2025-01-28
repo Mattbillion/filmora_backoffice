@@ -1,14 +1,15 @@
-"use client";
+'use client';
 
 import React, {
   createContext,
-  useContext,
-  useState,
   ReactNode,
+  useContext,
   useEffect,
-} from "react";
-import { getTags } from "./actions";
-import { TagItemType } from "./schema";
+  useState,
+} from 'react';
+
+import { getTags } from './actions';
+import { TagItemType } from './schema';
 
 type TagsContextType = {
   tags: TagItemType[];
@@ -31,7 +32,7 @@ export const TagsProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <TagsContext.Provider value={{ tags, loading }}>
-      {loading ? "Loading..." : children}
+      {loading ? 'Loading...' : children}
     </TagsContext.Provider>
   );
 };

@@ -1,31 +1,32 @@
-"use client";
+'use client';
 
-import { ReactNode, useRef, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { ReactNode, useRef, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
+
+import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { toast } from "sonner";
-import { createTag, TagBodyType, tagSchema } from "@/features/tags";
-import FormDialog, { FormDialogRef } from "@/components/custom/form-dialog";
-import UploadImageItem from "@/components/custom/upload-image-item";
-import HtmlTipTapItem from "@/components/custom/html-tiptap-item";
-import { hasPermission, Role } from "@/lib/permission";
-import { User } from "next-auth";
-import { useSession } from "next-auth/react";
+} from '@/components/ui/select';
+import { createTag, TagBodyType, tagSchema } from '@/features/tags';
+import { hasPermission, Role } from '@/lib/permission';
 
 export function CreateTagDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
@@ -35,10 +36,10 @@ export function CreateTagDialog({ children }: { children: ReactNode }) {
   const form = useForm<TagBodyType>({
     resolver: zodResolver(tagSchema),
     defaultValues: {
-      name: "",
-      status: "1",
-      banner: "",
-      description: "",
+      name: '',
+      status: '1',
+      banner: '',
+      description: '',
     },
   });
 
@@ -46,7 +47,7 @@ export function CreateTagDialog({ children }: { children: ReactNode }) {
     startTransition(() => {
       createTag(values)
         .then(() => {
-          toast.success("Created successfully");
+          toast.success('Created successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -55,7 +56,7 @@ export function CreateTagDialog({ children }: { children: ReactNode }) {
   }
 
   const role = (session?.user as User & { role: Role })?.role;
-  if (!hasPermission(role, "tags", "create")) return null;
+  if (!hasPermission(role, 'tags', 'create')) return null;
   return (
     <FormDialog
       ref={dialogRef}

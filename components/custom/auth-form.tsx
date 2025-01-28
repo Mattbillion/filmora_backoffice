@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Input } from "../ui/input";
-import { Label } from "../ui/label";
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 
 export function AuthForm({
   action,
   children,
-  defaultEmail = "",
+  defaultEmail = '',
 }: {
   action: any;
   children: React.ReactNode;
@@ -16,7 +16,7 @@ export function AuthForm({
       <div className="flex flex-col gap-2">
         <Label
           htmlFor="username"
-          className="text-zinc-600 font-normal dark:text-zinc-400"
+          className="font-normal text-zinc-600 dark:text-zinc-400"
         >
           Username
         </Label>
@@ -24,7 +24,7 @@ export function AuthForm({
         <Input
           id="username"
           name="username"
-          className="bg-muted text-md md:text-sm"
+          className="text-md bg-muted md:text-sm"
           type="text"
           placeholder="Username"
           autoComplete="username"
@@ -34,7 +34,7 @@ export function AuthForm({
 
         <Label
           htmlFor="password"
-          className="text-zinc-600 font-normal dark:text-zinc-400"
+          className="font-normal text-zinc-600 dark:text-zinc-400"
         >
           Password
         </Label>
@@ -42,7 +42,7 @@ export function AuthForm({
         <Input
           id="password"
           name="password"
-          className="bg-muted text-md md:text-sm"
+          className="text-md bg-muted md:text-sm"
           type="password"
           placeholder="Password"
           required

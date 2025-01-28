@@ -1,32 +1,33 @@
-import * as React from "react";
-import type { Editor } from "@tiptap/core";
-import type { Content, UseEditorOptions } from "@tiptap/react";
-import { StarterKit } from "@tiptap/starter-kit";
-import { useEditor } from "@tiptap/react";
-import { Typography } from "@tiptap/extension-typography";
-import { Placeholder } from "@tiptap/extension-placeholder";
-import { TextStyle } from "@tiptap/extension-text-style";
+import * as React from 'react';
+import type { Editor } from '@tiptap/core';
+import { Placeholder } from '@tiptap/extension-placeholder';
 import Text from '@tiptap/extension-text';
 import TextAlign from '@tiptap/extension-text-align';
+import { TextStyle } from '@tiptap/extension-text-style';
+import { Typography } from '@tiptap/extension-typography';
 import Youtube from '@tiptap/extension-youtube';
+import type { Content, UseEditorOptions } from '@tiptap/react';
+import { useEditor } from '@tiptap/react';
+import { StarterKit } from '@tiptap/starter-kit';
+
+import { cn } from '@/lib/utils';
 
 import {
-  Link,
-  Image,
-  HorizontalRule,
   CodeBlockLowlight,
-  Selection,
   Color,
-  UnsetAllMarks,
+  HorizontalRule,
+  Image,
+  Link,
   ResetMarksOnEnter,
-} from "../extensions";
-import { cn } from "@/lib/utils";
-import { getOutput } from "../utils";
-import { useThrottle } from "../hooks/use-throttle";
+  Selection,
+  UnsetAllMarks,
+} from '../extensions';
+import { useThrottle } from '../hooks/use-throttle';
+import { getOutput } from '../utils';
 
 export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   value?: Content;
-  output?: "html" | "json" | "text";
+  output?: 'html' | 'json' | 'text';
   placeholder?: string;
   editorClassName?: string;
   throttleDelay?: number;
@@ -38,13 +39,13 @@ const createExtensions = (placeholder: string) => [
   StarterKit.configure({
     horizontalRule: false,
     codeBlock: false,
-    paragraph: { HTMLAttributes: { class: "text-node" } },
-    heading: { HTMLAttributes: { class: "heading-node" } },
-    blockquote: { HTMLAttributes: { class: "block-node" } },
-    bulletList: { HTMLAttributes: { class: "list-node" } },
-    orderedList: { HTMLAttributes: { class: "list-node" } },
-    code: { HTMLAttributes: { class: "inline", spellcheck: "false" } },
-    dropcursor: { width: 2, class: "ProseMirror-dropcursor border" },
+    paragraph: { HTMLAttributes: { class: 'text-node' } },
+    heading: { HTMLAttributes: { class: 'heading-node' } },
+    blockquote: { HTMLAttributes: { class: 'block-node' } },
+    bulletList: { HTMLAttributes: { class: 'list-node' } },
+    orderedList: { HTMLAttributes: { class: 'list-node' } },
+    code: { HTMLAttributes: { class: 'inline', spellcheck: 'false' } },
+    dropcursor: { width: 2, class: 'ProseMirror-dropcursor border' },
     // image: { inline: true },
   }),
   Link,
@@ -52,7 +53,7 @@ const createExtensions = (placeholder: string) => [
     inline: true,
     allowBase64: false,
     HTMLAttributes: {
-      class: "image-node",
+      class: 'image-node',
     },
   }),
 
@@ -63,7 +64,7 @@ const createExtensions = (placeholder: string) => [
     types: ['heading', 'paragraph'],
   }),
   Youtube.configure({
-    disableKBcontrols: true
+    disableKBcontrols: true,
   }),
   Selection,
   Typography,
@@ -76,8 +77,8 @@ const createExtensions = (placeholder: string) => [
 
 export const useMinimalTiptapEditor = ({
   value,
-  output = "html",
-  placeholder = "",
+  output = 'html',
+  placeholder = '',
   editorClassName,
   throttleDelay = 0,
   onUpdate,
@@ -86,12 +87,12 @@ export const useMinimalTiptapEditor = ({
 }: UseMinimalTiptapEditorProps) => {
   const throttledSetValue = useThrottle(
     (value: Content) => onUpdate?.(value),
-    throttleDelay
+    throttleDelay,
   );
 
   const handleUpdate = React.useCallback(
     (editor: Editor) => throttledSetValue(getOutput(editor, output)),
-    [output, throttledSetValue]
+    [output, throttledSetValue],
   );
 
   const handleCreate = React.useCallback(
@@ -100,22 +101,22 @@ export const useMinimalTiptapEditor = ({
         editor.commands.setContent(value);
       }
     },
-    [value]
+    [value],
   );
 
   const handleBlur = React.useCallback(
     (editor: Editor) => onBlur?.(getOutput(editor, output)),
-    [output, onBlur]
+    [output, onBlur],
   );
 
   const editor = useEditor({
     extensions: createExtensions(placeholder!),
     editorProps: {
       attributes: {
-        autocomplete: "off",
-        autocorrect: "off",
-        autocapitalize: "off",
-        class: cn("focus:outline-none", editorClassName),
+        autocomplete: 'off',
+        autocorrect: 'off',
+        autocapitalize: 'off',
+        class: cn('focus:outline-none', editorClassName),
       },
     },
     onUpdate: ({ editor }) => handleUpdate(editor),

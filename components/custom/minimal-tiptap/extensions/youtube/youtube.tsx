@@ -1,33 +1,35 @@
-import type { Editor } from "@tiptap/react";
-import type { VariantProps } from "class-variance-authority";
-import type { toggleVariants } from "@/components/ui/toggle";
+import { useState } from 'react';
+import type { Editor } from '@tiptap/react';
+import type { VariantProps } from 'class-variance-authority';
+import { Youtube } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogContent,
-  DialogHeader,
   DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import ToolbarButton from "../../components/toolbar-button";
-import { Input } from "@/components/ui/input";
-import { Youtube } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import type { toggleVariants } from '@/components/ui/toggle';
+
+import ToolbarButton from '../../components/toolbar-button';
 
 interface YoutubeDialogProps extends VariantProps<typeof toggleVariants> {
   editor: Editor;
 }
 
 const YoutubeDialog = ({ editor, size, variant }: YoutubeDialogProps) => {
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState('');
 
   return (
     <Dialog>
       <DialogTrigger asChild>
         <ToolbarButton
-          isActive={editor.isActive("youtube")}
+          isActive={editor.isActive('youtube')}
           tooltip="Youtube url"
           aria-label="Youtube url"
           size={size}

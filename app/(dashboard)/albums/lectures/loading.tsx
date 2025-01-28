@@ -1,3 +1,3 @@
 export default function LoadingPage() {
-  return "Loading...";
+  return 'Loading...';
 }

@@ -1,58 +1,60 @@
-import * as React from "react";
-import type { Editor } from "@tiptap/react";
-import type { Level } from "@tiptap/extension-heading";
-import type { FormatAction } from "../../types";
-import type { VariantProps } from "class-variance-authority";
-import type { toggleVariants } from "@/components/ui/toggle";
-import { cn } from "@/lib/utils";
+import * as React from 'react';
 import {
   CaretDownIcon,
-  TextAlignLeftIcon,
   TextAlignCenterIcon,
   TextAlignJustifyIcon,
+  TextAlignLeftIcon,
   TextAlignRightIcon,
-} from "@radix-ui/react-icons";
+} from '@radix-ui/react-icons';
+import type { Level } from '@tiptap/extension-heading';
+import type { Editor } from '@tiptap/react';
+import type { VariantProps } from 'class-variance-authority';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { ToolbarButton } from "../toolbar-button";
-import { ShortcutKey } from "../shortcut-key";
+} from '@/components/ui/dropdown-menu';
+import type { toggleVariants } from '@/components/ui/toggle';
+import { cn } from '@/lib/utils';
 
-type Alignment = "left" | "center" | "right" | "justify";
+import type { FormatAction } from '../../types';
+import { ShortcutKey } from '../shortcut-key';
+import { ToolbarButton } from '../toolbar-button';
+
+type Alignment = 'left' | 'center' | 'right' | 'justify';
 
 interface TextStyle
-  extends Omit<FormatAction, "value" | "action" | "isActive" | "canExecute"> {
+  extends Omit<FormatAction, 'value' | 'action' | 'isActive' | 'canExecute'> {
   align?: Alignment;
   className?: string;
 }
 
 const formatActions: TextStyle[] = [
   {
-    label: "Left",
-    align: "left",
+    label: 'Left',
+    align: 'left',
     icon: <TextAlignLeftIcon />,
-    shortcuts: ["mod", "shift", "L"],
+    shortcuts: ['mod', 'shift', 'L'],
   },
   {
-    label: "Right",
-    align: "right",
+    label: 'Right',
+    align: 'right',
     icon: <TextAlignRightIcon />,
-    shortcuts: ["mod", "shift", "R"],
+    shortcuts: ['mod', 'shift', 'R'],
   },
   {
-    label: "Center",
-    align: "center",
+    label: 'Center',
+    align: 'center',
     icon: <TextAlignCenterIcon />,
-    shortcuts: ["mod", "shift", "E"],
+    shortcuts: ['mod', 'shift', 'E'],
   },
   {
-    label: "Justify",
-    align: "justify",
+    label: 'Justify',
+    align: 'justify',
     icon: <TextAlignJustifyIcon />,
-    shortcuts: ["mod", "shift", "J"],
+    shortcuts: ['mod', 'shift', 'J'],
   },
 ];
 
@@ -68,7 +70,7 @@ export const TextAlignSection: React.FC<TextAlignSectionProps> = React.memo(
         if (align) editor.chain().focus().setTextAlign(align).run();
         else editor.chain().focus().unsetTextAlign().run();
       },
-      [editor]
+      [editor],
     );
 
     const renderMenuItem = React.useCallback(
@@ -76,8 +78,8 @@ export const TextAlignSection: React.FC<TextAlignSectionProps> = React.memo(
         <DropdownMenuItem
           key={label}
           onClick={() => handleStyleChange(align)}
-          className={cn("flex flex-row items-center justify-between gap-4", {
-            "bg-accent": editor.isActive({ textAlign: align }),
+          className={cn('flex flex-row items-center justify-between gap-4', {
+            'bg-accent': editor.isActive({ textAlign: align }),
           })}
           aria-label={label}
         >
@@ -88,19 +90,19 @@ export const TextAlignSection: React.FC<TextAlignSectionProps> = React.memo(
           <ShortcutKey keys={shortcuts} />
         </DropdownMenuItem>
       ),
-      [editor, handleStyleChange]
+      [editor, handleStyleChange],
     );
 
     return (
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <ToolbarButton
-            isActive={editor.isActive("textAlign")}
+            isActive={editor.isActive('textAlign')}
             tooltip="Text align"
             aria-label="Text alignments"
-            pressed={editor.isActive("textAlign")}
+            pressed={editor.isActive('textAlign')}
             className="w-12"
-            disabled={editor.isActive("codeBlock")}
+            disabled={editor.isActive('codeBlock')}
             size={size}
             variant={variant}
           >
@@ -113,9 +115,9 @@ export const TextAlignSection: React.FC<TextAlignSectionProps> = React.memo(
         </DropdownMenuContent>
       </DropdownMenu>
     );
-  }
+  },
 );
 
-TextAlignSection.displayName = "TextAlignSection";
+TextAlignSection.displayName = 'TextAlignSection';
 
 export default TextAlignSection;

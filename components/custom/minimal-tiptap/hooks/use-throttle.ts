@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useRef, useCallback } from "react";
+import { useCallback,useRef } from 'react';
 
 export function useThrottle<T extends (...args: any[]) => void>(
   callback: T,
-  delay: number
+  delay: number,
 ): (...args: Parameters<T>) => void {
   const lastRan = useRef(Date.now());
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -18,15 +18,18 @@ export function useThrottle<T extends (...args: any[]) => void>(
           if (timeoutRef.current) {
             clearTimeout(timeoutRef.current);
           }
-          timeoutRef.current = setTimeout(() => {
-            callback(...args);
-            lastRan.current = Date.now();
-          }, delay - (Date.now() - lastRan.current));
+          timeoutRef.current = setTimeout(
+            () => {
+              callback(...args);
+              lastRan.current = Date.now();
+            },
+            delay - (Date.now() - lastRan.current),
+          );
         }
       };
 
       handler();
     },
-    [callback, delay]
+    [callback, delay],
   );
 }

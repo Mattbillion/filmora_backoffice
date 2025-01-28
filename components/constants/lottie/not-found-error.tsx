@@ -1,8 +1,8 @@
-"use client";
-import dynamic from "next/dynamic";
-import React from "react";
-const Lottie = dynamic(() => import("react-lottie-player"), { ssr: false });
-import NotFoundJson from "./404.json";
+'use client';
+import React from 'react';
+import dynamic from 'next/dynamic';
+const Lottie = dynamic(() => import('react-lottie-player'), { ssr: false });
+import NotFoundJson from './404.json';
 
 const NotFoundError = () => {
   return (

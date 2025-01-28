@@ -1,17 +1,19 @@
-"use client";
+'use client';
+
+import { useState } from 'react';
+import { ControllerRenderProps, useFormContext } from 'react-hook-form';
+import { Loader2 } from 'lucide-react';
 
 import {
   FormControl,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { ControllerRenderProps, useFormContext } from "react-hook-form";
-import { Input } from "../ui/input";
-import { useState } from "react";
-import { uploadImage } from "@/lib/functions";
-import { Loader2 } from "lucide-react";
-import { apiImage, extractActionError, isPath, isUri } from "@/lib/utils";
+} from '@/components/ui/form';
+import { uploadImage } from '@/lib/functions';
+import { apiImage, extractActionError, isPath, isUri } from '@/lib/utils';
+
+import { Input } from '../ui/input';
 
 export default function UploadImageItem({
   field,
@@ -35,14 +37,14 @@ export default function UploadImageItem({
       <FormControl>
         <div className="flex items-center gap-2">
           {!!(preview || validImage) && (
-            <picture className="h-11 aspect-video relative rounded-md overflow-hidden">
+            <picture className="relative aspect-video h-11 overflow-hidden rounded-md">
               <img
-                src={preview || apiImage(field.value, "xs")}
+                src={preview || apiImage(field.value, 'xs')}
                 alt={`${label} preview`}
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
               {loading && (
-                <div className="flex items-center justify-center absolute top-0 left-0 bg-black/30 w-full h-full">
+                <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black/30">
                   <Loader2 size={24} color="white" className="animate-spin" />
                 </div>
               )}
@@ -60,8 +62,8 @@ export default function UploadImageItem({
                 if (file?.size >= 5000000)
                   return setError(
                     field.name,
-                    { message: "Зургийн хэмжээ том байна." },
-                    { shouldFocus: true }
+                    { message: 'Зургийн хэмжээ том байна.' },
+                    { shouldFocus: true },
                   );
 
                 setLoading(true);
@@ -70,8 +72,8 @@ export default function UploadImageItem({
                 reader.readAsDataURL(file);
 
                 const formData = new FormData();
-                formData.append("file", file);
-                formData.append("prefix", imagePrefix);
+                formData.append('file', file);
+                formData.append('prefix', imagePrefix);
 
                 uploadImage(formData)
                   .then((c) => {

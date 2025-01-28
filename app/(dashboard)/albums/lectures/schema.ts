@@ -1,15 +1,16 @@
+import { z } from 'zod';
+
 import { TagItemType } from '@/features/tags';
 import { BaseType, ID, PrettyType } from '@/lib/fetch/types';
-import {z} from 'zod';
 
 export const lectureSchema = z.object({
   title: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: 'Name must be at least 2 characters.',
   }),
   body: z.string().min(2, {
-    message: "Name must be at least 2 characters.",
+    message: 'Name must be at least 2 characters.',
   }),
-  status: z.enum(["0", "1", "2"]),
+  status: z.enum(['0', '1', '2']),
   banner: z.string().optional(),
   audio: z.string().optional(),
   intro: z.string().optional(),
@@ -25,11 +26,8 @@ export type LectureBodyType = z.infer<typeof lectureSchema>;
 
 export type LectureItemType = PrettyType<
   BaseType<
-    Omit<
-      LectureBodyType, 
-     "tags" | "status" | "albumId" 
-    > & { 
-      tags: Pick<TagItemType, "id" | "name">[];
+    Omit<LectureBodyType, 'tags' | 'status' | 'albumId'> & {
+      tags: Pick<TagItemType, 'id' | 'name'>[];
       status: number;
       audio_duration: number | null;
       intro_duration: number | null;
@@ -40,4 +38,4 @@ export type LectureItemType = PrettyType<
   >
 >;
 
-export const RVK_LECTURE = "lectures";
+export const RVK_LECTURE = 'lectures';

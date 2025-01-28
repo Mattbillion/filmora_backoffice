@@ -1,20 +1,15 @@
-"use client";
+'use client';
 
-import { CellContext, ColumnDef } from "@tanstack/react-table";
-import { PurchaseItemType, PurchaseTypeEnum, purchaseTypeObj } from "./schema";
-import { useState } from "react";
-import dayjs from "dayjs";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
-import {
-  removeAlbum,
-  removeBook,
-  removeLecture,
-  removeTraining,
-} from "./actions";
+import { useState } from 'react';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
+import { BookX,Loader2 } from 'lucide-react';
+import Link from 'next/link';
+import { useParams, useRouter } from 'next/navigation';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
 
-import { Button } from "@/components/ui/button";
-import { Loader2, BookX } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,12 +20,18 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import { ID } from "@/lib/fetch/types";
-import { hasPermission, Role } from "@/lib/permission";
-import { User } from "next-auth";
-import { useSession } from "next-auth/react";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { ID } from '@/lib/fetch/types';
+import { hasPermission, Role } from '@/lib/permission';
+
+import {
+  removeAlbum,
+  removeBook,
+  removeLecture,
+  removeTraining,
+} from './actions';
+import { PurchaseItemType, PurchaseTypeEnum, purchaseTypeObj } from './schema';
 
 const Action = ({ row }: CellContext<PurchaseItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
@@ -51,11 +52,11 @@ const Action = ({ row }: CellContext<PurchaseItemType, unknown>) => {
   };
 
   const role = (session?.user as User & { role: Role })?.role;
-  if (!hasPermission(role, "users.connect", "delete")) return null;
+  if (!hasPermission(role, 'users.connect', 'delete')) return null;
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button size={"cxs"}>
+        <Button size={'cxs'}>
           <BookX className="h-4 w-4" />
           Remove
         </Button>
@@ -80,11 +81,11 @@ const Action = ({ row }: CellContext<PurchaseItemType, unknown>) => {
                 action[row.original.category_type](
                   userId,
                   row.original.product_id,
-                  row.original.id
+                  row.original.id,
                 )
                   .then((c) => {
                     toast.success(
-                      c.data.message || c.data.error || c.data.data
+                      c.data.message || c.data.error || c.data.data,
                     );
                     router.refresh();
                   })
@@ -105,8 +106,8 @@ const Action = ({ row }: CellContext<PurchaseItemType, unknown>) => {
 
 export const purchaseColumns: ColumnDef<PurchaseItemType>[] = [
   {
-    accessorKey: "id",
-    header: "ID",
+    accessorKey: 'id',
+    header: 'ID',
     cell: ({ row }) => {
       return (
         <Link className="px-1 py-2" href={`/users/${row.original.id}`}>
@@ -116,27 +117,27 @@ export const purchaseColumns: ColumnDef<PurchaseItemType>[] = [
     },
   },
   {
-    id: "name",
-    header: "Name",
-    cell: ({ row }) => row.original.name ?? "-",
+    id: 'name',
+    header: 'Name',
+    cell: ({ row }) => row.original.name ?? '-',
   },
   {
-    id: "type",
-    header: "Type",
+    id: 'type',
+    header: 'Type',
     cell: ({ row }) => purchaseTypeObj[row.original.category_type],
   },
   {
-    id: "date",
-    header: "Created At",
-    cell: ({ row }) => dayjs(row.original.created_at).format("YYYY-MM-DD"),
+    id: 'date',
+    header: 'Created At',
+    cell: ({ row }) => dayjs(row.original.created_at).format('YYYY-MM-DD'),
   },
   {
-    id: "creator",
-    header: "Created By",
-    cell: ({ row }) => row.original.created_by ?? "-",
+    id: 'creator',
+    header: 'Created By',
+    cell: ({ row }) => row.original.created_by ?? '-',
   },
   {
-    id: "actions",
+    id: 'actions',
     cell: Action,
   },
 ];
@@ -144,20 +145,20 @@ export const purchaseColumns: ColumnDef<PurchaseItemType>[] = [
 export const purchaseTrainingColumns: ColumnDef<PurchaseItemType>[] = [
   ...purchaseColumns.slice(0, 3),
   {
-    id: "openedDate",
-    header: "Opened At",
+    id: 'openedDate',
+    header: 'Opened At',
     cell: ({ row }) =>
       row.original.openedDate
-        ? dayjs(row.original.openedDate).format("YYYY-MM-DD")
-        : "-",
+        ? dayjs(row.original.openedDate).format('YYYY-MM-DD')
+        : '-',
   },
   {
-    id: "expireDate",
-    header: "Expires At",
+    id: 'expireDate',
+    header: 'Expires At',
     cell: ({ row }) =>
       row.original.expireDate
-        ? dayjs(row.original.expireDate).format("YYYY-MM-DD")
-        : "-",
+        ? dayjs(row.original.expireDate).format('YYYY-MM-DD')
+        : '-',
   },
   ...purchaseColumns.slice(3, purchaseColumns.length),
 ];

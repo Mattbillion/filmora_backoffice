@@ -1,35 +1,37 @@
-"use client";
+'use client';
 
-import { ReactNode, useRef, useTransition } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { ReactNode, useRef, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { User } from 'next-auth';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
+
+import CurrencyItem from '@/components/custom/currency-item';
+import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadAudioItem from '@/components/custom/upload-audio-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { toast } from "sonner";
-import FormDialog, { FormDialogRef } from "@/components/custom/form-dialog";
-import { LectureBodyType, LectureItemType, lectureSchema } from "../schema";
-import { patchLecture } from "../actions";
-import { useTags } from "@/features/tags";
-import UploadImageItem from "@/components/custom/upload-image-item";
-import HtmlTipTapItem from "@/components/custom/html-tiptap-item";
-import CurrencyItem from "@/components/custom/currency-item";
-import UploadAudioItem from "@/components/custom/upload-audio-item";
-import { hasPermission, Role } from "@/lib/permission";
-import { User } from "next-auth";
-import { useSession } from "next-auth/react";
+} from '@/components/ui/select';
+import { useTags } from '@/features/tags';
+import { hasPermission, Role } from '@/lib/permission';
+
+import { patchLecture } from '../actions';
+import { LectureBodyType, LectureItemType, lectureSchema } from '../schema';
 
 export function UpdateDialog({
   children,
@@ -47,7 +49,7 @@ export function UpdateDialog({
     resolver: zodResolver(lectureSchema),
     defaultValues: {
       title: initialData.title,
-      status: initialData.status.toString() as LectureBodyType["status"],
+      status: initialData.status.toString() as LectureBodyType['status'],
       banner: initialData.banner,
       body: initialData.body,
       audio: initialData.audio,
@@ -65,7 +67,7 @@ export function UpdateDialog({
     startTransition(() => {
       patchLecture({ ...values, id: initialData.id })
         .then(() => {
-          toast.success("Updated successfully");
+          toast.success('Updated successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -74,7 +76,7 @@ export function UpdateDialog({
   }
 
   const role = (session?.user as User & { role: Role })?.role;
-  if (!hasPermission(role, "albums.lectures", "update")) return null;
+  if (!hasPermission(role, 'albums.lectures', 'update')) return null;
   return (
     <FormDialog
       ref={dialogRef}
