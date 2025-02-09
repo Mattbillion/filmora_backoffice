@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
-    "lazy-asf": "plop --plopfile dev-only/generator/index.js"
+    "gen:route": "plop route --plopfile dev-only/generator/index.js",
+    "gen:routes": "plop routes --plopfile dev-only/generator/index.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

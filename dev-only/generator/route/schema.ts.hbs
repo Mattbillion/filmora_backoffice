@@ -2,18 +2,18 @@ import { z } from 'zod';
 
 import { BaseType, PrettyType } from '@/lib/fetch/types';
 
-export const {{lowerCase route-name}}Schema = z.object({
-  {{lowerCase route-name}}_name: z.string().min(2, {
+export const {{camelCase route-name}}Schema = z.object({
+  {{snakeCase route-name}}_name: z.string().min(2, {
     message: 'Name must be at least 2 characters.',
   }),
-  {{lowerCase route-name}}_desc: z.string().min(2, {
+  {{snakeCase route-name}}_desc: z.string().min(2, {
     message: 'Body must be at least 2 characters.',
   }),
-  {{lowerCase route-name}}_logo: z.string().optional(),
+  {{snakeCase route-name}}_logo: z.string().optional(),
   status: z.boolean(),
 });
 
-export type {{pascalCase route-name}}BodyType = z.infer< typeof {{lowerCase route-name}}Schema >;
+export type {{pascalCase route-name}}BodyType = z.infer< typeof {{camelCase route-name}}Schema >;
 
 export type {{pascalCase route-name}}ItemType = PrettyType<
   BaseType<
@@ -21,4 +21,4 @@ export type {{pascalCase route-name}}ItemType = PrettyType<
   >
 >;
 
-export const RVK_{{constantCase route-name}} = '{{lowerCase route-name}}';
+export const RVK_{{constantCase route-name}} = '{{kebabCase route-name}}';

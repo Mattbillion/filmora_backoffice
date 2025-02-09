@@ -24,20 +24,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { create{{pascalCase route-name}} } from '../actions';
-import { {{pascalCase route-name}}BodyType, {{camelCase route-name}}Schema } from '../schema';
+import { createBranch } from '../actions';
+import { BranchBodyType, branchSchema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
-  const dialogRef = useRef< FormDialogRef >(null);
+  const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm< {{pascalCase route-name}}BodyType >({
-    resolver: zodResolver({{camelCase route-name}}Schema),
+  const form = useForm<BranchBodyType>({
+    resolver: zodResolver(branchSchema),
   });
 
-  function onSubmit({ status, ...values }: {{pascalCase route-name}}BodyType) {
+  function onSubmit({ status, ...values }: BranchBodyType) {
     startTransition(() => {
-      create{{pascalCase route-name}}({
+      createBranch({
         ...values,
         status: (status as unknown as string) === 'true',
       })
@@ -56,18 +56,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new {{pascalCase route-name}}"
+      title="Create new Branch"
       submitText="Create"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="{{snakeCase route-name}}_name"
+        name="branch_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter {{lowerCase route-name}} name" {...field} />
+              <Input placeholder="Enter branch name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -75,11 +75,11 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       />
       <FormField
         control={form.control}
-        name="{{snakeCase route-name}}_logo"
+        name="branch_logo"
         render={({ field }) => (
           <UploadImageItem
             field={field}
-            imagePrefix="{{snakeCase route-name}}_logo"
+            imagePrefix="branch_logo"
             label="Logo"
           />
         )}
@@ -110,7 +110,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       />
       <FormField
         control={form.control}
-        name="{{snakeCase route-name}}_desc"
+        name="branch_desc"
         render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>

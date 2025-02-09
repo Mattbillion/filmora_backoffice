@@ -11,13 +11,13 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { delete{{pascalCase route-name}} } from './actions';
+import { deleteBranch } from './actions';
 import { UpdateDialog } from './components';
-import { {{pascalCase route-name}}ItemType } from './schema';
+import { BranchItemType } from './schema';
 
-const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown>) => {
+const Action = ({ row }: CellContext<BranchItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
-  const deleteDialogRef = useRef< DeleteDialogRef >(null);
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
   return (
     <div className="me-2 flex justify-end gap-4">
@@ -35,7 +35,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         loading={loading}
         action={() => {
           setLoading(true);
-          delete{{pascalCase route-name}}(row.original.id)
+          deleteBranch(row.original.id)
             .then((c) => toast.success(c.data.message))
             .catch((c) => toast.error(c.message))
             .finally(() => {
@@ -46,7 +46,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.{{snakeCase route-name}}_name}</b>?
+            <b className="text-foreground">{row.original.branch_name}</b>?
           </>
         }
       >
@@ -59,7 +59,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
   );
 };
 
-export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}}ItemType>[] = [
+export const branchColumns: ColumnDef<BranchItemType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',

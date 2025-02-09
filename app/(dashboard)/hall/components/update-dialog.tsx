@@ -24,25 +24,35 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { create{{pascalCase route-name}} } from '../actions';
-import { {{pascalCase route-name}}BodyType, {{camelCase route-name}}Schema } from '../schema';
+import { patchHall } from '../actions';
+import { HallBodyType, HallItemType, hallSchema } from '../schema';
 
-export function CreateDialog({ children }: { children: ReactNode }) {
-  const dialogRef = useRef< FormDialogRef >(null);
+export function UpdateDialog({
+  children,
+  initialData,
+}: {
+  children: ReactNode;
+  initialData: HallItemType;
+}) {
+  const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm< {{pascalCase route-name}}BodyType >({
-    resolver: zodResolver({{camelCase route-name}}Schema),
+  const form = useForm<HallBodyType>({
+    resolver: zodResolver(hallSchema),
+    defaultValues: {
+      ...initialData,
+    },
   });
 
-  function onSubmit({ status, ...values }: {{pascalCase route-name}}BodyType) {
+  function onSubmit({ status, ...values }: HallBodyType) {
     startTransition(() => {
-      create{{pascalCase route-name}}({
+      patchHall({
         ...values,
+        id: initialData.id,
         status: (status as unknown as string) === 'true',
       })
         .then(() => {
-          toast.success('Created successfully');
+          toast.success('Updated successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -56,18 +66,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new {{pascalCase route-name}}"
-      submitText="Create"
+      title="Update Hall"
+      submitText="Update"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="{{snakeCase route-name}}_name"
+        name="hall_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter {{lowerCase route-name}} name" {...field} />
+              <Input placeholder="Enter hall name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -75,13 +85,9 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       />
       <FormField
         control={form.control}
-        name="{{snakeCase route-name}}_logo"
+        name="hall_logo"
         render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="{{snakeCase route-name}}_logo"
-            label="Logo"
-          />
+          <UploadImageItem field={field} imagePrefix="hall_logo" label="Logo" />
         )}
       />
       <FormField
@@ -110,7 +116,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       />
       <FormField
         control={form.control}
-        name="{{snakeCase route-name}}_desc"
+        name="hall_desc"
         render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>

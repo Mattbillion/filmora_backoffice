@@ -1,80 +1,60 @@
-const { execSync } = require("child_process");
-const dashboardSrc = '../../app/(dashboard)';
+// const { execSync } = require("child_process");
+const {routeActions} = require("./route/plop-actions");
+// const dashboardSrc = '../../app/(dashboard)';
 
 module.exports = function (
   /** @type {import('plop').NodePlopAPI} */
   plop
 ) {
   plop.setGenerator("route", {
-    description: "Generate a CRUD route",
+    description: "Generate a next.js route with actions, schema, page, layout, loading, create-dialog.tsx, update-dialog.tsx",
     prompts: [
       {
         type: "input",
         name: "route-name",
-        message: "Enter the route name (e.g., 'company', 'banners'):",
-
+        message: "Enter the route alias (e.g., 'company', 'banners', company/[id] as companyDetail):",
       },
       {
         type: "input",
         name: "endpoint",
         message: "Enter the API endpoint (e.g., 'companies', 'banners'):",
+      },
+      {
+        type: "input",
+        name: "path",
+        message: "Enter the path (e.g., 'companies', 'banners', 'company/[id]'):"
       }
     ],
-    actions: [
+    actions: (data) => routeActions(data['route-name'], data['endpoint'], data['path']),
+  });
+  plop.setGenerator("routes", {
+    description: "Generate multiple next.js routes with actions, schema, page, layout, loading, create-dialog.tsx, update-dialog.tsx",
+    prompts: [
       {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/actions.ts`,
-        templateFile: "./route/actions.ts.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/columns.tsx`,
-        templateFile: "./route/columns.tsx.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/layout.tsx`,
-        templateFile: "./route/layout.tsx.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/loading.tsx`,
-        templateFile: "./route/loading.tsx.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/page.tsx`,
-        templateFile: "./route/page.tsx.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/schema.ts`,
-        templateFile: "./route/schema.ts.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/components/index.ts`,
-        templateFile: "./route/components/index.ts.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/components/create-dialog.tsx`,
-        templateFile: "./route/components/create-dialog.tsx.hbs"
-      },
-      {
-        type: "add",
-        path: `${dashboardSrc}/{{lowerCase route-name}}/components/update-dialog.tsx`,
-        templateFile: "./route/components/update-dialog.tsx.hbs"
-      },
-      (answers) => {
-        try {
-          execSync(`npx prettier --write "app/(dashboard)/${answers["route-name"].toLowerCase()}"`);
-          // execSync(`npx eslint --fix ${dir}`);
-          return "Formatted with Prettier";
-        } catch (error) {
-          return "Failed to format files.";
-        }
-      },
+        type: "input",
+        name: "routes",
+        message: "Enter the routes in the format 'alias:endpoint:path' (e.g., 'company:companies:company companyDetail:company:company/[id] banner:banners:banner category:category:cats'):",
+      }
     ],
+    actions: (data) => {
+      const routeArray = data?.routes?.split(" ");
+
+      const actions = [];
+      for (const route of routeArray) {
+        const [routeName, endpoint, path] = route.split(":");
+
+        if (!routeName || !endpoint || !path) {
+          actions.push({
+            type: "abort",
+            message: `Invalid route format: '${route}'. Please provide the input in the alias:endpoint:path format.`
+          });
+          continue;
+        }
+
+        actions.push(...routeActions(routeName, endpoint, path));
+      }
+
+      return actions;
+    }
   });
 };

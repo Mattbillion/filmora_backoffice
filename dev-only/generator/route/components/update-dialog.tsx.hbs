@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select';
 
 import { patch{{pascalCase route-name}} } from '../actions';
-import { {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, {{lowerCase route-name}}Schema } from '../schema';
+import { {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, {{camelCase route-name}}Schema } from '../schema';
 
 export function UpdateDialog({
   children,
@@ -38,7 +38,7 @@ export function UpdateDialog({
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<{{pascalCase route-name}}BodyType>({
-    resolver: zodResolver({{lowerCase route-name}}Schema),
+    resolver: zodResolver({{camelCase route-name}}Schema),
     defaultValues: {
       ...initialData,
     },
