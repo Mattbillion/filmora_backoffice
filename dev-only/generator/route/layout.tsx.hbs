@@ -6,15 +6,15 @@ import {ReactNode} from "react";
 
 
 export default async function Layout({
-  children,
+    children,
 }: {
-  children: ReactNode;
+    children: ReactNode;
 }) {
-  // const session = await auth();
+    // const session = await auth();
 
-  // if (
-  //   hasPagePermission((session?.user as User & { role: Role })?.role, "companys")
-  // )
-  return children;
-  // return notFound();
+    // if (
+    //   hasPagePermission((session?.user as User & { role: Role })?.role, "{{lowerCase endpoint}}")
+    // )
+    return children;
+    // return notFound();
 }

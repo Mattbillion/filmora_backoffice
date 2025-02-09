@@ -1,0 +1,24 @@
+import { z } from 'zod';
+
+import { BaseType, PrettyType } from '@/lib/fetch/types';
+
+export const {{lowerCase route-name}}Schema = z.object({
+  {{lowerCase route-name}}_name: z.string().min(2, {
+    message: 'Name must be at least 2 characters.',
+  }),
+  {{lowerCase route-name}}_desc: z.string().min(2, {
+    message: 'Body must be at least 2 characters.',
+  }),
+  {{lowerCase route-name}}_logo: z.string().optional(),
+  status: z.boolean(),
+});
+
+export type {{pascalCase route-name}}BodyType = z.infer< typeof {{lowerCase route-name}}Schema >;
+
+export type {{pascalCase route-name}}ItemType = PrettyType<
+  BaseType<
+    {{pascalCase route-name}}BodyType
+  >
+>;
+
+export const RVK_{{constantCase route-name}} = '{{lowerCase route-name}}';
