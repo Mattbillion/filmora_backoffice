@@ -86,7 +86,7 @@ export const companyColumns: ColumnDef<CompanyItemType>[] = [
   {
     id: 'status',
     header: 'Status',
-    cell: ({ row }) => row.original.status ? 'Active' : 'Inactive'
+    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
   },
   {
     id: 'actions',

@@ -26,14 +26,11 @@ export const {
         formData.append('username', username);
         formData.append('password', password);
 
-        const { body } = await xooxFetch<LoginResType>(
-          'auth/employee-login',
-          {
-            method: 'POST',
-            body: formData,
-            cache: 'no-store',
-          },
-        );
+        const { body } = await xooxFetch<LoginResType>('auth/employee-login', {
+          method: 'POST',
+          body: formData,
+          cache: 'no-store',
+        });
 
         if (body?.access_token)
           return {

@@ -37,8 +37,8 @@ export function Link({
       isNextjsPath && typeof href.query === 'object'
         ? href.query || {}
         : qsToObj(
-          isNextjsPath ? ((href.query || '') as string) : href.split('?')[1],
-        ),
+            isNextjsPath ? ((href.query || '') as string) : href.split('?')[1],
+          ),
   };
 
   return (

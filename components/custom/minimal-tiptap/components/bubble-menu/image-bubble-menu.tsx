@@ -6,9 +6,9 @@ import { ImagePopoverBlock } from '../image/image-popover-block';
 
 const ImageBubbleMenu = ({ editor }: { editor: Editor }) => {
   const shouldShow = ({ editor: e, from, to }: ShouldShowProps) => {
-    if (from === to) return false
+    if (from === to) return false;
 
-    return !!e.getAttributes('image').src
+    return !!e.getAttributes('image').src;
   };
   const unSetImage = () => editor.commands.deleteSelection();
   return (
