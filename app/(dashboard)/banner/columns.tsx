@@ -11,11 +11,11 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { deleteCompany } from './actions';
+import { deleteBanner } from './actions';
 import { UpdateDialog } from './components';
-import { CompanyItemType } from './schema';
+import { BannerItemType } from './schema';
 
-const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
+const Action = ({ row }: CellContext<BannerItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
@@ -35,7 +35,7 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
         loading={loading}
         action={() => {
           setLoading(true);
-          deleteCompany(row.original.id)
+          deleteBanner(row.original.id)
             .then((c) => toast.success(c.data.message))
             .catch((c) => toast.error(c.message))
             .finally(() => {
@@ -46,7 +46,7 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.company_name}</b>?
+            <b className="text-foreground">{row.original.banner_name}</b>?
           </>
         }
       >
@@ -59,29 +59,13 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
   );
 };
 
-export const companyColumns: ColumnDef<CompanyItemType>[] = [
+export const bannerColumns: ColumnDef<BannerItemType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
     cell: ({ row }) => {
       return <div className="px-1 py-2">{row.original.id}</div>;
     },
-  },
-  {
-    accessorKey: 'company_name',
-    header: 'Name',
-  },
-  {
-    accessorKey: 'company_register',
-    header: 'Register',
-  },
-  {
-    accessorKey: 'company_phone',
-    header: 'Phone',
-  },
-  {
-    accessorKey: 'company_email',
-    header: 'Email',
   },
   {
     id: 'status',

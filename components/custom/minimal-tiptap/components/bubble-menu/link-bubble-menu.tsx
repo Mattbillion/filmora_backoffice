@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { BubbleMenu,Editor  } from '@tiptap/react';
+import { BubbleMenu, Editor } from '@tiptap/react';
 
 import { ShouldShowProps } from '../../types';
 import { LinkEditBlock } from '../link/link-edit-block';
@@ -36,7 +36,7 @@ export const LinkBubbleMenu: React.FC<LinkBubbleMenuProps> = ({ editor }) => {
       if (from === to) return false;
 
       const { href } = e.getAttributes('link');
-      if (href) updateLinkState()
+      if (href) updateLinkState();
       return !!href;
     },
     [updateLinkState],
