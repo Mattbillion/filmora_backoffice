@@ -46,7 +46,7 @@ const Action = ({ row }: CellContext<BannerItemType, unknown>) => {
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.banner_name}</b>?
+            <b className="text-foreground">{row.original.title}</b>?
           </>
         }
       >
