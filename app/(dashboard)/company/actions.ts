@@ -28,7 +28,7 @@ export const patchCompany = async ({
   const { body, error } = await xooxFetch<{ data: CompanyItemType }>(
     `/companies/${id}`,
     {
-      method: 'PATCH',
+      method: 'PUT',
       body: bodyData,
       cache: 'no-store',
     },

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { type ClassValue,clsx } from 'clsx';
+import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
 
@@ -136,29 +136,25 @@ export function currencyFormat(total: number) {
 export const removeHTML = (str: string = '') =>
   str.replace(/<\/?[^>]+(>|$)|&[^;]+;/g, '');
 
-export const apiImage = (
-  src?: string,
-  size?: 'medium' | 'small' | 'large' | 'xs' | 'blur',
+export const imageResize = (
+  src: string = '',
+  size?: 'medium' | 'small' | 'large',
 ) => {
-  const domain =
-    process.env.NEXT_PUBLIC_XOOX_DOMAIN ?? 'http://3.95.231.68:3000/api/v1';
-  const sizePattern = /\/static\/img\/uploads\/(small|medium|large|xs|blur)\//i;
-  const insertSizePattern = /\/static\/img\/uploads\/([^\/]+)$/i;
+  const sizePattern = /\/public\/(small|medium|large)\//i;
+  const insertSizePattern = /\/public\/([^\/]+)$/i;
 
-  const imgSrc = `${domain}${src?.replace(domain, '') ?? '/static/img/'}`;
+  if (!size) return src;
+  if (sizePattern.test(src))
+    return src.replace(sizePattern, `/public/${size}/`);
 
-  if (!size) return imgSrc;
-  if (sizePattern.test(imgSrc))
-    return imgSrc.replace(sizePattern, `/static/img/uploads/${size}/`);
-
-  return imgSrc.replace(insertSizePattern, `/static/img/uploads/${size}/$1`);
+  return src.replace(insertSizePattern, `/public/${size}/$1`);
 };
 
 // one line bolgoh hereggvi!!!
 export function clearObj(obj: Record<any, any> = {}) {
   const result: Record<any, any> = {};
   for (const key in obj) {
-    if (!!obj[key]) result[key] = obj[key];
+    if (obj[key] !== undefined && obj[key] !== null) result[key] = obj[key];
   }
 
   return result;

@@ -101,10 +101,7 @@ export function UpdateDialog({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(value)}
-              defaultValue={field.value.toString()}
-            >
+            <Select onValueChange={(value) => field.onChange(value === 'true')}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />

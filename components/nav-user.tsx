@@ -19,7 +19,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { apiImage } from '@/lib/utils';
+import { imageResize } from '@/lib/utils';
 
 export function NavUser({ session }: { session: Session }) {
   const { isMobile } = useSidebar();
@@ -36,7 +36,7 @@ export function NavUser({ session }: { session: Session }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={apiImage(session?.user?.image ?? '', 'xs')}
+                  src={imageResize(session?.user?.image ?? '', 'xs')}
                   alt={session?.user?.name ?? ''}
                 />
                 <AvatarFallback className="rounded-lg">

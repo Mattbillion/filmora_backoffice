@@ -66,10 +66,7 @@ const imageSchema = z.object({
     ),
 });
 
-export async function uploadImage(
-  formData: FormData,
-  size: 'medium' | 'small' | 'large' | 'xs' | 'blur' = 'large',
-) {
+export async function uploadImage(formData: FormData) {
   try {
     validateSchema(imageSchema, formData);
 
@@ -83,7 +80,7 @@ export async function uploadImage(
 
     if (!!session?.user?.id)
       headers.set('Authorization', `Bearer ${session?.user?.id}`);
-    const res = await fetch(`${process.env.XOOX_DOMAIN}/uploads/image`, {
+    const res = await fetch(`${process.env.XOOX_DOMAIN}/client/upload-file`, {
       method: 'POST',
       body: formData,
       headers,
@@ -97,11 +94,8 @@ export async function uploadImage(
         result?.error || (result as any)?.message || String(res.status),
       );
 
-    const filePath = result?.data?.find((c: any) => c.label === size) as {
-      label: string;
-      filePath: string;
-      url: string;
-    };
+    const filePath = result?.data?.data?.original;
+
     return { data: filePath, error: null };
   } catch (error: any) {
     stringifyError(error);
