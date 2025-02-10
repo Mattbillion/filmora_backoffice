@@ -6,8 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -73,17 +71,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           </FormItem>
         )}
       />
-      <FormField
-        control={form.control}
-        name="permission_logo"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="permission_logo"
-            label="Logo"
-          />
-        )}
-      />
+
       <FormField
         control={form.control}
         name="status"
@@ -104,11 +92,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             <FormMessage />
           </FormItem>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="permission_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );
