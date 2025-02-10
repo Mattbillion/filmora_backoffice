@@ -46,10 +46,6 @@ export const {
   ],
   callbacks: {
     async jwt({ token, user }: any) {
-      // if (user) {
-      //   token.id = user.id;
-      //   token.role = (roleMap as any)[user.role] ?? "content";
-      // }
       if (user) {
         return {
           ...token,
@@ -57,7 +53,7 @@ export const {
           expires_at: user.expires_at,
           refresh_token: user.refresh_token,
         };
-      } else if (Date.now() < token.expires_at * 1000) {
+      } else if (Date.now() < token.exp * 1000) {
         return token;
       } else {
         try {
