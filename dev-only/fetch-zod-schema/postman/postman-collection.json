@@ -288,31 +288,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "order_status=failed",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-12-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-07",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -435,28 +410,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "status=true"
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -598,28 +551,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": ""
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -902,28 +833,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": ""
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -1103,26 +1012,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "status=true"
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at"
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id"
                 }
               ]
             }
@@ -1264,29 +1153,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "order_status=failed",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-17"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -1331,26 +1197,6 @@
                 {
                   "key": "hall_id",
                   "value": "41"
-                },
-                {
-                  "key": "template_name",
-                  "value": "test template"
-                },
-                {
-                  "key": "template_desc",
-                  "value": "test template"
-                },
-                {
-                  "key": "template_order",
-                  "value": "1"
-                },
-                {
-                  "key": "status",
-                  "value": "true"
-                },
-                {
-                  "key": "template_type",
-                  "value": "manual"
                 }
               ]
             }
@@ -1412,31 +1258,6 @@
                 {
                   "key": "page_size",
                   "value": "10",
-                  "disabled": true
-                },
-                {
-                  "key": "filters",
-                  "value": "order_status=failed",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-12-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-07",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
                   "disabled": true
                 }
               ]
@@ -1512,31 +1333,6 @@
                 {
                   "key": "page_size",
                   "value": "10",
-                  "disabled": true
-                },
-                {
-                  "key": "filters",
-                  "value": "status=true",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-12-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-17",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
                   "disabled": true
                 }
               ]
@@ -1713,29 +1509,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "order_status=failed",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-12-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-07"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -1786,26 +1559,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "order_status=failed"
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-12-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-07"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at"
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id,order_number"
                 }
               ]
             }
@@ -1892,31 +1645,6 @@
                 {
                   "key": "page_size",
                   "value": "10",
-                  "disabled": true
-                },
-                {
-                  "key": "filters",
-                  "value": "",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
                   "disabled": true
                 }
               ]
@@ -2059,28 +1787,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": ""
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -2353,28 +2059,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": ""
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }
@@ -2517,31 +2201,6 @@
                 {
                   "key": "page_size",
                   "value": "10",
-                  "disabled": true
-                },
-                {
-                  "key": "filters",
-                  "value": "",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
                   "disabled": true
                 }
               ]
@@ -2815,28 +2474,6 @@
                 {
                   "key": "page_size",
                   "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": ""
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
                 }
               ]
             }

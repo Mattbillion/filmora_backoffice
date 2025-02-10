@@ -5,11 +5,13 @@ const objToQs = (arr) => arr.map(c => `${encodeURIComponent(c.key)}=${encodeURIC
 
 const getEndpoints = () => {
 	const requests = [];
+	const unavailableRequests = [];
 	for (let i = 0; i < items.length; i++) {
 		let routeGroup = items[i];
 
 		for (let j = 0; j < routeGroup.item.length; j++) {
 			let reqItem = routeGroup.item[j];
+			if(!reqItem.request.url?.path?.length) unavailableRequests.push(reqItem.name);
 			if(reqItem?.request?.method === 'GET' && !!reqItem.request.url?.path?.length) {
 				let queryArr = [
 					{
@@ -32,6 +34,8 @@ const getEndpoints = () => {
 			}
 		}
 	}
+	console.log('endpoints available: \n', requests.map(c => `${c.name}: ${c.endpoint}`));
+	console.error('endpoints unavailable: \n', unavailableRequests);
 	return requests;
 }
 

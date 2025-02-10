@@ -22,6 +22,7 @@ module.exports = function (
 
     return `Generated file at ${outputPath} \n schema: ${zodSchema}`;
   });
+
   plop.setGenerator("route", {
     description: "Generate a next.js route with actions, schema, page, layout, loading, create-dialog.tsx, update-dialog.tsx",
     prompts: [
