@@ -17,12 +17,6 @@ const routeActions = (routeName, endpoint, path) => {
     },
     {
       type: 'add',
-      path: `${directory}/columns.tsx`,
-      templateFile: './route/columns.tsx.hbs',
-      data: templateData,
-    },
-    {
-      type: 'add',
       path: `${directory}/layout.tsx`,
       templateFile: './route/layout.tsx.hbs',
       data: templateData,
@@ -49,6 +43,12 @@ const routeActions = (routeName, endpoint, path) => {
       type: 'fetchSchema',
       path: `${directory}/schema.ts`,
       templateFile: './route/schema.ts.hbs',
+      data: templateData,
+    },
+    {
+      type: 'fetchSchema',
+      path: `${directory}/columns.tsx`,
+      templateFile: './route/columns.tsx.hbs',
       data: templateData,
     },
     {

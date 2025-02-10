@@ -67,11 +67,20 @@ export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}
       return <div className="px-1 py-2">{row.original.id}</div>;
     },
   },
-  {
-    id: 'status',
-    header: 'Status',
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
-  },
+    {
+        id: 'status',
+        header: 'Status',
+        cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+    },
+
+    {{#if rawData}}
+        {{#each rawData}}
+          {
+            id: '{{key}}',
+            header: '{{pascalCase key}}',
+          },
+        {{/each}}
+    {{/if}}
   {
     id: 'actions',
     cell: Action,

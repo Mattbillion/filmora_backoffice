@@ -72,6 +72,51 @@ export const hallColumns: ColumnDef<HallItemType>[] = [
     header: 'Status',
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
   },
+
+  {
+    id: 'venue_id',
+    header: 'VenueId',
+  },
+  {
+    id: 'branch_id',
+    header: 'BranchId',
+  },
+  {
+    id: 'hall_name',
+    header: 'HallName',
+  },
+  {
+    id: 'hall_desc',
+    header: 'HallDesc',
+  },
+  {
+    id: 'capacity',
+    header: 'Capacity',
+  },
+  {
+    id: 'hall_image',
+    header: 'HallImage',
+  },
+  {
+    id: 'hall_location',
+    header: 'HallLocation',
+  },
+  {
+    id: 'hall_order',
+    header: 'HallOrder',
+  },
+  {
+    id: 'hall_type',
+    header: 'HallType',
+  },
+  {
+    id: 'amenities',
+    header: 'Amenities',
+  },
+  {
+    id: 'status',
+    header: 'Status',
+  },
   {
     id: 'actions',
     cell: Action,
