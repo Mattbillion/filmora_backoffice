@@ -4,9 +4,9 @@ import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
 import {
+  RVK_TRANSACTION,
   TransactionBodyType,
   TransactionItemType,
-  RVK_TRANSACTION,
 } from './schema';
 
 export const createTransaction = async (bodyData: TransactionBodyType) => {

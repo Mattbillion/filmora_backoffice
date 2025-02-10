@@ -3,15 +3,12 @@ import { z } from 'zod';
 import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const merchandiseAttributeValuesSchema = z.object({
-  id: z.number(),
   com_id: z.number(),
   cat_id: z.number(),
   item_id: z.null(),
   attr_id: z.null(),
   value: z.null(),
   status: z.boolean(),
-  created_at: z.string(),
-  updated_at: z.null(),
   created_employee: z.string(),
 });
 

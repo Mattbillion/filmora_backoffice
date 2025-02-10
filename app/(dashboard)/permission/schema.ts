@@ -3,7 +3,6 @@ import { z } from 'zod';
 import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const permissionSchema = z.object({
-  id: z.number(),
   permission_name: z.string(),
   status: z.boolean(),
   created_at: z.string(),

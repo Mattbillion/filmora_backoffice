@@ -3,7 +3,6 @@ import { z } from 'zod';
 import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const merchandiseSchema = z.object({
-  id: z.number(),
   com_id: z.number(),
   cat_id: z.number(),
   mer_name: z.string(),
@@ -19,8 +18,6 @@ export const merchandiseSchema = z.object({
     }),
   ),
   status: z.boolean(),
-  created_at: z.string(),
-  updated_at: z.null(),
   created_employee: z.string(),
 });
 

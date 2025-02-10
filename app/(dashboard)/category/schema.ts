@@ -3,7 +3,6 @@ import { z } from 'zod';
 import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const categorySchema = z.object({
-  id: z.number(),
   cat_type: z.string(),
   cat_name: z.string(),
   root: z.null(),
@@ -12,8 +11,6 @@ export const categorySchema = z.object({
   description: z.string(),
   image: z.string(),
   ancestors: z.array(z.unknown()),
-  created_at: z.string(),
-  updated_at: z.null(),
   created_employee: z.string(),
 });
 

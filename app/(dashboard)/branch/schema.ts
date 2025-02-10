@@ -3,7 +3,6 @@ import { z } from 'zod';
 import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const branchSchema = z.object({
-  id: z.number(),
   venue_id: z.number(),
   branch_name: z.string(),
   branch_desc: z.string(),
@@ -17,8 +16,6 @@ export const branchSchema = z.object({
   status: z.boolean(),
   branch_schedule: z.string(),
   branch_images: z.string(),
-  created_at: z.string(),
-  updated_at: z.null(),
   created_employee: z.string(),
 });
 

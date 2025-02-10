@@ -1,15 +1,10 @@
-import {ReactNode} from "react";
+import { ReactNode } from 'react';
 // import { auth } from "@/app/(auth)/auth";
 // import { hasPagePermission, Role } from "@/lib/permission";
 // import { User } from "next-auth";
 // import { notFound } from "next/navigation";
 
-
-export default async function Layout({
-  children,
-}: {
-  children: ReactNode;
-}) {
+export default async function Layout({ children }: { children: ReactNode }) {
   // const session = await auth();
 
   // if (

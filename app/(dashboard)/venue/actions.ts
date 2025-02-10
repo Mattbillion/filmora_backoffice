@@ -3,7 +3,7 @@ import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
-import { VenueBodyType, VenueItemType, RVK_VENUE } from './schema';
+import { RVK_VENUE, VenueBodyType, VenueItemType } from './schema';
 
 export const createVenue = async (bodyData: VenueBodyType) => {
   const { body, error } = await xooxFetch<{ data: VenueItemType }>('venues', {
