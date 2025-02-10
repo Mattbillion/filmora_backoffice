@@ -11,5 +11,6 @@ export default async function Layout({ children }: { children: ReactNode }) {
   //   hasPagePermission((session?.user as User & { role: Role })?.role, "agerestrictions")
   // )
   return children;
+
   // return notFound();
 }

@@ -46,10 +46,7 @@ const Action = ({ row }: CellContext<AgeRestrictionsItemType, unknown>) => {
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">
-              {row.original.age_restrictions_name}
-            </b>
-            ?
+            <b className="text-foreground">{row.original.status}</b>?
           </>
         }
       >
@@ -76,7 +73,33 @@ export const ageRestrictionsColumns: ColumnDef<AgeRestrictionsItemType>[] = [
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
   },
   {
+    id: 'age_name',
+    header: 'age_name',
+    cell: ({ row }) => row.original.age_name,
+  },
+  {
+    id: 'description',
+    header: 'description',
+    cell: ({ row }) => row.original.age_desc,
+  },
+  {
+    id: 'limit',
+    header: 'limit',
+    cell: ({ row }) => row.original.age_limit,
+  },
+  {
+    id: 'min_age',
+    header: 'min_age',
+    cell: ({ row }) => row.original.min_age,
+  },
+  {
+    id: 'max_age',
+    header: 'max_age',
+    cell: ({ row }) => row.original.max_age,
+  },
+  {
     id: 'actions',
+    header: 'Actions',
     cell: Action,
   },
 ];
