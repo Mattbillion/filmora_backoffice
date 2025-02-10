@@ -6,8 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -70,18 +68,18 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update AgeRestrictions"
-      submitText="Update"
+      title="Create new AgeRestrictions"
+      submitText="Create"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="age_restrictions_name"
+        name="age_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Name</FormLabel>
+            <FormLabel>Насны ангилал</FormLabel>
             <FormControl>
-              <Input placeholder="Enter agerestrictions name" {...field} />
+              <Input placeholder="Enter age restrictions name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -89,25 +87,96 @@ export function UpdateDialog({
       />
       <FormField
         control={form.control}
-        name="age_restrictions_logo"
+        name="age_limit"
         render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="age_restrictions_logo"
-            label="Logo"
-          />
+          <FormItem>
+            <FormLabel>Насны хязгаар</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter age restrictions name" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="age_desc"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>description</FormLabel>
+            <FormControl>
+              <Input placeholder="Age description" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="age_order"
+        render={({ field: { onChange, ...rst } }) => (
+          <FormItem>
+            <FormLabel>Age order</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="age_order"
+                {...rst}
+                type="number"
+                onChange={(event) => onChange(Number(event.target.value))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="min_age"
+        render={({ field: { onChange, ...rst } }) => (
+          <FormItem>
+            <FormLabel>Min Age</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="min age"
+                {...rst}
+                type="number"
+                onChange={(event) => onChange(Number(event.target.value))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="max_age"
+        render={({ field: { onChange, ...rst } }) => (
+          <FormItem>
+            <FormLabel>Max age</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="max age"
+                {...rst}
+                type="number"
+                onChange={(event) => onChange(Number(event.target.value))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="status"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(value)}
-              defaultValue={field.value.toString()}
-            >
+            <Select onValueChange={(value) => field.onChange(value === 'true')}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
@@ -121,11 +190,6 @@ export function UpdateDialog({
             <FormMessage />
           </FormItem>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="age_restrictions_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );

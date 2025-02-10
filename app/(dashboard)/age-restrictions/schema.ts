@@ -10,7 +10,6 @@ export const ageRestrictionsSchema = z.object({
   min_age: z.number(),
   max_age: z.number(),
   status: z.boolean(),
-  created_employee: z.string(),
 });
 
 export type AgeRestrictionsBodyType = z.infer<typeof ageRestrictionsSchema>;

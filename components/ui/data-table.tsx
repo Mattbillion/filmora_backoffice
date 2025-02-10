@@ -89,6 +89,8 @@ export function DataTable<TData, TValue>({
     [table, searchKey],
   );
 
+  console.log(column, '<-0');
+
   useEffect(() => {
     if (!hidePagination) {
       router.replace(
@@ -121,9 +123,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
