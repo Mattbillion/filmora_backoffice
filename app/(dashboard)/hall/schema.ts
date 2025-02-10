@@ -14,7 +14,6 @@ export const hallSchema = z.object({
   hall_type: z.string(),
   amenities: z.string(),
   status: z.boolean(),
-  created_employee: z.string(),
 });
 
 export type HallBodyType = z.infer<typeof hallSchema>;

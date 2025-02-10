@@ -62,31 +62,171 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     >
       <FormField
         control={form.control}
+        name="venue_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>VenueId</FormLabel>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a venue_id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="0">0</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="branch_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>BranchId</FormLabel>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a branch_id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="0">0</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="hall_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Name</FormLabel>
+            <FormLabel>HallName</FormLabel>
             <FormControl>
-              <Input placeholder="Enter hall name" {...field} />
+              <Input placeholder="Enter hall_name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
+
       <FormField
         control={form.control}
-        name="hall_logo"
+        name="hall_desc"
+        render={({ field }) => <HtmlTipTapItem field={field} />}
+      />
+
+      <FormField
+        control={form.control}
+        name="capacity"
         render={({ field }) => (
-          <UploadImageItem field={field} imagePrefix="hall_logo" label="Logo" />
+          <FormItem>
+            <FormLabel>Capacity</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Enter capacity"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="hall_image"
+        render={({ field }) => (
+          <UploadImageItem
+            field={field}
+            imagePrefix="hall_image"
+            label="hall_image"
+          />
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="hall_location"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>HallLocation</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter hall_location" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="hall_order"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>HallOrder</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Enter hall_order"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="hall_type"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>HallType</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter hall_type" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="amenities"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Amenities</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter amenities" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="status"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value)}>
+            <Select
+              onValueChange={(value) => field.onChange(value === 'boolean')}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
@@ -100,11 +240,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             <FormMessage />
           </FormItem>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="hall_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );

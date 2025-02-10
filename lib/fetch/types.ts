@@ -4,6 +4,7 @@ export type ID = number;
 export type BaseType<T extends Record<string, any>> = {
   id: ID;
   created_at: string;
+  created_employee: string;
   updated_at?: string;
 } & T;
 
@@ -29,10 +30,7 @@ export type SearchParams = Promise<{
   [key: string]: string | string[] | undefined;
 }>;
 
-export type ReplaceType<
-  BT,
-  Replacements extends { [K in keyof BT]?: any },
-> = {
+export type ReplaceType<BT, Replacements extends { [K in keyof BT]?: any }> = {
   [Key in keyof BT]: Key extends keyof Replacements
     ? Replacements[Key]
     : BT[Key];

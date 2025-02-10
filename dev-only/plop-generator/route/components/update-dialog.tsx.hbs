@@ -70,59 +70,114 @@ export function UpdateDialog({
       submitText="Update"
       trigger={children}
     >
-      <FormField
-        control={form.control}
-        name="{{snakeCase route-name}}_name"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Name</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter {{lowerCase route-name}} name" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="{{snakeCase route-name}}_logo"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="{{snakeCase route-name}}_logo"
-            label="Logo"
-          />
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(value)}
-              defaultValue={field.value.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="true">Active</SelectItem>
-                <SelectItem value="false">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="{{snakeCase route-name}}_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
-      />
+        {{#if rawData}}
+            {{#each rawData}}
+
+                {{#if (isString value)}}
+                    {{#if (containsDesc key)}}
+                        <FormField
+                            control={form.control}
+                            name="{{key}}"
+                            render={({ field }) => <HtmlTipTapItem field={field} />}
+                        />
+                    {{else}}
+                        {{#if (isImage value)}}
+                            <FormField
+                                control={form.control}
+                                name="{{key}}"
+                                render={({ field }) => (
+                                    <UploadImageItem
+                                        field={field}
+                                        imagePrefix="{{key}}"
+                                        label="{{key}}"
+                                    />
+                                )}
+                            />
+                        {{else}}
+                            <FormField
+                                control={form.control}
+                                name="{{key}}"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{{pascalCase key}}</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="Enter {{key}}" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        {{/if}}
+                    {{/if}}
+                {{/if}}
+
+                {{#if (isBoolean value)}}
+                    <FormField
+                        control={form.control}
+                        name="{{key}}"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>{{pascalCase key}}</FormLabel>
+                                <Select onValueChange={(value) => field.onChange(value === "boolean")} value={field.value?.toString()}>
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select a {{lowerCase key}}" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent defaultValue="false">
+                                    <SelectItem value="true">Active</SelectItem>
+                                    <SelectItem value="false">Inactive</SelectItem>
+                                </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                {{/if}}
+
+                {{#if (isNumber value)}}
+                    {{#if (isID key)}}
+                        <FormField
+                            control={form.control}
+                            name="{{key}}"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{{pascalCase key}}</FormLabel>
+                                    <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select a {{key}}" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent defaultValue="false">
+                                        <SelectItem value="0">0</SelectItem>
+                                        <SelectItem value="1">1</SelectItem>
+                                        <SelectItem value="2">2</SelectItem>
+                                        <SelectItem value="3">3</SelectItem>
+                                    </SelectContent>
+                                    </Select>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    {{else}}
+                        <FormField
+                            control={form.control}
+                            name="{{key}}"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{{pascalCase key}}</FormLabel>
+                                    <FormControl>
+                                        <Input placeholder="Enter {{key}}" {...field} onChange={(e) => field.onChange(Number(e.target.value))}/>
+                                    </FormControl>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                    {{/if}}
+                {{/if}}
+            {{/each}}
+        {{/if}}
     </FormDialog>
   );
 }

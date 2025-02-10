@@ -6,4 +6,6 @@ const generatedRoutes = fs
   .readdirSync(dashboardDir)
   .filter((file) => fs.statSync(path.join(dashboardDir, file)).isDirectory());
 
+console.log('Generated routes: \n', generatedRoutes);
+
 module.exports = { generatedRoutes };

@@ -25,6 +25,27 @@ export type SubMenuItemType = {
   children?: Omit<SubMenuItemType, 'children'>[];
 };
 
+// [
+//   'age-restrictions',
+//   'attribute-values',
+//   'banner',
+//   'branch',
+//   'category',
+//   'category-attributes',
+//   'company',
+//   'company-category',
+//   'discount',
+//   'hall',
+//   'merchandise',
+//   'merchandise-attribute-values',
+//   'order',
+//   'permission',
+//   'role',
+//   'role-permissions-list',
+//   'transaction',
+//   'venue'
+// ]
+
 export const navMain = [
   {
     title: 'Trainings',

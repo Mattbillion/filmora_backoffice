@@ -25,7 +25,7 @@ export const patchHall = async ({
   const { body, error } = await xooxFetch<{ data: HallItemType }>(
     `/halls/${id}`,
     {
-      method: 'PATCH',
+      method: 'PUT',
       body: bodyData,
       cache: 'no-store',
     },

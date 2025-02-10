@@ -37,6 +37,7 @@ export const {
             access_token: body.access_token,
             refresh_token: body.refresh_token,
             expires_at: getExpDateFromJWT(body.access_token),
+            role: extractJWT(body.access_token).role, // bullshit
             id: body.access_token,
           };
 
@@ -102,17 +103,19 @@ function getExpDateFromJWT(token: string): Date {
   fallbackDate.setDate(fallbackDate.getDate() + 1);
 
   try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = JSON.parse(
-      Buffer.from(base64, 'base64').toString('utf-8'),
-    );
+    const jsonPayload = extractJWT(token);
 
     if (!jsonPayload.exp) return fallbackDate;
-
     return new Date(jsonPayload.exp * 1000);
   } catch (error) {
     console.error('Error decoding JWT:', error);
     return fallbackDate;
   }
+}
+
+function extractJWT(token: string) {
+  const base64Url = token.split('.')[1];
+  const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+
+  return JSON.parse(Buffer.from(base64, 'base64').toString('utf-8'));
 }

@@ -1,4 +1,4 @@
-import { navAdmin,navMain } from '@/components/constants/menu';
+import { navAdmin, navMain } from '@/components/constants/menu';
 
 import { PrettyType } from './fetch/types';
 

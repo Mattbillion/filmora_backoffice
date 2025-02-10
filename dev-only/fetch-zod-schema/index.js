@@ -1,24 +1,16 @@
-const { endpoints } = require('./postman/endpoints');
 const { execSync } = require('child_process');
 const { jsonToZod } = require('json-to-zod');
-const { curlCommand } = require('./postman/postman-data');
 const changeCase = require('change-case-all');
+const NodeCache = require('node-cache');
+
+const { endpoints } = require('./postman/endpoints');
+const { curlCommand } = require('./postman/postman-data');
 
 function schemaFallback(name) {
-  return `
-		lorem	// TODO: fake schema (generated), please check it
-		const ${name}Schema = z.object({
-			${changeCase.snakeCase(name)}_name: z.string().min(2, {
-				message: 'Name must be at least 2 characters.',
-			}),
-			${changeCase.snakeCase(name)}_desc: z.string().min(2, {
-				message: 'Body must be at least 2 characters.',
-			}),
-			${changeCase.snakeCase(name)}_logo: z.string().optional(),
-			status: z.boolean(),
-		});
-	`;
+  return `const ${name}Schema = z.object({});`;
 }
+
+const cache = new NodeCache({ stdTTL: 300 }); // by seconds
 
 module.exports = {
   fetchZodSchema: (path, name) => {
@@ -28,20 +20,45 @@ module.exports = {
 
     try {
       if (!obj) throw Error(`${path} doesn't exist, check endpoint`);
+
+      const cacheKey = obj.endpoint;
+      const cachedData = cache.get(cacheKey);
+      if (cachedData) {
+        console.log(`Serving from cache: ${cacheKey}`);
+        return cachedData;
+      }
+
       const response = execSync(curlCommand(obj.endpoint)).toString();
 
       const jsonResponse = JSON.parse(response);
       if (!jsonResponse.data?.length)
         throw Error(`${obj.endpoint || path} endpoint returns nothing :(`);
 
-      const { id, created_at, updated_at, ...itemData } = jsonResponse.data[0];
-      return jsonToZod(
-        itemData,
-        changeCase.camelCase((name || obj.name) + 'Schema'),
-      );
+      const { id, created_at, updated_at, created_employee, ...itemData } =
+        jsonResponse.data[0];
+
+      const data = {
+        rawData: Object.entries(itemData).map((c) => ({
+          key: c[0],
+          value: c[1],
+        })),
+        schema: jsonToZod(
+          itemData,
+          changeCase.camelCase((name || obj.name) + 'Schema'),
+        ),
+      };
+
+      cache.set(cacheKey, data);
+      console.log(`Cached response for: ${cacheKey}`);
+
+      return data;
     } catch (error) {
       console.error(`Error:`, error.message);
-      return schemaFallback(name || path);
+
+      return {
+        rawData: [],
+        schema: schemaFallback(name || path),
+      };
     }
   },
 };
