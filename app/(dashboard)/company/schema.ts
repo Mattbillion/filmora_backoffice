@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { BaseType, PrettyType } from '@/lib/fetch/types';
+import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const companySchema = z.object({
   company_name: z.string().min(2, {

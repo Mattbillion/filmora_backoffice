@@ -21,7 +21,7 @@ function schemaCallback(name) {
 
 module.exports = {
 	fetchZodSchema: (path, name) => {
-		const obj = endpoints.find(endpoint => changeCase.camelCase(endpoint.name) === path);
+		const obj = endpoints.find(endpoint => endpoint.name === changeCase.camelCase(path));
 		if(!obj) return schemaCallback(path);
 
 		try {
@@ -29,7 +29,7 @@ module.exports = {
 
 			const jsonResponse = JSON.parse(response);
 			if (!!jsonResponse.data?.length) {
-				return jsonToZod(jsonResponse.data[0], (name || obj.name) + "Schema");
+				return jsonToZod(jsonResponse.data[0], changeCase.camelCase((name || obj.name) + "Schema"));
 			}
 		} catch (error) {
 			console.error(`Error:`, error.message);

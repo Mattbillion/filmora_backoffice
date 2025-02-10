@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { BaseType, PrettyType } from '@/lib/fetch/types';
+import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const bannerSchema = z.object({
   id: z.number(),
@@ -9,10 +9,10 @@ export const bannerSchema = z.object({
   link: z.string(),
   location: z.string(),
   created_employee: z.string(),
-  special_cat_id: z.null(),
+  special_cat_id: z.number().optional(),
   status: z.boolean(),
   created_at: z.string(),
-  updated_at: z.null(),
+  updated_at: z.string().optional(),
 });
 
 export type BannerBodyType = z.infer<typeof bannerSchema>;
