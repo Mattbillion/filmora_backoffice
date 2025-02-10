@@ -68,6 +68,11 @@ export const roleColumns: ColumnDef<RoleItemType>[] = [
     },
   },
   {
+    id: 'role_name',
+    header: 'Name',
+    cell: ({ row }) => row.original.role_name,
+  },
+  {
     id: 'status',
     header: 'Status',
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),

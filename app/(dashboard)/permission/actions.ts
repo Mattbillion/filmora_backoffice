@@ -32,7 +32,7 @@ export const patchPermission = async ({
   const { body, error } = await xooxFetch<{ data: PermissionItemType }>(
     `/permissions/${id}`,
     {
-      method: 'PATCH',
+      method: 'PUT',
       body: bodyData,
       cache: 'no-store',
     },
