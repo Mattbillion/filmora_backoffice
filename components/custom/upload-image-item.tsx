@@ -11,7 +11,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { uploadImage } from '@/lib/functions';
-import { apiImage, extractActionError, isPath, isUri } from '@/lib/utils';
+import { extractActionError, imageResize, isPath, isUri } from '@/lib/utils';
 
 import { Input } from '../ui/input';
 
@@ -39,7 +39,7 @@ export default function UploadImageItem({
           {!!(preview || validImage) && (
             <picture className="relative aspect-video h-11 overflow-hidden rounded-md">
               <img
-                src={preview || apiImage(field.value, 'small')}
+                src={preview || imageResize(field.value, 'small')}
                 alt={`${label} preview`}
                 className="h-full w-full bg-slate-200 object-cover"
               />

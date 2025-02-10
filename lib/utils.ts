@@ -136,7 +136,7 @@ export function currencyFormat(total: number) {
 export const removeHTML = (str: string = '') =>
   str.replace(/<\/?[^>]+(>|$)|&[^;]+;/g, '');
 
-export const apiImage = (
+export const imageResize = (
   src: string = '',
   size?: 'medium' | 'small' | 'large',
 ) => {

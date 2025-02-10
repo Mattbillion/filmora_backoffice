@@ -66,10 +66,7 @@ const imageSchema = z.object({
     ),
 });
 
-export async function uploadImage(
-  formData: FormData,
-  size: 'original' | 'small' | 'medium' | 'large' = 'large',
-) {
+export async function uploadImage(formData: FormData) {
   try {
     validateSchema(imageSchema, formData);
 
