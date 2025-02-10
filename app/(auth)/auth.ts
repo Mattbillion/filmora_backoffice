@@ -87,20 +87,13 @@ export const {
         }
       }
     },
-    // async session({
-    //   session,
-    //   token,
-    // }: {
-    //   session: any;
-    //   token: any;
-    // }) {
-    //   if (session.user) {
-    //     session.user.id = token.id as string;
-    //     session.user.role = token.role;
-    //   }
-    //
-    //   return session;
-    // },
+    async session({ session, token }: { session: any; token: any }) {
+      if (session.user) {
+        session.user.id = token.access_token as string;
+      }
+
+      return session;
+    },
   },
 });
 
