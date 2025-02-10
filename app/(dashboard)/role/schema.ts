@@ -4,7 +4,7 @@ import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const roleSchema = z.object({
   role_name: z.string(),
-  role_order: z.number(),
+  role_order: z.number().optional(),
   status: z.boolean(),
   created_employee: z.string(),
 });

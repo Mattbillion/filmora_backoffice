@@ -6,6 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -22,25 +24,35 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createRole } from '../actions';
-import { RoleBodyType, roleSchema } from '../schema';
+import { patchEmployee } from '../actions';
+import { EmployeeBodyType, EmployeeItemType, employeeSchema } from '../schema';
 
-export function CreateDialog({ children }: { children: ReactNode }) {
+export function UpdateDialog({
+  children,
+  initialData,
+}: {
+  children: ReactNode;
+  initialData: EmployeeItemType;
+}) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<RoleBodyType>({
-    resolver: zodResolver(roleSchema),
+  const form = useForm<EmployeeBodyType>({
+    resolver: zodResolver(employeeSchema),
+    defaultValues: {
+      ...initialData,
+    },
   });
 
-  function onSubmit({ status, ...values }: RoleBodyType) {
+  function onSubmit({ status, ...values }: EmployeeBodyType) {
     startTransition(() => {
-      createRole({
+      patchEmployee({
         ...values,
+        id: initialData.id,
         status: (status as unknown as string) === 'true',
       })
         .then(() => {
-          toast.success('Created successfully');
+          toast.success('Updated successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -54,21 +66,32 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Role"
-      submitText="Create"
+      title="Update Employee"
+      submitText="Update"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="role_name"
+        name="employee_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter role name" {...field} />
+              <Input placeholder="Enter employee name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="employee_logo"
+        render={({ field }) => (
+          <UploadImageItem
+            field={field}
+            imagePrefix="employee_logo"
+            label="Logo"
+          />
         )}
       />
       <FormField
@@ -94,6 +117,11 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             <FormMessage />
           </FormItem>
         )}
+      />
+      <FormField
+        control={form.control}
+        name="employee_desc"
+        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );

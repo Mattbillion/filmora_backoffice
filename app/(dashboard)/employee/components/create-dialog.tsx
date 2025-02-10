@@ -24,20 +24,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createCompany } from '../actions';
-import { CompanyBodyType, companySchema } from '../schema';
+import { createEmployee } from '../actions';
+import { EmployeeBodyType, employeeSchema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<CompanyBodyType>({
-    resolver: zodResolver(companySchema),
+  const form = useForm<EmployeeBodyType>({
+    resolver: zodResolver(employeeSchema),
   });
 
-  function onSubmit({ status, ...values }: CompanyBodyType) {
+  function onSubmit({ status, ...values }: EmployeeBodyType) {
     startTransition(() => {
-      createCompany({
+      createEmployee({
         ...values,
         status: (status as unknown as string) === 'true',
       })
@@ -56,18 +56,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Company"
+      title="Create new Employee"
       submitText="Create"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="company_name"
+        name="employee_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter company name" {...field} />
+              <Input placeholder="Enter employee name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -75,11 +75,11 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       />
       <FormField
         control={form.control}
-        name="company_logo"
+        name="employee_logo"
         render={({ field }) => (
           <UploadImageItem
             field={field}
-            imagePrefix="company_logo"
+            imagePrefix="employee_logo"
             label="Logo"
           />
         )}
@@ -90,7 +90,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value === 'true')}>
+            <Select onValueChange={(value) => field.onChange(value)}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
@@ -107,76 +107,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       />
       <FormField
         control={form.control}
-        name="company_location"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Address</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company address" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter company email"
-                type="email"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_phone"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Phone</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_phone2"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Phone</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company another phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_register"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Company Register</FormLabel>
-            <FormControl>
-              <Input placeholder="company register" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_desc"
+        name="employee_desc"
         render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>

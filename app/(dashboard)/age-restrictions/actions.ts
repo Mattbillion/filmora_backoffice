@@ -13,7 +13,7 @@ export const createAgeRestrictions = async (
   bodyData: AgeRestrictionsBodyType,
 ) => {
   const { body, error } = await xooxFetch<{ data: AgeRestrictionsItemType }>(
-    'age-restrictions',
+    'age_restrictions',
     {
       method: 'POST',
       body: bodyData,
@@ -32,9 +32,9 @@ export const patchAgeRestrictions = async ({
   ...bodyData
 }: AgeRestrictionsBodyType & { id: ID }) => {
   const { body, error } = await xooxFetch<{ data: AgeRestrictionsItemType }>(
-    `/age-restrictions/${id}`,
+    `/age_restrictions/${id}`,
     {
-      method: 'PATCH',
+      method: 'PUT',
       body: bodyData,
       cache: 'no-store',
     },
@@ -47,7 +47,7 @@ export const patchAgeRestrictions = async ({
 };
 
 export const deleteAgeRestrictions = async (id: ID) => {
-  const { body, error } = await xooxFetch(`/age-restrictions/${id}`, {
+  const { body, error } = await xooxFetch(`/age_restrictions/${id}`, {
     method: 'DELETE',
     cache: 'no-store',
   });
@@ -62,7 +62,7 @@ export const getAgeRestrictionsList = async (searchParams?: QueryParams) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<AgeRestrictionsItemType[]>
-    >('/age-restrictions', {
+    >('/age_restrictions', {
       method: 'GET',
       searchParams,
       next: { tags: [RVK_AGE_RESTRICTIONS] },
