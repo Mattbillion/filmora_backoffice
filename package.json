@@ -10,7 +10,6 @@
     "format": "prettier --write .",
     "gen:route": "plop route --plopfile dev-only/plop-generator/index.js",
     "gen:routes": "plop routes --plopfile dev-only/plop-generator/index.js",
-    "fetch-zod-schema": "node dev-only/fetch-zod-schema/index.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
