@@ -8,8 +8,9 @@
     "start": "next start",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
-    "gen:route": "plop route --plopfile dev-only/generator/index.js",
-    "gen:routes": "plop routes --plopfile dev-only/generator/index.js"
+    "gen:route": "plop route --plopfile dev-only/plop-generator/index.js",
+    "gen:routes": "plop routes --plopfile dev-only/plop-generator/index.js",
+    "fetch-zod-schema": "node dev-only/fetch-zod-schema/index.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -52,6 +53,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
+    "json-to-zod": "^1.1.2",
     "lowlight": "^3.3.0",
     "lucide-react": "^0.453.0",
     "next": "15.0.0-rc.1",
@@ -75,6 +77,7 @@
     "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
     "@typescript-eslint/eslint-plugin": "^8.22.0",
     "@typescript-eslint/parser": "^8.22.0",
+    "change-case-all": "^2.1.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.0.0-rc.1",
     "eslint-plugin-import": "^2.31.0",

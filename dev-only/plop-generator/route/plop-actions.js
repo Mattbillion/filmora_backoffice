@@ -1,7 +1,9 @@
 const { execSync } = require("child_process");
+// const { fetchZodSchema } = require("../../fetch-zod-schema");
 const dashboardSrc = '../../app/(dashboard)';
 
 const routeActions = (routeName, endpoint, path) => {
+	// const zodSchema = fetchZodSchema(endpoint, routeName);
 	const templateData = { 'route-name': routeName, endpoint, path };
 	const directory = `${dashboardSrc}/${path.toLowerCase()}`;
 
@@ -38,12 +40,6 @@ const routeActions = (routeName, endpoint, path) => {
 		},
 		{
 			type: "add",
-			path: `${directory}/schema.ts`,
-			templateFile: "./route/schema.ts.hbs",
-			data: templateData
-		},
-		{
-			type: "add",
 			path: `${directory}/components/index.ts`,
 			templateFile: "./route/components/index.ts.hbs",
 			data: templateData
@@ -58,6 +54,12 @@ const routeActions = (routeName, endpoint, path) => {
 			type: "add",
 			path: `${directory}/components/update-dialog.tsx`,
 			templateFile: "./route/components/update-dialog.tsx.hbs",
+			data: templateData
+		},
+		{
+			type: "fetchSchema",
+			path: `${directory}/schema.ts`,
+			templateFile: "./route/schema.ts.hbs",
 			data: templateData
 		},
 		() => {

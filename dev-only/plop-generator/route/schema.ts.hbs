@@ -2,16 +2,7 @@ import { z } from 'zod';
 
 import { BaseType, PrettyType } from '@/lib/fetch/types';
 
-export const {{camelCase route-name}}Schema = z.object({
-  {{snakeCase route-name}}_name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
-  {{snakeCase route-name}}_desc: z.string().min(2, {
-    message: 'Body must be at least 2 characters.',
-  }),
-  {{snakeCase route-name}}_logo: z.string().optional(),
-  status: z.boolean(),
-});
+export {{{zodSchema}}}
 
 export type {{pascalCase route-name}}BodyType = z.infer< typeof {{camelCase route-name}}Schema >;
 

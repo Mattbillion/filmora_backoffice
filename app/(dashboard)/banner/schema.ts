@@ -3,14 +3,16 @@ import { z } from 'zod';
 import { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const bannerSchema = z.object({
-  banner_name: z.string().min(2, {
-    message: 'Name must be at least 2 characters.',
-  }),
-  banner_desc: z.string().min(2, {
-    message: 'Body must be at least 2 characters.',
-  }),
-  banner_logo: z.string().optional(),
+  id: z.number(),
+  title: z.string(),
+  picture: z.string(),
+  link: z.string(),
+  location: z.string(),
+  created_employee: z.string(),
+  special_cat_id: z.null(),
   status: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.null(),
 });
 
 export type BannerBodyType = z.infer<typeof bannerSchema>;

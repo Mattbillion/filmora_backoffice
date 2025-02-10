@@ -1,11 +1,27 @@
 // const { execSync } = require("child_process");
 const {routeActions} = require("./route/plop-actions");
+const {fetchZodSchema} = require("../fetch-zod-schema");
 // const dashboardSrc = '../../app/(dashboard)';
+const fs = require('fs');
+const path = require('path');
 
 module.exports = function (
   /** @type {import('plop').NodePlopAPI} */
   plop
 ) {
+  plop.setActionType('fetchSchema', async function (answers, config, plop) {
+    const { templateFile, path: outputPath } = config;
+
+    const zodSchema = fetchZodSchema(answers.endpoint, answers['route-name']);
+
+    const template = fs.readFileSync(path.resolve(__dirname, templateFile), 'utf8');
+
+    const rendered = plop.renderString(template, { ...answers, zodSchema });
+
+    fs.writeFileSync(path.resolve(__dirname, outputPath), rendered);
+
+    return `Generated file at ${outputPath} \n schema: ${zodSchema}`;
+  });
   plop.setGenerator("route", {
     description: "Generate a next.js route with actions, schema, page, layout, loading, create-dialog.tsx, update-dialog.tsx",
     prompts: [
