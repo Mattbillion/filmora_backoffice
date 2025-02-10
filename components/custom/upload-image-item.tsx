@@ -77,7 +77,7 @@ export default function UploadImageItem({
 
                 uploadImage(formData)
                   .then((c) => {
-                    field.onChange(c?.data?.filePath);
+                    field.onChange(c?.data);
                     clearErrors(field.name);
                   })
                   .catch((err) => {

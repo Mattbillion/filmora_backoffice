@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { ReactNode, useRef, useTransition } from 'react';
@@ -25,29 +24,29 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { patchCompany } from '../actions';
-import { CompanyBodyType, CompanyItemType, companySchema } from '../schema';
+import { patchEmployee } from '../actions';
+import { EmployeeBodyType, EmployeeItemType, employeeSchema } from '../schema';
 
 export function UpdateDialog({
   children,
   initialData,
 }: {
   children: ReactNode;
-  initialData: CompanyItemType;
+  initialData: EmployeeItemType;
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<CompanyBodyType>({
-    resolver: zodResolver(companySchema),
+  const form = useForm<EmployeeBodyType>({
+    resolver: zodResolver(employeeSchema),
     defaultValues: {
       ...initialData,
     },
   });
 
-  function onSubmit({ status, ...values }: CompanyBodyType) {
+  function onSubmit({ status, ...values }: EmployeeBodyType) {
     startTransition(() => {
-      patchCompany({
+      patchEmployee({
         ...values,
         id: initialData.id,
         status: (status as unknown as string) === 'true',
@@ -67,18 +66,18 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update Company"
+      title="Update Employee"
       submitText="Update"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="company_name"
+        name="employee_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter company name" {...field} />
+              <Input placeholder="Enter employee name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -86,11 +85,11 @@ export function UpdateDialog({
       />
       <FormField
         control={form.control}
-        name="company_logo"
+        name="employee_logo"
         render={({ field }) => (
           <UploadImageItem
             field={field}
-            imagePrefix="company_logo"
+            imagePrefix="employee_logo"
             label="Logo"
           />
         )}
@@ -101,7 +100,10 @@ export function UpdateDialog({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value === 'true')}>
+            <Select
+              onValueChange={(value) => field.onChange(value)}
+              defaultValue={field.value.toString()}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
@@ -118,63 +120,7 @@ export function UpdateDialog({
       />
       <FormField
         control={form.control}
-        name="company_location"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Address</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company address" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter company email"
-                type="email"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_phone"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Phone</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_phone2"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Phone</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company another phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_desc"
+        name="employee_desc"
         render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>

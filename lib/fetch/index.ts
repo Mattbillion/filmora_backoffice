@@ -27,9 +27,16 @@ type FetchOptions = Omit<RequestInit, 'body'> & {
   searchParams?: QueryParams;
 };
 
+type ErrorType = {
+  loc: (string | number)[];
+  msg: string;
+  type: string;
+}[];
+
 export async function xooxFetch<
   T extends object &
     Partial<{
+      detail?: ErrorType;
       error?: string;
       success?: boolean;
       message?: boolean;
@@ -56,7 +63,10 @@ export async function xooxFetch<
 
     if (!response.ok)
       throw new Error(
-        body?.error || (body as any)?.message || String(response.status),
+        body?.detail?.[0]?.msg ||
+          body?.error ||
+          (body as any)?.message ||
+          String(response.status),
       );
 
     return {
