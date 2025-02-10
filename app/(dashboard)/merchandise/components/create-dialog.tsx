@@ -90,10 +90,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(value)}
-              defaultValue={field.value.toString()}
-            >
+            <Select onValueChange={(value) => field.onChange(value)}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
