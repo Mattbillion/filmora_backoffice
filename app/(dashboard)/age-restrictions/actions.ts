@@ -36,6 +36,7 @@ export const patchAgeRestrictions = async ({
     {
       method: 'PUT',
       body: bodyData,
+
       cache: 'no-store',
     },
   );

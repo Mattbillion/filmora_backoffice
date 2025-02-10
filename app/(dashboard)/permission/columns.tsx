@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -12,7 +12,6 @@ import {
 import { Button } from '@/components/ui/button';
 
 import { deletePermission } from './actions';
-import { UpdateDialog } from './components';
 import { PermissionItemType } from './schema';
 
 const Action = ({ row }: CellContext<PermissionItemType, unknown>) => {
@@ -21,15 +20,6 @@ const Action = ({ row }: CellContext<PermissionItemType, unknown>) => {
 
   return (
     <div className="me-2 flex justify-end gap-4">
-      <UpdateDialog
-        initialData={row.original}
-        key={JSON.stringify(row.original)}
-      >
-        <Button size={'cxs'} variant="outline">
-          <Edit className="h-4 w-4" /> Edit
-        </Button>
-      </UpdateDialog>
-
       <DeleteDialog
         ref={deleteDialogRef}
         loading={loading}
@@ -71,6 +61,11 @@ export const permissionColumns: ColumnDef<PermissionItemType>[] = [
     id: 'status',
     header: 'Status',
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+  },
+  {
+    id: 'permission_name',
+    header: 'Permission name',
+    cell: ({ row }) => row.original.permission_name,
   },
   {
     id: 'actions',
