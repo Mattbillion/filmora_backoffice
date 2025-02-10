@@ -1,11 +1,12 @@
 const { execSync } = require("child_process");
 // const { fetchZodSchema } = require("../../fetch-zod-schema");
 const dashboardSrc = '../../app/(dashboard)';
+const changeCase = require('change-case-all');
 
 const routeActions = (routeName, endpoint, path) => {
 	// const zodSchema = fetchZodSchema(endpoint, routeName);
 	const templateData = { 'route-name': routeName, endpoint, path };
-	const directory = `${dashboardSrc}/${path.toLowerCase()}`;
+	const directory = `${dashboardSrc}/${changeCase.kebabCase(path)}`;
 
 	return [
 		{
@@ -64,7 +65,7 @@ const routeActions = (routeName, endpoint, path) => {
 		},
 		() => {
 			try {
-				execSync(`npx prettier --write "app/(dashboard)/${path.toLowerCase()}"`);
+				execSync(`npx prettier --write "app/(dashboard)/${changeCase.kebabCase(path)}"`);
 				// execSync(`npx eslint --fix ${dir}`);
 				return "Formatted with Prettier";
 			} catch (error) {
