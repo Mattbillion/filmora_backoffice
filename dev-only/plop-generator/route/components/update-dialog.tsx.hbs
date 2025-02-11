@@ -89,7 +89,7 @@ export function UpdateDialog({
                                     <UploadImageItem
                                         field={field}
                                         imagePrefix="{{key}}"
-                                        label="{{key}}"
+                                        label="{{sentenceCase key}}"
                                     />
                                 )}
                             />
@@ -99,9 +99,9 @@ export function UpdateDialog({
                                 name="{{key}}"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel>{{pascalCase key}}</FormLabel>
+                                        <FormLabel>{{sentenceCase key}}</FormLabel>
                                         <FormControl>
-                                            <Input placeholder="Enter {{key}}" {...field} />
+                                            <Input placeholder="Enter {{sentenceCase key}}" {...field} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
@@ -117,11 +117,11 @@ export function UpdateDialog({
                         name="{{key}}"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>{{pascalCase key}}</FormLabel>
+                                <FormLabel>{{sentenceCase key}}</FormLabel>
                                 <Select onValueChange={(value) => field.onChange(value === "boolean")} value={field.value?.toString()}>
                                 <FormControl>
                                     <SelectTrigger>
-                                        <SelectValue placeholder="Select a {{lowerCase key}}" />
+                                        <SelectValue placeholder="Select a {{sentenceCase key}}" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent defaultValue="false">
@@ -142,11 +142,11 @@ export function UpdateDialog({
                             name="{{key}}"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{{pascalCase key}}</FormLabel>
+                                    <FormLabel>{{sentenceCase key}}</FormLabel>
                                     <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()}>
                                     <FormControl>
                                         <SelectTrigger>
-                                            <SelectValue placeholder="Select a {{key}}" />
+                                            <SelectValue placeholder="Select a {{sentenceCase key}}" />
                                         </SelectTrigger>
                                     </FormControl>
                                     <SelectContent defaultValue="false">
@@ -166,9 +166,9 @@ export function UpdateDialog({
                             name="{{key}}"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>{{pascalCase key}}</FormLabel>
+                                    <FormLabel>{{sentenceCase key}}</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Enter {{key}}" {...field} onChange={(e) => field.onChange(Number(e.target.value))}/>
+                                        <Input placeholder="Enter {{sentenceCase key}}" {...field} onChange={(e) => field.onChange(Number(e.target.value))}/>
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

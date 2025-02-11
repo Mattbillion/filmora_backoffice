@@ -54,8 +54,10 @@ const getEndpoints = () => {
     requests
       .filter(
         (c) =>
-          !generatedRoutes.find((cc) =>
-            changeCase.kebabCase(c.name).includes(cc),
+          !generatedRoutes.find(
+            (cc) =>
+              changeCase.kebabCase(c.name).includes(cc) ||
+              c.name.includes('Detail'),
           ),
       )
       .map((c) => `${c.name}: ${c.endpoint}`),
