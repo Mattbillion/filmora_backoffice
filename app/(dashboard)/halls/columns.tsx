@@ -11,13 +11,13 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { delete{{pascalCase route-name}} } from './actions';
+import { deleteHalls } from './actions';
 import { UpdateDialog } from './components';
-import { {{pascalCase route-name}}ItemType } from './schema';
+import { HallsItemType } from './schema';
 
-const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown>) => {
+const Action = ({ row }: CellContext<HallsItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
-  const deleteDialogRef = useRef< DeleteDialogRef >(null);
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
   return (
     <div className="me-2 flex justify-end gap-4">
@@ -35,7 +35,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         loading={loading}
         action={() => {
           setLoading(true);
-          delete{{pascalCase route-name}}(row.original.id)
+          deleteHalls(row.original.id)
             .then((c) => toast.success(c.data.message))
             .catch((c) => toast.error(c.message))
             .finally(() => {
@@ -46,7 +46,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.{{snakeCase route-name}}_name}</b>?
+            <b className="text-foreground">{row.original.halls_name}</b>?
           </>
         }
       >
@@ -59,7 +59,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
   );
 };
 
-export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}}ItemType>[] = [
+export const hallsColumns: ColumnDef<HallsItemType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
@@ -67,15 +67,61 @@ export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}
       return <div className="px-1 py-2">{row.original.id}</div>;
     },
   },
-    {{#if rawData}}
-        {{#each rawData}}
-          {
-            id: '{{key}}',
-            accessorKey: '{{key}}',
-            header: '{{sentenceCase key}}',
-          },
-        {{/each}}
-    {{/if}}
+  {
+    id: 'venue_id',
+    accessorKey: 'venue_id',
+    header: 'Venue id',
+  },
+  {
+    id: 'branch_id',
+    accessorKey: 'branch_id',
+    header: 'Branch id',
+  },
+  {
+    id: 'hall_name',
+    accessorKey: 'hall_name',
+    header: 'Hall name',
+  },
+  {
+    id: 'hall_desc',
+    accessorKey: 'hall_desc',
+    header: 'Hall desc',
+  },
+  {
+    id: 'capacity',
+    accessorKey: 'capacity',
+    header: 'Capacity',
+  },
+  {
+    id: 'hall_image',
+    accessorKey: 'hall_image',
+    header: 'Hall image',
+  },
+  {
+    id: 'hall_location',
+    accessorKey: 'hall_location',
+    header: 'Hall location',
+  },
+  {
+    id: 'hall_order',
+    accessorKey: 'hall_order',
+    header: 'Hall order',
+  },
+  {
+    id: 'hall_type',
+    accessorKey: 'hall_type',
+    header: 'Hall type',
+  },
+  {
+    id: 'amenities',
+    accessorKey: 'amenities',
+    header: 'Amenities',
+  },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: 'Status',
+  },
   {
     id: 'actions',
     cell: Action,

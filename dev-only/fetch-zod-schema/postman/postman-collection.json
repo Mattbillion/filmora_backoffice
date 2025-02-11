@@ -2758,7 +2758,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkyNDA3MDN9.4StQoF7O6iDyiRM2YZQ-Wg5TtDnqGZJF5K9WK2JDZHI",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWVfcmVmcmVzaCIsImV4cCI6MTc0MTc2ODAxOH0.s4jnsfGsncupCHYjK1b_xnZlbO2Xow7jLAf7Q2VevOg",
       "type": "string"
     }
   ]

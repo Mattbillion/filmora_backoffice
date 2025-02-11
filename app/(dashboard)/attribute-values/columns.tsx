@@ -11,13 +11,13 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { delete{{pascalCase route-name}} } from './actions';
+import { deleteAttributeValue } from './actions';
 import { UpdateDialog } from './components';
-import { {{pascalCase route-name}}ItemType } from './schema';
+import { AttributeValueItemType } from './schema';
 
-const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown>) => {
+const Action = ({ row }: CellContext<AttributeValueItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
-  const deleteDialogRef = useRef< DeleteDialogRef >(null);
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
   return (
     <div className="me-2 flex justify-end gap-4">
@@ -35,7 +35,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         loading={loading}
         action={() => {
           setLoading(true);
-          delete{{pascalCase route-name}}(row.original.id)
+          deleteAttributeValue(row.original.id)
             .then((c) => toast.success(c.data.message))
             .catch((c) => toast.error(c.message))
             .finally(() => {
@@ -46,7 +46,10 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.{{snakeCase route-name}}_name}</b>?
+            <b className="text-foreground">
+              {row.original.attribute_value_name}
+            </b>
+            ?
           </>
         }
       >
@@ -59,7 +62,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
   );
 };
 
-export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}}ItemType>[] = [
+export const attributeValueColumns: ColumnDef<AttributeValueItemType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
@@ -67,15 +70,36 @@ export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}
       return <div className="px-1 py-2">{row.original.id}</div>;
     },
   },
-    {{#if rawData}}
-        {{#each rawData}}
-          {
-            id: '{{key}}',
-            accessorKey: '{{key}}',
-            header: '{{sentenceCase key}}',
-          },
-        {{/each}}
-    {{/if}}
+  {
+    id: 'com_id',
+    accessorKey: 'com_id',
+    header: 'Com id',
+  },
+  {
+    id: 'cat_id',
+    accessorKey: 'cat_id',
+    header: 'Cat id',
+  },
+  {
+    id: 'attr_id',
+    accessorKey: 'attr_id',
+    header: 'Attr id',
+  },
+  {
+    id: 'value',
+    accessorKey: 'value',
+    header: 'Value',
+  },
+  {
+    id: 'display_order',
+    accessorKey: 'display_order',
+    header: 'Display order',
+  },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: 'Status',
+  },
   {
     id: 'actions',
     cell: Action,
