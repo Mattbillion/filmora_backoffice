@@ -108,7 +108,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{{sentenceCase key}}</FormLabel>
-                                <Select onValueChange={(value) => field.onChange(value === "boolean")}>
+                                <Select onValueChange={(value) => field.onChange(value === "true")}>
                                     <FormControl>
                                         <SelectTrigger>
                                             <SelectValue placeholder="Select a {{sentenceCase key}}" />

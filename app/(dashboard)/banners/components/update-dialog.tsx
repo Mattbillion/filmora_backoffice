@@ -24,25 +24,35 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createVenues } from '../actions';
-import { VenuesBodyType, venuesSchema } from '../schema';
+import { patchBanner } from '../actions';
+import { BannerBodyType, BannerItemType, bannerSchema } from '../schema';
 
-export function CreateDialog({ children }: { children: ReactNode }) {
+export function UpdateDialog({
+  children,
+  initialData,
+}: {
+  children: ReactNode;
+  initialData: BannerItemType;
+}) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<VenuesBodyType>({
-    resolver: zodResolver(venuesSchema),
+  const form = useForm<BannerBodyType>({
+    resolver: zodResolver(bannerSchema),
+    defaultValues: {
+      ...initialData,
+    },
   });
 
-  function onSubmit({ status, ...values }: VenuesBodyType) {
+  function onSubmit({ status, ...values }: BannerBodyType) {
     startTransition(() => {
-      createVenues({
+      patchBanner({
         ...values,
+        id: initialData.id,
         status: (status as unknown as string) === 'true',
       })
         .then(() => {
-          toast.success('Created successfully');
+          toast.success('Updated successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -56,18 +66,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Venues"
-      submitText="Create"
+      title="Update Banner"
+      submitText="Update"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="venue_name"
+        name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue name</FormLabel>
+            <FormLabel>Title</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Venue name" {...field} />
+              <Input placeholder="Enter Title" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -76,58 +86,32 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="venue_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
-      />
-
-      <FormField
-        control={form.control}
-        name="venue_logo"
+        name="picture"
         render={({ field }) => (
           <UploadImageItem
             field={field}
-            imagePrefix="venue_logo"
-            label="Venue logo"
+            imagePrefix="picture"
+            label="Picture"
           />
         )}
       />
 
       <FormField
         control={form.control}
-        name="venue_email"
+        name="link"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Venue email</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Venue email" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <UploadImageItem field={field} imagePrefix="link" label="Link" />
         )}
       />
 
       <FormField
         control={form.control}
-        name="venue_phone"
+        name="location"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue phone</FormLabel>
+            <FormLabel>Location</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Venue phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="venue_location"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Venue location</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Venue location" {...field} />
+              <Input placeholder="Enter Location" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -140,7 +124,10 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value === 'true')}>
+            <Select
+              onValueChange={(value) => field.onChange(value === 'true')}
+              value={field.value?.toString()}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a Status" />

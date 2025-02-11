@@ -11,11 +11,11 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { deleteVenues } from './actions';
+import { deleteCategoryAttributes } from './actions';
 import { UpdateDialog } from './components';
-import { VenuesItemType } from './schema';
+import { CategoryAttributesItemType } from './schema';
 
-const Action = ({ row }: CellContext<VenuesItemType, unknown>) => {
+const Action = ({ row }: CellContext<CategoryAttributesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
@@ -35,7 +35,7 @@ const Action = ({ row }: CellContext<VenuesItemType, unknown>) => {
         loading={loading}
         action={() => {
           setLoading(true);
-          deleteVenues(row.original.id)
+          deleteCategoryAttributes(row.original.id)
             .then((c) => toast.success(c.data.message))
             .catch((c) => toast.error(c.message))
             .finally(() => {
@@ -46,7 +46,10 @@ const Action = ({ row }: CellContext<VenuesItemType, unknown>) => {
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.venue_name}</b>?
+            <b className="text-foreground">
+              {row.original.category_attributes_name}
+            </b>
+            ?
           </>
         }
       >
@@ -59,51 +62,52 @@ const Action = ({ row }: CellContext<VenuesItemType, unknown>) => {
   );
 };
 
-export const venuesColumns: ColumnDef<VenuesItemType>[] = [
-  {
-    accessorKey: 'id',
-    header: 'ID',
-    cell: ({ row }) => {
-      return <div className="px-1 py-2">{row.original.id}</div>;
+export const categoryAttributesColumns: ColumnDef<CategoryAttributesItemType>[] =
+  [
+    {
+      accessorKey: 'id',
+      header: 'ID',
+      cell: ({ row }) => {
+        return <div className="px-1 py-2">{row.original.id}</div>;
+      },
     },
-  },
-  {
-    id: 'venue_name',
-    accessorKey: 'venue_name',
-    header: 'Venue name',
-  },
-  {
-    id: 'venue_desc',
-    accessorKey: 'venue_desc',
-    header: 'Venue desc',
-  },
-  {
-    id: 'venue_logo',
-    accessorKey: 'venue_logo',
-    header: 'Venue logo',
-  },
-  {
-    id: 'venue_email',
-    accessorKey: 'venue_email',
-    header: 'Venue email',
-  },
-  {
-    id: 'venue_phone',
-    accessorKey: 'venue_phone',
-    header: 'Venue phone',
-  },
-  {
-    id: 'venue_location',
-    accessorKey: 'venue_location',
-    header: 'Venue location',
-  },
-  {
-    id: 'status',
-    accessorKey: 'status',
-    header: 'Status',
-  },
-  {
-    id: 'actions',
-    cell: Action,
-  },
-];
+    {
+      id: 'com_id',
+      accessorKey: 'com_id',
+      header: 'Com id',
+    },
+    {
+      id: 'cat_id',
+      accessorKey: 'cat_id',
+      header: 'Cat id',
+    },
+    {
+      id: 'attr_name',
+      accessorKey: 'attr_name',
+      header: 'Attr name',
+    },
+    {
+      id: 'attr_desc',
+      accessorKey: 'attr_desc',
+      header: 'Attr desc',
+    },
+    {
+      id: 'attr_type',
+      accessorKey: 'attr_type',
+      header: 'Attr type',
+    },
+    {
+      id: 'display_order',
+      accessorKey: 'display_order',
+      header: 'Display order',
+    },
+    {
+      id: 'status',
+      accessorKey: 'status',
+      header: 'Status',
+    },
+    {
+      id: 'actions',
+      cell: Action,
+    },
+  ];

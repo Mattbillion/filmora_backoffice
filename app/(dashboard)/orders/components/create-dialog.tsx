@@ -6,8 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -16,13 +14,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 
 import { createOrder } from '../actions';
 import { OrderBodyType, orderSchema } from '../schema';
@@ -35,11 +26,11 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     resolver: zodResolver(orderSchema),
   });
 
-  function onSubmit({ status, ...values }: OrderBodyType) {
+  function onSubmit({ order_status, ...values }: OrderBodyType) {
     startTransition(() => {
       createOrder({
         ...values,
-        status: (status as unknown as string) === 'true',
+        order_status: order_status as unknown as string,
       })
         .then(() => {
           toast.success('Created successfully');

@@ -1,10 +1,12 @@
 'use client';
 
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useEffect, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
+import { BranchItemType } from '@/app/(dashboard)/branches/schema';
+import { VenuesItemType } from '@/app/(dashboard)/venues/schema';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import UploadImageItem from '@/components/custom/upload-image-item';
@@ -24,16 +26,31 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createHalls } from '../actions';
+import { createHalls, fetchBranches, fetchVenues } from '../actions';
 import { HallsBodyType, hallsSchema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
+  const [branchIds, setBranchIds] = useState<BranchItemType[]>([]);
+  const [venues, setVenues] = useState<VenuesItemType[]>([]);
 
   const form = useForm<HallsBodyType>({
     resolver: zodResolver(hallsSchema),
   });
+
+  useEffect(() => {
+    fetchVenues()
+      .then((res) => setVenues(res.data.data))
+      .catch((err) => toast.error(err));
+    getBranch();
+  }, []);
+
+  function getBranch(filters?: Record<any, any>) {
+    fetchBranches(filters)
+      .then((res) => setBranchIds(res.data.data))
+      .catch((err) => toast.error(err));
+  }
 
   function onSubmit({ status, ...values }: HallsBodyType) {
     startTransition(() => {
@@ -62,54 +79,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     >
       <FormField
         control={form.control}
-        name="venue_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Venue id</FormLabel>
-            <Select onValueChange={(value) => field.onChange(Number(value))}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Venue id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="0">0</SelectItem>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="2">2</SelectItem>
-                <SelectItem value="3">3</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="branch_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Branch id</FormLabel>
-            <Select onValueChange={(value) => field.onChange(Number(value))}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Branch id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="0">0</SelectItem>
-                <SelectItem value="1">1</SelectItem>
-                <SelectItem value="2">2</SelectItem>
-                <SelectItem value="3">3</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="hall_name"
         render={({ field }) => (
           <FormItem>
@@ -124,8 +93,96 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="hall_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
+        name="status"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Status</FormLabel>
+            <Select onValueChange={(value) => field.onChange(value === 'true')}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Status" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="true">Active</SelectItem>
+                <SelectItem value="false">Inactive</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="venue_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Venue id</FormLabel>
+            <Select
+              onValueChange={(value) => {
+                field.onChange(Number(value));
+                getBranch({
+                  filters: `venue_id=${Number(value)}`,
+                });
+              }}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Venue id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="">
+                {venues.map((item) => (
+                  <SelectItem value={`${item.id}`} key={item.id}>
+                    {item.venue_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="branch_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Branch id</FormLabel>
+            <Select
+              onValueChange={(value) => field.onChange(Number(value))}
+              disabled={!venues}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Branch id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="0">
+                {branchIds.map((item) => (
+                  <SelectItem value={`${item.id}`} key={item.id}>
+                    {item.branch_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="hall_image"
+        render={({ field }) => (
+          <UploadImageItem
+            field={field}
+            imagePrefix="hall_image"
+            label="Hall image"
+          />
+        )}
       />
 
       <FormField
@@ -143,18 +200,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             </FormControl>
             <FormMessage />
           </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="hall_image"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="hall_image"
-            label="Hall image"
-          />
         )}
       />
 
@@ -220,24 +265,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value === 'true')}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Status" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="true">Active</SelectItem>
-                <SelectItem value="false">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
+        name="hall_desc"
+        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );

@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
@@ -24,20 +23,20 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createVenues } from '../actions';
-import { VenuesBodyType, venuesSchema } from '../schema';
+import { createBanner } from '../actions';
+import { BannerBodyType, bannerSchema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<VenuesBodyType>({
-    resolver: zodResolver(venuesSchema),
+  const form = useForm<BannerBodyType>({
+    resolver: zodResolver(bannerSchema),
   });
 
-  function onSubmit({ status, ...values }: VenuesBodyType) {
+  function onSubmit({ status, ...values }: BannerBodyType) {
     startTransition(() => {
-      createVenues({
+      createBanner({
         ...values,
         status: (status as unknown as string) === 'true',
       })
@@ -56,18 +55,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Venues"
+      title="Create new Banner"
       submitText="Create"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="venue_name"
+        name="title"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue name</FormLabel>
+            <FormLabel>Title</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Venue name" {...field} />
+              <Input placeholder="Enter Title" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -76,58 +75,36 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="venue_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
-      />
-
-      <FormField
-        control={form.control}
-        name="venue_logo"
+        name="picture"
         render={({ field }) => (
           <UploadImageItem
             field={field}
-            imagePrefix="venue_logo"
-            label="Venue logo"
+            imagePrefix="picture"
+            label="Picture"
           />
         )}
       />
 
       <FormField
         control={form.control}
-        name="venue_email"
+        name="link"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Venue email</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Venue email" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <UploadImageItem
+            field={field}
+            imagePrefix="picture"
+            label="Picture"
+          />
         )}
       />
 
       <FormField
         control={form.control}
-        name="venue_phone"
+        name="location"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue phone</FormLabel>
+            <FormLabel>Location</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Venue phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="venue_location"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Venue location</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Venue location" {...field} />
+              <Input placeholder="Enter Location" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

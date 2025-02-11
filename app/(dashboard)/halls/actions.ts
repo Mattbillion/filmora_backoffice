@@ -1,3 +1,5 @@
+import { BranchItemType, RVK_BRANCH } from '@/app/(dashboard)/branches/schema';
+import { RVK_VENUES, VenuesItemType } from '@/app/(dashboard)/venues/schema';
 import { xooxFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
@@ -85,5 +87,45 @@ export const getHalls = async (id: string) => {
   } catch (error) {
     console.error('Error fetching halls:', error);
     return { data: null, error };
+  }
+};
+
+export const fetchBranches = async (searchParams?: QueryParams) => {
+  try {
+    const { body, error } = await xooxFetch<PaginatedResType<BranchItemType[]>>(
+      '/branches',
+      {
+        method: 'GET',
+        searchParams,
+        next: { tags: [RVK_BRANCH] },
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    return { data: body };
+  } catch (error) {
+    console.error('Error fetching branches:', error);
+    return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
+  }
+};
+
+export const fetchVenues = async (searchParams?: QueryParams) => {
+  try {
+    const { body, error } = await xooxFetch<PaginatedResType<VenuesItemType[]>>(
+      '/venues',
+      {
+        method: 'GET',
+        searchParams,
+        next: { tags: [RVK_VENUES] },
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    return { data: body };
+  } catch (error) {
+    console.error('Error fetching Venues:', error);
+    return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
   }
 };

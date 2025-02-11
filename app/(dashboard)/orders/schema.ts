@@ -8,7 +8,7 @@ export const orderSchema = z.object({
   order_status: z.string(),
   payment_method: z.null(),
   payment_deadline: z.string(),
-  purchase_at: z.null(),
+  purchase_at: z.date(),
   order_date: z.string(),
   order_time: z.string(),
   user_id: z.string(),

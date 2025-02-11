@@ -24,29 +24,33 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { patchVenues } from '../actions';
-import { VenuesBodyType, VenuesItemType, venuesSchema } from '../schema';
+import { patchCategoryAttributes } from '../actions';
+import {
+  CategoryAttributesBodyType,
+  CategoryAttributesItemType,
+  categoryAttributesSchema,
+} from '../schema';
 
 export function UpdateDialog({
   children,
   initialData,
 }: {
   children: ReactNode;
-  initialData: VenuesItemType;
+  initialData: CategoryAttributesItemType;
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<VenuesBodyType>({
-    resolver: zodResolver(venuesSchema),
+  const form = useForm<CategoryAttributesBodyType>({
+    resolver: zodResolver(categoryAttributesSchema),
     defaultValues: {
       ...initialData,
     },
   });
 
-  function onSubmit({ status, ...values }: VenuesBodyType) {
+  function onSubmit({ status, ...values }: CategoryAttributesBodyType) {
     startTransition(() => {
-      patchVenues({
+      patchCategoryAttributes({
         ...values,
         id: initialData.id,
         status: (status as unknown as string) === 'true',
@@ -66,18 +70,72 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update Venues"
+      title="Update CategoryAttributes"
       submitText="Update"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="venue_name"
+        name="com_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue name</FormLabel>
+            <FormLabel>Com id</FormLabel>
+            <Select
+              onValueChange={(value) => field.onChange(Number(value))}
+              value={field.value?.toString()}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Com id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="0">0</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="cat_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Cat id</FormLabel>
+            <Select
+              onValueChange={(value) => field.onChange(Number(value))}
+              value={field.value?.toString()}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Cat id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="0">0</SelectItem>
+                <SelectItem value="1">1</SelectItem>
+                <SelectItem value="2">2</SelectItem>
+                <SelectItem value="3">3</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="attr_name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Attr name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Venue name" {...field} />
+              <Input placeholder="Enter Attr name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -86,30 +144,18 @@ export function UpdateDialog({
 
       <FormField
         control={form.control}
-        name="venue_desc"
+        name="attr_desc"
         render={({ field }) => <HtmlTipTapItem field={field} />}
       />
 
       <FormField
         control={form.control}
-        name="venue_logo"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="venue_logo"
-            label="Venue logo"
-          />
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="venue_email"
+        name="attr_type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue email</FormLabel>
+            <FormLabel>Attr type</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Venue email" {...field} />
+              <Input placeholder="Enter Attr type" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -118,26 +164,16 @@ export function UpdateDialog({
 
       <FormField
         control={form.control}
-        name="venue_phone"
+        name="display_order"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue phone</FormLabel>
+            <FormLabel>Display order</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Venue phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="venue_location"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Venue location</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Venue location" {...field} />
+              <Input
+                placeholder="Enter Display order"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

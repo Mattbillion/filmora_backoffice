@@ -118,7 +118,7 @@ export function UpdateDialog({
                         render={({ field }) => (
                             <FormItem>
                                 <FormLabel>{{sentenceCase key}}</FormLabel>
-                                <Select onValueChange={(value) => field.onChange(value === "boolean")} value={field.value?.toString()}>
+                                <Select onValueChange={(value) => field.onChange(value === "true")} value={field.value?.toString()}>
                                 <FormControl>
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a {{sentenceCase key}}" />

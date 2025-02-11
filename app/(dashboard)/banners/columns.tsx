@@ -11,13 +11,13 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { delete{{pascalCase route-name}} } from './actions';
+import { deleteBanner } from './actions';
 import { UpdateDialog } from './components';
-import { {{pascalCase route-name}}ItemType } from './schema';
+import { BannerItemType } from './schema';
 
-const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown>) => {
+const Action = ({ row }: CellContext<BannerItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
-  const deleteDialogRef = useRef< DeleteDialogRef >(null);
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
   return (
     <div className="me-2 flex justify-end gap-4">
@@ -35,7 +35,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         loading={loading}
         action={() => {
           setLoading(true);
-          delete{{pascalCase route-name}}(row.original.id)
+          deleteBanner(row.original.id)
             .then((c) => toast.success(c.data.message))
             .catch((c) => toast.error(c.message))
             .finally(() => {
@@ -46,7 +46,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.{{snakeCase route-name}}_name}</b>?
+            <b className="text-foreground">{row.original.banner_name}</b>?
           </>
         }
       >
@@ -59,7 +59,7 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
   );
 };
 
-export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}}ItemType>[] = [
+export const bannerColumns: ColumnDef<BannerItemType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
@@ -67,15 +67,36 @@ export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}
       return <div className="px-1 py-2">{row.original.id}</div>;
     },
   },
-    {{#if rawData}}
-        {{#each rawData}}
-          {
-            id: '{{key}}',
-            accessorKey: '{{key}}',
-            header: '{{sentenceCase key}}',
-          },
-        {{/each}}
-    {{/if}}
+  {
+    id: 'title',
+    accessorKey: 'title',
+    header: 'Title',
+  },
+  {
+    id: 'picture',
+    accessorKey: 'picture',
+    header: 'Picture',
+  },
+  {
+    id: 'link',
+    accessorKey: 'link',
+    header: 'Link',
+  },
+  {
+    id: 'location',
+    accessorKey: 'location',
+    header: 'Location',
+  },
+  {
+    id: 'special_cat_id',
+    accessorKey: 'special_cat_id',
+    header: 'Special cat id',
+  },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: 'Status',
+  },
   {
     id: 'actions',
     cell: Action,
