@@ -6,8 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
