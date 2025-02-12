@@ -34,15 +34,14 @@ type ErrorType = {
 }[];
 
 export async function xooxFetch<
-  T extends object &
-    Partial<{
-      detail?: ErrorType;
-      error?: string;
-      success?: boolean;
-      message?: boolean;
-      data?: any;
-      status?: number;
-    }>,
+  T extends object & {
+    detail?: ErrorType;
+    error?: string;
+    success?: boolean;
+    message?: string;
+    data?: any;
+    status?: string;
+  },
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
   try {
     const session = await auth();
@@ -61,7 +60,7 @@ export async function xooxFetch<
     const response = await fetch(endpoint, fetchOptions);
     const body: T = await response.json();
 
-    if (!response.ok)
+    if (!response.ok || body?.status !== 'success')
       throw new Error(
         body?.detail?.[0]?.msg ||
           body?.error ||

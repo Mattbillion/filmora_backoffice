@@ -68,25 +68,49 @@ export const companyColumns: ColumnDef<CompanyItemType>[] = [
     },
   },
   {
+    id: 'company_name',
     accessorKey: 'company_name',
-    header: 'Name',
+    header: 'Company name',
   },
   {
+    id: 'company_desc',
+    accessorKey: 'company_desc',
+    header: 'Company desc',
+  },
+  {
+    id: 'company_register',
     accessorKey: 'company_register',
-    header: 'Register',
+    header: 'Company register',
   },
   {
-    accessorKey: 'company_phone',
-    header: 'Phone',
+    id: 'company_logo',
+    accessorKey: 'company_logo',
+    header: 'Company logo',
   },
   {
+    id: 'company_email',
     accessorKey: 'company_email',
-    header: 'Email',
+    header: 'Company email',
+  },
+  {
+    id: 'company_phone',
+    accessorKey: 'company_phone',
+    header: 'Company phone',
+  },
+  {
+    id: 'company_phone2',
+    accessorKey: 'company_phone2',
+    header: 'Company phone2',
+  },
+  {
+    id: 'company_location',
+    accessorKey: 'company_location',
+    header: 'Company location',
   },
   {
     id: 'status',
+    accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
   },
   {
     id: 'actions',

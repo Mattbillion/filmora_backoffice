@@ -10,7 +10,7 @@ function schemaFallback(name) {
   return `const ${name}Schema = z.object({});`;
 }
 
-const cache = new NodeCache({ stdTTL: 300 }); // by seconds
+const cache = new NodeCache({ stdTTL: 10 }); // by seconds
 
 module.exports = {
   fetchZodSchema: (path, name) => {

@@ -26,7 +26,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/employees?company_id=6&page=1&page_size=10",
+              "raw": "{{base_url}}/employees?company_id=11&page=1&page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -36,7 +36,7 @@
               "query": [
                 {
                   "key": "company_id",
-                  "value": "6"
+                  "value": "11"
                 },
                 {
                   "key": "page",
@@ -93,7 +93,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIwMWYzOTY1ZC01MTI3LTRiYzMtOTdkYS0xNGNkOTRmNDFhOTYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzQ0MDY4MDJ9.lzApM6ABJ2RIlp-Pm_sN_EoK9URQJHDWLPj-h8O960Y",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk0MTUxMDN9.CluQHrMDP3kepmDAvghflYPrBxp76lwcY-l39ALXC_M",
                   "type": "string"
                 }
               ]
@@ -2758,7 +2758,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWVfcmVmcmVzaCIsImV4cCI6MTc0MTc2ODAxOH0.s4jnsfGsncupCHYjK1b_xnZlbO2Xow7jLAf7Q2VevOg",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk0MTUxMDN9.CluQHrMDP3kepmDAvghflYPrBxp76lwcY-l39ALXC_M",
       "type": "string"
     }
   ]
