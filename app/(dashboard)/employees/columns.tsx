@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button';
 
 import { deleteEmployee } from './actions';
-import { ChangePasswordDialog, UpdateDialog } from './components';
+import { UpdateDialog } from './components';
 import { EmployeeItemType } from './schema';
 
 const Action = ({ row }: CellContext<EmployeeItemType, unknown>) => {
@@ -31,12 +31,6 @@ const Action = ({ row }: CellContext<EmployeeItemType, unknown>) => {
           <Edit className="h-4 w-4" /> Edit
         </Button>
       </UpdateDialog>
-
-      <ChangePasswordDialog initialData={row.original}>
-        <Button size={'cxs'} variant="outline">
-          Нууц үг солих
-        </Button>
-      </ChangePasswordDialog>
 
       <ChangeEmailDialog initialData={row.original}>
         <Button size={'cxs'} variant="outline">
