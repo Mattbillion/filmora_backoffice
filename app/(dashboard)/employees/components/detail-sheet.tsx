@@ -19,8 +19,9 @@ export function DetailSheet({
   children: ReactNode;
   initialData: EmployeeItemType;
 }) {
+  const [open, setOpen] = React.useState(false);
   return (
-    <Sheet>
+    <Sheet onOpenChange={(state) => setOpen(state)} open={open}>
       <SheetTrigger asChild>
         <p>{children}</p>
       </SheetTrigger>
@@ -30,7 +31,10 @@ export function DetailSheet({
         </SheetHeader>
 
         {/*Forms*/}
-        <ChangePasswordForm initialData={initialData} />
+        <ChangePasswordForm
+          initialData={initialData}
+          closeSheet={() => setOpen(false)}
+        />
       </SheetContent>
     </Sheet>
   );

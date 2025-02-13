@@ -3,10 +3,10 @@
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, Trash } from 'lucide-react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 
 import { ChangeEmailDialog } from '@/app/(dashboard)/employees/components/change-email-dialog';
-import { DetailSheet } from '@/app/(dashboard)/employees/components/detail-sheet';
 import {
   DeleteDialog,
   DeleteDialogRef,
@@ -73,10 +73,11 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
     header: 'ID',
     cell: ({ row }) => {
       return (
-        <DetailSheet initialData={row.original}>{row.original.id}</DetailSheet>
+        <Link href={`/employees/${row.original.id}`}>{row.original.id}</Link>
       );
     },
   },
+
   {
     id: 'firstname',
     accessorKey: 'firstname',

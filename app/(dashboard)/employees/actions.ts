@@ -77,12 +77,19 @@ export const getEmployeeList = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getEmployee = async (id: string) => {
+export const getEmployee = async ({
+  id,
+  searchParams,
+}: {
+  id: string;
+  searchParams?: QueryParams;
+}) => {
   try {
     const { body, error } = await xooxFetch<{ data: EmployeeItemType }>(
       `/employees/${id}`,
       {
         method: 'GET',
+        searchParams,
         next: { tags: [`${RVK_EMPLOYEE}_${id}`] },
       },
     );
