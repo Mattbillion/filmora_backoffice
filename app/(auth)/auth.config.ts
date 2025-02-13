@@ -10,7 +10,7 @@ export const authConfig = {
   providers: [],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
+      const isLoggedIn = !!auth?.user?.id;
       const pathname = nextUrl.pathname;
       const isAuthRoute =
         pathname.startsWith('/register') || pathname.startsWith('/login');
