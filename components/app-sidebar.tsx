@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { ComponentProps, useEffect } from 'react';
+import { ComponentProps, Suspense, useEffect } from 'react';
+import { sentenceCase } from 'change-case-all';
 import { useSession } from 'next-auth/react';
 
-// import { SidebarMenuGroup } from "@/components/sidebar-menu-group";
+import { menuData } from '@/components/constants/menu';
 import { NavUser } from '@/components/nav-user';
+import { SidebarMenuGroup } from '@/components/sidebar-menu-group';
 import { TeamSwitcher } from '@/components/team-switcher';
 import {
   Sidebar,
@@ -51,6 +53,11 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         {/*    <SidebarMenuGroup items={adminMenu} label="Administration" />*/}
         {/*  </Suspense>*/}
         {/*)}*/}
+        {Object.entries(menuData).map(([group, menus], idx) => (
+          <Suspense key={idx}>
+            <SidebarMenuGroup items={menus} label={sentenceCase(group)} />
+          </Suspense>
+        ))}
         <RevalidateMenu />
       </SidebarContent>
       <SidebarFooter>{session && <NavUser session={session} />}</SidebarFooter>

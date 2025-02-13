@@ -1,20 +1,19 @@
 import {
-  Archive,
-  BookHeart,
-  Disc3,
-  FolderClock,
-  LayoutTemplate,
+  Building2,
+  Combine,
+  DoorOpen,
+  Flag,
+  GitBranch,
+  Layers,
+  List,
   type LucideIcon,
-  Moon,
-  Newspaper,
-  Podcast,
-  SquareLibrary,
-  SquarePlay,
-  SquareUserRound,
-  TableOfContents,
+  MapPin,
+  Percent,
+  Shield,
+  ShieldCheck,
+  ShoppingCart,
   Tag,
-  Trophy,
-  Users,
+  UserCog,
 } from 'lucide-react';
 
 export type SubMenuItemType = {
@@ -25,126 +24,91 @@ export type SubMenuItemType = {
   children?: Omit<SubMenuItemType, 'children'>[];
 };
 
-// [
-//   'age-restrictions',
-//   'attribute-values',
-//   'banner',
-//   'branch',
-//   'category',
-//   'category-attributes',
-//   'company',
-//   'company-category',
-//   'discount',
-//   'hall',
-//   'merchandise',
-//   'merchandise-attribute-values',
-//   'order',
-//   'permission',
-//   'role',
-//   'role-permissions-list',
-//   'transaction',
-//   'venue'
-// ]
-
-export const navMain = [
+const managementRoutes: SubMenuItemType[] = [
   {
-    title: 'Trainings',
-    url: '/trainings',
-    icon: Trophy,
-    subRoutes: true,
+    title: 'Age Restrictions',
+    url: '/age-restrictions',
+    icon: Shield,
   },
   {
-    title: 'Albums',
-    url: '/albums',
-    icon: Disc3,
-    subRoutes: true,
-  },
-  {
-    title: 'Moods',
-    url: '/moods',
-    icon: Moon,
-    subRoutes: true,
-  },
-  {
-    title: 'Books',
-    url: '/books',
-    icon: BookHeart,
-  },
-  {
-    title: 'Article',
-    url: '/article',
-    icon: Newspaper,
-  },
-  {
-    title: 'Podcasts',
-    url: '/podcasts',
-    icon: Podcast,
-  },
-  {
-    title: 'Videos',
-    url: '/videos',
-    icon: SquarePlay,
+    title: 'Attribute Values',
+    url: '/attribute-values',
+    icon: Tag,
   },
   {
     title: 'Banners',
     url: '/banners',
-    icon: LayoutTemplate,
+    icon: Flag,
   },
   {
-    title: 'Magazine',
-    url: '/magazines',
-    icon: SquareLibrary,
-    subRoutes: true,
-    children: [
-      // {
-      //   title: "Articles",
-      //   url: "/magazines/articles",
-      // },
-      {
-        title: 'Category',
-        url: '/magazines/category',
-      },
-    ],
+    title: 'Branches',
+    url: '/branches',
+    icon: GitBranch,
   },
-] as const;
+  {
+    title: 'Categories',
+    url: '/category',
+    icon: List,
+  },
+  {
+    title: 'Category Attributes',
+    url: '/category-attributes',
+    icon: Layers,
+  },
+];
 
-export const navAdmin = [
+const companyRoutes: SubMenuItemType[] = [
   {
-    title: 'Tags',
-    url: '/tags',
-    icon: Tag,
+    title: 'Company',
+    url: '/company',
+    icon: Building2,
   },
   {
-    title: 'FAQs',
-    url: '/faqs',
-    icon: TableOfContents,
+    title: 'Company Categories',
+    url: '/company-categories',
+    icon: Combine,
+  },
+];
+
+const operationsRoutes: SubMenuItemType[] = [
+  {
+    title: 'Discounts',
+    url: '/discounts',
+    icon: Percent,
   },
   {
-    title: 'Employees',
-    url: '/employees',
-    icon: SquareUserRound,
-  },
-  {
-    title: 'Users',
-    url: '/users',
-    icon: Users,
-    subRoutes: true,
+    title: 'Halls',
+    url: '/halls',
+    icon: DoorOpen,
   },
   {
     title: 'Orders',
     url: '/orders',
-    icon: Archive,
+    icon: ShoppingCart,
+  },
+];
+
+const settingsRoutes: SubMenuItemType[] = [
+  {
+    title: 'Permissions',
+    url: '/permission',
+    icon: ShieldCheck,
   },
   {
-    title: 'Activity logs',
-    url: '/logs',
-    icon: FolderClock,
+    title: 'Roles',
+    url: '/role',
+    icon: UserCog,
   },
-] as const;
+  {
+    title: 'Venues',
+    url: '/venues',
+    icon: MapPin,
+  },
+];
 
 export const menuData: Record<string, SubMenuItemType[]> = {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  // @ts-ignore
-  navMain: [...navMain].sort((a, b) => a.title.localeCompare(b.title)),
-  navAdmin: [...navAdmin].sort((a, b) => a.title.localeCompare(b.title)),
+  management: managementRoutes,
+  company: companyRoutes,
+  operations: operationsRoutes,
+  settings: settingsRoutes,
 };

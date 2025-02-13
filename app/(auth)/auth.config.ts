@@ -15,13 +15,11 @@ export const authConfig = {
       const isAuthRoute =
         pathname.startsWith('/register') || pathname.startsWith('/login');
       // route ingej shalgahgvi bol assets uri dr buruu uri butsna shvv.
-      const isSomewhere = [
-        ...menuData.navMain,
-        ...menuData.navAdmin,
-        { url: '/' } as SubMenuItemType,
-      ].some((c) =>
-        c.subRoutes ? pathname.startsWith(c.url) : c.url === pathname,
-      );
+      const isSomewhere = [{ url: '/' } as SubMenuItemType]
+        .concat(...Object.values(menuData))
+        .some((c) =>
+          c.subRoutes ? pathname.startsWith(c.url) : c.url === pathname,
+        );
 
       if (isLoggedIn && isAuthRoute)
         return Response.redirect(new URL('/', nextUrl));
