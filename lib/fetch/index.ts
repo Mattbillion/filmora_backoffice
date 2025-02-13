@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
-import { auth } from '@/app/(auth)/auth';
+import { auth, signOut } from '@/app/(auth)/auth';
 
 import {
   clearObj,
@@ -65,6 +65,7 @@ export async function xooxFetch<
         body?.detail?.[0]?.msg ||
           body?.error ||
           (body as any)?.message ||
+          (typeof body?.detail === 'string' ? body?.detail : undefined) ||
           String(response.status),
       );
 
@@ -81,7 +82,8 @@ export async function xooxFetch<
     );
     const errString: string = error?.error ?? error?.message ?? String(error);
 
-    // if(errString.toLocaleLowerCase().includes('jwt expired')) return signOut();
+    if (errString.toLocaleLowerCase().includes('хүчингүй токен'))
+      return signOut();
     throw new Error(errString);
   }
 }
