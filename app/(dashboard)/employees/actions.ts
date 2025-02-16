@@ -77,6 +77,22 @@ export const getEmployeeList = async (searchParams?: QueryParams) => {
   }
 };
 
+export const getUserInfo = async () => {
+  try {
+    const { body, error } = await xooxFetch<{ companyId: string }>(
+      `/employeeinfo`,
+      {
+        method: 'GET',
+      },
+    );
+    if (error) throw new Error(error);
+    return { userData: body };
+  } catch (error) {
+    console.error('Error fetching employees:', error);
+    return { data: null, error };
+  }
+};
+
 export const getEmployee = async ({
   id,
   searchParams,

@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
+import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
@@ -17,7 +18,11 @@ export default async function EmployeePage(props: {
   searchParams?: SearchParams;
 }) {
   const searchParams = await props.searchParams;
-  const { data } = await getEmployeeList(searchParams);
+  const session = await auth();
+  const { data } = await getEmployeeList({
+    company_id: (session?.user as any)?.company_id,
+    ...searchParams,
+  });
 
   return (
     <>
@@ -35,7 +40,7 @@ export default async function EmployeePage(props: {
       <Suspense fallback="Loading">
         <DataTable
           columns={employeeColumns}
-          data={data?.data}
+          data={data.data}
           pageNumber={data?.pagination?.nextPage - 1}
           pageCount={data?.pagination?.pageCount}
         />

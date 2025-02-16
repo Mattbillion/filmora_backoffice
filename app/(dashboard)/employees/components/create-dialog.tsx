@@ -38,6 +38,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       .then((res) => {
         setCompanies(res.data.data || []);
       })
+
       .catch((e) => toast.error(e));
   }, []);
   const form = useForm<EmployeeBodyType>({

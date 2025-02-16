@@ -1,45 +1,65 @@
-'use client';
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
+import { z } from 'zod';
 
 import { getEmployee } from '@/app/(dashboard)/employees/actions';
-import { EmployeeItemType } from '@/app/(dashboard)/employees/schema';
+import { EditForm } from '@/app/(dashboard)/employees/components/edit/edit-form';
+import { BaseType, PrettyType } from '@/lib/fetch/types';
 
-export default function Page() {
-  const { id } = useParams();
-  const [employeeData, setEmployeeData] = useState<EmployeeItemType>();
-  const [loading, setLoading] = useState(true);
-  console.log(employeeData, '<');
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-  useEffect(() => {
-    if (!id) return;
-    setLoading(true);
-    getEmployee({
-      id: id.toString(),
-      searchParams: {
-        company_id: '11',
-      },
-    })
-      .then((res) => {
-        if (res.data?.data) {
-          setEmployeeData(res.data?.data);
-        }
-        setLoading(false);
-      })
-      .catch((e) => console.error(e));
-  }, [id]);
+  const { data } = await getEmployee({
+    id: id,
+  });
+
+  const userData = data?.data;
+
+  if (!userData) {
+    return 'Alga alaa';
+  }
+
+  // firstname: z.string(),
+  //   lastname: z.string(),
+  //   phone: z.string(),
+  //   email: z.string(),
+  //   profile: z.string(),
+  //   email_verified: z.boolean(),
+  //   company_id: z.number(),
+  //   status: z.boolean(),
+  //   last_logged_at: z.null().optional(),
+  //   password: z.string().min(6).optional(),
+  //   confirmPassword: z.string().min(6).optional(),
+
   return (
     <div>
       <div className="relative h-[320px] w-[320px] overflow-hidden">
         <Image
-          src="https://xoox.mn.s3.us-west-1.amazonaws.com/public/05a07b5f-ae65-4d7f-84ca-233a7405ef9c.png"
-          alt={employeeData?.firstname || ''}
+          src={userData.profile || ''}
+          alt={userData.firstname || ''}
           className="aspect-square object-cover"
           unoptimized
           fill
         />
       </div>
+      <EditForm initialData={userData!} />
     </div>
   );
 }
+
+const userInfoSchema = z.object({
+  firstname: z.string(),
+  lastname: z.string(),
+  phone: z.string(),
+  email: z.string(),
+  profile: z.string(),
+  emailVerified: z.string(),
+  company_id: z.string(),
+  status: z.boolean(),
+});
+
+export type UserBodyType = z.infer<typeof userInfoSchema>;
+type UserBodyItem = PrettyType<BaseType<UserBodyType>>;

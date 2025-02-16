@@ -23,7 +23,7 @@ export default function UploadImageItem({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
   imagePrefix: string;
-  label: string;
+  label?: string;
 }) {
   const { clearErrors, setError } = useFormContext();
   const [loading, setLoading] = useState(false);
@@ -33,7 +33,7 @@ export default function UploadImageItem({
 
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      {label && <FormLabel>{label}</FormLabel>}
       <FormControl>
         <div className="flex items-center gap-2">
           {!!(preview || validImage) && (
