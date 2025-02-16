@@ -3,7 +3,6 @@ import { z } from 'zod';
 
 import { getEmployee } from '@/app/(dashboard)/employees/actions';
 import { EditForm } from '@/app/(dashboard)/employees/components/edit/edit-form';
-import { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export default async function Page({
   params,
@@ -62,4 +61,3 @@ const userInfoSchema = z.object({
 });
 
 export type UserBodyType = z.infer<typeof userInfoSchema>;
-type UserBodyItem = PrettyType<BaseType<UserBodyType>>;
