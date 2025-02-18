@@ -14,6 +14,7 @@ import {
   ShoppingCart,
   Tag,
   UserCog,
+  UserIcon,
 } from 'lucide-react';
 
 export type SubMenuItemType = {
@@ -62,6 +63,11 @@ const companyRoutes: SubMenuItemType[] = [
     title: 'Company',
     url: '/company',
     icon: Building2,
+  },
+  {
+    title: 'Employees',
+    url: '/employees',
+    icon: UserIcon,
   },
   {
     title: 'Company Categories',

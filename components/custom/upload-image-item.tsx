@@ -19,11 +19,13 @@ export default function UploadImageItem({
   field,
   imagePrefix,
   label,
+  disabled,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
   imagePrefix: string;
-  label: string;
+  label?: string;
+  disabled?: boolean;
 }) {
   const { clearErrors, setError } = useFormContext();
   const [loading, setLoading] = useState(false);
@@ -33,7 +35,7 @@ export default function UploadImageItem({
 
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      {label && <FormLabel>{label}</FormLabel>}
       <FormControl>
         <div className="flex items-center gap-2">
           {!!(preview || validImage) && (
@@ -53,7 +55,7 @@ export default function UploadImageItem({
           <Input
             type="file"
             accept="image/*"
-            disabled={loading}
+            disabled={loading || disabled}
             className="block content-center"
             onChange={(e) => {
               const file = e.target.files?.[0];

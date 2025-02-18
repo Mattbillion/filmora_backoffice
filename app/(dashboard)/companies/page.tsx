@@ -7,23 +7,23 @@ import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
 
-import { getCompanies } from './actions';
+import { getCompanyList } from './actions';
 import { companyColumns } from './columns';
 import { CreateDialog } from './components';
 
 export const dynamic = 'force-dynamic';
 
-export default async function Companies(props: {
+export default async function CompanyPage(props: {
   searchParams?: SearchParams;
 }) {
   const searchParams = await props.searchParams;
-  const { data } = await getCompanies(searchParams);
+  const { data } = await getCompanyList(searchParams);
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Companies (${data?.pagination?.total ?? data?.data?.length})`}
+          title={`Company list (${data?.pagination?.total ?? data?.data?.length})`}
         />
         <CreateDialog>
           <Button className="text-xs md:text-sm">
@@ -34,7 +34,6 @@ export default async function Companies(props: {
       <Separator />
       <Suspense fallback="Loading">
         <DataTable
-          searchKey="company_register"
           columns={companyColumns}
           data={data?.data}
           pageNumber={data?.pagination?.nextPage - 1}

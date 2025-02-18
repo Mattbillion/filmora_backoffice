@@ -2,7 +2,8 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
+import Link from 'next/link';
 import { toast } from 'sonner';
 
 import {
@@ -11,31 +12,21 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { deleteCompany } from './actions';
-import { UpdateDialog } from './components';
-import { CompanyItemType } from './schema';
+import { deleteEmployee } from './actions';
+import { EmployeeItemType } from './schema';
 
-const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
+const Action = ({ row }: CellContext<EmployeeItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
 
   return (
     <div className="me-2 flex justify-end gap-4">
-      <UpdateDialog
-        initialData={row.original}
-        key={JSON.stringify(row.original)}
-      >
-        <Button size={'cxs'} variant="outline">
-          <Edit className="h-4 w-4" /> Edit
-        </Button>
-      </UpdateDialog>
-
       <DeleteDialog
         ref={deleteDialogRef}
         loading={loading}
         action={() => {
           setLoading(true);
-          deleteCompany(row.original.id)
+          deleteEmployee(row.original.id)
             .then((c) => toast.success(c.data.message))
             .catch((c) => toast.error(c.message))
             .finally(() => {
@@ -46,7 +37,7 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.company_name}</b>?
+            <b className="text-foreground">{row.original.firstname}</b>?
           </>
         }
       >
@@ -59,34 +50,66 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
   );
 };
 
-export const companyColumns: ColumnDef<CompanyItemType>[] = [
+export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
     cell: ({ row }) => {
-      return <div className="px-1 py-2">{row.original.id}</div>;
+      return (
+        <Link
+          href={`/employees/${row.original.id}`}
+          className="hover:underline"
+        >
+          {row.original.id}
+        </Link>
+      );
     },
   },
+
   {
-    accessorKey: 'company_name',
-    header: 'Name',
+    id: 'firstname',
+    accessorKey: 'firstname',
+    header: 'Firstname',
   },
   {
-    accessorKey: 'company_register',
-    header: 'Register',
+    id: 'lastname',
+    accessorKey: 'lastname',
+    header: 'Lastname',
   },
   {
-    accessorKey: 'company_phone',
+    id: 'phone',
+    accessorKey: 'phone',
     header: 'Phone',
   },
   {
-    accessorKey: 'company_email',
+    id: 'email',
+    accessorKey: 'email',
     header: 'Email',
   },
   {
+    id: 'profile',
+    accessorKey: 'profile',
+    header: 'Profile',
+  },
+  {
+    id: 'email_verified',
+    accessorKey: 'email_verified',
+    header: 'Email verified',
+  },
+  {
+    id: 'company_id',
+    accessorKey: 'company_id',
+    header: 'Company id',
+  },
+  {
     id: 'status',
+    accessorKey: 'status',
     header: 'Status',
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+  },
+  {
+    id: 'last_logged_at',
+    accessorKey: 'last_logged_at',
+    header: 'Last logged at',
   },
   {
     id: 'actions',
