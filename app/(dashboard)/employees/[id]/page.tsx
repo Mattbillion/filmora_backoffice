@@ -1,8 +1,10 @@
-import Image from 'next/image';
 import { z } from 'zod';
 
 import { getEmployee } from '@/app/(dashboard)/employees/actions';
-import { EditForm } from '@/app/(dashboard)/employees/components/edit/edit-form';
+import { ChangeEmail } from '@/app/(dashboard)/employees/components/edit/change-email';
+import { EmployeeCard } from '@/app/(dashboard)/employees/components/employee-card';
+
+import { ChangePassword, EditForm } from '../components/edit';
 
 export default async function Page({
   params,
@@ -21,30 +23,14 @@ export default async function Page({
     return 'Alga alaa';
   }
 
-  // firstname: z.string(),
-  //   lastname: z.string(),
-  //   phone: z.string(),
-  //   email: z.string(),
-  //   profile: z.string(),
-  //   email_verified: z.boolean(),
-  //   company_id: z.number(),
-  //   status: z.boolean(),
-  //   last_logged_at: z.null().optional(),
-  //   password: z.string().min(6).optional(),
-  //   confirmPassword: z.string().min(6).optional(),
-
   return (
-    <div>
-      <div className="relative h-[320px] w-[320px] overflow-hidden">
-        <Image
-          src={userData.profile || ''}
-          alt={userData.firstname || ''}
-          className="aspect-square object-cover"
-          unoptimized
-          fill
-        />
-      </div>
+    <div className="flex flex-col gap-6">
+      <EmployeeCard userData={userData} />
       <EditForm initialData={userData!} />
+      <div className="flex gap-4">
+        <ChangePassword initialData={userData!} />
+        <ChangeEmail initialData={userData!} />
+      </div>
     </div>
   );
 }

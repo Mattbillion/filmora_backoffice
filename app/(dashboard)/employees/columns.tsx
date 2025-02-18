@@ -2,11 +2,10 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
-import { ChangeEmailDialog } from '@/app/(dashboard)/employees/components/change-email-dialog';
 import {
   DeleteDialog,
   DeleteDialogRef,
@@ -14,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 
 import { deleteEmployee } from './actions';
-import { UpdateDialog } from './components';
 import { EmployeeItemType } from './schema';
 
 const Action = ({ row }: CellContext<EmployeeItemType, unknown>) => {
@@ -23,21 +21,6 @@ const Action = ({ row }: CellContext<EmployeeItemType, unknown>) => {
 
   return (
     <div className="me-2 flex justify-end gap-4">
-      <UpdateDialog
-        initialData={row.original}
-        key={JSON.stringify(row.original)}
-      >
-        <Button size={'cxs'} variant="outline">
-          <Edit className="h-4 w-4" /> Edit
-        </Button>
-      </UpdateDialog>
-
-      <ChangeEmailDialog initialData={row.original}>
-        <Button size={'cxs'} variant="outline">
-          Имэйл хаяг солих
-        </Button>
-      </ChangeEmailDialog>
-
       <DeleteDialog
         ref={deleteDialogRef}
         loading={loading}
@@ -73,7 +56,12 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
     header: 'ID',
     cell: ({ row }) => {
       return (
-        <Link href={`/employees/${row.original.id}`}>{row.original.id}</Link>
+        <Link
+          href={`/employees/${row.original.id}`}
+          className="hover:underline"
+        >
+          {row.original.id}
+        </Link>
       );
     },
   },

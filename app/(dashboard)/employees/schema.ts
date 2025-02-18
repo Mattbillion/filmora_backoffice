@@ -32,7 +32,7 @@ export const employeeChangePassword = z.object({
 });
 
 export const employeeChangeEmail = z.object({
-  email: z.string().min(6).optional(),
+  email: z.string().email(),
   company_id: z.number(),
 });
 

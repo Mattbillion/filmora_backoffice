@@ -31,14 +31,15 @@ export const patchEmployee = async ({
   id,
   ...bodyData
 }: EmployeeBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: EmployeeItemType }>(
-    `/employees/${id}`,
-    {
-      method: 'PUT',
-      body: bodyData,
-      cache: 'no-store',
-    },
-  );
+  const { body, error } = await xooxFetch<{
+    data: EmployeeItemType;
+    status: string;
+    message: string;
+  }>(`/employees/${id}`, {
+    method: 'PUT',
+    body: bodyData,
+    cache: 'no-store',
+  });
 
   if (error) throw new Error(error);
 
@@ -127,6 +128,7 @@ export const changeEmployeePassword = async ({
     const { body, error } = await xooxFetch<{
       data: EmployeeChangePasswordBody;
       message?: string;
+      status?: string;
     }>(`/employees/${userId}/change-password`, {
       method: 'PUT',
       body: bodyData,
@@ -149,8 +151,9 @@ export const changeEmployeeEmail = async ({
 }: EmployeeChangeEmailBody & { userId: number }) => {
   try {
     const { body, error } = await xooxFetch<{
-      data: EmployeeChangePasswordBody;
+      data: EmployeeChangeEmailBody;
       message?: string;
+      status?: string;
     }>(`/employees/${userId}/change-email`, {
       method: 'PUT',
       body: bodyData,
