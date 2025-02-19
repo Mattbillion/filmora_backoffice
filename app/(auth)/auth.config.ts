@@ -12,10 +12,7 @@ export const authConfig = {
     authorized({ auth, request: { nextUrl } }) {
       const isLoggedIn = !!auth?.user;
 
-      // console.log(
-      //   JSON.stringify(auth?.user, null, 2),
-      //   'auth.config.ts check user',
-      // );
+      // console.log(JSON.stringify(auth, null, 2), 'auth.config.ts check user');
       const pathname = nextUrl.pathname;
       const isAuthRoute =
         pathname.startsWith('/register') || pathname.startsWith('/login');
