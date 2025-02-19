@@ -3,11 +3,15 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  Column,
   ColumnDef,
+  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
+  getSortedRowModel,
   PaginationState,
+  RowData,
   useReactTable,
 } from '@tanstack/react-table';
 import { usePathname, useRouter } from 'next/navigation';
@@ -20,6 +24,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+
+declare module '@tanstack/react-table' {
+  //allows us to define custom properties for our columns
+  interface ColumnMeta<TData extends RowData, TValue> {
+    filterVariant?: 'text' | 'range' | 'select';
+  }
+}
 import { useQueryString } from '@/hooks/use-query-string';
 import { objToQs } from '@/lib/utils';
 
@@ -65,6 +76,10 @@ export function DataTable<TData, TValue>({
     pageIndex: page - 1,
     pageSize: limit,
   });
+
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    [],
+  );
   const pagination = React.useMemo(
     () => ({
       pageIndex,
@@ -75,15 +90,20 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    filterFns: {},
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     onPaginationChange: setPagination,
+    onColumnFiltersChange: setColumnFilters,
     pageCount,
     manualPagination: true,
     state: {
       pagination,
+      columnFilters,
     },
   });
+
   const column = useMemo(
     () => (searchKey ? table.getColumn(String(searchKey)) : undefined),
     [table, searchKey],
@@ -118,12 +138,30 @@ export function DataTable<TData, TValue>({
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                      {header.isPlaceholder ? null : (
+                        <>
+                          <div
+                            className={
+                              header.column.getCanSort() ? 'cursor-pointer' : ''
+                            }
+                            onClick={header.column.getToggleSortingHandler()}
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                            {{
+                              asc: '🔼',
+                              desc: '🔽',
+                            }[header.column.getIsSorted() as string] ?? null}
+                          </div>
+                          {header.column.getCanFilter() ? (
+                            <div>
+                              <Filter column={header.column} />
+                            </div>
+                          ) : null}
+                        </>
+                      )}
                     </TableHead>
                   );
                 })}
@@ -178,6 +216,96 @@ export function DataTable<TData, TValue>({
           )}
         </div>
       )}
+
+      <pre>
+        {JSON.stringify(
+          { columnFilters: table.getState().columnFilters },
+          null,
+          2,
+        )}
+      </pre>
     </>
+  );
+}
+
+function DebouncedInput({
+  value: initialValue,
+  onChange,
+  debounce = 500,
+  ...props
+}: {
+  value: string | number;
+  onChange: (value: string | number) => void;
+  debounce?: number;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
+  const [value, setValue] = React.useState(initialValue);
+
+  React.useEffect(() => {
+    setValue(initialValue);
+  }, [initialValue]);
+
+  React.useEffect(() => {
+    const timeout = setTimeout(() => {
+      onChange(value);
+    }, debounce);
+
+    return () => clearTimeout(timeout);
+  }, [value]);
+
+  return (
+    <input
+      {...props}
+      value={value}
+      onChange={(e) => setValue(e.target.value)}
+    />
+  );
+}
+
+function Filter({ column }: { column: Column<any, unknown> }) {
+  const columnFilterValue = column.getFilterValue();
+  const { filterVariant } = column.columnDef.meta ?? {};
+
+  return filterVariant === 'range' ? (
+    <div>
+      <div className="flex space-x-2">
+        {/* See faceted column filters example for min max values functionality */}
+        <DebouncedInput
+          type="number"
+          value={(columnFilterValue as [number, number])?.[0] ?? ''}
+          onChange={(value) =>
+            column.setFilterValue((old: [number, number]) => [value, old?.[1]])
+          }
+          placeholder={`Min`}
+          className="w-24 rounded border shadow"
+        />
+        <DebouncedInput
+          type="number"
+          value={(columnFilterValue as [number, number])?.[1] ?? ''}
+          onChange={(value) =>
+            column.setFilterValue((old: [number, number]) => [old?.[0], value])
+          }
+          placeholder={`Max`}
+          className="w-24 rounded border shadow"
+        />
+      </div>
+      <div className="h-1" />
+    </div>
+  ) : filterVariant === 'select' ? (
+    <select
+      onChange={(e) => column.setFilterValue(e.target.value === 'true')}
+      value={columnFilterValue?.toString()}
+    >
+      <option value="true">Active</option>
+      <option value="false">Inactive</option>
+    </select>
+  ) : (
+    <DebouncedInput
+      className="w-36 rounded border shadow"
+      onChange={(value) => column.setFilterValue(value)}
+      placeholder={`Search...`}
+      type="text"
+      value={(columnFilterValue ?? '') as string}
+    />
+    // See faceted column filters example for datalist search suggestions
   );
 }
