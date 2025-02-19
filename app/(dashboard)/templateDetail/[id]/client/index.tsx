@@ -18,8 +18,8 @@ export default function Client({
   const konvaList = templateJSON.map((c) => svgToKonva(c, styleJson));
 
   return (
-    <Stage width={768} height={866.35}>
-      <Layer>{konvaList}</Layer>
+    <Stage width={768} height={866.35} draggable>
+      <Layer clearBeforeDraw>{konvaList}</Layer>
     </Stage>
   );
 }

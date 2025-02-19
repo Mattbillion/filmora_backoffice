@@ -15,6 +15,7 @@ import {
   Text,
 } from 'react-konva';
 import { camelCase } from 'change-case-all';
+import Konva from 'konva';
 
 export type SVGJsonType = {
   type: string;
@@ -37,83 +38,6 @@ const elMap: Record<string, KonvaNodeComponent<any, any>> = {
   ring: Ring,
   text: Text,
   tspan: Text,
-};
-
-const propertyToProp = (
-  tagName: string,
-  properties: Record<string, any>,
-  children: SVGJsonType[],
-) => {
-  const konvaProps: Record<string, any> = {};
-
-  switch (tagName.toLowerCase()) {
-    case 'rect':
-      konvaProps.width = parseFloat(properties.width || '0');
-      konvaProps.height = parseFloat(properties.height || '0');
-      break;
-
-    case 'circle':
-      konvaProps.radius = parseFloat(properties.r || '0');
-      break;
-
-    case 'path':
-      konvaProps.data = properties.d;
-      break;
-
-    case 'image':
-      konvaProps.image = new window.Image();
-      konvaProps.image.src = properties.href || '';
-      break;
-
-    case 'polygon':
-      konvaProps.sceneFunc = (context: any, shape: any) => {
-        context.beginPath();
-        const points = properties.points?.split(/[\s,]+/).map(parseFloat);
-        context.moveTo(points[0], points[1]);
-        for (let i = 2; i < points.length; i += 2) {
-          context.lineTo(points[i], points[i + 1]);
-        }
-        context.closePath();
-        context.fillStrokeShape(shape);
-      };
-      break;
-    case 'text':
-      konvaProps.text = children?.[0]?.children?.[0]?.properties?.value || '';
-      konvaProps.x = parseFloat(properties?.x || '0');
-      konvaProps.y = parseFloat(properties?.y || '0');
-      konvaProps.fontSize = parseFloat((properties || {})['font-size'] || '12');
-      konvaProps.fill = properties?.fill;
-      break;
-  }
-
-  if (properties.transform) {
-    const transforms: string[] = properties.transform.split(/\)\s+/);
-    transforms.forEach((transform) => {
-      const [transformType, values] = transform.split('(') as any;
-      const nums = values
-        .replace(/[^0-9.,-]/g, '')
-        .split(/,\s*/)
-        .map(parseFloat);
-
-      switch (transformType) {
-        case 'translate':
-          konvaProps.x = (konvaProps.x || 0) + (nums[0] || 0);
-          konvaProps.y = (konvaProps.y || 0) + (nums[1] || 0);
-          break;
-
-        case 'rotate':
-          konvaProps.rotation = nums[0];
-          break;
-
-        case 'scale':
-          konvaProps.scaleX = nums[0];
-          konvaProps.scaleY = nums[1] || nums[0];
-          break;
-      }
-    });
-  }
-
-  return konvaProps;
 };
 
 export const svgToKonva = (
@@ -148,15 +72,190 @@ export const svgToKonva = (
   }
 
   const konvaProps: Record<string, any> = {
-    ...properties,
-    ...propertyToProp(tagName, properties, children),
-    ...classStyle,
+    ...propertyToProp(
+      tagName,
+      { ...(properties || {}), ...classStyle },
+      children,
+    ),
     children: (type === 'text' || tagName === 'text' ? [] : children).map((c) =>
       svgToKonva(c, styleJson),
     ),
   };
 
-  return <KonvaComponent key={Math.random().toString()} {...konvaProps} />;
+  return (
+    <KonvaComponent
+      ref={(ref: KonvaNodeComponent<Konva.Node> | null) => {
+        if (ref) {
+          const attributes = Object.assign(
+            classStyle[properties.class] || {},
+            properties,
+          );
+          const defaultCached = !['image', 'text', 'shape'].includes(
+            tagName?.toLowerCase(),
+          );
+          const sized = attributes.width && attributes.height;
+
+          if (defaultCached && sized) {
+            (ref as unknown as Konva.Node).cache({
+              imageSmoothingEnabled: true,
+            });
+          }
+        }
+      }}
+      key={Math.random().toString()}
+      {...konvaProps}
+    />
+  );
+};
+
+const propertyToProp = (
+  tagName: string,
+  properties: Record<string, any> = {},
+  children: SVGJsonType[],
+) => {
+  const konvaProps: Record<string, any> = Object.assign({}, properties);
+
+  switch (tagName.toLowerCase()) {
+    case 'rect':
+      konvaProps.width = parseFloat(properties.width || '0');
+      konvaProps.height = parseFloat(properties.height || '0');
+      break;
+
+    case 'circle':
+      konvaProps.radius = parseFloat(properties.r || '0');
+      break;
+
+    case 'path':
+      konvaProps.data = properties.d;
+      break;
+
+    case 'image':
+      konvaProps.image = new window.Image();
+      konvaProps.image.src = properties.href || '';
+      break;
+
+    case 'polygon':
+      konvaProps.sceneFunc = (context: any, shape: any) => {
+        context.beginPath();
+        const points = properties.points?.split(/[\s,]+/).map(parseFloat);
+        context.moveTo(points[0], points[1]);
+        for (let i = 2; i < points.length; i += 2) {
+          context.lineTo(points[i], points[i + 1]);
+        }
+        context.closePath();
+        context.fillStrokeShape(shape);
+      };
+      break;
+    case 'text':
+      konvaProps.text =
+        children?.[0]?.value ||
+        children?.[0]?.children?.[0]?.value ||
+        children?.[0]?.children?.[0]?.properties?.value ||
+        '';
+      konvaProps.x = parseFloat(properties.x || '0');
+      konvaProps.y = parseFloat(properties.y || '0');
+      konvaProps.fontSize = parseFloat(properties.fontSize || '12');
+      konvaProps.fill = properties.fill;
+      break;
+  }
+
+  if (properties.transform) {
+    const transforms: string[] = properties.transform.split(/\)\s+/);
+
+    transforms.forEach((transform) => {
+      const [transformType, values] = transform
+        .split('(')
+        .map((c) => c.replace(')', '')) as any;
+      const nums = values
+        .split(' ')
+        .map((c: string) => c.replace(',', ''))
+        .map(parseFloat);
+
+      switch (transformType) {
+        case 'translate':
+          konvaProps.x = nums[0];
+          konvaProps.y = nums[1] - (properties.fontSize || 12) * 0.8;
+          break;
+
+        case 'rotate':
+          konvaProps.rotation = nums[0];
+          break;
+
+        case 'scale':
+          konvaProps.scaleX = nums[0];
+          konvaProps.scaleY = nums[1] || nums[0];
+          break;
+
+        case 'skew':
+          konvaProps.skewX = nums[0];
+          konvaProps.skewY = nums[1] || nums[0];
+          break;
+
+        case 'skewX':
+          konvaProps.skewX = nums[0];
+          break;
+
+        case 'skewY':
+          konvaProps.skewY = nums[0];
+          break;
+      }
+    });
+  }
+
+  return konvaProps;
+};
+
+type StyleObjType = Record<string, any>;
+type ClassObjType = Record<string, StyleObjType>;
+
+const konvaStyleKeyMap: Record<string, string> = {
+  strokeDasharray: 'dash',
+  strokeLinejoin: 'lineJoin',
+  strokeLinecap: 'lineCap',
+  pathData: 'data',
+  textAlign: 'align',
+  textBaseline: 'verticalAlign',
+};
+
+export const parseCSS = (css: string): ClassObjType => {
+  const styles: ClassObjType = {};
+  const regex = /\.([\w-]+(?:,\s*\.[\w-]+)*)\s*\{([^}]+)}/g; // .cls-any {...} or .csl-s, .cls-sda {...}
+  let match;
+
+  while ((match = regex.exec(css)) !== null) {
+    const classNames = match[1]
+      .split(',')
+      .map((className) => className.trim().replace('.', ''));
+
+    const rules = match[2].split(';').reduce((acc, rule) => {
+      const [key, value] = rule.split(':').map((s) => s.trim());
+
+      if (key && value) {
+        const camelKey = camelCase(key);
+        const transformedKey = konvaStyleKeyMap[camelKey] || camelKey;
+
+        acc[transformedKey] = transformValue(transformedKey, value);
+      }
+
+      return acc;
+    }, {} as StyleObjType);
+
+    for (let i = 0; i < classNames.length; i++) {
+      const className = classNames[i];
+      styles[className] = { ...(styles[className] || {}), ...rules };
+    }
+  }
+
+  return styles;
+};
+
+const transformValue = (key: string, value: string) => {
+  const v = value.replace(/(\s|,)\.(\d+)/g, '0.$1').replace(/px$/, '');
+
+  if (key === 'dash') return v.split(' ');
+  if (key === 'fill' && v === 'none') return 'transparent';
+  if (isNaN(Number(v))) return v;
+  return Number(v);
 };
 
 export const getStyleStr = (json: SVGJsonType[]): string => {
@@ -174,48 +273,4 @@ export const getStyleStr = (json: SVGJsonType[]): string => {
   }
 
   return '';
-};
-
-type StyleObjType = Record<string, any>;
-type ClassObjType = Record<string, StyleObjType>;
-
-export const parseCSS = (css: string): ClassObjType => {
-  const styles: ClassObjType = {};
-  const regex = /\.([\w-]+(?:,\s*\.[\w-]+)*)\s*\{([^}]+)}/g; // .cls-any {...} or .csl-s, .cls-sda {...}
-  let match;
-
-  while ((match = regex.exec(css)) !== null) {
-    const classNames = match[1]
-      .split(',')
-      .map((className) => className.trim().replace('.', ''));
-
-    const rules = match[2].split(';').reduce((acc, rule) => {
-      const [key, value] = rule.split(':').map((s) => s.trim());
-
-      if (key && value) {
-        let transformedValue = value
-          .replace(/\.(\d+)/g, '0.$1')
-          .replace(/px$/, '');
-
-        const camelKey = camelCase(key);
-        const transformedKey =
-          camelKey === 'strokeDasharray' ? 'dash' : camelKey;
-
-        acc[transformedKey] = isNaN(Number(transformedValue))
-          ? transformedKey === 'dash'
-            ? transformedValue.split(' ')
-            : transformedValue
-          : Number(transformedValue);
-      }
-
-      return acc;
-    }, {} as StyleObjType);
-
-    for (let i = 0; i < classNames.length; i++) {
-      const className = classNames[i];
-      styles[className] = { ...(styles[className] || {}), ...rules };
-    }
-  }
-
-  return styles;
 };
