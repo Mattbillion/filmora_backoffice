@@ -32,14 +32,27 @@ export const {
           cache: 'no-store',
         });
 
-        if (body?.access_token)
+        if (body?.access_token) {
+          const { body: userInfo } = await xooxFetch('/employeeinfo', {
+            headers: {
+              Authorization: `Bearer ${body.access_token}`,
+            },
+          });
+
+          const userData = userInfo.data || {};
+
           return {
+            userInfo: userData,
+            email: userData.email,
+            name: [userData.firstname, userData.lastname].concat(' '),
+            image: userData.profile,
             access_token: body.access_token,
             refresh_token: body.refresh_token,
             expires_at: getExpDateFromJWT(body.access_token),
             role: extractJWT(body.access_token).role, // bullshit
             id: body.access_token,
-          };
+          } as any;
+        }
 
         return null;
       },
@@ -50,6 +63,7 @@ export const {
       if (user) {
         return {
           ...token,
+          userInfo: user.userInfo,
           access_token: user.access_token,
           expires_at: user.expires_at,
           refresh_token: user.refresh_token,
@@ -90,9 +104,11 @@ export const {
     },
     async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
-        session.user.id = token.access_token as string;
+        session.user = {
+          ...(token.userInfo || {}),
+          id: token.access_token as string,
+        };
       }
-
       return session;
     },
   },

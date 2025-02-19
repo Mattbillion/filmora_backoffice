@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 'use client';
 
 import { ReactNode, useRef, useTransition } from 'react';
@@ -8,7 +7,6 @@ import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -25,35 +23,25 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { patchCompany } from '../actions';
-import { CompanyBodyType, CompanyItemType, companySchema } from '../schema';
+import { createCompany } from '../actions';
+import { CompanyBodyType, companySchema } from '../schema';
 
-export function UpdateDialog({
-  children,
-  initialData,
-}: {
-  children: ReactNode;
-  initialData: CompanyItemType;
-}) {
+export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<CompanyBodyType>({
     resolver: zodResolver(companySchema),
-    defaultValues: {
-      ...initialData,
-    },
   });
 
   function onSubmit({ status, ...values }: CompanyBodyType) {
     startTransition(() => {
-      patchCompany({
+      createCompany({
         ...values,
-        id: initialData.id,
         status: (status as unknown as string) === 'true',
       })
         .then(() => {
-          toast.success('Updated successfully');
+          toast.success('Created successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -67,8 +55,8 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update Company"
-      submitText="Update"
+      title="Create new Company"
+      submitText="Create"
       trigger={children}
     >
       <FormField
@@ -76,25 +64,105 @@ export function UpdateDialog({
         name="company_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Name</FormLabel>
+            <FormLabel>Company name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter company name" {...field} />
+              <Input placeholder="Enter Company name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="company_desc"
+        render={({ field }) => <HtmlTipTapItem field={field} />}
+      />
+
+      <FormField
+        control={form.control}
+        name="company_register"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company register</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter Company register" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="company_logo"
         render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="company_logo"
-            label="Logo"
-          />
+          <FormItem>
+            <FormLabel>Company logo</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter Company logo" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="company_email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company email</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter Company email" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="company_phone"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company phone</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter Company phone" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="company_phone2"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company phone2</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter Company phone2" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="company_location"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Company location</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter Company location" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="status"
@@ -104,7 +172,7 @@ export function UpdateDialog({
             <Select onValueChange={(value) => field.onChange(value === 'true')}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
+                  <SelectValue placeholder="Select a Status" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent defaultValue="false">
@@ -115,67 +183,6 @@ export function UpdateDialog({
             <FormMessage />
           </FormItem>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="company_location"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Address</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company address" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Email</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter company email"
-                type="email"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_phone"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Phone</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_phone2"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Phone</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter company another phone" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="company_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );

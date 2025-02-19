@@ -52,7 +52,7 @@ export const deleteCompany = async (id: ID) => {
   return { data: body, error: null };
 };
 
-export const getCompanies = async (searchParams?: QueryParams) => {
+export const getCompanyList = async (searchParams?: QueryParams) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<CompanyItemType[]>
@@ -71,13 +71,13 @@ export const getCompanies = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getCompany = async (companyId: string) => {
+export const getCompany = async (id: string) => {
   try {
     const { body, error } = await xooxFetch<{ data: CompanyItemType }>(
-      `/companies/${companyId}`,
+      `/companies/${id}`,
       {
         method: 'GET',
-        next: { tags: [`${RVK_COMPANY}_${companyId}`] },
+        next: { tags: [`${RVK_COMPANY}_${id}`] },
       },
     );
 
