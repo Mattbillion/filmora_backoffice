@@ -1,4 +1,3 @@
-import { Suspense } from 'react';
 // @ts-ignore
 import { parse } from 'svg-parser';
 
@@ -29,10 +28,12 @@ export default async function TemplateDetailPage({
   const { body } = await xooxFetch<{ data: TemplateDetail[] }>('templates');
   const template = body.data[0];
   const templateJSON = parse(template.layout_svg || '');
+  const svgRoot = templateJSON?.children?.[0];
+  const viewBox = svgRoot?.properties?.viewBox
+    ?.split(' ')
+    ?.slice(2, 4)
+    ?.map(parseFloat);
 
-  return (
-    <Suspense>
-      <Client templateJSON={templateJSON?.children?.[0]?.children} />
-    </Suspense>
-  );
+  console.log(templateJSON);
+  return <Client templateJSON={svgRoot?.children} viewBox={viewBox || []} />;
 }

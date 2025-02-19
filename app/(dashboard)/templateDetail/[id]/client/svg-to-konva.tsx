@@ -135,6 +135,7 @@ const propertyToProp = (
       break;
 
     case 'polygon':
+      konvaProps.points = properties.points?.split(/[\s,]+/).map(parseFloat);
       konvaProps.sceneFunc = (context: any, shape: any) => {
         context.beginPath();
         const points = properties.points?.split(/[\s,]+/).map(parseFloat);

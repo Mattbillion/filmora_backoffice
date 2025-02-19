@@ -1,7 +1,6 @@
 'use client';
 
-import { Layer, Stage } from 'react-konva';
-
+import XooxStage from './stage';
 import {
   getStyleStr,
   parseCSS,
@@ -10,16 +9,29 @@ import {
 } from './svg-to-konva';
 
 export default function Client({
-  templateJSON,
+  templateJSON = [],
+  viewBox: [vbw = 1024, vbh = 960],
 }: {
   templateJSON: SVGJsonType[];
+  viewBox: number[];
 }) {
   const styleJson = parseCSS(getStyleStr(templateJSON));
+  const limitX = vbw * 0.7;
+  const limitY = vbh * 0.7;
+
   const konvaList = templateJSON.map((c) => svgToKonva(c, styleJson));
+  const [stageWidth, stageHeight] = (() => {
+    if (typeof window === 'undefined') return [vbw, vbh];
+    return [window.innerWidth, window.innerHeight];
+  })();
 
   return (
-    <Stage width={768} height={866.35} draggable>
-      <Layer clearBeforeDraw>{konvaList}</Layer>
-    </Stage>
+    <XooxStage
+      stage={konvaList}
+      height={stageHeight}
+      width={stageWidth}
+      limitX={limitX}
+      limitY={limitY}
+    />
   );
 }
