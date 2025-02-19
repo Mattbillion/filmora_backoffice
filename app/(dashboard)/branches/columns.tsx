@@ -71,11 +71,13 @@ export const branchColumns: ColumnDef<BranchItemType>[] = [
     id: 'venue_id',
     accessorKey: 'venue_id',
     header: 'Venue id',
+    cell: (info) => info.getValue(),
   },
   {
     id: 'branch_name',
     accessorKey: 'branch_name',
     header: 'Branch name',
+    cell: (info) => info.getValue(),
   },
   {
     id: 'branch_desc',
@@ -121,6 +123,9 @@ export const branchColumns: ColumnDef<BranchItemType>[] = [
     id: 'status',
     accessorKey: 'status',
     header: 'Status',
+    meta: {
+      filterVariant: 'select',
+    },
   },
   {
     id: 'branch_schedule',
