@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment } from 'react';
+import { Fragment, JSX } from 'react';
 import {
   Circle,
   Ellipse,
@@ -46,12 +46,13 @@ export const svgToKonva = (
 ) => {
   const { type, tagName, properties, children, value } = svgJson;
   const classStyle = styleJson[properties?.class] || {};
+  const compKey = type + tagName + Math.random().toString(36);
 
   if (type === 'text') {
     const textVal = children?.[0]?.children?.[0]?.properties?.value || value;
     return (
       <Text
-        key={Math.random().toString()}
+        key={compKey}
         text={textVal || ''}
         x={parseFloat(properties?.x || '0')}
         y={parseFloat(properties?.y || '0')}
@@ -65,44 +66,50 @@ export const svgToKonva = (
     );
   }
 
-  const KonvaComponent = elMap[tagName?.toLowerCase()];
+  const KonvaComponent = elMap[tagName];
   if (!KonvaComponent) {
     console.warn(`Unsupported SVG element: ${tagName}`);
-    return <Fragment key={Math.random().toString()} />;
+    return <Fragment key={compKey} />;
   }
 
   const konvaProps: Record<string, any> = {
     ...propertyToProp(
       tagName,
-      { ...(properties || {}), ...classStyle },
+      Object.assign({}, properties, classStyle),
       children,
     ),
-    children: (type === 'text' || tagName === 'text' ? [] : children).map((c) =>
-      svgToKonva(c, styleJson),
-    ),
+    children,
   };
+
+  let transformedChildren: JSX.Element[] = [];
+  if (type !== 'text' && tagName !== 'text' && children) {
+    for (let i = 0; i < children.length; i++) {
+      transformedChildren.push(svgToKonva(children[i], styleJson));
+    }
+  }
+
+  konvaProps.children = transformedChildren;
 
   return (
     <KonvaComponent
-      ref={(ref: KonvaNodeComponent<Konva.Node> | null) => {
+      ref={(ref?: Konva.Node) => {
         if (ref) {
           const attributes = Object.assign(
             classStyle[properties.class] || {},
             properties,
           );
-          const defaultCached = !['image', 'text', 'shape'].includes(
-            tagName?.toLowerCase(),
-          );
+          const defaultCached =
+            tagName === 'image' || tagName === 'text' || tagName === 'shape';
           const sized = attributes.width && attributes.height;
 
-          if (defaultCached && sized) {
+          if (!defaultCached && sized) {
             (ref as unknown as Konva.Node).cache({
               imageSmoothingEnabled: true,
             });
           }
         }
       }}
-      key={Math.random().toString()}
+      key={compKey}
       {...konvaProps}
     />
   );
@@ -163,16 +170,15 @@ const propertyToProp = (
   if (properties.transform) {
     const transforms: string[] = properties.transform.split(/\)\s+/);
 
-    transforms.forEach((transform) => {
-      const [transformType, values] = transform
-        .split('(')
-        .map((c) => c.replace(')', '')) as any;
+    for (let i = 0; i < transforms.length; i++) {
+      const transform = transforms[i];
+      const [transformType, values] = transform.split('(');
       const nums = values
+        .replace(')', '')
         .split(' ')
-        .map((c: string) => c.replace(',', ''))
-        .map(parseFloat);
+        .map((c: string) => parseFloat(c.replace(',', '')));
 
-      switch (transformType) {
+      switch (transformType.replace(')', '')) {
         case 'translate':
           konvaProps.x = nums[0];
           konvaProps.y = nums[1] - (properties.fontSize || 12) * 0.8;
@@ -200,7 +206,7 @@ const propertyToProp = (
           konvaProps.skewY = nums[0];
           break;
       }
-    });
+    }
   }
 
   return konvaProps;
@@ -228,22 +234,24 @@ export const parseCSS = (css: string): ClassObjType => {
       .split(',')
       .map((className) => className.trim().replace('.', ''));
 
-    const rules = match[2].split(';').reduce((acc, rule) => {
+    const rules: StyleObjType = {};
+    const rulesArray = match[2].split(';');
+
+    for (let i = 0; i < rulesArray.length; i++) {
+      const rule = rulesArray[i];
       const [key, value] = rule.split(':').map((s) => s.trim());
 
       if (key && value) {
         const camelKey = camelCase(key);
         const transformedKey = konvaStyleKeyMap[camelKey] || camelKey;
 
-        acc[transformedKey] = transformValue(transformedKey, value);
+        rules[transformedKey] = transformValue(transformedKey, value);
       }
-
-      return acc;
-    }, {} as StyleObjType);
+    }
 
     for (let i = 0; i < classNames.length; i++) {
       const className = classNames[i];
-      styles[className] = { ...(styles[className] || {}), ...rules };
+      styles[className] = Object.assign({}, styles[className], rules);
     }
   }
 
