@@ -12,6 +12,7 @@ export default function XooxStage({
   shapes,
   centerCoord,
   scale,
+  viewBox,
 }: {
   height: number;
   width: number;
@@ -20,6 +21,7 @@ export default function XooxStage({
   shapes: JSX.Element[];
   centerCoord: { x: number; y: number };
   scale: { x: number; y: number };
+  viewBox: [number, number];
 }) {
   const [previewSrc, setPreviewSrc] = useState('');
   const stageRef = useRef<Konva.Stage | null>(null);
@@ -27,8 +29,13 @@ export default function XooxStage({
   const mainStageRatio = height / width;
   const minimapWidth = 200;
   const minimapHeight = minimapWidth * mainStageRatio;
+  const viewBoxDiff = [
+    (viewBox[0] * 100) / width / 100,
+    (viewBox[1] * 100) / height / 100,
+  ];
   const minimapShrinkSize = width / minimapWidth;
 
+  console.log({ viewBoxDiff });
   useEffect(() => {
     if (stageRef.current) setTimeout(updatePreviewSrc, 300);
   }, []);
@@ -38,6 +45,7 @@ export default function XooxStage({
       stageRef.current?.toDataURL({
         pixelRatio: 0.5,
         mimeType: 'image/jpeg',
+        quality: 0.8,
       }) || '',
     );
 
@@ -46,7 +54,7 @@ export default function XooxStage({
   const scaleToIndicatorSize = (
     curScale: { x: number; y: number } = scale,
   ) => ({
-    width: minimapWidth / curScale.x,
+    width: (minimapWidth * viewBoxDiff[0]) / curScale.x,
     height: minimapHeight / curScale.y,
   });
 
@@ -75,13 +83,17 @@ export default function XooxStage({
 
     if (indicator && miniStage && miniMapSize) {
       const indicatorSize = scaleToIndicatorSize(miniMapSize.scale);
+
       const isIndicatorFull =
         minimapWidth <= indicatorSize.width &&
-        minimapWidth <= indicatorSize.height;
+        minimapHeight <= indicatorSize.height;
 
       indicator.width(indicatorSize.width);
       indicator.height(indicatorSize.height);
-      indicator.setPosition(miniMapSize.position);
+      indicator.setPosition({
+        x: miniMapSize.position.x / (stage.width() / indicatorSize.width),
+        y: miniMapSize.position.y / (stage.height() / indicatorSize.height),
+      });
       indicator.draggable(!isIndicatorFull);
     }
   };
@@ -133,8 +145,8 @@ export default function XooxStage({
         miniMapSize: {
           ...zoomInfo,
           position: {
-            x: (zoomInfo.position.x / shrinkSize) * -1,
-            y: (zoomInfo.position.y / shrinkSize) * -1,
+            x: -zoomInfo.position.x,
+            y: -zoomInfo.position.y,
           },
         },
         ...zoomInfo,
@@ -143,11 +155,6 @@ export default function XooxStage({
     return zoomInfo;
   };
 
-  console.log({
-    scaleMin: scaleToIndicatorSize(),
-    h: minimapHeight,
-    w: minimapWidth,
-  });
   return (
     <>
       {/*<button*/}
@@ -188,8 +195,8 @@ export default function XooxStage({
         width={minimapWidth}
         height={minimapHeight}
         centerCoord={{
-          x: (centerCoord.x / minimapShrinkSize) * -1,
-          y: (centerCoord.y / minimapShrinkSize) * -1,
+          x: -centerCoord.x / minimapShrinkSize,
+          y: -centerCoord.y / minimapShrinkSize,
         }}
         indicatorSize={scaleToIndicatorSize()}
         previewSrc={previewSrc}
@@ -231,7 +238,7 @@ const Minimap = ({
         position: 'absolute',
         right: 20,
         top: 20,
-        border: '2px solid #333',
+        boxShadow: '0 0 0 2px #333',
         borderRadius: 8,
         backgroundColor: 'var(--background)',
         backgroundImage: `url(${previewSrc})`,
@@ -246,11 +253,11 @@ const Minimap = ({
           <Rect
             name="indicator"
             x={centerCoord.x}
-            y={centerCoord.x}
+            y={centerCoord.y}
             width={indicatorSize.width}
             height={indicatorSize.height}
-            fill="rgba(255,255,255,0.2)"
-            stroke="rgba(255,255,255,0.7)"
+            fill="rgba(51, 153, 255, 0.2)"
+            stroke="rgba(51, 153, 255, 0.7)"
             strokeWidth={0.5}
             onDragMove={handleDragMove}
             onDragEnd={handleDragMove}

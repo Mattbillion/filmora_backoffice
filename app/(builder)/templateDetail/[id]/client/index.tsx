@@ -28,7 +28,6 @@ export default function Client({
     return [window.innerWidth, window.innerHeight];
   })();
 
-  console.log(stageWidth, stageHeight);
   return (
     <XooxStage
       shapes={shapes}
@@ -37,6 +36,7 @@ export default function Client({
       limitX={limitX}
       limitY={limitY}
       scale={INITIAL_SCALE}
+      viewBox={[vbw, vbh]}
       centerCoord={{
         x: stageWidth / 2 - (vbw * INITIAL_SCALE.x) / 2,
         y: stageHeight / 2 - (vbh * INITIAL_SCALE.y) / 2,
