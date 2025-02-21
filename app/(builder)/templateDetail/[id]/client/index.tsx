@@ -28,6 +28,7 @@ export default function Client({
     return [window.innerWidth, window.innerHeight];
   })();
 
+  console.log(stageWidth, stageHeight);
   return (
     <XooxStage
       shapes={shapes}

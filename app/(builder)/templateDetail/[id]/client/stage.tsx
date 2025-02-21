@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useEffect, useRef, useState } from 'react';
+import { JSX, Ref, useEffect, useRef, useState } from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import Konva from 'konva';
 
@@ -37,6 +37,7 @@ export default function XooxStage({
     setPreviewSrc(
       stageRef.current?.toDataURL({
         pixelRatio: 0.5,
+        mimeType: 'image/jpeg',
       }) || '',
     );
 
@@ -45,8 +46,8 @@ export default function XooxStage({
   const scaleToIndicatorSize = (
     curScale: { x: number; y: number } = scale,
   ) => ({
-    width: Math.min(minimapWidth, minimapWidth / curScale.x),
-    height: Math.min(minimapHeight, minimapHeight / curScale.y),
+    width: minimapWidth / curScale.x,
+    height: minimapHeight / curScale.y,
   });
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
@@ -74,10 +75,14 @@ export default function XooxStage({
 
     if (indicator && miniStage && miniMapSize) {
       const indicatorSize = scaleToIndicatorSize(miniMapSize.scale);
+      const isIndicatorFull =
+        minimapWidth <= indicatorSize.width &&
+        minimapWidth <= indicatorSize.height;
 
       indicator.width(indicatorSize.width);
       indicator.height(indicatorSize.height);
       indicator.setPosition(miniMapSize.position);
+      indicator.draggable(!isIndicatorFull);
     }
   };
 
@@ -96,11 +101,10 @@ export default function XooxStage({
     position: Konva.Vector2d;
     miniMapSize?: { scale: Konva.Vector2d; position: Konva.Vector2d };
   } => {
-    const resizeNum = (num: number) => num / shrinkSize;
     const isMiniMap = shrinkSize !== 1;
     const scaleBy = 1.05;
     const maxScale = 10;
-    const minScale = isMiniMap ? 1 : 0.5;
+    const minScale = 0.5;
     const oldScale = stage.scaleX();
     const newScale = deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
     const clampedScale = Math.max(minScale, Math.min(maxScale, newScale));
@@ -119,34 +123,47 @@ export default function XooxStage({
       };
 
       zoomInfo.position = {
-        x: (pointer.x - pointTo.x * clampedScale) * (isMiniMap ? -1 : 1),
-        y: (pointer.y - pointTo.y * clampedScale) * (isMiniMap ? -1 : 1),
+        x: pointer.x - pointTo.x * clampedScale,
+        y: pointer.y - pointTo.y * clampedScale,
       };
     }
 
-    if (!isMiniMap) return zoomInfo;
-    return {
-      miniMapSize: zoomInfo,
-      ...getZoomInfo({ deltaY, stage, pointer }),
-    };
+    if (isMiniMap) {
+      return {
+        miniMapSize: {
+          ...zoomInfo,
+          position: {
+            x: (zoomInfo.position.x / shrinkSize) * -1,
+            y: (zoomInfo.position.y / shrinkSize) * -1,
+          },
+        },
+        ...zoomInfo,
+      };
+    }
+    return zoomInfo;
   };
 
+  console.log({
+    scaleMin: scaleToIndicatorSize(),
+    h: minimapHeight,
+    w: minimapWidth,
+  });
   return (
     <>
-      <button
-        onClick={() => {
-          console.log(
-            'path',
-            stageRef.current?.find('Line')[0]?.setAttrs({ fill: 'red' }),
-          );
-        }}
-      >
-        Paint first Line element to red
-      </button>
+      {/*<button*/}
+      {/*  onClick={() => {*/}
+      {/*    console.log(*/}
+      {/*      'path',*/}
+      {/*      stageRef.current?.find('Line')[0]?.setAttrs({ fill: 'red' }),*/}
+      {/*    );*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Paint first Line element to red*/}
+      {/*</button>*/}
       <Stage
         ref={stageRef}
-        width={height}
-        height={width}
+        width={width}
+        height={height}
         draggable
         scale={scale}
         x={centerCoord.x}
@@ -170,6 +187,10 @@ export default function XooxStage({
         ref={indicatorRef}
         width={minimapWidth}
         height={minimapHeight}
+        centerCoord={{
+          x: (centerCoord.x / minimapShrinkSize) * -1,
+          y: (centerCoord.y / minimapShrinkSize) * -1,
+        }}
         indicatorSize={scaleToIndicatorSize()}
         previewSrc={previewSrc}
       />
@@ -177,8 +198,22 @@ export default function XooxStage({
   );
 }
 
-const Minimap = ({ ref, previewSrc, width, height, indicatorSize }) => {
-  const handleDragMove = (e) => {
+const Minimap = ({
+  ref,
+  previewSrc,
+  width,
+  height,
+  indicatorSize,
+  centerCoord,
+}: {
+  ref: Ref<Konva.Stage> | null;
+  previewSrc: string;
+  height: number;
+  width: number;
+  indicatorSize: { width: number; height: number };
+  centerCoord: Konva.Vector2d;
+}) => {
+  const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
     const newPos = e.target.position();
     console.log({ newPos });
     // const rawX = newPos.x / minimapScaleX;
@@ -198,24 +233,25 @@ const Minimap = ({ ref, previewSrc, width, height, indicatorSize }) => {
         top: 20,
         border: '2px solid #333',
         borderRadius: 8,
-        backgroundColor: 'white',
+        backgroundColor: 'var(--background)',
         backgroundImage: `url(${previewSrc})`,
-        backgroundSize: '100%',
+        backgroundSize: `100%`,
+        backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat',
+        overflow: 'hidden',
       }}
     >
       <Stage ref={ref} width={width} height={height}>
         <Layer>
           <Rect
             name="indicator"
-            x={0}
-            y={0}
+            x={centerCoord.x}
+            y={centerCoord.x}
             width={indicatorSize.width}
             height={indicatorSize.height}
-            fill="rgba(255,0,0,0.2)"
-            stroke="rgba(255,0,0,0.5)"
+            fill="rgba(255,255,255,0.2)"
+            stroke="rgba(255,255,255,0.7)"
             strokeWidth={0.5}
-            draggable
             onDragMove={handleDragMove}
             onDragEnd={handleDragMove}
             cornerRadius={4}
