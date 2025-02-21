@@ -13,7 +13,7 @@ export default function Client({
   viewBox: [vbw = 1024, vbh = 960],
 }: {
   templateJSON: SVGJsonType[];
-  viewBox: number[];
+  viewBox: [number, number];
 }) {
   const styleJson = parseCSS(getStyleStr(templateJSON));
 
