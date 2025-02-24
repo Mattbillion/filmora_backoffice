@@ -90,26 +90,31 @@ export const svgToKonva = (
 
   konvaProps.children = transformedChildren;
 
+  const forceCache =
+    properties.id === 'bg' ||
+    properties.id === 'background' ||
+    properties.id === 'mask';
   return (
     <KonvaComponent
       ref={(ref?: Konva.Node) => {
         if (ref) {
-          const attributes = Object.assign(
-            classStyle[properties.class] || {},
-            properties,
-          );
-          const defaultCached =
-            tagName === 'image' || tagName === 'text' || tagName === 'shape';
-          const sized = attributes.width && attributes.height;
+          const canCache =
+            ref.findAncestor('#tickets') &&
+            ref.getType() === 'Group' &&
+            !children?.some((c) => c.tagName === 'g');
 
-          if (!defaultCached && sized) {
+          if (forceCache || canCache) {
+            if (canCache) ref.name('cachedGroup');
             (ref as unknown as Konva.Node).cache({
-              imageSmoothingEnabled: true,
+              imageSmoothingEnabled: false,
+              hitCanvasPixelRatio: 0.7,
+              // drawBorder: canCache,
             });
           }
         }
       }}
       key={compKey}
+      listening={!forceCache}
       {...konvaProps}
     />
   );

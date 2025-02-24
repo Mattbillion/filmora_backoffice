@@ -3,6 +3,7 @@
 import { JSX, Ref, useEffect, useRef, useState } from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import Konva from 'konva';
+import { debounce } from 'lodash';
 
 export default function XooxStage({
   height,
@@ -28,14 +29,13 @@ export default function XooxStage({
   const indicatorRef = useRef<Konva.Stage | null>(null);
   const mainStageRatio = height / width;
   const minimapWidth = 200;
-  const minimapHeight = minimapWidth * mainStageRatio;
+  const minimapHeight = minimapWidth * mainStageRatio; // !!!
   const viewBoxDiff = [
     (viewBox[0] * 100) / width / 100,
     (viewBox[1] * 100) / height / 100,
-  ];
-  const minimapShrinkSize = width / minimapWidth;
+  ]; // by percent, 0.96 === 96%
+  const minimapShrinkSize = width / minimapWidth; // !!!
 
-  console.log({ viewBoxDiff });
   useEffect(() => {
     if (stageRef.current) setTimeout(updatePreviewSrc, 300);
   }, []);
@@ -64,15 +64,10 @@ export default function XooxStage({
     e.evt.preventDefault();
 
     const pointer = stage.getPointerPosition();
-    const {
-      scale: newScale,
-      position: newPosition,
-      miniMapSize,
-    } = getZoomInfo({
+    const { scale: newScale, position: newPosition } = getZoomInfo({
       deltaY: e.evt.deltaY,
       stage,
       pointer,
-      shrinkSize: minimapShrinkSize,
     });
 
     stage.scale(newScale);
@@ -81,8 +76,12 @@ export default function XooxStage({
     const miniStage = indicatorRef.current;
     const indicator = getMinimapIndicator();
 
-    if (indicator && miniStage && miniMapSize) {
-      const indicatorSize = scaleToIndicatorSize(miniMapSize.scale);
+    if (newScale.x > 2 || newScale.y > 2)
+      modifyCache({ ...newPosition, scaleX: newScale.x, scaleY: newScale.y });
+    else forceCache();
+
+    if (indicator && miniStage) {
+      const indicatorSize = scaleToIndicatorSize(newScale);
 
       const isIndicatorFull =
         minimapWidth <= indicatorSize.width &&
@@ -91,29 +90,97 @@ export default function XooxStage({
       indicator.width(indicatorSize.width);
       indicator.height(indicatorSize.height);
       indicator.setPosition({
-        x: miniMapSize.position.x / (stage.width() / indicatorSize.width),
-        y: miniMapSize.position.y / (stage.height() / indicatorSize.height),
+        x: newPosition.x / (stage.width() / indicatorSize.width),
+        y: newPosition.y / (stage.height() / indicatorSize.height),
       });
       indicator.draggable(!isIndicatorFull);
     }
   };
 
+  const modifyCache = debounce(
+    (
+      newBox: Konva.Vector2d & { scaleX: number; scaleY: number },
+      forceCache?: boolean,
+    ) => {
+      const stage = stageRef.current;
+      const visibleNodes = stage?.find('.cachedGroup');
+      const nodesLength = visibleNodes?.length;
+
+      if (nodesLength) {
+        for (let i = 0; i < nodesLength; i++) {
+          const node = visibleNodes[i];
+
+          const getVisibility = () => {
+            const nodeBox = node.getClientRect();
+            const highRatio =
+              nodeBox.width / nodeBox.height > 5 ||
+              nodeBox.height / nodeBox.width > 5;
+
+            const visibleHeight = (nodeBox.y + nodeBox.height) / newBox.scaleY;
+            const visibleWidth = (nodeBox.x + nodeBox.width) / newBox.scaleX;
+            const isFullyVisible =
+              visibleWidth < width / newBox.scaleX &&
+              visibleHeight < height / newBox.scaleY;
+            const isPartVisible =
+              highRatio &&
+              (visibleWidth < width / newBox.scaleX ||
+                visibleHeight < height / newBox.scaleY);
+
+            return (
+              visibleWidth > 0 &&
+              visibleHeight > 0 &&
+              (isFullyVisible || isPartVisible)
+            );
+          };
+
+          if (node.isCached()) {
+            if (getVisibility()) node.clearCache();
+          } else if (forceCache) {
+            if (!getVisibility())
+              node.cache({
+                imageSmoothingEnabled: false,
+                hitCanvasPixelRatio: 0.7,
+                // drawBorder: true,
+              });
+          }
+        }
+      }
+    },
+    200,
+  );
+
+  const forceCache = debounce(() => {
+    const visibleNodes = stageRef.current?.find((node: Konva.Shape) => {
+      const isGroup = node.name() === 'cachedGroup';
+
+      return isGroup && !node.isCached();
+    });
+    const nodesLength = visibleNodes?.length;
+
+    if (nodesLength) {
+      for (let i = 0; i < nodesLength; i++) {
+        visibleNodes[i].cache({
+          imageSmoothingEnabled: false,
+          hitCanvasPixelRatio: 0.7,
+          // drawBorder: true,
+        });
+      }
+    }
+  }, 200);
+
   const getZoomInfo = ({
     deltaY,
     stage,
     pointer,
-    shrinkSize = 1,
   }: {
     deltaY: number;
     stage: Konva.Stage;
     pointer?: Konva.Vector2d | null;
-    shrinkSize?: number;
   }): {
     scale: Konva.Vector2d;
     position: Konva.Vector2d;
     miniMapSize?: { scale: Konva.Vector2d; position: Konva.Vector2d };
   } => {
-    const isMiniMap = shrinkSize !== 1;
     const scaleBy = 1.05;
     const maxScale = 10;
     const minScale = 0.5;
@@ -140,18 +207,6 @@ export default function XooxStage({
       };
     }
 
-    if (isMiniMap) {
-      return {
-        miniMapSize: {
-          ...zoomInfo,
-          position: {
-            x: -zoomInfo.position.x,
-            y: -zoomInfo.position.y,
-          },
-        },
-        ...zoomInfo,
-      };
-    }
     return zoomInfo;
   };
 
@@ -185,6 +240,16 @@ export default function XooxStage({
           const newX = Math.max(-scaledLimit.x, Math.min(pos.x, scaledLimit.x));
           const newY = Math.max(-scaledLimit.y, Math.min(pos.y, scaledLimit.y));
 
+          if (currentScale > 2)
+            modifyCache(
+              {
+                x: newX,
+                y: newY,
+                scaleX: currentScale,
+                scaleY: currentScale,
+              },
+              true,
+            );
           return { x: newX, y: newY };
         }}
       >
