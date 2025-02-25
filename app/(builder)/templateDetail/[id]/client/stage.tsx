@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, Ref, useEffect, useRef, useState } from 'react';
+import { JSX, Ref, useEffect, useRef } from 'react';
 import { Layer, Rect, Stage } from 'react-konva';
 import Konva from 'konva';
 import { debounce } from 'lodash';
@@ -24,39 +24,36 @@ export default function XooxStage({
   scale: { x: number; y: number };
   viewBox: [number, number];
 }) {
-  const [previewSrc, setPreviewSrc] = useState('');
   const stageRef = useRef<Konva.Stage | null>(null);
-  const indicatorRef = useRef<Konva.Stage | null>(null);
-  const mainStageRatio = height / width;
+  const minimapRef = useRef<Konva.Stage | null>(null);
+  const stageRatio = height / width;
   const minimapWidth = 200;
-  const minimapHeight = minimapWidth * mainStageRatio; // !!!
-  const viewBoxDiff = [
-    (viewBox[0] * 100) / width / 100,
-    (viewBox[1] * 100) / height / 100,
-  ]; // by percent, 0.96 === 96%
-  const minimapShrinkSize = width / minimapWidth; // !!!
+  const minimapHeight = minimapWidth * stageRatio;
+  const minimapRelativeWidth = (minimapWidth * 100) / viewBox[0] / 100;
+  const minimapRelativeHeight = (minimapHeight * 100) / viewBox[1] / 100;
 
   useEffect(() => {
-    if (stageRef.current) setTimeout(updatePreviewSrc, 300);
+    if (stageRef.current)
+      setTimeout(() => {
+        const minimap = minimapRef.current;
+
+        if (minimap) {
+          minimap.visible(true);
+          minimap.width(minimapWidth);
+          minimap.height(minimapHeight);
+          minimap.container().style.setProperty(
+            'background-image',
+            `url(${
+              stageRef.current!.toDataURL({
+                pixelRatio: 0.5,
+              }) || ''
+            })`,
+          );
+        }
+      }, 300);
   }, []);
 
-  const updatePreviewSrc = () =>
-    setPreviewSrc(
-      stageRef.current?.toDataURL({
-        pixelRatio: 0.5,
-        // mimeType: 'image/jpeg',
-        quality: 0.8,
-      }) || '',
-    );
-
-  const getMinimapIndicator = () => indicatorRef.current?.findOne('.indicator');
-
-  const scaleToIndicatorSize = (
-    curScale: { x: number; y: number } = scale,
-  ) => ({
-    width: (minimapWidth * viewBoxDiff[0]) / curScale.x,
-    height: minimapHeight / curScale.y,
-  });
+  const getMinimapIndicator = () => minimapRef.current?.findOne('.indicator');
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
     const stage = stageRef.current;
@@ -73,29 +70,22 @@ export default function XooxStage({
     stage.scale(newScale);
     stage.setPosition(newPosition);
 
-    const miniStage = indicatorRef.current;
-    const indicator = getMinimapIndicator();
-
     // cache
     if (newScale.x > 2 || newScale.y > 2)
       modifyCache({ ...newPosition, scaleX: newScale.x, scaleY: newScale.y });
     else forceCache();
 
-    // minimap
-    if (indicator && miniStage) {
-      const indicatorSize = scaleToIndicatorSize(newScale);
+    const minimapIndicator = getMinimapIndicator();
+    if (minimapIndicator) {
+      const indicatorWidth = (viewBox[0] / newScale.x) * minimapRelativeWidth;
 
-      const isIndicatorFull =
-        minimapWidth <= indicatorSize.width &&
-        minimapHeight <= indicatorSize.height;
+      minimapIndicator.width(indicatorWidth);
+      minimapIndicator.height(indicatorWidth * stageRatio);
 
-      indicator.width(indicatorSize.width);
-      indicator.height(indicatorSize.height);
-      indicator.setPosition({
-        x: newPosition.x / (stage.width() / indicatorSize.width),
-        y: newPosition.y / (stage.height() / indicatorSize.height),
+      minimapIndicator.setPosition({
+        x: (newPosition.x / newScale.x) * -minimapRelativeWidth,
+        y: (newPosition.y / newScale.y) * -minimapRelativeHeight,
       });
-      indicator.draggable(!isIndicatorFull);
     }
   };
 
@@ -240,21 +230,40 @@ export default function XooxStage({
               },
               true,
             );
+          const minimapIndicator = getMinimapIndicator();
+          if (minimapIndicator) {
+            minimapIndicator.setPosition({
+              x: (newX / currentScale) * -minimapRelativeWidth,
+              y: (newY / currentScale) * -minimapRelativeHeight,
+            });
+          }
           return { x: newX, y: newY };
         }}
       >
         <Layer>{shapes}</Layer>
       </Stage>
       <Minimap
-        ref={indicatorRef}
-        width={minimapWidth}
-        height={minimapHeight}
-        centerCoord={{
-          x: -centerCoord.x / minimapShrinkSize,
-          y: -centerCoord.y / minimapShrinkSize,
+        ref={minimapRef}
+        onPositionUpdate={(miniPos) => {
+          const currentScale = stageRef.current?.scaleX() || scale.x;
+
+          const pos = {
+            x: (miniPos.x * currentScale) / -minimapRelativeWidth,
+            y: (miniPos.y * currentScale) / -minimapRelativeHeight,
+          };
+
+          if (currentScale > 2)
+            modifyCache(
+              {
+                x: pos.x,
+                y: pos.y,
+                scaleX: currentScale,
+                scaleY: currentScale,
+              },
+              true,
+            );
+          stageRef.current?.setPosition(pos);
         }}
-        indicatorSize={scaleToIndicatorSize()}
-        previewSrc={previewSrc}
       />
     </>
   );
@@ -262,29 +271,38 @@ export default function XooxStage({
 
 const Minimap = ({
   ref,
-  previewSrc,
-  width,
-  height,
-  indicatorSize,
-  centerCoord,
+  onPositionUpdate,
 }: {
   ref: Ref<Konva.Stage> | null;
-  previewSrc: string;
-  height: number;
-  width: number;
-  indicatorSize: { width: number; height: number };
-  centerCoord: Konva.Vector2d;
+  onPositionUpdate: (pos: Konva.Vector2d) => void;
 }) => {
   const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
-    const newPos = e.target.position();
-    console.log({ newPos });
+    const pos = e.target.position();
+    const stage = e.target.getStage();
+
+    if (!stage) return;
+
+    const stageWidth = stage.width();
+    const stageHeight = stage.height();
+    const indicatorWidth = e.target.width() || 40;
+    const indicatorHeight = e.target.height() || 40;
+
+    const minX = -(indicatorWidth * 0.7);
+    const minY = -(indicatorHeight * 0.7);
+    const maxX = stageWidth - indicatorWidth * 0.3;
+    const maxY = stageHeight - indicatorHeight * 0.3;
+
+    e.target.position({
+      x: Math.max(minX, Math.min(maxX, pos.x)),
+      y: Math.max(minY, Math.min(maxY, pos.y)),
+    });
+
+    onPositionUpdate(e.target.position());
   };
 
   return (
     <Stage
       ref={ref}
-      width={width}
-      height={height}
       style={{
         position: 'absolute',
         right: 20,
@@ -292,26 +310,23 @@ const Minimap = ({
         boxShadow: '0 0 0 2px #333',
         borderRadius: 8,
         backgroundColor: 'hsl(var(--background))',
-        backgroundImage: `url(${previewSrc})`,
         backgroundSize: `100%`,
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'top left',
         overflow: 'hidden',
       }}
+      visible={false}
     >
       <Layer>
         <Rect
           name="indicator"
-          x={centerCoord.x}
-          y={centerCoord.y}
-          width={indicatorSize.width}
-          height={indicatorSize.height}
           fill="rgba(51, 153, 255, 0.2)"
           stroke="rgba(51, 153, 255, 0.7)"
           strokeWidth={0.5}
           onDragMove={handleDragMove}
           onDragEnd={handleDragMove}
-          listening={false}
+          x={0}
+          y={0}
+          draggable
           cornerRadius={4}
           hitStrokeWidth={0}
           shadowForStrokeEnabled={false}
