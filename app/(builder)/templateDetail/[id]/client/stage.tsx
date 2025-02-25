@@ -1,11 +1,13 @@
 'use client';
 
-import { JSX, Ref, useEffect, useRef } from 'react';
-import { Layer, Rect, Stage } from 'react-konva';
+import { JSX, useEffect, useRef } from 'react';
+import { Layer, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
 import { debounce } from 'lodash';
 
-export default function XooxStage({
+import { Minimap } from './minimap';
+
+export default function Stage({
   height,
   width,
   limitX,
@@ -27,7 +29,7 @@ export default function XooxStage({
   const stageRef = useRef<Konva.Stage | null>(null);
   const minimapRef = useRef<Konva.Stage | null>(null);
   const stageRatio = height / width;
-  const minimapWidth = 200;
+  const minimapWidth = 150;
   const minimapHeight = minimapWidth * stageRatio;
   const minimapRelativeWidth = (minimapWidth * 100) / viewBox[0] / 100;
   const minimapRelativeHeight = (minimapHeight * 100) / viewBox[1] / 100;
@@ -38,6 +40,10 @@ export default function XooxStage({
         const minimap = minimapRef.current;
 
         if (minimap) {
+          const indicator = minimapRef.current?.findOne('.indicator');
+
+          if (indicator) resetIndicator(indicator);
+
           minimap.visible(true);
           minimap.width(minimapWidth);
           minimap.height(minimapHeight);
@@ -77,6 +83,9 @@ export default function XooxStage({
 
     const minimapIndicator = getMinimapIndicator();
     if (minimapIndicator) {
+      if (newScale.x < scale.x) return resetIndicator(minimapIndicator);
+
+      minimapIndicator.draggable(true);
       const indicatorWidth = (viewBox[0] / newScale.x) * minimapRelativeWidth;
 
       minimapIndicator.width(indicatorWidth);
@@ -87,6 +96,14 @@ export default function XooxStage({
         y: (newPosition.y / newScale.y) * -minimapRelativeHeight,
       });
     }
+  };
+
+  const resetIndicator = (indicator: Konva.Node) => {
+    if (!indicator.draggable()) return;
+    indicator.width(minimapWidth);
+    indicator.height(minimapHeight);
+    indicator.position({ x: 0, y: 0 });
+    indicator.draggable(false);
   };
 
   const modifyCache = debounce(
@@ -202,7 +219,7 @@ export default function XooxStage({
 
   return (
     <>
-      <Stage
+      <KonvaStage
         ref={stageRef}
         width={width}
         height={height}
@@ -231,17 +248,24 @@ export default function XooxStage({
               true,
             );
           const minimapIndicator = getMinimapIndicator();
-          if (minimapIndicator) {
+
+          if (!minimapIndicator) return { x: newX, y: newY };
+
+          if (currentScale < scale.x) {
+            resetIndicator(minimapIndicator);
+          } else {
+            minimapIndicator.draggable(true);
             minimapIndicator.setPosition({
-              x: (newX / currentScale) * -minimapRelativeWidth,
-              y: (newY / currentScale) * -minimapRelativeHeight,
+              x: (-newX / currentScale) * minimapRelativeWidth,
+              y: (-newY / currentScale) * minimapRelativeHeight,
             });
           }
+
           return { x: newX, y: newY };
         }}
       >
         <Layer>{shapes}</Layer>
-      </Stage>
+      </KonvaStage>
       <Minimap
         ref={minimapRef}
         onPositionUpdate={(miniPos) => {
@@ -268,72 +292,3 @@ export default function XooxStage({
     </>
   );
 }
-
-const Minimap = ({
-  ref,
-  onPositionUpdate,
-}: {
-  ref: Ref<Konva.Stage> | null;
-  onPositionUpdate: (pos: Konva.Vector2d) => void;
-}) => {
-  const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
-    const pos = e.target.position();
-    const stage = e.target.getStage();
-
-    if (!stage) return;
-
-    const stageWidth = stage.width();
-    const stageHeight = stage.height();
-    const indicatorWidth = e.target.width() || 40;
-    const indicatorHeight = e.target.height() || 40;
-
-    const minX = -(indicatorWidth * 0.7);
-    const minY = -(indicatorHeight * 0.7);
-    const maxX = stageWidth - indicatorWidth * 0.3;
-    const maxY = stageHeight - indicatorHeight * 0.3;
-
-    e.target.position({
-      x: Math.max(minX, Math.min(maxX, pos.x)),
-      y: Math.max(minY, Math.min(maxY, pos.y)),
-    });
-
-    onPositionUpdate(e.target.position());
-  };
-
-  return (
-    <Stage
-      ref={ref}
-      style={{
-        position: 'absolute',
-        right: 20,
-        top: 20,
-        boxShadow: '0 0 0 2px #333',
-        borderRadius: 8,
-        backgroundColor: 'hsl(var(--background))',
-        backgroundSize: `100%`,
-        backgroundPosition: 'top left',
-        overflow: 'hidden',
-      }}
-      visible={false}
-    >
-      <Layer>
-        <Rect
-          name="indicator"
-          fill="rgba(51, 153, 255, 0.2)"
-          stroke="rgba(51, 153, 255, 0.7)"
-          strokeWidth={0.5}
-          onDragMove={handleDragMove}
-          onDragEnd={handleDragMove}
-          x={0}
-          y={0}
-          draggable
-          cornerRadius={4}
-          hitStrokeWidth={0}
-          shadowForStrokeEnabled={false}
-          onMouseDown={(e) => (e.cancelBubble = true)}
-          onTouchStart={(e) => (e.cancelBubble = true)}
-        />
-      </Layer>
-    </Stage>
-  );
-};
