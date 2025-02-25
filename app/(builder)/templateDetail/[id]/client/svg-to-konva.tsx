@@ -50,9 +50,15 @@ export const svgToKonva = (
 
   if (type === 'text') {
     const textVal = children?.[0]?.children?.[0]?.properties?.value || value;
+
     return (
       <Text
         key={compKey}
+        ref={(ref) => {
+          if (ref) {
+            ref.cache();
+          }
+        }}
         text={textVal || ''}
         x={parseFloat(properties?.x || '0')}
         y={parseFloat(properties?.y || '0')}
@@ -111,11 +117,7 @@ export const svgToKonva = (
           ref.listening(!!ref.findAncestor('#tickets') && !isTextNode);
           if (forceCache || canCache) {
             if (canCache) ref.name('cachedGroup');
-            (ref as unknown as Konva.Node).cache({
-              imageSmoothingEnabled: false,
-              hitCanvasPixelRatio: 0.7,
-              // drawBorder: canCache,
-            });
+            (ref as unknown as Konva.Node).cache();
           }
         }
       }}

@@ -26,8 +26,8 @@ export default function Stage({
   scale: { x: number; y: number };
   viewBox: [number, number];
 }) {
-  const stageRef = useRef<Konva.Stage | null>(null);
-  const minimapRef = useRef<Konva.Stage | null>(null);
+  const stageRef = useRef<Konva.Stage>(null);
+  const minimapRef = useRef<Konva.Stage>(null);
   const stageRatio = height / width;
   const minimapWidth = 150;
   const minimapHeight = minimapWidth * stageRatio;
@@ -81,13 +81,14 @@ export default function Stage({
       modifyCache({ ...newPosition, scaleX: newScale.x, scaleY: newScale.y });
     else forceCache();
 
+    // indicator
     const minimapIndicator = getMinimapIndicator();
     if (minimapIndicator) {
       if (newScale.x < scale.x) return resetIndicator(minimapIndicator);
 
-      minimapIndicator.draggable(true);
       const indicatorWidth = (viewBox[0] / newScale.x) * minimapRelativeWidth;
 
+      minimapIndicator.draggable(true);
       minimapIndicator.width(indicatorWidth);
       minimapIndicator.height(indicatorWidth * stageRatio);
 
@@ -124,8 +125,6 @@ export default function Stage({
           } else if (forceCache) {
             if (!isNodeVisible(node, newBox))
               node.cache({
-                imageSmoothingEnabled: false,
-                hitCanvasPixelRatio: 0.7,
                 // drawBorder: true,
               });
           }
@@ -167,8 +166,6 @@ export default function Stage({
     if (nodesLength) {
       for (let i = 0; i < nodesLength; i++) {
         visibleNodes[i].cache({
-          imageSmoothingEnabled: false,
-          hitCanvasPixelRatio: 0.7,
           // drawBorder: true,
         });
       }
