@@ -62,27 +62,30 @@ export const svgToKonva = (
             '12',
         )}
         fill={(classStyle.fill as string) || properties?.fill}
+        listening={false}
+        hitStrokeWidth={0}
+        shadowForStrokeEnabled={false}
+        strokeHitEnabled={false}
       />
     );
   }
 
-  const KonvaComponent = elMap[tagName];
-  if (!KonvaComponent) {
+  const KonvaNode = elMap[tagName];
+
+  if (!KonvaNode) {
     console.warn(`Unsupported SVG element: ${tagName}`);
     return <Fragment key={compKey} />;
   }
 
-  const konvaProps: Record<string, any> = {
-    ...propertyToProp(
-      tagName,
-      Object.assign({}, properties, classStyle),
-      children,
-    ),
+  const konvaProps: Record<string, any> = propertyToProp(
+    tagName,
+    Object.assign({}, properties, classStyle),
     children,
-  };
+  );
 
   let transformedChildren: JSX.Element[] = [];
-  if (type !== 'text' && tagName !== 'text' && children) {
+
+  if (type !== 'text' && tagName !== 'text' && children?.length) {
     for (let i = 0; i < children.length; i++) {
       transformedChildren.push(svgToKonva(children[i], styleJson));
     }
@@ -94,8 +97,10 @@ export const svgToKonva = (
     properties.id === 'bg' ||
     properties.id === 'background' ||
     properties.id === 'mask';
+  const isTextNode = tagName === 'text' || tagName === 'tspan';
+
   return (
-    <KonvaComponent
+    <KonvaNode
       ref={(ref?: Konva.Node) => {
         if (ref) {
           const canCache =
@@ -103,6 +108,7 @@ export const svgToKonva = (
             ref.getType() === 'Group' &&
             !children?.some((c) => c.tagName === 'g');
 
+          ref.listening(!!ref.findAncestor('#tickets') && !isTextNode);
           if (forceCache || canCache) {
             if (canCache) ref.name('cachedGroup');
             (ref as unknown as Konva.Node).cache({
@@ -114,7 +120,9 @@ export const svgToKonva = (
         }
       }}
       key={compKey}
-      listening={!forceCache}
+      listening={!forceCache && !isTextNode}
+      hitStrokeWidth={0}
+      shadowForStrokeEnabled={false}
       {...konvaProps}
     />
   );
@@ -125,7 +133,10 @@ const propertyToProp = (
   properties: Record<string, any> = {},
   children: SVGJsonType[],
 ) => {
-  const konvaProps: Record<string, any> = Object.assign({}, properties);
+  const konvaProps: Record<string, any> = Object.assign(
+    { children },
+    properties,
+  );
 
   switch (tagName.toLowerCase()) {
     case 'rect':
@@ -279,11 +290,7 @@ export const getStyleStr = (json: SVGJsonType[]): string => {
     const item = json[i];
 
     if (item.tagName === 'style') return item.children?.[0]?.value || '';
-
-    if (item.children?.length) {
-      const result = getStyleStr(item.children);
-      if (result) return result;
-    }
+    if (item.children?.length) return getStyleStr(item.children);
   }
 
   return '';

@@ -44,12 +44,12 @@ export default function XooxStage({
     setPreviewSrc(
       stageRef.current?.toDataURL({
         pixelRatio: 0.5,
-        mimeType: 'image/jpeg',
+        // mimeType: 'image/jpeg',
         quality: 0.8,
       }) || '',
     );
 
-  const getMinimapIndicator = () => indicatorRef.current?.find('.indicator')[0];
+  const getMinimapIndicator = () => indicatorRef.current?.findOne('.indicator');
 
   const scaleToIndicatorSize = (
     curScale: { x: number; y: number } = scale,
@@ -76,10 +76,12 @@ export default function XooxStage({
     const miniStage = indicatorRef.current;
     const indicator = getMinimapIndicator();
 
+    // cache
     if (newScale.x > 2 || newScale.y > 2)
       modifyCache({ ...newPosition, scaleX: newScale.x, scaleY: newScale.y });
     else forceCache();
 
+    // minimap
     if (indicator && miniStage) {
       const indicatorSize = scaleToIndicatorSize(newScale);
 
@@ -110,33 +112,10 @@ export default function XooxStage({
         for (let i = 0; i < nodesLength; i++) {
           const node = visibleNodes[i];
 
-          const getVisibility = () => {
-            const nodeBox = node.getClientRect();
-            const highRatio =
-              nodeBox.width / nodeBox.height > 5 ||
-              nodeBox.height / nodeBox.width > 5;
-
-            const visibleHeight = (nodeBox.y + nodeBox.height) / newBox.scaleY;
-            const visibleWidth = (nodeBox.x + nodeBox.width) / newBox.scaleX;
-            const isFullyVisible =
-              visibleWidth < width / newBox.scaleX &&
-              visibleHeight < height / newBox.scaleY;
-            const isPartVisible =
-              highRatio &&
-              (visibleWidth < width / newBox.scaleX ||
-                visibleHeight < height / newBox.scaleY);
-
-            return (
-              visibleWidth > 0 &&
-              visibleHeight > 0 &&
-              (isFullyVisible || isPartVisible)
-            );
-          };
-
           if (node.isCached()) {
-            if (getVisibility()) node.clearCache();
+            if (isNodeVisible(node, newBox)) node.clearCache();
           } else if (forceCache) {
-            if (!getVisibility())
+            if (!isNodeVisible(node, newBox))
               node.cache({
                 imageSmoothingEnabled: false,
                 hitCanvasPixelRatio: 0.7,
@@ -149,12 +128,33 @@ export default function XooxStage({
     200,
   );
 
-  const forceCache = debounce(() => {
-    const visibleNodes = stageRef.current?.find((node: Konva.Shape) => {
-      const isGroup = node.name() === 'cachedGroup';
+  const isNodeVisible = (
+    node: Konva.Node,
+    newBox: Konva.Vector2d & { scaleX: number; scaleY: number },
+  ) => {
+    const nodeBox = node.getClientRect();
+    const highRatio =
+      nodeBox.width / nodeBox.height > 5 || nodeBox.height / nodeBox.width > 5;
 
-      return isGroup && !node.isCached();
-    });
+    const visibleHeight = (nodeBox.y + nodeBox.height) / newBox.scaleY;
+    const visibleWidth = (nodeBox.x + nodeBox.width) / newBox.scaleX;
+    const isFullyVisible =
+      visibleWidth < width / newBox.scaleX &&
+      visibleHeight < height / newBox.scaleY;
+    const isPartVisible =
+      highRatio &&
+      (visibleWidth < width / newBox.scaleX ||
+        visibleHeight < height / newBox.scaleY);
+
+    return (
+      visibleWidth > 0 && visibleHeight > 0 && (isFullyVisible || isPartVisible)
+    );
+  };
+
+  const forceCache = debounce(() => {
+    const visibleNodes = stageRef.current?.find(
+      (node: Konva.Shape) => node.name() === 'cachedGroup' && !node.isCached(),
+    );
     const nodesLength = visibleNodes?.length;
 
     if (nodesLength) {
@@ -212,16 +212,6 @@ export default function XooxStage({
 
   return (
     <>
-      {/*<button*/}
-      {/*  onClick={() => {*/}
-      {/*    console.log(*/}
-      {/*      'path',*/}
-      {/*      stageRef.current?.find('Line')[0]?.setAttrs({ fill: 'red' }),*/}
-      {/*    );*/}
-      {/*  }}*/}
-      {/*>*/}
-      {/*  Paint first Line element to red*/}
-      {/*</button>*/}
       <Stage
         ref={stageRef}
         width={width}
@@ -288,24 +278,20 @@ const Minimap = ({
   const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
     const newPos = e.target.position();
     console.log({ newPos });
-    // const rawX = newPos.x / minimapScaleX;
-    // const rawY = newPos.y / minimapScaleY;
-
-    // onViewportChange({
-    //   x: -rawX * mainStageScale + stageWidth / 2,
-    //   y: -rawY * mainStageScale + stageHeight / 2,
-    // });
   };
 
   return (
-    <div
+    <Stage
+      ref={ref}
+      width={width}
+      height={height}
       style={{
         position: 'absolute',
         right: 20,
         top: 20,
         boxShadow: '0 0 0 2px #333',
         borderRadius: 8,
-        backgroundColor: 'var(--background)',
+        backgroundColor: 'hsl(var(--background))',
         backgroundImage: `url(${previewSrc})`,
         backgroundSize: `100%`,
         backgroundPosition: 'center',
@@ -313,25 +299,26 @@ const Minimap = ({
         overflow: 'hidden',
       }}
     >
-      <Stage ref={ref} width={width} height={height}>
-        <Layer>
-          <Rect
-            name="indicator"
-            x={centerCoord.x}
-            y={centerCoord.y}
-            width={indicatorSize.width}
-            height={indicatorSize.height}
-            fill="rgba(51, 153, 255, 0.2)"
-            stroke="rgba(51, 153, 255, 0.7)"
-            strokeWidth={0.5}
-            onDragMove={handleDragMove}
-            onDragEnd={handleDragMove}
-            cornerRadius={4}
-            onMouseDown={(e) => (e.cancelBubble = true)}
-            onTouchStart={(e) => (e.cancelBubble = true)}
-          />
-        </Layer>
-      </Stage>
-    </div>
+      <Layer>
+        <Rect
+          name="indicator"
+          x={centerCoord.x}
+          y={centerCoord.y}
+          width={indicatorSize.width}
+          height={indicatorSize.height}
+          fill="rgba(51, 153, 255, 0.2)"
+          stroke="rgba(51, 153, 255, 0.7)"
+          strokeWidth={0.5}
+          onDragMove={handleDragMove}
+          onDragEnd={handleDragMove}
+          listening={false}
+          cornerRadius={4}
+          hitStrokeWidth={0}
+          shadowForStrokeEnabled={false}
+          onMouseDown={(e) => (e.cancelBubble = true)}
+          onTouchStart={(e) => (e.cancelBubble = true)}
+        />
+      </Layer>
+    </Stage>
   );
 };

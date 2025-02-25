@@ -34,5 +34,6 @@ export default async function TemplateDetailPage({
     ?.slice(2, 4)
     ?.map(parseFloat);
 
+  // console.log(JSON.stringify(svgRoot, null, 2));
   return <Client templateJSON={svgRoot?.children} viewBox={viewBox || []} />;
 }
