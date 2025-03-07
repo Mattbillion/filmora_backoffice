@@ -1,11 +1,11 @@
 'use client';
 
-import { JSX, useEffect, useRef } from 'react';
+import { JSX, useRef } from 'react';
 import { Layer, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
 import { debounce } from 'lodash';
 
-import { Minimap } from './minimap';
+// import { Minimap } from './minimap';
 
 export default function Stage({
   height,
@@ -15,7 +15,7 @@ export default function Stage({
   shapes,
   centerCoord,
   scale,
-  viewBox,
+  // viewBox,
 }: {
   height: number;
   width: number;
@@ -27,39 +27,39 @@ export default function Stage({
   viewBox: [number, number];
 }) {
   const stageRef = useRef<Konva.Stage>(null);
-  const minimapRef = useRef<Konva.Stage>(null);
-  const stageRatio = height / width;
-  const minimapWidth = 150;
-  const minimapHeight = minimapWidth * stageRatio;
-  const minimapRelativeWidth = (minimapWidth * 100) / viewBox[0] / 100;
-  const minimapRelativeHeight = (minimapHeight * 100) / viewBox[1] / 100;
+  // const minimapRef = useRef<Konva.Stage>(null);
+  // const stageRatio = height / width;
+  // const minimapWidth = 150;
+  // const minimapHeight = minimapWidth * stageRatio;
+  // const minimapRelativeWidth = (minimapWidth * 100) / viewBox[0] / 100;
+  // const minimapRelativeHeight = (minimapHeight * 100) / viewBox[1] / 100;
+  //
+  // useEffect(() => {
+  //   if (stageRef.current)
+  //     setTimeout(() => {
+  //       const minimap = minimapRef.current;
+  //
+  //       if (minimap) {
+  //         const indicator = minimapRef.current?.findOne('.indicator');
+  //
+  //         if (indicator) resetIndicator(indicator);
+  //
+  //         minimap.visible(true);
+  //         minimap.width(minimapWidth);
+  //         minimap.height(minimapHeight);
+  //         minimap.container().style.setProperty(
+  //           'background-image',
+  //           `url(${
+  //             stageRef.current!.toDataURL({
+  //               pixelRatio: 0.5,
+  //             }) || ''
+  //           })`,
+  //         );
+  //       }
+  //     }, 300);
+  // }, []);
 
-  useEffect(() => {
-    if (stageRef.current)
-      setTimeout(() => {
-        const minimap = minimapRef.current;
-
-        if (minimap) {
-          const indicator = minimapRef.current?.findOne('.indicator');
-
-          if (indicator) resetIndicator(indicator);
-
-          minimap.visible(true);
-          minimap.width(minimapWidth);
-          minimap.height(minimapHeight);
-          minimap.container().style.setProperty(
-            'background-image',
-            `url(${
-              stageRef.current!.toDataURL({
-                pixelRatio: 0.5,
-              }) || ''
-            })`,
-          );
-        }
-      }, 300);
-  }, []);
-
-  const getMinimapIndicator = () => minimapRef.current?.findOne('.indicator');
+  // const getMinimapIndicator = () => minimapRef.current?.findOne('.indicator');
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
     const stage = stageRef.current;
@@ -82,30 +82,30 @@ export default function Stage({
     else forceCache();
 
     // indicator
-    const minimapIndicator = getMinimapIndicator();
-    if (minimapIndicator) {
-      if (newScale.x < scale.x) return resetIndicator(minimapIndicator);
-
-      const indicatorWidth = (viewBox[0] / newScale.x) * minimapRelativeWidth;
-
-      minimapIndicator.draggable(true);
-      minimapIndicator.width(indicatorWidth);
-      minimapIndicator.height(indicatorWidth * stageRatio);
-
-      minimapIndicator.setPosition({
-        x: (newPosition.x / newScale.x) * -minimapRelativeWidth,
-        y: (newPosition.y / newScale.y) * -minimapRelativeHeight,
-      });
-    }
+    // const minimapIndicator = getMinimapIndicator();
+    // if (minimapIndicator) {
+    //   if (newScale.x < scale.x) return resetIndicator(minimapIndicator);
+    //
+    //   const indicatorWidth = (viewBox[0] / newScale.x) * minimapRelativeWidth;
+    //
+    //   minimapIndicator.draggable(true);
+    //   minimapIndicator.width(indicatorWidth);
+    //   minimapIndicator.height(indicatorWidth * stageRatio);
+    //
+    //   minimapIndicator.setPosition({
+    //     x: (newPosition.x / newScale.x) * -minimapRelativeWidth,
+    //     y: (newPosition.y / newScale.y) * -minimapRelativeHeight,
+    //   });
+    // }
   };
 
-  const resetIndicator = (indicator: Konva.Node) => {
-    if (!indicator.draggable()) return;
-    indicator.width(minimapWidth);
-    indicator.height(minimapHeight);
-    indicator.position({ x: 0, y: 0 });
-    indicator.draggable(false);
-  };
+  // const resetIndicator = (indicator: Konva.Node) => {
+  //   if (!indicator.draggable()) return;
+  //   indicator.width(minimapWidth);
+  //   indicator.height(minimapHeight);
+  //   indicator.position({ x: 0, y: 0 });
+  //   indicator.draggable(false);
+  // };
 
   const modifyCache = debounce(
     (
@@ -244,48 +244,48 @@ export default function Stage({
               },
               true,
             );
-          const minimapIndicator = getMinimapIndicator();
-
-          if (!minimapIndicator) return { x: newX, y: newY };
-
-          if (currentScale < scale.x) {
-            resetIndicator(minimapIndicator);
-          } else {
-            minimapIndicator.draggable(true);
-            minimapIndicator.setPosition({
-              x: (-newX / currentScale) * minimapRelativeWidth,
-              y: (-newY / currentScale) * minimapRelativeHeight,
-            });
-          }
+          // const minimapIndicator = getMinimapIndicator();
+          //
+          // if (!minimapIndicator) return { x: newX, y: newY };
+          //
+          // if (currentScale < scale.x) {
+          //   resetIndicator(minimapIndicator);
+          // } else {
+          //   minimapIndicator.draggable(true);
+          //   minimapIndicator.setPosition({
+          //     x: (-newX / currentScale) * minimapRelativeWidth,
+          //     y: (-newY / currentScale) * minimapRelativeHeight,
+          //   });
+          // }
 
           return { x: newX, y: newY };
         }}
       >
         <Layer>{shapes}</Layer>
       </KonvaStage>
-      <Minimap
-        ref={minimapRef}
-        onPositionUpdate={(miniPos) => {
-          const currentScale = stageRef.current?.scaleX() || scale.x;
+      {/*<Minimap*/}
+      {/*  ref={minimapRef}*/}
+      {/*  onPositionUpdate={(miniPos) => {*/}
+      {/*    const currentScale = stageRef.current?.scaleX() || scale.x;*/}
 
-          const pos = {
-            x: (miniPos.x * currentScale) / -minimapRelativeWidth,
-            y: (miniPos.y * currentScale) / -minimapRelativeHeight,
-          };
+      {/*    const pos = {*/}
+      {/*      x: (miniPos.x * currentScale) / -minimapRelativeWidth,*/}
+      {/*      y: (miniPos.y * currentScale) / -minimapRelativeHeight,*/}
+      {/*    };*/}
 
-          if (currentScale > 2)
-            modifyCache(
-              {
-                x: pos.x,
-                y: pos.y,
-                scaleX: currentScale,
-                scaleY: currentScale,
-              },
-              true,
-            );
-          stageRef.current?.setPosition(pos);
-        }}
-      />
+      {/*    if (currentScale > 2)*/}
+      {/*      modifyCache(*/}
+      {/*        {*/}
+      {/*          x: pos.x,*/}
+      {/*          y: pos.y,*/}
+      {/*          scaleX: currentScale,*/}
+      {/*          scaleY: currentScale,*/}
+      {/*        },*/}
+      {/*        true,*/}
+      {/*      );*/}
+      {/*    stageRef.current?.setPosition(pos);*/}
+      {/*  }}*/}
+      {/*/>*/}
     </>
   );
 }
