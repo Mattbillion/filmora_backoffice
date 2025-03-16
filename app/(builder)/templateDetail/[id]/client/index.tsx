@@ -35,7 +35,6 @@ export default function Client({
       limitX={vbw * 0.9}
       limitY={vbh * 0.9}
       scale={INITIAL_SCALE}
-      viewBox={viewBox}
       centerCoord={{
         x: (stageWidth - vbw * INITIAL_SCALE.x) / 2,
         y: (stageHeight - vbh * INITIAL_SCALE.y) / 2,

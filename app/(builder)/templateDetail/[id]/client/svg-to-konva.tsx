@@ -114,7 +114,10 @@ export const svgToKonva = (
             ref.getType() === 'Group' &&
             !children?.some((c) => c.tagName === 'g');
 
-          ref.listening(!!ref.findAncestor('#tickets') && !isTextNode);
+          ref.listening(
+            ref.id() === 'tickets' ||
+              (!!ref.findAncestor('#tickets') && !isTextNode),
+          );
           if (forceCache || canCache) {
             if (canCache) ref.name('cachedGroup');
             (ref as unknown as Konva.Node).cache();
@@ -122,7 +125,6 @@ export const svgToKonva = (
         }
       }}
       key={compKey}
-      listening={!forceCache && !isTextNode}
       hitStrokeWidth={0}
       shadowForStrokeEnabled={false}
       {...konvaProps}
