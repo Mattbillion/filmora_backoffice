@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import NextAuth from 'next-auth';
+import NextAuth, { type DefaultSession } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
 import { xooxFetch } from '@/lib/fetch';
@@ -10,6 +10,27 @@ type LoginResType = {
   access_token: string;
   refresh_token: string;
 };
+
+declare module 'next-auth' {
+  interface Session {
+    user: {
+      address: string;
+      userinfo: {
+        id: string;
+        firstname: string;
+        lastname: string;
+        phone: string;
+        email: string;
+        profile: string;
+        status: 'boolean';
+        last_logged_at: string;
+        created_at: string;
+        updated_at: string;
+        created_employee: string;
+      };
+    } & DefaultSession['user'];
+  }
+}
 
 export const {
   handlers: { GET, POST },
