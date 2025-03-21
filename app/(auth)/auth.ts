@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import NextAuth, { type DefaultSession } from 'next-auth';
+import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
 import { xooxFetch } from '@/lib/fetch';
@@ -14,21 +14,22 @@ type LoginResType = {
 declare module 'next-auth' {
   interface Session {
     user: {
-      address: string;
-      userinfo: {
-        id: string;
-        firstname: string;
-        lastname: string;
-        phone: string;
-        email: string;
-        profile: string;
-        status: 'boolean';
-        last_logged_at: string;
-        created_at: string;
-        updated_at: string;
-        created_employee: string;
-      };
-    } & DefaultSession['user'];
+      id: string;
+      name: string;
+      role: 'Super_Admin' | string;
+      firstname: string;
+      lastname: string;
+      phone: string | null;
+      email: string | null;
+      profile: string | null;
+      email_verified: boolean;
+      company_id: number | null;
+      status: string | null;
+      last_logged_at: string | null;
+      created_at: string | null;
+      updated_at: string | null;
+      created_employee: number | null;
+    };
   }
 }
 
@@ -63,14 +64,10 @@ export const {
           const userData = userInfo.data || {};
 
           return {
-            userInfo: userData,
-            email: userData.email,
-            name: [userData.firstname, userData.lastname].concat(' '),
-            image: userData.profile,
+            ...userData,
             access_token: body.access_token,
             refresh_token: body.refresh_token,
             expires_at: getExpDateFromJWT(body.access_token),
-            role: extractJWT(body.access_token).role, // bullshit
             id: body.access_token,
           } as any;
         }
@@ -80,17 +77,16 @@ export const {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }: any) {
+    async jwt({ token, user, trigger, session }: any) {
       if (user) {
         return {
           ...token,
-          userInfo: user.userInfo,
           access_token: user.access_token,
           expires_at: user.expires_at,
           refresh_token: user.refresh_token,
         };
       } else if (Date.now() < token.exp * 1000) {
-        return token;
+        return Object.assign(token, trigger === 'update' ? session.user : {});
       } else {
         try {
           if (!token.refresh_token)
@@ -126,7 +122,7 @@ export const {
     async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
         session.user = {
-          ...(token.userInfo || {}),
+          ...(token || {}),
           id: token.access_token as string,
         };
       }
