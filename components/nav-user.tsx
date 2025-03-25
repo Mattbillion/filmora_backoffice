@@ -36,7 +36,7 @@ export function NavUser({ session }: { session: Session }) {
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
-                  src={imageResize(session?.user?.image ?? '', 'xs')}
+                  src={imageResize(session?.user?.profile ?? '', 'small')}
                   alt={session?.user?.name ?? ''}
                 />
                 <AvatarFallback className="rounded-lg">
@@ -64,7 +64,7 @@ export function NavUser({ session }: { session: Session }) {
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
                   <AvatarImage
-                    src={session?.user?.image ?? ''}
+                    src={session?.user?.profile ?? ''}
                     alt={session?.user?.name ?? ''}
                   />
                   <AvatarFallback className="rounded-lg">

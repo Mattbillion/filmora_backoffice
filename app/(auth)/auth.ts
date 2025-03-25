@@ -79,12 +79,7 @@ export const {
   callbacks: {
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
-        return {
-          ...token,
-          access_token: user.access_token,
-          expires_at: user.expires_at,
-          refresh_token: user.refresh_token,
-        };
+        return Object.assign(token || {}, user);
       } else if (Date.now() < token.exp * 1000) {
         return Object.assign(token, trigger === 'update' ? session.user : {});
       } else {

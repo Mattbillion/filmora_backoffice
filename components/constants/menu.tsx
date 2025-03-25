@@ -61,7 +61,7 @@ const managementRoutes: SubMenuItemType[] = [
 const companyRoutes: SubMenuItemType[] = [
   {
     title: 'Company',
-    url: '/company',
+    url: '/companies',
     icon: Building2,
   },
   {

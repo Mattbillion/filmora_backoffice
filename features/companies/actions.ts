@@ -30,6 +30,7 @@ export const getCompanyList = async (searchParams?: QueryParams) => {
     >('/companies', {
       method: 'GET',
       searchParams,
+      cache: 'no-store',
       next: { tags: [RVK_COMPANY] },
     });
 

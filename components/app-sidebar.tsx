@@ -3,6 +3,7 @@
 
 import { ComponentProps, Suspense, useEffect } from 'react';
 import { sentenceCase } from 'change-case-all';
+import { Command } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 import { menuData } from '@/components/constants/menu';
@@ -40,19 +41,20 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher />
+        {session?.user?.role === 'Super_Admin' ? (
+          <TeamSwitcher />
+        ) : (
+          <div className="flex items-center gap-2 p-2">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+              <Command className="size-4" />
+            </div>
+            <div className="flex-1 text-left text-sm leading-tight">
+              <p className="truncate font-semibold">XOOX</p>
+            </div>
+          </div>
+        )}
       </SidebarHeader>
       <SidebarContent>
-        {/*{!!mainMenu?.length && (*/}
-        {/*  <Suspense>*/}
-        {/*    <SidebarMenuGroup items={mainMenu} label="Dashboard" />*/}
-        {/*  </Suspense>*/}
-        {/*)}*/}
-        {/*{!!adminMenu?.length && (*/}
-        {/*  <Suspense>*/}
-        {/*    <SidebarMenuGroup items={adminMenu} label="Administration" />*/}
-        {/*  </Suspense>*/}
-        {/*)}*/}
         {Object.entries(menuData).map(([group, menus], idx) => (
           <Suspense key={idx}>
             <SidebarMenuGroup items={menus} label={sentenceCase(group)} />
