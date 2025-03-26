@@ -2,6 +2,7 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
+import { getCompany } from '@/features/companies/actions';
 import { xooxFetch } from '@/lib/fetch';
 
 import { authConfig } from './auth.config';
@@ -24,6 +25,9 @@ declare module 'next-auth' {
       profile: string | null;
       email_verified: boolean;
       company_id: number | null;
+      company_name: string | null;
+      company_register: string | null;
+      company_logo: string | null;
       status: string | null;
       last_logged_at: string | null;
       created_at: string | null;
@@ -60,10 +64,14 @@ export const {
               Authorization: `Bearer ${body.access_token}`,
             },
           });
-
           const userData = userInfo.data || {};
+          const { data: companyRes } = await getCompany(userData.company_id);
+          const companyInfo = companyRes?.data;
 
           return {
+            company_name: companyInfo?.company_name,
+            company_register: companyInfo?.company_register,
+            company_logo: companyInfo?.company_logo,
             ...userData,
             access_token: body.access_token,
             refresh_token: body.refresh_token,

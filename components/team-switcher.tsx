@@ -37,7 +37,13 @@ export function TeamSwitcher() {
         const companyList = c.data.data || [];
         updateSession({
           ...session,
-          user: { ...(session?.user || {}), company_id: companyList[0].id },
+          user: {
+            ...(session?.user || {}),
+            company_id: companyList[0].id,
+            company_name: companyList[0].company_name,
+            company_register: companyList[0].company_register,
+            company_logo: companyList[0].company_logo,
+          },
         }).finally(() => setCompanies(companyList));
       })
       .finally(() => setLoading(false));
@@ -45,17 +51,10 @@ export function TeamSwitcher() {
 
   const debouncedSearch = debounce((val) => {
     setLoading(true);
-    getCompanyList({ filter: `company_name=${val}` })
-      .then((c) => {
-        console.log('result', c.data.data || []);
-        setCompanies(c.data.data || []);
-      })
+    getCompanyList(val ? { filters: `company_name=${val}` } : undefined)
+      .then((c) => setCompanies(c.data.data || []))
       .finally(() => setLoading(false));
   }, 200);
-
-  const selectedCompany = companies.find(
-    (c) => c.id === session?.user?.company_id,
-  );
 
   if (!session?.user) return null;
   if (loading && !companies.length)
@@ -78,12 +77,12 @@ export function TeamSwitcher() {
           <PopoverTrigger asChild>
             <button className="flex w-full items-center gap-3 rounded-lg p-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                {isUri(selectedCompany?.company_logo || '') ? (
+                {isUri(session?.user?.company_logo || '') ? (
                   <Image
-                    src={selectedCompany?.company_logo!}
+                    src={session?.user?.company_logo!}
                     width={16}
                     height={16}
-                    alt={`${selectedCompany?.company_name} logo`}
+                    alt={`${session?.user?.company_name} logo`}
                     className="overflow-hidden object-cover"
                   />
                 ) : (
@@ -92,11 +91,11 @@ export function TeamSwitcher() {
               </div>
               <div className="flex-1 text-left text-sm leading-tight">
                 <p className="truncate font-semibold">
-                  {selectedCompany?.company_name || 'XOOX'}
+                  {session?.user?.company_name || 'XOOX'}
                 </p>
-                {selectedCompany?.company_register && (
+                {session?.user?.company_register && (
                   <p className="text-xs text-muted-foreground">
-                    {selectedCompany?.company_register}
+                    {session?.user?.company_register}
                   </p>
                 )}
               </div>
@@ -116,10 +115,17 @@ export function TeamSwitcher() {
                     <CommandItem
                       key={idx}
                       value={`${c.id}`}
+                      disabled={loading && !!companies.length}
                       onSelect={() =>
                         updateSession({
                           ...session,
-                          user: { ...session.user, company_id: c.id },
+                          user: {
+                            ...session.user,
+                            company_id: c.id,
+                            company_name: c.company_name,
+                            company_register: c.company_register,
+                            company_logo: c.company_logo,
+                          },
                         }).finally(() => setOpen(false))
                       }
                       className="gap-3"

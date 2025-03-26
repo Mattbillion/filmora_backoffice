@@ -45,6 +45,7 @@ export const getCompanyList = async (searchParams?: QueryParams) => {
 
 export const getCompany = async (id: string) => {
   try {
+    if (!id) throw new Error(`Company with id ${id} not found`);
     const { body, error } = await xooxFetch<{ data: CompanyItemType }>(
       `/companies/${id}`,
       {
