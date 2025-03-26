@@ -35,16 +35,18 @@ export function TeamSwitcher() {
     getCompanyList()
       .then((c) => {
         const companyList = c.data.data || [];
-        updateSession({
-          ...session,
-          user: {
-            ...(session?.user || {}),
-            company_id: companyList[0].id,
-            company_name: companyList[0].company_name,
-            company_register: companyList[0].company_register,
-            company_logo: companyList[0].company_logo,
-          },
-        }).finally(() => setCompanies(companyList));
+        if (!(session?.user || {}).company_id)
+          updateSession({
+            ...session,
+            user: {
+              ...(session?.user || {}),
+              company_id: companyList[0]?.id,
+              company_name: companyList[0]?.company_name,
+              company_register: companyList[0]?.company_register,
+              company_logo: companyList[0]?.company_logo,
+            },
+          }).finally(() => setCompanies(companyList));
+        else setCompanies(companyList);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -126,7 +128,10 @@ export function TeamSwitcher() {
                             company_register: c.company_register,
                             company_logo: c.company_logo,
                           },
-                        }).finally(() => setOpen(false))
+                        }).finally(() => {
+                          window.location.reload();
+                          setOpen(false);
+                        })
                       }
                       className="gap-3"
                     >

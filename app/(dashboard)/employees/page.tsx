@@ -20,7 +20,7 @@ export default async function EmployeePage(props: {
   const searchParams = await props.searchParams;
   const session = await auth();
   const { data } = await getEmployeeList({
-    company_id: (session?.user as any)?.company_id,
+    company_id: session?.user?.company_id,
     ...searchParams,
   });
 
@@ -29,6 +29,7 @@ export default async function EmployeePage(props: {
       <div className="flex items-start justify-between">
         <Heading
           title={`Employee list (${data?.pagination?.total ?? data?.data?.length})`}
+          description={session?.user?.company_name}
         />
         <CreateDialog>
           <Button className="text-xs md:text-sm">
