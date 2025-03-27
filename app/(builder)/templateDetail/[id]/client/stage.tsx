@@ -152,7 +152,7 @@ export default function Stage({
   };
 
   return (
-    <>
+    <div className="flex">
       <KonvaStage
         ref={stageRef}
         width={width}
@@ -184,9 +184,11 @@ export default function Stage({
 
           return { x: newX, y: newY };
         }}
+        className="flex-1"
       >
         <Layer>{shapes}</Layer>
       </KonvaStage>
-    </>
+      <div className="flex-[462px] border-l border-border"></div>
+    </div>
   );
 }

@@ -27,7 +27,9 @@ export default async function TemplateDetailPage({
 }) {
   const { body } = await xooxFetch<{ data: TemplateDetail[] }>('templates');
   const template = body.data[0];
-  const templateJSON = parse(template.layout_svg || '');
+  const templateJSON = template?.layout_svg
+    ? parse(template?.layout_svg)
+    : null;
   const svgRoot = templateJSON?.children?.[0];
   const viewBox = svgRoot?.properties?.viewBox
     ?.split(' ')
