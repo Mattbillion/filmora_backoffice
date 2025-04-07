@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { ArrowLeft, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
@@ -37,7 +38,10 @@ export default function Client({
   const [vbw = 1024, vbh = 960] = viewBox;
   const styleJson = parseCSS(getStyleStr(templateJSON));
 
-  const shapes = templateJSON.map((c) => svgToKonva(c, styleJson));
+  const shapes = useMemo(
+    () => templateJSON.map((c) => svgToKonva(c, styleJson)),
+    [templateJSON],
+  );
 
   const [width, height] = (() => {
     if (typeof window === 'undefined') return viewBox;

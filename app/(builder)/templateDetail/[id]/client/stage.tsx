@@ -1,9 +1,13 @@
 'use client';
 
-import { JSX, useRef } from 'react';
+import { JSX, useEffect, useRef } from 'react';
 import { Layer, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
 import { debounce } from 'lodash';
+
+const scaleBy = 1.05;
+const maxScale = 10;
+const minScale = 0.5;
 
 export default function Stage({
   height,
@@ -23,6 +27,14 @@ export default function Stage({
   scale: { x: number; y: number };
 }) {
   const stageRef = useRef<Konva.Stage>(null);
+  const sectionsRef = useRef<Konva.Node[]>([]);
+
+  useEffect(() => {
+    if (stageRef.current) {
+      sectionsRef.current = stageRef.current.find('.ticketSection');
+      console.log('effect');
+    }
+  });
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
     const stage = stageRef.current;
@@ -102,9 +114,7 @@ export default function Stage({
 
     if (nodesLength) {
       for (let i = 0; i < nodesLength; i++) {
-        visibleNodes[i].cache({
-          // drawBorder: true,
-        });
+        visibleNodes[i].cache();
       }
     }
   }, 200);
@@ -122,9 +132,6 @@ export default function Stage({
     position: Konva.Vector2d;
     miniMapSize?: { scale: Konva.Vector2d; position: Konva.Vector2d };
   } => {
-    const scaleBy = 1.05;
-    const maxScale = 10;
-    const minScale = 0.5;
     const oldScale = stage.scaleX();
     const newScale = deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
     const clampedScale = Math.max(minScale, Math.min(maxScale, newScale));
@@ -188,7 +195,26 @@ export default function Stage({
       >
         <Layer>{shapes}</Layer>
       </KonvaStage>
-      <div className="flex-[462px] border-l border-border"></div>
+      <div className="flex-[462px] flex-col items-start border-l border-border">
+        <h1 className="border-b p-4">Seatmap builder</h1>
+        <div>
+          {sectionsRef.current?.map((c, idx) => (
+            <button
+              key={idx}
+              className="w-full"
+              onClick={() => {
+                const node = stageRef.current?.findOne(
+                  (cc: Konva.Shape) =>
+                    cc.attrs['data-testid'] === c.attrs['data-testid'],
+                );
+                if (node) node.remove();
+              }}
+            >
+              {c.id()}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }

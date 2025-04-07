@@ -54,6 +54,7 @@ export const svgToKonva = (
     return (
       <Text
         key={compKey}
+        data-testid={compKey}
         ref={(ref) => {
           if (ref) {
             ref.cache();
@@ -85,7 +86,13 @@ export const svgToKonva = (
 
   const konvaProps: Record<string, any> = propertyToProp(
     tagName,
-    Object.assign({}, properties, classStyle),
+    Object.assign(
+      {
+        'data-testid': compKey,
+      },
+      properties,
+      classStyle,
+    ),
     children,
   );
 
@@ -109,15 +116,23 @@ export const svgToKonva = (
     <KonvaNode
       ref={(ref?: Konva.Node) => {
         if (ref) {
+          const groupInsideTicket =
+            ref.findAncestor('#tickets') && ref.getType() === 'Group';
           const canCache =
-            ref.findAncestor('#tickets') &&
-            ref.getType() === 'Group' &&
-            !children?.some((c) => c.tagName === 'g');
+            groupInsideTicket && !children?.some((c) => c.tagName === 'g');
+          const needEl =
+            groupInsideTicket &&
+            children?.some(
+              (c) =>
+                c.tagName === 'g' &&
+                !c.children?.some((cc) => cc.tagName === 'g'),
+            );
 
           ref.listening(
             ref.id() === 'tickets' ||
               (!!ref.findAncestor('#tickets') && !isTextNode),
           );
+          if (needEl) ref.name('ticketSection');
           if (forceCache || canCache) {
             if (canCache) ref.name('cachedGroup');
             (ref as unknown as Konva.Node).cache();
