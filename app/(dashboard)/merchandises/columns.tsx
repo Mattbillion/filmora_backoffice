@@ -105,8 +105,8 @@ export const merchandisesColumns: ColumnDef<MerchandisesItemType>[] = [
   },
   {
     id: 'status',
-    accessorKey: 'status',
     header: 'Status',
+    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
   },
   {
     id: 'actions',
