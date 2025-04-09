@@ -9,6 +9,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { getRoleList } from '@/features/role/actions';
 import { SearchParams } from '@/lib/fetch/types';
+import { checkPermission } from '@/lib/permission';
 
 import { CreateDialog } from './components';
 
@@ -25,7 +26,7 @@ export default async function RolePage(props: { searchParams?: SearchParams }) {
         <Heading
           title={`Role list (${data?.pagination?.total ?? data?.data?.length})`}
         />
-        {session?.user?.permissions?.includes('create_role') && (
+        {checkPermission(session, ['create_role']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New

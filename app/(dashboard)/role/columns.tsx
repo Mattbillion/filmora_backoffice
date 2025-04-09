@@ -8,6 +8,7 @@ import { useSession } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';
 import { RoleItemType } from '@/features/role/schema';
+import { checkPermission } from '@/lib/permission';
 // import { Edit, Trash } from 'lucide-react';
 // import { toast } from 'sonner';
 //
@@ -67,8 +68,7 @@ import { RoleItemType } from '@/features/role/schema';
 const ChildData = ({ row }: CellContext<RoleItemType, unknown>) => {
   const router = useRouter();
   const { data } = useSession();
-  if (!data?.user?.permissions?.includes('get_role_by_permission_list'))
-    return null;
+  if (checkPermission(data, ['get_role_by_permission_list'])) return null;
 
   return (
     <div className="me-2 flex justify-end gap-4">
