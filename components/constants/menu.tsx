@@ -33,6 +33,12 @@ const managementRoutes: SubMenuItemType[] = [
     permissionName: '',
   },
   {
+    title: 'Merch',
+    url: '/merchandises',
+    icon: Shield,
+    permissionName: 'company_merchandise_list',
+  },
+  {
     title: 'Attribute Values',
     url: '/attribute-values',
     icon: Tag,
