@@ -10,6 +10,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
+import { currencyFormat } from '@/lib/utils';
 
 import { deleteMerchandises } from './actions';
 import { UpdateDialog } from './components';
@@ -46,7 +47,7 @@ const Action = ({ row }: CellContext<MerchandisesItemType, unknown>) => {
         description={
           <>
             Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.merchandises_name}</b>?
+            <b className="text-foreground">{row.original.mer_name}</b>?
           </>
         }
       >
@@ -89,8 +90,8 @@ export const merchandisesColumns: ColumnDef<MerchandisesItemType>[] = [
   },
   {
     id: 'price',
-    accessorKey: 'price',
     header: 'Price',
+    cell: ({ row }) => currencyFormat(row.original.price),
   },
   {
     id: 'discount_id',
