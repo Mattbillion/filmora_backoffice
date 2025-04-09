@@ -6,8 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -85,13 +83,6 @@ export function UpdateDialog({
       />
       <FormField
         control={form.control}
-        name="role_logo"
-        render={({ field }) => (
-          <UploadImageItem field={field} imagePrefix="role_logo" label="Logo" />
-        )}
-      />
-      <FormField
-        control={form.control}
         name="status"
         render={({ field }) => (
           <FormItem>
@@ -113,11 +104,6 @@ export function UpdateDialog({
             <FormMessage />
           </FormItem>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="role_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );
