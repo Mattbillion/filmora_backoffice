@@ -12,19 +12,32 @@
       "item": [
         {
           "name": "employees list",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true,
+            "disabledSystemHeaders": {}
+          },
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjYXNoZXJAZXhhbXBsZS5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5OTU4NTd9.aVZXmhAhNNNxJ5f-dZ8nxg1KyNnNM2FVbGZBanTfCwc",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
                   "type": "string"
                 }
               ]
             },
             "method": "GET",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/employees?company_id=11&page=1&page_size=10",
               "host": [
@@ -59,7 +72,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJtYW5hZ2VyQGV4YW1wbGUuY29tIiwicm9sZSI6ImVtcGxveWVlIiwiZXhwIjoxNzM0MDU4MDc4fQ.h-s7F7AH3o_Xd6H2r7hA6s_tiHqwQT_IAT_wGgeBb60",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk3ODk3MzJ9.VzIn0K6CEQtZ6SKByKrHltzm4UfWZqZdJApYcY_quNE",
                   "type": "string"
                 }
               ]
@@ -67,18 +80,18 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/employees/066d5ec0-18b6-494e-a126-ad079605ae58?company_id=4",
+              "raw": "{{base_url}}/employees/cfbe5b23-2ad1-499d-860d-65920c6549ce?company_id=11",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "employees",
-                "066d5ec0-18b6-494e-a126-ad079605ae58"
+                "cfbe5b23-2ad1-499d-860d-65920c6549ce"
               ],
               "query": [
                 {
                   "key": "company_id",
-                  "value": "4"
+                  "value": "11"
                 }
               ]
             }
@@ -93,7 +106,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk0MTUxMDN9.CluQHrMDP3kepmDAvghflYPrBxp76lwcY-l39ALXC_M",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk2MDQwNTh9._ri30n-uxr0wFQwuCQS5b97Thj-DRL8lXsAZhStl62o",
                   "type": "string"
                 }
               ]
@@ -102,7 +115,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstname\": \"string\",\n  \"lastname\": \"string\",\n  \"phone\": \"string\",\n  \"email\": \"user@example.com\",\n  \"profile\": \"string\",\n  \"password\": \"string\",\n  \"email_verified\": true,\n  \"company_id\": 6,\n  \"status\": true\n}",
+              "raw": "{\n  \"firstname\": \"Munkhbat\",\n  \"lastname\": \"Enkhtuya\",\n  \"phone\": \"98119218\",\n  \"email\": \"matt22@gmail.com\",\n  \"profile\": \"link\",\n  \"password\": \"password123$\",\n  \"email_verified\": false,\n  \"company_id\": 11,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -129,7 +142,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI1MDkyODh9.o3NtzaIfKzixZ_mDud7FMnVt2CjuLyE7rhdEj3djQ_w",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
                   "type": "string"
                 }
               ]
@@ -138,7 +151,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstname\": \"test\",\n  \"lastname\": \"test\",\n  \"phone\": \"string\",\n  \"profile\": \"string\",\n  \"email_verified\": true,\n  \"company_id\": 6,\n  \"status\": true\n}",
+              "raw": "{\n  \"firstname\": \"test\",\n  \"lastname\": \"test\",\n  \"phone\": \"string\",\n  \"profile\": \"string\",\n  \"email_verified\": true,\n  \"company_id\": 11,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -146,13 +159,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/employees/066d5ec0-18b6-494e-a126-ad079605ae58",
+              "raw": "{{base_url}}/employees/4e597bdf-9ff3-43ca-a96f-4b37efa016bf",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "employees",
-                "066d5ec0-18b6-494e-a126-ad079605ae58"
+                "4e597bdf-9ff3-43ca-a96f-4b37efa016bf"
               ]
             }
           },
@@ -166,7 +179,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI1MDkyODh9.o3NtzaIfKzixZ_mDud7FMnVt2CjuLyE7rhdEj3djQ_w",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk0MTUxMDN9.CluQHrMDP3kepmDAvghflYPrBxp76lwcY-l39ALXC_M",
                   "type": "string"
                 }
               ]
@@ -175,7 +188,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"test@example.com\",\n  \"company_id\": 6\n}",
+              "raw": "{\n  \"email\": \"test@bandai.com\",\n  \"company_id\": 11\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -183,13 +196,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/employees/b0e211d0-6025-4e34-a5f9-27e23b5f4efe/change-email",
+              "raw": "{{base_url}}/employees/866ba00f-96fb-4013-98df-03b7f3aa0401/change-email",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "employees",
-                "b0e211d0-6025-4e34-a5f9-27e23b5f4efe",
+                "866ba00f-96fb-4013-98df-03b7f3aa0401",
                 "change-email"
               ]
             }
@@ -204,7 +217,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI1MDkyODh9.o3NtzaIfKzixZ_mDud7FMnVt2CjuLyE7rhdEj3djQ_w",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
                   "type": "string"
                 }
               ]
@@ -213,7 +226,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"password\": \"test1234\",\n  \"company_id\": 6\n}",
+              "raw": "{\n  \"password\": \"password1231231\",\n  \"company_id\": 11\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -221,13 +234,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/employees/b0e211d0-6025-4e34-a5f9-27e23b5f4efe/change-password",
+              "raw": "{{base_url}}/employees/4e597bdf-9ff3-43ca-a96f-4b37efa016bf/change-password",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "employees",
-                "b0e211d0-6025-4e34-a5f9-27e23b5f4efe",
+                "4e597bdf-9ff3-43ca-a96f-4b37efa016bf",
                 "change-password"
               ]
             }
@@ -261,6 +274,42 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "set role employees",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"employee_id\": \"82d72729-21d9-490f-8b67-9c61a7bfc615\",\n  \"role_id\": 1\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/set_role_employees",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "set_role_employees"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -288,6 +337,31 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": "order_status=failed",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-12-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-07",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -351,8 +425,37 @@
         {
           "name": "update venue",
           "request": {
-            "method": "GET",
-            "header": []
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkyNTg4NDR9.l27z0hMBokzN7RowTrIUSuMMsqHzOldVzewKjK2TbTY",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"venue_name\": \"City Expo Arena\",\n    \"venue_desc\": \"A versatile venue for expos, concerts, and events test.\",\n    \"venue_logo\": \"https://example.com/images/city-expo-arena-logo.png\",\n    \"venue_email\": \"hello@cityarena.com\",\n    \"venue_phone\": \"+1122334455\",\n    \"venue_location\": \"789 Event Blvd, City Center\",\n    \"status\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/venues/70",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "venues",
+                "70"
+              ]
+            }
           },
           "response": []
         },
@@ -410,6 +513,28 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": "status=true"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13"
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -551,6 +676,28 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": ""
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13"
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -729,6 +876,16 @@
         {
           "name": "create company",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkyNjI0NDd9.sntsp-Xrh9r6KnCWamfhsmrNML_6nQ3YiPUCNF7I1ds",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "POST",
             "header": [],
             "body": {
@@ -813,12 +970,150 @@
       "name": "events",
       "item": [
         {
+          "name": "templates",
+          "item": [
+            {
+              "name": "templates list",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/templates?page=1&page_size=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "templates"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "order_status=failed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2024-11-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2024-12-17",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_column",
+                      "value": "updated_at",
+                      "disabled": true
+                    },
+                    {
+                      "key": "return_columns",
+                      "value": "id",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "create template",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzYyMjAwNzZ9.xc4UTXSWKFZP1UHzJfXxFW7F2fMggeKUVf5qE6giVJA",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "key": "svg_file",
+                      "type": "file",
+                      "src": "postman-cloud:///1efbf71b-254b-4440-b316-f9f82b590f07"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{base_url}}/templates?event_id=41&template_name=test template&template_desc=test template&template_order=1&status=true&template_type=svg",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "templates"
+                  ],
+                  "query": [
+                    {
+                      "key": "event_id",
+                      "value": "41"
+                    },
+                    {
+                      "key": "template_name",
+                      "value": "test template"
+                    },
+                    {
+                      "key": "template_desc",
+                      "value": "test template"
+                    },
+                    {
+                      "key": "template_order",
+                      "value": "1"
+                    },
+                    {
+                      "key": "status",
+                      "value": "true"
+                    },
+                    {
+                      "key": "template_type",
+                      "value": "svg"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "delete template",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/templates/86",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "templates",
+                    "86"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
           "name": "events list",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/events?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+              "raw": "{{base_url}}/events",
               "host": [
                 "{{base_url}}"
               ],
@@ -828,11 +1123,38 @@
               "query": [
                 {
                   "key": "page",
-                  "value": "1"
+                  "value": "1",
+                  "disabled": true
                 },
                 {
                   "key": "page_size",
-                  "value": "10"
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "filters",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -865,7 +1187,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzQ4NTUyNzF9.jZYod5Gmau6nn1TCGkMiHUr1teJ7D1OHApNPvMqbyxI",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDMxNjkwOTJ9.DXgKHFe7Fa4FdMs-Pec1dC87TW0XGw630kLFWy5H1Go",
                   "type": "string"
                 }
               ]
@@ -874,7 +1196,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"category_id\": 25,\n  \"template_id\": 132,\n  \"company_id\": 9,\n  \"event_name\": \"Tech Conference 2024\",\n  \"event_desc\": \"Join us for a day of insightful talks and workshops on the latest tech trends.\",\n  \"event_capacity\": 500,\n  \"age_id\": 5,\n  \"event_type\": \"Conference\",\n  \"event_image\": \"https://example.com/images/tech-conference-2024.jpg\",\n  \"event_order\": 1,\n  \"event_genre\": \"Technology\",\n  \"duration\": 8,\n  \"openning_at\": \"2024-11-27T09:00:00.000Z\",\n  \"language\": \"English\",\n  \"sponsor_name\": \"TechCorp Solutions\",\n  \"contact_info\": \"contact@techconference.com\",\n  \"fb_link\": \"https://facebook.com/techconference2024\",\n  \"ig_link\": \"https://instagram.com/techconference2024\",\n  \"web_link\": \"https://www.techconference.com\",\n  \"status\": true\n}\n",
+              "raw": "{\n  \"category_id\": 25,\n  \"hall_id\": 41,\n  \"company_id\": 9,\n  \"event_name\": \"Tech Conference 2024\",\n  \"event_desc\": \"Join us for a day of insightful talks and workshops on the latest tech trends.\",\n  \"event_capacity\": 500,\n  \"age_id\": 5,\n  \"event_type\": \"Conference\",\n  \"event_image\": \"https://example.com/images/tech-conference-2024.jpg\",\n  \"event_order\": 1,\n  \"event_genre\": \"Technology\",\n  \"duration\": 8,\n  \"openning_at\": \"2024-11-27T09:00:00.000Z\",\n  \"language\": \"English\",\n  \"sponsor_name\": \"TechCorp Solutions\",\n  \"contact_info\": \"contact@techconference.com\",\n  \"fb_link\": \"https://facebook.com/techconference2024\",\n  \"ig_link\": \"https://instagram.com/techconference2024\",\n  \"web_link\": \"https://www.techconference.com\",\n  \"status\": true\n}\n",
               "options": {
                 "raw": {
                   "language": "json"
@@ -910,7 +1232,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"category_id\": 25,\n    \"template_id\": 132,\n    \"company_id\": 9,\n    \"event_name\": \"AI Expo 2024 zzzz\",\n    \"event_desc\": \"Discover the latest advancements in Artificial Intelligence through workshops, discussions, and live demos.\",\n    \"event_capacity\": 1000,\n    \"age_id\": 4,\n    \"event_type\": \"Exhibition\",\n    \"event_image\": \"https://example.com/images/ai-expo-2024.jpg\",\n    \"event_order\": 2,\n    \"event_genre\": \"Artificial Intelligence\",\n    \"duration\": 10,\n    \"openning_at\": \"2024-12-15T10:00:00+00:00\",\n    \"language\": \"English\",\n    \"sponsor_name\": \"AI Innovators\",\n    \"contact_info\": \"info@aiexpo.com\",\n    \"fb_link\": \"https://facebook.com/aiexpo2024\",\n    \"ig_link\": \"https://instagram.com/aiexpo2024\",\n    \"web_link\": \"https://www.aiexpo.com\",\n    \"status\": true\n}",
+              "raw": "{\n    \"category_id\": 25,\n    \"hall_id\": 132,\n    \"company_id\": 9,\n    \"event_name\": \"AI Expo 2024 zzzz\",\n    \"event_desc\": \"Discover the latest advancements in Artificial Intelligence through workshops, discussions, and live demos.\",\n    \"event_capacity\": 1000,\n    \"age_id\": 4,\n    \"event_type\": \"Exhibition\",\n    \"event_image\": \"https://example.com/images/ai-expo-2024.jpg\",\n    \"event_order\": 2,\n    \"event_genre\": \"Artificial Intelligence\",\n    \"duration\": 10,\n    \"openning_at\": \"2024-12-15T10:00:00+00:00\",\n    \"language\": \"English\",\n    \"sponsor_name\": \"AI Innovators\",\n    \"contact_info\": \"info@aiexpo.com\",\n    \"fb_link\": \"https://facebook.com/aiexpo2024\",\n    \"ig_link\": \"https://instagram.com/aiexpo2024\",\n    \"web_link\": \"https://www.aiexpo.com\",\n    \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -997,7 +1319,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10&filters=status=true&start_date=2024-11-01&end_date=2024-12-13&date_column=updated_at&return_columns=id",
+              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10&filters=status=true,max_age=100",
               "host": [
                 "{{base_url}}"
               ],
@@ -1012,6 +1334,30 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": "status=true,max_age=100"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -1044,7 +1390,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzgxMzA5MzN9.xlimjZS7nLY1JwMaTahTXHa6JqDeXdMJT0CTRRuWk8w",
                   "type": "string"
                 }
               ]
@@ -1130,100 +1476,6 @@
       ]
     },
     {
-      "name": "templates",
-      "item": [
-        {
-          "name": "templates list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/templates?page=1&page_size=10&start_date=2024-11-01&end_date=2024-12-17",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "templates"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create template",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzYyMjAwNzZ9.xc4UTXSWKFZP1UHzJfXxFW7F2fMggeKUVf5qE6giVJA",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "formdata",
-              "formdata": [
-                {
-                  "key": "svg_file",
-                  "type": "file",
-                  "src": "postman-cloud:///1efbf71b-254b-4440-b316-f9f82b590f07",
-                  "disabled": true
-                }
-              ]
-            },
-            "url": {
-              "raw": "{{base_url}}/templates?hall_id=41&template_name=test template&template_desc=test template&template_order=1&status=true&template_type=manual",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "templates"
-              ],
-              "query": [
-                {
-                  "key": "hall_id",
-                  "value": "41"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete template",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/templates/86",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "templates",
-                "86"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
       "name": "roles & permissions",
       "item": [
         {
@@ -1234,7 +1486,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzgyMTU1Njd9.kxPcdCWymOhqGTR96zlg_fNFV992yu7SYw4JPMb2hSM",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
                   "type": "string"
                 }
               ]
@@ -1259,6 +1511,31 @@
                   "key": "page_size",
                   "value": "10",
                   "disabled": true
+                },
+                {
+                  "key": "filters",
+                  "value": "order_status=failed",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-12-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-07",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -1273,7 +1550,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzMxOTM1MjF9.1TLRrvjN7qDACERycgmNwFrQKqhvJJFYgKy10l2QgTo",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkyNjI0NDd9.sntsp-Xrh9r6KnCWamfhsmrNML_6nQ3YiPUCNF7I1ds",
                   "type": "string"
                 }
               ]
@@ -1309,7 +1586,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzgyMTU1Njd9.kxPcdCWymOhqGTR96zlg_fNFV992yu7SYw4JPMb2hSM",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
                   "type": "string"
                 }
               ]
@@ -1317,12 +1594,12 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/permissions",
+              "raw": "{{base_url}}/permissions_list",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "permissions"
+                "permissions_list"
               ],
               "query": [
                 {
@@ -1331,8 +1608,28 @@
                   "disabled": true
                 },
                 {
-                  "key": "page_size",
-                  "value": "10",
+                  "key": "filters",
+                  "value": "status=true",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-12-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-17",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
                   "disabled": true
                 }
               ]
@@ -1348,7 +1645,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzgyMTU1Njd9.kxPcdCWymOhqGTR96zlg_fNFV992yu7SYw4JPMb2hSM",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
                   "type": "string"
                 }
               ]
@@ -1356,7 +1653,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/role_permissions_list",
+              "raw": "{{base_url}}/role_permissions_list?page_size=1000",
               "host": [
                 "{{base_url}}"
               ],
@@ -1371,8 +1668,7 @@
                 },
                 {
                   "key": "page_size",
-                  "value": "3",
-                  "disabled": true
+                  "value": "1000"
                 }
               ]
             }
@@ -1387,7 +1683,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzgyMTU1Njd9.kxPcdCWymOhqGTR96zlg_fNFV992yu7SYw4JPMb2hSM",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
                   "type": "string"
                 }
               ]
@@ -1427,7 +1723,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzMxOTM1MjF9.1TLRrvjN7qDACERycgmNwFrQKqhvJJFYgKy10l2QgTo",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzYyNzR9.VBN_SUrLqPUdpAN4Aa9QjJWJDGpA_AFvJyidKuW-95A",
                   "type": "string"
                 }
               ]
@@ -1436,7 +1732,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role_id\": 3,\n  \"permission_id\": 15,\n  \"status\": true\n}",
+              "raw": "{\n  \"role_id\": 3,\n  \"permission_id\": 24,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1482,6 +1778,39 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "get permissions",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzYyNzR9.VBN_SUrLqPUdpAN4Aa9QjJWJDGpA_AFvJyidKuW-95A",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/permissions?page_size=1000",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "permissions"
+              ],
+              "query": [
+                {
+                  "key": "page_size",
+                  "value": "1000"
+                }
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
@@ -1509,6 +1838,29 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": "order_status=failed",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-12-01"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-07"
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -1541,10 +1893,20 @@
         {
           "name": "order list",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDMxNTE2MzR9.X837ZvuYDXNZBuFTPQGTHvNAeCp9FvF0RNTGL2etHEg",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/orders?page=1&page_size=10&filters=order_status=failed&start_date=2024-12-01&end_date=2024-12-07&date_column=updated_at&return_columns=id,order_number",
+              "raw": "{{base_url}}/orders?page=1&page_size=10&com_id=9",
               "host": [
                 "{{base_url}}"
               ],
@@ -1559,6 +1921,20 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2025-03-24",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-03-26",
+                  "disabled": true
+                },
+                {
+                  "key": "com_id",
+                  "value": "9"
                 }
               ]
             }
@@ -1582,46 +1958,11 @@
             }
           },
           "response": []
-        },
-        {
-          "name": "order search",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/orders_search?search_columns=total_amount&search_value=40000&page=1&page_size=10",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "orders_search"
-              ],
-              "query": [
-                {
-                  "key": "search_columns",
-                  "value": "total_amount"
-                },
-                {
-                  "key": "search_value",
-                  "value": "40000"
-                },
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                }
-              ]
-            }
-          },
-          "response": []
         }
       ]
     },
     {
-      "name": "category",
+      "name": "category ",
       "item": [
         {
           "name": "category list",
@@ -1645,6 +1986,31 @@
                 {
                   "key": "page_size",
                   "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "filters",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
                   "disabled": true
                 }
               ]
@@ -1764,7 +2130,7 @@
       ]
     },
     {
-      "name": "company categories",
+      "name": "company categories (issued)",
       "item": [
         {
           "name": "company categories list",
@@ -1787,6 +2153,28 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": ""
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13"
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -1930,13 +2318,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/discounts/1",
+              "raw": "{{base_url}}/discounts/6",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "discounts",
-                "1"
+                "6"
               ]
             }
           },
@@ -1950,7 +2338,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -1959,7 +2347,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"com_id\": 1,\n  \"discount_name\": \"string\",\n  \"discount_desc\": \"string\",\n  \"discount_type\": \"AMOUNT\",\n  \"discount\": 10,\n  \"start_at\": \"2024-12-09T09:43:00.379Z\",\n  \"end_at\": \"2024-12-09T09:43:00.379Z\",\n  \"count\": 10,\n  \"status\": true\n}",
+              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount test\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday test.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1986,7 +2374,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -1995,7 +2383,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"com_id\": 2,\n  \"discount_name\": \"aaa\",\n  \"discount_desc\": \"test\",\n  \"discount_type\": \"PERCENT\",\n  \"discount\": 20,\n  \"start_at\": \"2024-12-09T09:59:43.700Z\",\n  \"end_at\": \"2024-12-09T09:59:43.700Z\",\n  \"count\": 10,\n  \"status\": true\n}",
+              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2003,13 +2391,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/discounts/4",
+              "raw": "{{base_url}}/discounts/6",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "discounts",
-                "4"
+                "6"
               ]
             }
           },
@@ -2040,11 +2428,23 @@
       "item": [
         {
           "name": "merchandises list",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
             "method": "GET",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{base_url}}/merchandises?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+              "raw": "{{base_url}}/merchandises?page=1&page_size=10&filters=",
               "host": [
                 "{{base_url}}"
               ],
@@ -2059,6 +2459,30 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": ""
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -2068,6 +2492,16 @@
         {
           "name": "get merchandise",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzMzNzB9.S2wAkKQ2qTUy-vkZBO988pjwCxVjHzbtksVWfntmZ-A",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
             "url": {
@@ -2091,7 +2525,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzc5MDE5OTF9.xXYK_AqaaaponGdnP6Tr1QE8-zsfiNECv_rnET2thU8",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2127,7 +2561,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2136,7 +2570,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"mer_name\": \"test\",\n  \"mer_desc\": \"test\",\n  \"sku\": \"string9\",\n  \"price\": 10,\n  \"discount_id\": null,\n  \"medias\": [\n            {\n                \"media_url\": \"image1.jpg\",\n                \"media_desc\": \"Front view\",\n                \"media_type\": \"image\",\n                \"media_label\": \"main\"\n            }\n        ],\n  \"status\": true\n}",
+              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"mer_name\": \"Tommorowland\",\n  \"mer_desc\": \"test2\",\n  \"sku\": \"string9\",\n  \"price\": 10,\n  \"discount_id\": null,\n  \"medias\": [\n            {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n        ],\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2144,13 +2578,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/merchandises/29",
+              "raw": "{{base_url}}/merchandises/46",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "merchandises",
-                "29"
+                "46"
               ]
             }
           },
@@ -2159,16 +2593,26 @@
         {
           "name": "delete merchandise",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/merchandises/15",
+              "raw": "{{base_url}}/merchandises/45",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "merchandises",
-                "15"
+                "45"
               ]
             }
           },
@@ -2181,11 +2625,33 @@
       "item": [
         {
           "name": "category attributes list",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{base_url}}/category_attributes",
+              "raw": "{{base_url}}/category_attributes?page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -2200,7 +2666,31 @@
                 },
                 {
                   "key": "page_size",
-                  "value": "10",
+                  "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
                   "disabled": true
                 }
               ]
@@ -2234,7 +2724,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2243,7 +2733,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"attr_name\": \"string\",\n  \"attr_desc\": \"string\",\n  \"attr_type\": \"SELECT\",\n  \"display_order\": 1,\n  \"status\": true\n}",
+              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 4,\n  \"attr_name\": \"wut\",\n  \"attr_desc\": \"descripption test\",\n  \"attr_type\": \"SELECT\",\n  \"display_order\": 12,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2270,7 +2760,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2279,7 +2769,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"attr_name\": \"test\",\n  \"attr_desc\": \"test\",\n  \"attr_type\": \"SELECT\",\n  \"display_order\": 1,\n  \"status\": true\n}",
+              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"attr_name\": \"test\",\n  \"attr_desc\": \"test\",\n  \"attr_type\": \"TEXT\",\n  \"display_order\": 1,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2304,14 +2794,23 @@
           "request": {
             "method": "DELETE",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{base_url}}/category_attributes/6",
+              "raw": "{{base_url}}/category_attributes/17",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "category_attributes",
-                "6"
+                "17"
               ]
             }
           },
@@ -2324,9 +2823,31 @@
       "item": [
         {
           "name": "list attribute values",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/attribute_values",
               "host": [
@@ -2365,7 +2886,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2374,7 +2895,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"attr_id\": 0,\n  \"value\": \"string\",\n  \"display_order\": 0,\n  \"status\": true\n}",
+              "raw": "{\n  \"attr_id\": 9,\n  \"value\": \"wtff\",\n  \"display_order\": 0,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2459,7 +2980,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+              "raw": "{{base_url}}/merchandise_attribute_values?page=1&page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -2474,6 +2995,31 @@
                 {
                   "key": "page_size",
                   "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
                 }
               ]
             }
@@ -2506,7 +3052,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2637,7 +3183,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2646,7 +3192,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"string\",\n  \"picture\": \"string\",\n  \"link\": \"string\",\n  \"location\": \"string\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
+              "raw": "{\n  \"title\": \"tommorowland\",\n  \"picture\": \"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR__PNqojIBwfnqNipPMoRPi1DqI2OM92TtAt_cStej9T-D4l_L_XRl-4VZu-49XtxzGlU&usqp=CAU\",\n  \"link\": \"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR__PNqojIBwfnqNipPMoRPi1DqI2OM92TtAt_cStej9T-D4l_L_XRl-4VZu-49XtxzGlU&usqp=CAU\",\n  \"location\": \"string\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2673,7 +3219,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
                   "type": "string"
                 }
               ]
@@ -2682,7 +3228,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"test\",\n  \"picture\": \"test\",\n  \"link\": \"test\",\n  \"location\": \"test\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
+              "raw": "{\n  \"title\": \"id6out\",\n  \"picture\": \"test\",\n  \"link\": \"test\",\n  \"location\": \"test\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2690,13 +3236,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/banners/1",
+              "raw": "{{base_url}}/banners/6",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "banners",
-                "1"
+                "6"
               ]
             }
           },
@@ -2708,13 +3254,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/banners/1",
+              "raw": "{{base_url}}/banners/6",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "banners",
-                "1"
+                "6"
               ]
             }
           },
@@ -2758,7 +3304,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk1MDE2OTV9.I0VxmSwp-wzErdh-JbzLpVQRT0tQXFLuMGN_RzXsXKc",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyODQzNzZ9.GQSKBxwXFoGJ2tdv50l2Yag1tJg6hqmYXPtx67vOpc0",
       "type": "string"
     }
   ]

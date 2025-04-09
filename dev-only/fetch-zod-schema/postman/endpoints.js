@@ -16,7 +16,7 @@ const getEndpoints = () => {
 
     for (let j = 0; j < routeGroup.item.length; j++) {
       let reqItem = routeGroup.item[j];
-      if (!reqItem.request.url?.path?.length)
+      if (!reqItem.request?.url?.path?.length)
         unavailableRequests.push(reqItem.name);
       if (
         reqItem?.request?.method === 'GET' &&
@@ -33,7 +33,7 @@ const getEndpoints = () => {
           },
         ].concat(
           reqItem.request.url.query?.filter(
-            (c) => !['page', 'page_size'].includes(c.key),
+            (c) => !['page', 'page_size'].includes(c.key) && !c.disabled,
           ) || [],
         );
         requests.push({
