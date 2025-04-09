@@ -1,65 +1,10 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, Trash } from 'lucide-react';
-import { toast } from 'sonner';
+import { ColumnDef } from '@tanstack/react-table';
 
-import {
-  DeleteDialog,
-  DeleteDialogRef,
-} from '@/components/custom/delete-dialog';
-import { Button } from '@/components/ui/button';
+import { PermissionByRoleItemType } from '@/features/permission/schema';
 
-import { deleteRole } from './actions';
-import { UpdateDialog } from './components';
-import { RolePermissionItemType } from './schema';
-
-const Action = ({ row }: CellContext<RolePermissionItemType, unknown>) => {
-  const [loading, setLoading] = useState(false);
-  const deleteDialogRef = useRef<DeleteDialogRef>(null);
-
-  return (
-    <div className="me-2 flex justify-end gap-4">
-      <UpdateDialog
-        initialData={row.original}
-        key={JSON.stringify(row.original)}
-      >
-        <Button size={'cxs'} variant="outline">
-          <Edit className="h-4 w-4" /> Edit
-        </Button>
-      </UpdateDialog>
-
-      <DeleteDialog
-        ref={deleteDialogRef}
-        loading={loading}
-        action={() => {
-          setLoading(true);
-          deleteRole(row.original.id)
-            .then((c) => toast.success(c.data.message))
-            .catch((c) => toast.error(c.message))
-            .finally(() => {
-              deleteDialogRef.current?.close();
-              setLoading(false);
-            });
-        }}
-        description={
-          <>
-            Are you sure you want to delete this{' '}
-            <b className="text-foreground">{row.original.role_name}</b>?
-          </>
-        }
-      >
-        <Button size={'cxs'}>
-          <Trash className="h-4 w-4" />
-          Delete
-        </Button>
-      </DeleteDialog>
-    </div>
-  );
-};
-
-export const roleColumns: ColumnDef<RolePermissionItemType>[] = [
+export const permissionColumns: ColumnDef<PermissionByRoleItemType>[] = [
   {
     accessorKey: 'id',
     header: 'ID',
@@ -68,17 +13,13 @@ export const roleColumns: ColumnDef<RolePermissionItemType>[] = [
     },
   },
   {
-    id: 'role_name',
+    id: 'permission_name',
     header: 'Name',
-    cell: ({ row }) => row.original.role_name,
+    accessorKey: 'permission_name',
   },
   {
     id: 'status',
     header: 'Status',
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
-  },
-  {
-    id: 'actions',
-    cell: Action,
   },
 ];

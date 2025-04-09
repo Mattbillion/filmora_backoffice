@@ -5,23 +5,47 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
-import { SearchParams } from '@/lib/fetch/types';
+import {
+  getPermissionList,
+  getPermissionsByRoleId,
+} from '@/features/permission/actions';
+import { getRoleList } from '@/features/role/actions';
+import { ID, SearchParams } from '@/lib/fetch/types';
 
-import { getRoleList } from './actions';
-import { roleColumns } from './columns';
+import { permissionColumns } from './columns';
 import { CreateDialog } from './components';
 
 export const dynamic = 'force-dynamic';
 
-export default async function RolePage(props: { searchParams?: SearchParams }) {
-  const searchParams = await props.searchParams;
-  const { data } = await getRoleList(searchParams);
+export default async function RoleDetailPage(props: {
+  searchParams?: SearchParams;
+  params: Promise<{ id: ID }>;
+}) {
+  const [searchParams, params] = await Promise.all([
+    props.searchParams,
+    props.params,
+  ]);
+  const { id } = params;
+
+  const [{ data: roleData }, { data: permissionListData }, { data }] =
+    await Promise.all([
+      getRoleList(searchParams),
+      getPermissionList(searchParams),
+      getPermissionsByRoleId(id, searchParams),
+    ]);
+
+  const currentRole = roleData?.data?.find((c) => c.id === Number(id));
+  const permissionNameObj: Record<ID, string> =
+    permissionListData?.data?.reduce(
+      (acc, cur) => ({ ...acc, [cur.id]: cur.permission_name }),
+      {},
+    );
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Permission list (${data?.pagination?.total ?? data?.data?.length})`}
+          title={`${currentRole?.role_name + ' '}Permission list (${data?.pagination?.total ?? data?.data?.length})`}
         />
         <CreateDialog>
           <Button className="text-xs md:text-sm">
@@ -32,8 +56,11 @@ export default async function RolePage(props: { searchParams?: SearchParams }) {
       <Separator />
       <Suspense fallback="Loading">
         <DataTable
-          columns={roleColumns}
-          data={data?.data}
+          columns={permissionColumns}
+          data={data?.data?.map((c) => ({
+            ...c,
+            permission_name: permissionNameObj[c.id],
+          }))}
           pageNumber={data?.pagination?.nextPage - 1}
           pageCount={data?.pagination?.pageCount}
         />

@@ -21,9 +21,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { createRole } from '../actions';
-import { RoleBodyType, roleSchema } from '../schema';
+import { createRole } from '@/features/role/actions';
+import { RoleBodyType, roleSchema } from '@/features/role/schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);

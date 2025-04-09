@@ -1,14 +1,14 @@
 import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
+import { roleColumns } from '@/app/(dashboard)/role/columns';
 import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
+import { getRoleList } from '@/features/role/actions';
 import { SearchParams } from '@/lib/fetch/types';
 
-import { getRoleList } from './actions';
-import { roleColumns } from './columns';
 import { CreateDialog } from './components';
 
 export const dynamic = 'force-dynamic';

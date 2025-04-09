@@ -8,8 +8,20 @@ export const permissionSchema = z.object({
   created_at: z.string(),
 });
 
+export const roleByPermissionSchema = z.object({
+  permission_id: z.string(),
+  role_id: z.string(),
+  status: z.boolean(),
+});
+
 export type PermissionBodyType = z.infer<typeof permissionSchema>;
 
+export type RoleByPermissionBodyType = z.infer<typeof roleByPermissionSchema>;
+
 export type PermissionItemType = PrettyType<BaseType<PermissionBodyType>>;
+
+export type PermissionByRoleItemType = PrettyType<
+  BaseType<RoleByPermissionBodyType>
+>;
 
 export const RVK_PERMISSION = 'permission';
