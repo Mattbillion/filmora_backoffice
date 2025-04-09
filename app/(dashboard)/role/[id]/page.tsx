@@ -7,17 +7,15 @@ import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
 
-import { getPermissionList } from './actions';
-import { permissionColumns } from './columns';
+import { getRoleList } from './actions';
+import { roleColumns } from './columns';
 import { CreateDialog } from './components';
 
 export const dynamic = 'force-dynamic';
 
-export default async function PermissionPage(props: {
-  searchParams?: SearchParams;
-}) {
+export default async function RolePage(props: { searchParams?: SearchParams }) {
   const searchParams = await props.searchParams;
-  const { data } = await getPermissionList(searchParams);
+  const { data } = await getRoleList(searchParams);
 
   return (
     <>
@@ -34,7 +32,7 @@ export default async function PermissionPage(props: {
       <Separator />
       <Suspense fallback="Loading">
         <DataTable
-          columns={permissionColumns}
+          columns={roleColumns}
           data={data?.data}
           pageNumber={data?.pagination?.nextPage - 1}
           pageCount={data?.pagination?.pageCount}

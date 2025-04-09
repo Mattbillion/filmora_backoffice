@@ -10,7 +10,6 @@ import {
   MapPin,
   Percent,
   Shield,
-  ShieldCheck,
   ShoppingCart,
   Tag,
   UserCog,
@@ -95,11 +94,6 @@ const operationsRoutes: SubMenuItemType[] = [
 ];
 
 const settingsRoutes: SubMenuItemType[] = [
-  {
-    title: 'Permissions',
-    url: '/permission',
-    icon: ShieldCheck,
-  },
   {
     title: 'Roles',
     url: '/role',

@@ -8,7 +8,7 @@ export default async function Layout({ children }: { children: ReactNode }) {
   // const session = await auth();
 
   // if (
-  //   hasPagePermission((session?.user as User & { role: Role })?.role, "permissions")
+  //   hasPagePermission((session?.user as User & { role: Role })?.role, "roles")
   // )
   return children;
   // return notFound();

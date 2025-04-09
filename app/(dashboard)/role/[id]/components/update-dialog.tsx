@@ -22,25 +22,35 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createPermission } from '../actions';
-import { PermissionBodyType, permissionSchema } from '../schema';
+import { patchRole } from '../actions';
+import { RoleBodyType, RoleItemType, roleSchema } from '../schema';
 
-export function CreateDialog({ children }: { children: ReactNode }) {
+export function UpdateDialog({
+  children,
+  initialData,
+}: {
+  children: ReactNode;
+  initialData: RoleItemType;
+}) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<PermissionBodyType>({
-    resolver: zodResolver(permissionSchema),
+  const form = useForm<RoleBodyType>({
+    resolver: zodResolver(roleSchema),
+    defaultValues: {
+      ...initialData,
+    },
   });
 
-  function onSubmit({ status, ...values }: PermissionBodyType) {
+  function onSubmit({ status, ...values }: RoleBodyType) {
     startTransition(() => {
-      createPermission({
+      patchRole({
         ...values,
+        id: initialData.id,
         status: (status as unknown as string) === 'true',
       })
         .then(() => {
-          toast.success('Created successfully');
+          toast.success('Updated successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -54,31 +64,33 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Permission"
-      submitText="Create"
+      title="Update Role"
+      submitText="Update"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="permission_name"
+        name="role_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter permission name" {...field} />
+              <Input placeholder="Enter role name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
-
       <FormField
         control={form.control}
         name="status"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value)}>
+            <Select
+              onValueChange={(value) => field.onChange(value)}
+              defaultValue={field.value.toString()}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />

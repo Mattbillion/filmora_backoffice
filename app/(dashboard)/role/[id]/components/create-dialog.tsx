@@ -6,8 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -24,39 +22,25 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { patchPermission } from '../actions';
-import {
-  PermissionBodyType,
-  PermissionItemType,
-  permissionSchema,
-} from '../schema';
+import { createRole } from '../actions';
+import { RoleBodyType, roleSchema } from '../schema';
 
-export function UpdateDialog({
-  children,
-  initialData,
-}: {
-  children: ReactNode;
-  initialData: PermissionItemType;
-}) {
+export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<PermissionBodyType>({
-    resolver: zodResolver(permissionSchema),
-    defaultValues: {
-      ...initialData,
-    },
+  const form = useForm<RoleBodyType>({
+    resolver: zodResolver(roleSchema),
   });
 
-  function onSubmit({ status, ...values }: PermissionBodyType) {
+  function onSubmit({ status, ...values }: RoleBodyType) {
     startTransition(() => {
-      patchPermission({
+      createRole({
         ...values,
-        id: initialData.id,
         status: (status as unknown as string) === 'true',
       })
         .then(() => {
-          toast.success('Updated successfully');
+          toast.success('Created successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -70,32 +54,21 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update Permission"
-      submitText="Update"
+      title="Create new Role"
+      submitText="Create"
       trigger={children}
     >
       <FormField
         control={form.control}
-        name="permission_name"
+        name="role_name"
         render={({ field }) => (
           <FormItem>
             <FormLabel>Name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter permission name" {...field} />
+              <Input placeholder="Enter role name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="permission_logo"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="permission_logo"
-            label="Logo"
-          />
         )}
       />
       <FormField
@@ -104,10 +77,7 @@ export function UpdateDialog({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(value)}
-              defaultValue={field.value.toString()}
-            >
+            <Select onValueChange={(value) => field.onChange(value === 'true')}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
@@ -121,11 +91,6 @@ export function UpdateDialog({
             <FormMessage />
           </FormItem>
         )}
-      />
-      <FormField
-        control={form.control}
-        name="permission_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );
