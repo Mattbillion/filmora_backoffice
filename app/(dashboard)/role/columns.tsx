@@ -1,8 +1,11 @@
 'use client';
 
 // import { useRef, useState } from 'react';
-import { /*CellContext,*/ ColumnDef } from '@tanstack/react-table';
+import { CellContext, /*CellContext,*/ ColumnDef } from '@tanstack/react-table';
+import { ListTree } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
+import { Button } from '@/components/ui/button';
 import { RoleItemType } from '@/features/role/schema';
 // import { Edit, Trash } from 'lucide-react';
 // import { toast } from 'sonner';
@@ -60,6 +63,23 @@ import { RoleItemType } from '@/features/role/schema';
 //   );
 // };
 
+const ChildData = ({ row }: CellContext<RoleItemType, unknown>) => {
+  const router = useRouter();
+
+  return (
+    <div className="me-2 flex justify-end gap-4">
+      <Button
+        size={'cxs'}
+        variant="outline"
+        type="button"
+        onClick={() => router.push(`/role/${row.original.id}`)}
+      >
+        <ListTree className="h-4 w-4" /> Permissions
+      </Button>
+    </div>
+  );
+};
+
 export const roleColumns: ColumnDef<RoleItemType>[] = [
   {
     accessorKey: 'id',
@@ -78,8 +98,8 @@ export const roleColumns: ColumnDef<RoleItemType>[] = [
     header: 'Status',
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
   },
-  // {
-  //   id: 'actions',
-  //   cell: Action,
-  // },
+  {
+    id: 'actions',
+    cell: ChildData,
+  },
 ];
