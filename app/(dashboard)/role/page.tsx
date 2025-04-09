@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
+import { auth } from '@/app/(auth)/auth';
 import { roleColumns } from '@/app/(dashboard)/role/columns';
 import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
@@ -16,6 +17,7 @@ export const dynamic = 'force-dynamic';
 export default async function RolePage(props: { searchParams?: SearchParams }) {
   const searchParams = await props.searchParams;
   const { data } = await getRoleList(searchParams);
+  const session = await auth();
 
   return (
     <>
@@ -23,11 +25,13 @@ export default async function RolePage(props: { searchParams?: SearchParams }) {
         <Heading
           title={`Role list (${data?.pagination?.total ?? data?.data?.length})`}
         />
-        <CreateDialog>
-          <Button className="text-xs md:text-sm">
-            <Plus className="h-4 w-4" /> Add New
-          </Button>
-        </CreateDialog>
+        {session?.user?.permissions?.includes('create_role') && (
+          <CreateDialog>
+            <Button className="text-xs md:text-sm">
+              <Plus className="h-4 w-4" /> Add New
+            </Button>
+          </CreateDialog>
+        )}
       </div>
       <Separator />
       <Suspense fallback="Loading">

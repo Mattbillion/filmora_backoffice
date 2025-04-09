@@ -4,6 +4,7 @@
 import { CellContext, /*CellContext,*/ ColumnDef } from '@tanstack/react-table';
 import { ListTree } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';
 import { RoleItemType } from '@/features/role/schema';
@@ -65,6 +66,9 @@ import { RoleItemType } from '@/features/role/schema';
 
 const ChildData = ({ row }: CellContext<RoleItemType, unknown>) => {
   const router = useRouter();
+  const { data } = useSession();
+  if (!data?.user?.permissions?.includes('get_role_by_permission_list'))
+    return null;
 
   return (
     <div className="me-2 flex justify-end gap-4">

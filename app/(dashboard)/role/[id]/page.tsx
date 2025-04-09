@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
+import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
@@ -21,9 +22,10 @@ export default async function RoleDetailPage(props: {
   searchParams?: SearchParams;
   params: Promise<{ id: ID }>;
 }) {
-  const [searchParams, params] = await Promise.all([
+  const [searchParams, params, session] = await Promise.all([
     props.searchParams,
     props.params,
+    auth,
   ]);
   const { id } = params;
 
