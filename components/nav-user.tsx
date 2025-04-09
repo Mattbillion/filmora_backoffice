@@ -37,7 +37,7 @@ export function NavUser({ session }: { session: Session }) {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={imageResize(session?.user?.profile ?? '', 'small')}
-                  alt={session?.user?.name ?? ''}
+                  alt={session?.user?.lastname ?? ''}
                 />
                 <AvatarFallback className="rounded-lg">
                   {session?.user?.email?.slice(0, 2)}
@@ -45,7 +45,9 @@ export function NavUser({ session }: { session: Session }) {
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {session?.user?.name ?? ''}
+                  {[session?.user?.firstname, session?.user?.lastname].join(
+                    ' ',
+                  )}
                 </span>
                 <span className="truncate text-xs">
                   {session?.user?.email ?? ''}

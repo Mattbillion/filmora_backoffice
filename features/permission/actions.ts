@@ -40,13 +40,17 @@ export const deleteRoleByPermission = async (id: ID) => {
   return { data: body, error: null };
 };
 
-export const getPermissionList = async (searchParams?: QueryParams) => {
+export const getPermissionList = async (
+  searchParams?: QueryParams,
+  headers?: Record<string, string>,
+) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<PermissionItemType[]>
     >('/permissions', {
       method: 'GET',
       searchParams,
+      headers,
       next: { tags: [RVK_PERMISSION] },
     });
 
@@ -59,13 +63,16 @@ export const getPermissionList = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getAssignedPermission = async () => {
+export const getAssignedPermission = async (
+  headers?: Record<string, string>,
+) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<PermissionByRoleItemType[]>
     >('/permissions_list', {
       method: 'GET',
       searchParams: { page_size: 1000 },
+      headers,
       next: { tags: [`ASSIGNED_${RVK_PERMISSION}`] },
     });
 
