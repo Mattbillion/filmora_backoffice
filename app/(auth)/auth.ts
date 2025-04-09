@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { omit } from 'lodash';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
@@ -88,8 +89,11 @@ export const {
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
         return Object.assign(token || {}, user);
-      } else if (Date.now() < token.exp * 1000) {
-        return Object.assign(token, trigger === 'update' ? session.user : {});
+      } else if (new Date() < new Date(token.expires_at)) {
+        return Object.assign(
+          token,
+          trigger === 'update' ? omit(session.user, 'id') : {},
+        );
       } else {
         try {
           if (!token.refresh_token)
