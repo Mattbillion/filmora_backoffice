@@ -20,6 +20,7 @@ export function SidebarMenuGroup({
   label?: string;
   items: SubMenuItemType[];
 }) {
+  if (!items.length) return null;
   return (
     <SidebarGroup>
       {!!label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}

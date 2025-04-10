@@ -68,8 +68,8 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new AgeRestrictions"
-      submitText="Create"
+      title={`Update ${initialData?.age_name || 'Age restriction'}`}
+      submitText="Update"
       trigger={children}
     >
       <FormField

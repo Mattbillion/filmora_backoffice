@@ -21,7 +21,7 @@ export type SubMenuItemType = {
   url: string;
   icon: LucideIcon;
   subRoutes?: boolean;
-  permissionName: string;
+  permissions: string[];
   children?: Omit<SubMenuItemType, 'children'>[];
 };
 
@@ -30,43 +30,74 @@ const managementRoutes: SubMenuItemType[] = [
     title: 'Age Restrictions',
     url: '/age-restrictions',
     icon: Shield,
-    permissionName: '',
+    permissions: [
+      'get_age_restriction_list',
+      'get_age_restriction',
+      'create_age_restriction',
+      'update_age_restriction',
+      'delete_age_restriction',
+    ],
   },
   {
     title: 'Merch',
     url: '/merchandises',
     icon: Shield,
-    permissionName: 'company_merchandise_list',
+    permissions: [
+      'company_merchandise_list',
+      'get_company_merchandise_list',
+      'get_company_merchandise',
+      'create_company_merchandise',
+      'update_company_merchandise',
+      'delete_company_merchandise',
+    ],
   },
   {
     title: 'Attribute Values',
     url: '/attribute-values',
     icon: Tag,
-    permissionName: '',
+    permissions: [''],
   },
   {
     title: 'Banners',
     url: '/banners',
     icon: Flag,
-    permissionName: '',
+    permissions: [
+      'get_banner_list',
+      'get_banner',
+      'create_banner',
+      'update_banner',
+      'delete_banner',
+    ],
   },
   {
     title: 'Branches',
     url: '/branches',
     icon: GitBranch,
-    permissionName: '',
+    permissions: [
+      'get_branch_list',
+      'get_branch',
+      'create_branch',
+      'update_branch',
+      'delete_branch',
+    ],
   },
   {
     title: 'Categories',
     url: '/category',
     icon: List,
-    permissionName: '',
+    permissions: [
+      'get_category_list',
+      'get_category',
+      'create_category',
+      'update_category',
+      'delete_category',
+    ],
   },
   {
     title: 'Category Attributes',
     url: '/category-attributes',
     icon: Layers,
-    permissionName: '',
+    permissions: [''],
   },
 ];
 
@@ -75,19 +106,40 @@ const companyRoutes: SubMenuItemType[] = [
     title: 'Company',
     url: '/companies',
     icon: Building2,
-    permissionName: '',
+    permissions: [
+      'get_company_list',
+      'get_company',
+      'create_company',
+      'update_company',
+      'delete_company',
+    ],
   },
   {
     title: 'Employees',
     url: '/employees',
     icon: UserIcon,
-    permissionName: 'get_all_company_employees',
+    permissions: [
+      'get_all_company_employees',
+      'get_company_employee_info',
+      'create_company_employee',
+      'update_company_employee',
+      'update_company_employee_email',
+      'update_company_employee_password',
+      'delete_company_employee',
+      'set_company_employee_role',
+    ],
   },
   {
     title: 'Company Categories',
     url: '/company-categories',
     icon: Combine,
-    permissionName: '',
+    permissions: [
+      'get_company_category_list',
+      'get_company_category',
+      'create_company_category',
+      'update_company_category',
+      'delete_company_category',
+    ],
   },
 ];
 
@@ -96,19 +148,31 @@ const operationsRoutes: SubMenuItemType[] = [
     title: 'Discounts',
     url: '/discounts',
     icon: Percent,
-    permissionName: '',
+    permissions: [
+      'get_discount_list',
+      'get_discount',
+      'create_discount',
+      'update_discount',
+      'delete_discount',
+    ],
   },
   {
     title: 'Halls',
     url: '/halls',
     icon: DoorOpen,
-    permissionName: '',
+    permissions: [
+      'get_hall_list',
+      'get_hall',
+      'create_hall',
+      'update_hall',
+      'delete_hall',
+    ],
   },
   {
     title: 'Orders',
     url: '/orders',
     icon: ShoppingCart,
-    permissionName: '',
+    permissions: ['get_order_list'],
   },
 ];
 
@@ -117,13 +181,26 @@ const settingsRoutes: SubMenuItemType[] = [
     title: 'Roles',
     url: '/role',
     icon: UserCog,
-    permissionName: 'get_role_list',
+    permissions: [
+      'get_role_list',
+      'create_role',
+      'get_all_role_by_permission_list',
+      'get_role_by_permission_list',
+      'create_role_permission',
+      'delete_role_permission',
+    ],
   },
   {
     title: 'Venues',
     url: '/venues',
     icon: MapPin,
-    permissionName: 'get_venues_list',
+    permissions: [
+      'get_venues_list',
+      'get_venue',
+      'create_venue',
+      'update_venue',
+      'delete_venue',
+    ],
   },
 ];
 

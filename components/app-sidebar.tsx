@@ -17,6 +17,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { checkPermission } from '@/lib/permission';
 
 import RevalidateMenu from './revalidate-menu';
 
@@ -57,7 +58,12 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         {Object.entries(menuData).map(([group, menus], idx) => (
           <Suspense key={idx}>
-            <SidebarMenuGroup items={menus} label={sentenceCase(group)} />
+            <SidebarMenuGroup
+              items={menus.filter((c) =>
+                checkPermission(session, c.permissions),
+              )}
+              label={sentenceCase(group)}
+            />
           </Suspense>
         ))}
         <RevalidateMenu />

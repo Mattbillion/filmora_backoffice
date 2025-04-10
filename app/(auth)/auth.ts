@@ -144,9 +144,7 @@ export const {
             ...token,
             access_token: body.access_token,
             expires_at: getExpDateFromJWT(body.access_token),
-            refresh_token: body.refresh_token
-              ? body.refresh_token
-              : token.refresh_token,
+            refresh_token: body.refresh_token || token.refresh_token,
           };
         } catch (error) {
           console.error('Error refreshing access_token', error);
