@@ -6,7 +6,8 @@ const changeCase = require('change-case-all');
 const routeActions = (routeName, endpoint, path) => {
   // const zodSchema = fetchZodSchema(endpoint, routeName);
   const templateData = { 'route-name': routeName, endpoint, path };
-  const directory = `${dashboardSrc}/${changeCase.kebabCase(path)}`;
+  const dirPath = path.split("/").map(p => changeCase.kebabCase(p)).join("/");
+  const directory = `${dashboardSrc}/${dirPath}`;
 
   return [
     {
@@ -66,12 +67,23 @@ const routeActions = (routeName, endpoint, path) => {
     () => {
       try {
         execSync(
-          `npx prettier --write "app/(dashboard)/${changeCase.kebabCase(path)}"`,
+          `npx prettier --write "app/(dashboard)/${dirPath}"`,
         );
-        // execSync(`npx eslint --fix ${dir}`);
+
         return 'Formatted with Prettier';
       } catch (error) {
         return 'Failed to format files.';
+      }
+    },
+    () => {
+      try {
+        execSync(
+          `npx eslint --fix "app/(dashboard)/${dirPath}"`,
+        );
+
+        return 'ESLint fixes applied successfully';
+      } catch (error) {
+        return 'Failed to apply ESLint fixes. Check for unresolved lint errors.';
       }
     },
   ];

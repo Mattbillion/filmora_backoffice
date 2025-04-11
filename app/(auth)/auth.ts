@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { omit } from 'lodash';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
@@ -119,10 +118,7 @@ export const {
       if (user) {
         return Object.assign(token || {}, user);
       } else if (new Date() < new Date(token.expires_at)) {
-        return Object.assign(
-          token,
-          trigger === 'update' ? omit(session.user, 'id') : {},
-        );
+        return Object.assign(token, trigger === 'update' ? session.user : {});
       } else {
         try {
           if (!token.refresh_token)

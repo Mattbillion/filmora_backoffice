@@ -1,6 +1,7 @@
 // const { execSync } = require("child_process");
 const { routeActions } = require('./route/plop-actions');
 const { fetchZodSchema } = require('../fetch-zod-schema');
+const {registerFormPartials} = require('./route/hbs-partials/form-items');
 // const dashboardSrc = '../../app/(dashboard)';
 const fs = require('fs');
 const path = require('path');
@@ -20,6 +21,7 @@ module.exports = function (
     String(value).toLowerCase().startsWith('http'),
   );
   plop.setHelper('isID', (key) => String(key).toLowerCase().endsWith('_id'));
+  registerFormPartials(plop);
 
   plop.setActionType('fetchSchema', async function (answers, config, plop) {
     const { templateFile, path: outputPath } = config;

@@ -826,7 +826,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzgxMzA5MzN9.xlimjZS7nLY1JwMaTahTXHa6JqDeXdMJT0CTRRuWk8w",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NDY0NjZ9.nzfH6dQwB2I5ilewj_bYD0_vCN7L55mTHhknj4b3Z6Y",
                   "type": "string"
                 }
               ]
@@ -834,7 +834,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/companies?page=1&page_size=2",
+              "raw": "{{base_url}}/companies?page=1&page_size=1",
               "host": [
                 "{{base_url}}"
               ],
@@ -848,7 +848,7 @@
                 },
                 {
                   "key": "page_size",
-                  "value": "2"
+                  "value": "1"
                 }
               ]
             }
@@ -1787,7 +1787,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzYyNzR9.VBN_SUrLqPUdpAN4Aa9QjJWJDGpA_AFvJyidKuW-95A",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NDY0NjZ9.nzfH6dQwB2I5ilewj_bYD0_vCN7L55mTHhknj4b3Z6Y",
                   "type": "string"
                 }
               ]
@@ -1873,13 +1873,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/transactions/1",
+              "raw": "{{base_url}}/transactions/47",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "transactions",
-                "1"
+                "47"
               ]
             }
           },
@@ -1898,7 +1898,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDMxNTE2MzR9.X837ZvuYDXNZBuFTPQGTHvNAeCp9FvF0RNTGL2etHEg",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzNDU1MDN9.MCtXxWyLaaxWTK6YM4xVeOrNUJinasNktbiT-nf54Wo",
                   "type": "string"
                 }
               ]
@@ -1944,184 +1944,39 @@
         {
           "name": "get order",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzNDU1MDN9.MCtXxWyLaaxWTK6YM4xVeOrNUJinasNktbiT-nf54Wo",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "com_id",
+                "value": "9",
+                "type": "text",
+                "disabled": true
+              }
+            ],
             "url": {
-              "raw": "{{base_url}}/orders/29",
+              "raw": "{{base_url}}/orders/90?com_id=9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "orders",
-                "29"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "category ",
-      "item": [
-        {
-          "name": "category list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/category",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category"
+                "90"
               ],
               "query": [
                 {
-                  "key": "page",
-                  "value": "1",
-                  "disabled": true
-                },
-                {
-                  "key": "page_size",
-                  "value": "10",
-                  "disabled": true
-                },
-                {
-                  "key": "filters",
-                  "value": "",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
+                  "key": "com_id",
+                  "value": "9"
                 }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get category",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/category/24",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category",
-                "24"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create category",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzc5MDE5OTF9.xXYK_AqaaaponGdnP6Tr1QE8-zsfiNECv_rnET2thU8",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cat_type\": \"ITEM\",\n  \"cat_name\": \"Эмэгтэй\",\n  \"root\": null,\n  \"order\": 0,\n  \"special\": false,\n  \"description\": \"Эмэгтэй\",\n  \"image\": null\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "category update",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cat_type\": \"string\",\n  \"cat_name\": \"string\",\n  \"root\": 8,\n  \"order\": 1,\n  \"special\": false,\n  \"description\": \"string\",\n  \"image\": \"string\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category/11",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category",
-                "11"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "category delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/category/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category",
-                "6"
               ]
             }
           },
@@ -2130,7 +1985,7 @@
       ]
     },
     {
-      "name": "company categories (issued)",
+      "name": "company categories",
       "item": [
         {
           "name": "company categories list",
@@ -2424,45 +2279,46 @@
       ]
     },
     {
-      "name": "merchandises",
+      "name": "category",
       "item": [
         {
-          "name": "merchandises list",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
+          "name": "category list",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "GET",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
-              "raw": "{{base_url}}/merchandises?page=1&page_size=10&filters=",
+              "raw": "{{base_url}}/category",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "merchandises"
+                "category"
               ],
               "query": [
                 {
                   "key": "page",
-                  "value": "1"
+                  "value": "1",
+                  "disabled": true
                 },
                 {
                   "key": "page_size",
-                  "value": "10"
+                  "value": "10",
+                  "disabled": true
                 },
                 {
                   "key": "filters",
-                  "value": ""
+                  "value": "",
+                  "disabled": true
                 },
                 {
                   "key": "start_date",
@@ -2490,42 +2346,32 @@
           "response": []
         },
         {
-          "name": "get merchandise",
+          "name": "get category",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzMzNzB9.S2wAkKQ2qTUy-vkZBO988pjwCxVjHzbtksVWfntmZ-A",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/merchandises/14",
+              "raw": "{{base_url}}/category/24",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "merchandises",
-                "14"
+                "category",
+                "24"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "create merchandise",
+          "name": "create category",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzc5MDE5OTF9.xXYK_AqaaaponGdnP6Tr1QE8-zsfiNECv_rnET2thU8",
                   "type": "string"
                 }
               ]
@@ -2534,7 +2380,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"sku\": \"3231KP400335\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
+              "raw": "{\n  \"cat_type\": \"ITEM\",\n  \"cat_name\": \"Эмэгтэй\",\n  \"root\": null,\n  \"order\": 0,\n  \"special\": false,\n  \"description\": \"Эмэгтэй\",\n  \"image\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2542,26 +2388,26 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/merchandises",
+              "raw": "{{base_url}}/category",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "merchandises"
+                "category"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "update merchandise",
+          "name": "category update",
           "request": {
             "auth": {
               "type": "bearer",
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
                   "type": "string"
                 }
               ]
@@ -2570,7 +2416,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"mer_name\": \"Tommorowland\",\n  \"mer_desc\": \"test2\",\n  \"sku\": \"string9\",\n  \"price\": 10,\n  \"discount_id\": null,\n  \"medias\": [\n            {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n        ],\n  \"status\": true\n}",
+              "raw": "{\n  \"cat_type\": \"string\",\n  \"cat_name\": \"string\",\n  \"root\": 8,\n  \"order\": 1,\n  \"special\": false,\n  \"description\": \"string\",\n  \"image\": \"string\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2578,41 +2424,31 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/merchandises/46",
+              "raw": "{{base_url}}/category/11",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "merchandises",
-                "46"
+                "category",
+                "11"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "delete merchandise",
+          "name": "category delete",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/merchandises/45",
+              "raw": "{{base_url}}/category/6",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "merchandises",
-                "45"
+                "category",
+                "6"
               ]
             }
           },
@@ -2704,13 +2540,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/category_attributes/1",
+              "raw": "{{base_url}}/category_attributes/16",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "category_attributes",
-                "1"
+                "16"
               ]
             }
           },
@@ -2819,7 +2655,7 @@
       ]
     },
     {
-      "name": "attribute values",
+      "name": "category attribute values",
       "item": [
         {
           "name": "list attribute values",
@@ -2972,7 +2808,214 @@
       ]
     },
     {
-      "name": "merchandise attribute values",
+      "name": "merchandises",
+      "item": [
+        {
+          "name": "merchandises list",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NTk3Nzd9.Z7rGCN25Z_CQGUCX343hB_h7MOMkS0kFHDLE5-wLmt0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/merchandises?page=1&page_size=10&company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandises"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "page_size",
+                  "value": "10"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get merchandise",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzMzNzB9.S2wAkKQ2qTUy-vkZBO988pjwCxVjHzbtksVWfntmZ-A",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchandises/14",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandises",
+                "14"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create merchandise",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/merchandises",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandises"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update merchandise",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO test\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/merchandises/49",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandises",
+                "49"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete merchandise",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchandises/45",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandises",
+                "45"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "merchandise attribute values(variant)",
       "item": [
         {
           "name": "list merchandise attribute values",
@@ -2980,7 +3023,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values?page=1&page_size=10",
+              "raw": "{{base_url}}/merchandise_attribute_values?page=1&page_size=100",
               "host": [
                 "{{base_url}}"
               ],
@@ -2991,10 +3034,6 @@
                 {
                   "key": "page",
                   "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
                 },
                 {
                   "key": "filters",
@@ -3020,6 +3059,10 @@
                   "key": "return_columns",
                   "value": "id",
                   "disabled": true
+                },
+                {
+                  "key": "page_size",
+                  "value": "100"
                 }
               ]
             }
@@ -3052,7 +3095,7 @@
               "bearer": [
                 {
                   "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
                   "type": "string"
                 }
               ]
@@ -3061,7 +3104,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"item_id\": 37,\n  \"attr_id\": 14,\n  \"value\": \"tesst\",\n  \"status\": true\n}",
+              "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"value\": \"test\",\n  \"sku\": \"test1234\",\n  \"is_master\": true,\n  \"price\": 1000\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3097,7 +3140,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"item_id\": 36,\n  \"attr_id\": 14,\n  \"value\": \"tesst\",\n  \"status\": true\n}",
+              "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"sku\": \"test1234\",\n  \"stock\": 19,\n  \"is_master\": true,\n  \"price\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -3105,13 +3148,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values/26",
+              "raw": "{{base_url}}/merchandise_attribute_values/13",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "merchandise_attribute_values",
-                "26"
+                "13"
               ]
             }
           },
@@ -3120,16 +3163,190 @@
         {
           "name": "delete merchandise attribute values",
           "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values/27",
+              "raw": "{{base_url}}/merchandise_attribute_values/13?company_id=9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "merchandise_attribute_values",
-                "27"
+                "13"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "merchandise_attribute_option_values",
+      "item": [
+        {
+          "name": "list merchandise attribute option value",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchandise_attribute_option_values",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandise_attribute_option_values"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get merchandise attribute option value",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchandise_attribute_option_values/6?company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandise_attribute_option_values",
+                "6"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create merchandise attribute option value",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"m_attr_val_id\": 10,\n  \"attr_id\": 21,\n  \"attr_val_id\": 18\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/merchandise_attribute_option_values",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandise_attribute_option_values"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update merchandise attribute option value",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchandise_attribute_option_values/6",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandise_attribute_option_values",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete merchandise attribute option value",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchandise_attribute_option_values/6",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandise_attribute_option_values",
+                "6"
               ]
             }
           },
@@ -3304,7 +3521,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyODQzNzZ9.GQSKBxwXFoGJ2tdv50l2Yag1tJg6hqmYXPtx67vOpc0",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NTk3Nzd9.Z7rGCN25Z_CQGUCX343hB_h7MOMkS0kFHDLE5-wLmt0",
       "type": "string"
     }
   ]

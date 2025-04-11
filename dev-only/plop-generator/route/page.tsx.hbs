@@ -23,7 +23,7 @@ export default async function {{pascalCase route-name}}Page(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`{{pascalCase route-name}} list (${data?.pagination?.total ?? data?.data?.length})`}
+          title={`{{sentenceCase route-name}} list (${data?.pagination?.total ?? data?.data?.length})`}
         />
         <CreateDialog>
           <Button className="text-xs md:text-sm">

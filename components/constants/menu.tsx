@@ -1,3 +1,4 @@
+import { flattenDeep } from 'lodash';
 import {
   Building2,
   Combine,
@@ -52,10 +53,45 @@ const managementRoutes: SubMenuItemType[] = [
     ],
   },
   {
+    title: 'Merch attributes',
+    url: '/merchandises/attributes',
+    icon: Shield,
+    permissions: [
+      // 'get_merchandise_attribute_list',
+      // 'get_merchandise_attribute',
+      // 'create_merchandise_attribute',
+      // 'update_merchandise_attribute',
+      // 'delete_merchandise_attribute',
+      'get_company_merchandise_attribute_value_list',
+      'get_company_merchandise_attribute_value',
+      'create_company_merchandise_attribute_value',
+      'update_company_merchandise_attribute_value',
+      'delete_company_merchandise_attribute_value',
+    ],
+  },
+  {
+    title: 'Merch attributes values',
+    url: '/merchandises/attributes/values',
+    icon: Shield,
+    permissions: [
+      'get_company_merchandise_attribute_option_value_list',
+      'get_company_merchandise_attribute_option_value',
+      'create_company_merchandise_attribute_option_value',
+      'update_company_merchandise_attribute_option_value',
+      'delete_company_merchandise_attribute_option_value',
+    ],
+  },
+  {
     title: 'Attribute Values',
     url: '/attribute-values',
     icon: Tag,
-    permissions: [''],
+    permissions: [
+      'get_category_attribute_value_list',
+      'get_category_attribute_value',
+      'create_category_attribute_value',
+      'update_category_attribute_value',
+      'delete_category_attribute_value',
+    ],
   },
   {
     title: 'Banners',
@@ -97,7 +133,13 @@ const managementRoutes: SubMenuItemType[] = [
     title: 'Category Attributes',
     url: '/category-attributes',
     icon: Layers,
-    permissions: [''],
+    permissions: [
+      'get_category_attribute_list',
+      'get_category_attribute',
+      'create_category_attribute',
+      'update_category_attribute',
+      'delete_category_attribute',
+    ],
   },
 ];
 
@@ -172,7 +214,7 @@ const operationsRoutes: SubMenuItemType[] = [
     title: 'Orders',
     url: '/orders',
     icon: ShoppingCart,
-    permissions: ['get_order_list'],
+    permissions: ['get_order_list', 'get_order_detail'],
   },
 ];
 
@@ -183,6 +225,7 @@ const settingsRoutes: SubMenuItemType[] = [
     icon: UserCog,
     permissions: [
       'get_role_list',
+      'get_permission_list',
       'create_role',
       'get_all_role_by_permission_list',
       'get_role_by_permission_list',
@@ -202,6 +245,19 @@ const settingsRoutes: SubMenuItemType[] = [
       'delete_venue',
     ],
   },
+  {
+    title: 'Events',
+    url: '/events',
+    icon: MapPin,
+    permissions: [
+      'get_event_list',
+      'get_event',
+      'create_event',
+      'update_event',
+      'delete_event',
+      'create_event_schedule',
+    ],
+  },
 ];
 
 export const menuData: Record<string, SubMenuItemType[]> = {
@@ -210,3 +266,19 @@ export const menuData: Record<string, SubMenuItemType[]> = {
   operations: operationsRoutes,
   settings: settingsRoutes,
 };
+
+export const permissionsByRoute: Record<string, string[]> = flattenDeep(
+  Object.values(menuData).map((c) => {
+    const arr = c.map((cc) => cc.children || []);
+    return [...arr, ...c];
+  }),
+).reduce(
+  (acc, cur) => ({
+    ...acc,
+    [cur.url
+      .split('/')
+      .filter((cc) => !!cc)
+      .join('/')]: cur.permissions,
+  }),
+  {},
+);

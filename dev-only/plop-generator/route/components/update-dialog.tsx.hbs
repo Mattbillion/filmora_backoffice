@@ -66,7 +66,7 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update {{pascalCase route-name}}"
+      title="Update {{sentenceCase route-name}}"
       submitText="Update"
       trigger={children}
     >
@@ -75,105 +75,25 @@ export function UpdateDialog({
 
                 {{#if (isString value)}}
                     {{#if (containsDesc key)}}
-                        <FormField
-                            control={form.control}
-                            name="{{key}}"
-                            render={({ field }) => <HtmlTipTapItem field={field} />}
-                        />
+                        {{> tiptapField key=key}}
                     {{else}}
                         {{#if (isImage value)}}
-                            <FormField
-                                control={form.control}
-                                name="{{key}}"
-                                render={({ field }) => (
-                                    <UploadImageItem
-                                        field={field}
-                                        imagePrefix="{{key}}"
-                                        label="{{sentenceCase key}}"
-                                    />
-                                )}
-                            />
+                            {{> imageUploadField key=key}}
                         {{else}}
-                            <FormField
-                                control={form.control}
-                                name="{{key}}"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>{{sentenceCase key}}</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter {{sentenceCase key}}" {...field} />
-                                        </FormControl>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                            {{> inputField key=key}}
                         {{/if}}
                     {{/if}}
                 {{/if}}
 
                 {{#if (isBoolean value)}}
-                    <FormField
-                        control={form.control}
-                        name="{{key}}"
-                        render={({ field }) => (
-                            <FormItem>
-                                <FormLabel>{{sentenceCase key}}</FormLabel>
-                                <Select onValueChange={(value) => field.onChange(value === "true")} value={field.value?.toString()}>
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a {{sentenceCase key}}" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent defaultValue="false">
-                                    <SelectItem value="true">Active</SelectItem>
-                                    <SelectItem value="false">Inactive</SelectItem>
-                                </SelectContent>
-                                </Select>
-                                <FormMessage />
-                            </FormItem>
-                        )}
-                    />
+                    {{> updateSelectBooleanField key=key}}
                 {{/if}}
 
                 {{#if (isNumber value)}}
                     {{#if (isID key)}}
-                        <FormField
-                            control={form.control}
-                            name="{{key}}"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{{sentenceCase key}}</FormLabel>
-                                    <Select onValueChange={(value) => field.onChange(Number(value))} value={field.value?.toString()}>
-                                    <FormControl>
-                                        <SelectTrigger>
-                                            <SelectValue placeholder="Select a {{sentenceCase key}}" />
-                                        </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent defaultValue="false">
-                                        <SelectItem value="0">0</SelectItem>
-                                        <SelectItem value="1">1</SelectItem>
-                                        <SelectItem value="2">2</SelectItem>
-                                        <SelectItem value="3">3</SelectItem>
-                                    </SelectContent>
-                                    </Select>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {{> updateNumericSelectField key=key}}
                     {{else}}
-                        <FormField
-                            control={form.control}
-                            name="{{key}}"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>{{sentenceCase key}}</FormLabel>
-                                    <FormControl>
-                                        <Input placeholder="Enter {{sentenceCase key}}" {...field} onChange={(e) => field.onChange(Number(e.target.value))}/>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                        {{> numberInputField key=key}}
                     {{/if}}
                 {{/if}}
             {{/each}}

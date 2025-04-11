@@ -20,8 +20,8 @@ export default async function EmployeePage(props: {
   const searchParams = await props.searchParams;
   const session = await auth();
   const { data } = await getEmployeeList({
-    company_id: session?.user?.company_id,
     ...searchParams,
+    company_id: session?.user?.company_id,
   });
 
   return (
