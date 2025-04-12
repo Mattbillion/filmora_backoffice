@@ -6,10 +6,6 @@ const NodeCache = require('node-cache');
 const { endpoints } = require('./postman/endpoints');
 const { curlCommand } = require('./postman/postman-data');
 
-function schemaFallback(name) {
-  return `const ${name}Schema = z.object({});`;
-}
-
 const cache = new NodeCache({ stdTTL: 10 }); // by seconds
 
 module.exports = {
@@ -38,10 +34,7 @@ module.exports = {
         jsonResponse.data[0];
 
       const data = {
-        rawData: Object.entries(itemData).map((c) => ({
-          key: c[0],
-          value: c[1],
-        })),
+        rawData: Object.entries(itemData).map(([key,value]) => ({ key, value })),
         schema: jsonToZod(
           itemData,
           changeCase.camelCase((name || obj.name) + 'Schema'),
@@ -57,7 +50,7 @@ module.exports = {
 
       return {
         rawData: [],
-        schema: schemaFallback(name || path),
+        schema: `const ${name || path}Schema = z.object({});`,
       };
     }
   },

@@ -21,6 +21,8 @@ module.exports = function (
     String(value).toLowerCase().startsWith('http'),
   );
   plop.setHelper('isID', (key) => String(key).toLowerCase().endsWith('_id'));
+  plop.setHelper('isCurrency', (key) => /(price|sale)/g.test(key));
+  plop.setHelper('isArray', (value) => Array.isArray(value));
   registerFormPartials(plop);
 
   plop.setActionType('fetchSchema', async function (answers, config, plop) {

@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, Trash } from 'lucide-react';
 import { toast } from 'sonner';
+import Image from 'next/image';
 
 import {
   DeleteDialog,
@@ -14,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { delete{{pascalCase route-name}} } from './actions';
 import { UpdateDialog } from './components';
 import { {{pascalCase route-name}}ItemType } from './schema';
+import { removeHTML, currencyFormat } from '@/lib/utils';
 
 const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
@@ -71,8 +73,42 @@ export const {{camelCase route-name}}Columns: ColumnDef<{{pascalCase route-name}
         {{#each rawData}}
           {
             id: '{{key}}',
-            accessorKey: '{{key}}',
             header: '{{sentenceCase key}}',
+            cell: ({ row }) => {{#if (isArray value)}}
+                                    {
+                                        const cellData = row.original.{{key}};
+                                        if(!!cellData[0]?.media_url) return (
+                                                <div className="flex items-center">
+                                                    {
+                                                        cellData.slice(0,3).map((c, idx) => <Image key={idx} src={ c.media_url } alt="" width={48} height={48} className="rounded-full -mr-6 border-border" />)
+                                                    }
+                                                </div>
+                                        )
+                                        return <p>{cellData.join(', ')}</p>
+                                    },
+                                {{else}}
+                                    {{#if (isString value)}}
+                                        {{#if (containsDesc key)}}
+                                            <p>html: <span className="opacity-70">{removeHTML(row.original.{{key}}?.slice(0,300))}</span></p>,
+                                        {{else}}
+                                            {{#if (isImage value)}}
+                                                <Image src={ row.original.{{key}} } alt="" width={48} height={48} className="rounded-md" />,
+                                            {{else}}
+                                                row.original.{{key}}?.slice(0,300),
+                                            {{/if}}
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if (isCurrency key)}}
+                                            currencyFormat(row.original.{{key}}),
+                                        {{else}}
+                                            {{#if (isBoolean value)}}
+                                                row.original.{{key}} ? 'Active' : 'Inactive',
+                                            {{else}}
+                                                row.original.{{key}},
+                                            {{/if}}
+                                        {{/if}}
+                                    {{/if}}
+                                {{/if}}
           },
         {{/each}}
     {{/if}}
