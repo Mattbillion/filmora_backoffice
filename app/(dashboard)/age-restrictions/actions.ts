@@ -36,7 +36,6 @@ export const patchAgeRestrictions = async ({
     {
       method: 'PUT',
       body: bodyData,
-
       cache: 'no-store',
     },
   );
@@ -81,7 +80,7 @@ export const getAgeRestrictionsList = async (searchParams?: QueryParams) => {
 export const getAgeRestrictions = async (id: string) => {
   try {
     const { body, error } = await xooxFetch<{ data: AgeRestrictionsItemType }>(
-      `/age-restrictions/${id}`,
+      `/age_restrictions/${id}`,
       {
         method: 'GET',
         next: { tags: [`${RVK_AGE_RESTRICTIONS}_${id}`] },

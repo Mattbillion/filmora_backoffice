@@ -139,7 +139,7 @@ const updateSelectBooleanField = `
                         <SelectValue placeholder="Select a {{sentenceCase key}}" />
                     </SelectTrigger>
                 </FormControl>
-                <SelectContent defaultValue="false">
+                <SelectContent>
                     <SelectItem value="true">Active</SelectItem>
                     <SelectItem value="false">Inactive</SelectItem>
                 </SelectContent>

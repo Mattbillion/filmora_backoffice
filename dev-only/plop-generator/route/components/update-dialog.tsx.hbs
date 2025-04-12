@@ -39,9 +39,7 @@ export function UpdateDialog({
 
   const form = useForm<{{pascalCase route-name}}BodyType>({
     resolver: zodResolver({{camelCase route-name}}Schema),
-    defaultValues: {
-      ...initialData,
-    },
+    defaultValues: initialData,
   });
 
   function onSubmit({ status, ...values }: {{pascalCase route-name}}BodyType) {

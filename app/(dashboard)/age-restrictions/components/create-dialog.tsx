@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
   FormControl,
   FormField,
@@ -42,7 +43,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         .then(() => {
           toast.success('Created successfully');
           dialogRef?.current?.close();
-
           form.reset();
         })
         .catch((e) => toast.error(e.message));
@@ -55,7 +55,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new AgeRestrictions"
+      title="Create new Age restrictions"
       submitText="Create"
       trigger={children}
     >
@@ -64,22 +64,23 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         name="age_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Насны ангилал</FormLabel>
+            <FormLabel>Age name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter age restrictions name" {...field} />
+              <Input placeholder="Enter Age name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
       />
+
       <FormField
         control={form.control}
         name="age_limit"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Насны хязгаар</FormLabel>
+            <FormLabel>Age limit</FormLabel>
             <FormControl>
-              <Input placeholder="Enter age restrictions name" {...field} />
+              <Input placeholder="Enter Age limit" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -89,29 +90,20 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       <FormField
         control={form.control}
         name="age_desc"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>description</FormLabel>
-            <FormControl>
-              <Input placeholder="Age description" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
 
       <FormField
         control={form.control}
         name="age_order"
-        render={({ field: { onChange, ...rst } }) => (
+        render={({ field }) => (
           <FormItem>
             <FormLabel>Age order</FormLabel>
             <FormControl>
               <Input
-                placeholder="age_order"
-                {...rst}
-                type="number"
-                onChange={(event) => onChange(Number(event.target.value))}
+                placeholder="Enter Age order"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
               />
             </FormControl>
             <FormMessage />
@@ -122,15 +114,14 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       <FormField
         control={form.control}
         name="min_age"
-        render={({ field: { onChange, ...rst } }) => (
+        render={({ field }) => (
           <FormItem>
-            <FormLabel>Min Age</FormLabel>
+            <FormLabel>Min age</FormLabel>
             <FormControl>
               <Input
-                placeholder="min age"
-                {...rst}
-                type="number"
-                onChange={(event) => onChange(Number(event.target.value))}
+                placeholder="Enter Min age"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
               />
             </FormControl>
             <FormMessage />
@@ -141,15 +132,14 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       <FormField
         control={form.control}
         name="max_age"
-        render={({ field: { onChange, ...rst } }) => (
+        render={({ field }) => (
           <FormItem>
             <FormLabel>Max age</FormLabel>
             <FormControl>
               <Input
-                placeholder="max age"
-                {...rst}
-                type="number"
-                onChange={(event) => onChange(Number(event.target.value))}
+                placeholder="Enter Max age"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
               />
             </FormControl>
             <FormMessage />
@@ -166,7 +156,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             <Select onValueChange={(value) => field.onChange(value === 'true')}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
+                  <SelectValue placeholder="Select a Status" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent defaultValue="false">

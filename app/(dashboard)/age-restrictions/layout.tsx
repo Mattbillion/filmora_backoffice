@@ -1,18 +1,14 @@
 import { ReactNode } from 'react';
+import { notFound } from 'next/navigation';
 
 import { auth } from '@/app/(auth)/auth';
-// import { hasPagePermission, Role } from "@/lib/permission";
-// import { User } from "next-auth";
-// import { notFound } from "next/navigation";
+import { permissionsByRoute } from '@/components/constants/menu';
+import { checkPermission } from '@/lib/permission';
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const session = await auth();
 
-  console.log(session?.user);
-  // if (
-  //   hasPagePermission((session?.user as User & { role: Role })?.role, "agerestrictions")
-  // )
-  return children;
-
-  // return notFound();
+  if (checkPermission(session, permissionsByRoute['age-restrictions'] || []))
+    return children;
+  return notFound();
 }
