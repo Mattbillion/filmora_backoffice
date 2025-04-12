@@ -12,6 +12,7 @@ import {
 } from '@/features/permission/actions';
 import { getRoleList } from '@/features/role/actions';
 import { ID, SearchParams } from '@/lib/fetch/types';
+import { checkPermission } from '@/lib/permission';
 
 import { permissionColumns } from './columns';
 import { CreateDialog } from './components';
@@ -25,19 +26,19 @@ export default async function RoleDetailPage(props: {
   const [searchParams, params, session] = await Promise.all([
     props.searchParams,
     props.params,
-    auth,
+    auth(),
   ]);
   const { id } = params;
 
   const [{ data: roleData }, { data: permissionListData }, { data }] =
     await Promise.all([
       getRoleList(searchParams),
-      getPermissionList(searchParams),
+      getPermissionList({ page_size: 10000 }),
       getPermissionsByRoleId(id, searchParams),
     ]);
 
   const currentRole = roleData?.data?.find((c) => c.id === Number(id));
-  const permissionNameObj: Record<ID, string> =
+  const permissionNameObj: Record<number | string, string> =
     permissionListData?.data?.reduce(
       (acc, cur) => ({ ...acc, [cur.id]: cur.permission_name }),
       {},
@@ -49,11 +50,13 @@ export default async function RoleDetailPage(props: {
         <Heading
           title={`${currentRole?.role_name + ' '}Permission list (${data?.pagination?.total ?? data?.data?.length})`}
         />
-        <CreateDialog>
-          <Button className="text-xs md:text-sm">
-            <Plus className="h-4 w-4" /> Add New
-          </Button>
-        </CreateDialog>
+        {checkPermission(session, ['create_role_permission']) && (
+          <CreateDialog>
+            <Button className="text-xs md:text-sm">
+              <Plus className="h-4 w-4" /> Add New
+            </Button>
+          </CreateDialog>
+        )}
       </div>
       <Separator />
       <Suspense fallback="Loading">
@@ -61,7 +64,7 @@ export default async function RoleDetailPage(props: {
           columns={permissionColumns}
           data={data?.data?.map((c) => ({
             ...c,
-            permission_name: permissionNameObj[c.id],
+            permission_name: permissionNameObj[c.permission_id],
           }))}
           pageNumber={data?.pagination?.nextPage - 1}
           pageCount={data?.pagination?.pageCount}
