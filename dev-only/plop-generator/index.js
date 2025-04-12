@@ -17,9 +17,7 @@ module.exports = function (
     const v = String(key).toLowerCase();
     return typeof v === 'string' && (v.includes('desc') || v.includes('body'));
   });
-  plop.setHelper('isImage', (value) =>
-    String(value).toLowerCase().startsWith('http'),
-  );
+  plop.setHelper('isImage', (value) => typeof value === 'string' && ['.jpg', '.jpeg', '.png', '.webp'].some(ext => value.toLowerCase().endsWith(ext)));
   plop.setHelper('isID', (key) => String(key).toLowerCase().endsWith('_id'));
   plop.setHelper('isCurrency', (key) => /(price|sale)/g.test(key));
   plop.setHelper('isArray', (value) => Array.isArray(value));
