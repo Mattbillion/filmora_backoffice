@@ -4,19 +4,19 @@ import { forwardRef, ReactNode, useImperativeHandle, useState } from 'react';
 
 import { LoaderIcon } from '@/components/custom/icons';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
 import { Form } from '@/components/ui/form';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 
-interface FormDialogProps {
+interface FormSheetProps {
   children: ReactNode;
   title?: ReactNode;
   description?: ReactNode;
@@ -34,12 +34,12 @@ interface FormDialogProps {
   footerClassName?: string;
 }
 
-export interface FormDialogRef {
+export interface FormSheetRef {
   close: () => void;
   open: () => void;
 }
 
-const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
+const FormSheet = forwardRef<FormSheetRef, FormSheetProps>(
   (
     {
       children,
@@ -68,23 +68,23 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
     }));
 
     return (
-      <Dialog
+      <Sheet
         open={open}
         onOpenChange={(c) => {
           setOpen(c);
           onOpenChange?.(c);
         }}
       >
-        {!!trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-        <DialogContent
+        {!!trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
+        <SheetContent
           aria-describedby={undefined}
-          className={cn('max-w-[650px]', dialogContentClassName)}
+          className={cn('w-[650px] !max-w-[90%]', dialogContentClassName)}
         >
           {(title || description) && (
-            <DialogHeader>
-              <DialogTitle>{title}</DialogTitle>
-              <DialogDescription>{description}</DialogDescription>
-            </DialogHeader>
+            <SheetHeader>
+              <SheetTitle>{title}</SheetTitle>
+              <SheetDescription>{description}</SheetDescription>
+            </SheetHeader>
           )}
 
           <Form {...form}>
@@ -97,7 +97,7 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
               >
                 {children}
               </div>
-              <DialogFooter className={cn('pr-2 pt-4', footerClassName)}>
+              <SheetFooter className={cn('pr-2 pt-4', footerClassName)}>
                 {footerActions}
                 <Button
                   type="submit"
@@ -107,15 +107,15 @@ const FormDialog = forwardRef<FormDialogRef, FormDialogProps>(
                   {loading && <LoaderIcon />}
                   {submitText}
                 </Button>
-              </DialogFooter>
+              </SheetFooter>
             </form>
           </Form>
-        </DialogContent>
-      </Dialog>
+        </SheetContent>
+      </Sheet>
     );
   },
 );
 
-FormDialog.displayName = 'DeleteDialog';
+FormSheet.displayName = 'DeleteSheet';
 
-export default FormDialog;
+export default FormSheet;

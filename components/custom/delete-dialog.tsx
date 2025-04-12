@@ -45,7 +45,7 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
       cancelText,
       confirmText,
       loading,
-      permissions,
+      permissions = [],
     },
     ref,
   ) => {
