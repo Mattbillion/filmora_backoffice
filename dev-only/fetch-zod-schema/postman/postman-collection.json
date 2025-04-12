@@ -3015,7 +3015,7 @@
       ]
     },
     {
-      "name": "merchandise attribute values(variant)",
+      "name": "merchandise attribute values",
       "item": [
         {
           "name": "list merchandise attribute values",
@@ -3521,7 +3521,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NTk3Nzd9.Z7rGCN25Z_CQGUCX343hB_h7MOMkS0kFHDLE5-wLmt0",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ1NDA0Mjl9.oSjVjH9ZmyMtlzFic3U9INAj-7YIt5__dqwSd8XiKKQ",
       "type": "string"
     }
   ]
