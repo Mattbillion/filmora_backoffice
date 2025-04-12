@@ -34,12 +34,12 @@ interface FormSheetProps {
   footerClassName?: string;
 }
 
-export interface FormSheetRef {
+export interface FormDialogRef {
   close: () => void;
   open: () => void;
 }
 
-const FormSheet = forwardRef<FormSheetRef, FormSheetProps>(
+const FormSheet = forwardRef<FormDialogRef, FormSheetProps>(
   (
     {
       children,
@@ -116,6 +116,6 @@ const FormSheet = forwardRef<FormSheetRef, FormSheetProps>(
   },
 );
 
-FormSheet.displayName = 'DeleteSheet';
+FormSheet.displayName = 'FormSheet';
 
 export default FormSheet;

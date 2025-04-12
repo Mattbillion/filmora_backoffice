@@ -23,7 +23,6 @@ const Action = ({ row }: CellContext<AgeRestrictionsItemType, unknown>) => {
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data: session } = useSession();
 
-  console.log(session);
   return (
     <div className="me-2 flex justify-end gap-4">
       {checkPermission(session, ['update_age_restriction']) && (
