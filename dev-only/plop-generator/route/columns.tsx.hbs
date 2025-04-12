@@ -5,6 +5,8 @@ import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, Trash } from 'lucide-react';
 import { toast } from 'sonner';
 import Image from 'next/image';
+import { checkPermission } from '@/lib/permission';
+import { useSession } from 'next-auth/react';
 
 import {
   DeleteDialog,
@@ -20,21 +22,25 @@ import { removeHTML, currencyFormat } from '@/lib/utils';
 const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef< DeleteDialogRef >(null);
+  const {data: session} = useSession();
 
   return (
     <div className="me-2 flex justify-end gap-4">
-      <UpdateDialog
-        initialData={row.original}
-        key={JSON.stringify(row.original)}
-      >
-        <Button size={'cxs'} variant="outline">
-          <Edit className="h-4 w-4" /> Edit
-        </Button>
-      </UpdateDialog>
+      {checkPermission(session, []) &&
+        <UpdateDialog
+                initialData={row.original}
+                key={JSON.stringify(row.original)}
+        >
+            <Button size={'cxs'} variant="outline">
+                <Edit className="h-4 w-4" /> Edit
+            </Button>
+        </UpdateDialog>
+      }
 
       <DeleteDialog
         ref={deleteDialogRef}
         loading={loading}
+        permissions={[]}
         action={() => {
           setLoading(true);
           delete{{pascalCase route-name}}(row.original.id)

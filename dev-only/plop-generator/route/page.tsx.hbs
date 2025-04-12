@@ -10,12 +10,15 @@ import { SearchParams } from '@/lib/fetch/types';
 import { get{{pascalCase route-name}}List } from './actions';
 import { {{camelCase route-name}}Columns } from './columns';
 import { CreateDialog } from './components';
+import { auth } from '@/app/(auth)/auth';
+import {checkPermission} from "@/lib/permission";
 
 export const dynamic = 'force-dynamic';
 
 export default async function {{pascalCase route-name}}Page(props: {
   searchParams?: SearchParams;
 }) {
+  const session = await auth();
   const searchParams = await props.searchParams;
   const { data } = await get{{pascalCase route-name}}List(searchParams);
 
@@ -25,11 +28,14 @@ export default async function {{pascalCase route-name}}Page(props: {
         <Heading
           title={`{{sentenceCase route-name}} list (${data?.pagination?.total ?? data?.data?.length})`}
         />
-        <CreateDialog>
-          <Button className="text-xs md:text-sm">
-            <Plus className="h-4 w-4" /> Add New
-          </Button>
-        </CreateDialog>
+          {
+          checkPermission(session, []) &&
+              <CreateDialog>
+                  <Button className="text-xs md:text-sm">
+                      <Plus className="h-4 w-4" /> Add New
+                  </Button>
+              </CreateDialog>
+          }
       </div>
       <Separator />
       <Suspense fallback="Loading">
