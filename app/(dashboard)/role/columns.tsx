@@ -68,7 +68,7 @@ import { checkPermission } from '@/lib/permission';
 const ChildData = ({ row }: CellContext<RoleItemType, unknown>) => {
   const router = useRouter();
   const { data } = useSession();
-  if (checkPermission(data, ['get_role_by_permission_list'])) return null;
+  if (!checkPermission(data, ['get_role_by_permission_list'])) return null;
 
   return (
     <div className="me-2 flex justify-end gap-4">
