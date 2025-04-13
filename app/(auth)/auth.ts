@@ -57,11 +57,24 @@ export const {
         formData.append('username', username);
         formData.append('password', password);
 
-        const { body } = await xooxFetch<LoginResType>('auth/employee-login', {
-          method: 'POST',
-          body: formData,
-          cache: 'no-store',
-        });
+        const response = await fetch(
+          `${process.env.XOOX_DOMAIN || 'http://3.95.231.68:3000/api/v1'}/dashboard/auth/employee-login`,
+          {
+            method: 'POST',
+            body: formData,
+            cache: 'no-store',
+          },
+        );
+        const body: any = await response.json();
+
+        if (!response.ok || body?.status !== 'success')
+          throw new Error(
+            body?.detail?.[0]?.msg ||
+              body?.error ||
+              (body as any)?.message ||
+              (typeof body?.detail === 'string' ? body?.detail : undefined) ||
+              String(response.status),
+          );
 
         if (body?.access_token) {
           const { body: userInfo } = await xooxFetch('/employeeinfo', {
@@ -91,6 +104,7 @@ export const {
           ]);
           const companyInfo = companyRes?.data;
 
+          console.log({ companyInfo });
           return {
             company_name: companyInfo?.company_name,
             company_register: companyInfo?.company_register,
@@ -121,39 +135,54 @@ export const {
         return Object.assign(token, trigger === 'update' ? session.user : {});
       } else {
         try {
-          if (!token.refresh_token)
-            throw new TypeError('Missing refresh_token');
-          const { body, error } = await xooxFetch<LoginResType>(
-            '/auth/employee-refresh-token',
+          if (!token.refresh_token) throw new Error('Missing refresh_token');
+          const refreshAttempts = token.refreshAttempts || 0;
+          if (refreshAttempts > 3) return null;
+
+          const response = await fetch(
+            `${process.env.XOOX_DOMAIN || 'http://3.95.231.68:3000/api/v1'}/dashboard/auth/employee-refresh-token`,
             {
               method: 'POST',
-              body: {
-                refresh_token: token.refresh_token,
-              },
+              body: JSON.stringify({ refresh_token: token.refresh_token }),
               cache: 'no-store',
             },
           );
+          const body: any = await response.json();
 
-          if (error) throw new Error(error);
+          if (!response.ok || body?.status !== 'success')
+            throw new Error(
+              body?.detail?.[0]?.msg ||
+                body?.error ||
+                (body as any)?.message ||
+                (typeof body?.detail === 'string' ? body?.detail : undefined) ||
+                String(response.status),
+            );
+
+          console.log('body', body);
 
           return {
             ...token,
-            access_token: body.access_token,
-            expires_at: getExpDateFromJWT(body.access_token),
-            refresh_token: body.refresh_token || token.refresh_token,
+            access_token: body?.access_token,
+            expires_at: getExpDateFromJWT(body?.access_token || ''),
+            refresh_token: body?.refresh_token,
+            refreshAttempts: 0,
           };
         } catch (error) {
           console.error('Error refreshing access_token', error);
-          token.error = 'RefreshTokenError';
-          return token;
+          return {
+            ...token,
+            refreshAttempts: (token.refreshAttempts || 0) + 1,
+            error: 'RefreshAccessTokenError',
+          };
         }
       }
     },
     async session({ session, token }: { session: any; token: any }) {
       if (session.user) {
         session.user = {
-          ...(token || {}),
-          id: token.access_token as string,
+          ...token,
+          id: token.id || token.sub,
+          access_token: token.access_token,
         };
       }
       return session;
@@ -165,11 +194,17 @@ function getExpDateFromJWT(token: string): Date {
   const fallbackDate = new Date();
   fallbackDate.setDate(fallbackDate.getDate() + 1);
 
+  if (!token) return fallbackDate;
+
   try {
     const jsonPayload = extractJWT(token);
-
     if (!jsonPayload.exp) return fallbackDate;
-    return new Date(jsonPayload.exp * 1000);
+
+    const expDate = new Date(jsonPayload.exp * 1000);
+    if (isNaN(expDate.getTime()) || expDate < new Date()) {
+      return fallbackDate;
+    }
+    return expDate;
   } catch (error) {
     console.error('Error decoding JWT:', error);
     return fallbackDate;
