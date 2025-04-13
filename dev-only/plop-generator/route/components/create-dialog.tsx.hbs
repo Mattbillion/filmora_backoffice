@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useRef, useTransition, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -30,6 +30,10 @@ import { {{pascalCase route-name}}BodyType, {{camelCase route-name}}Schema } fro
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef< FormDialogRef >(null);
   const [isPending, startTransition] = useTransition();
+    {{#if (canFetchData dataKeys)}}
+        const [dropdownData, setDropdownData] = useState< Record< string, any[] > >({});
+        const [loading, startLoadingTransition] = useTransition();
+    {{/if}}
 
   const form = useForm< {{pascalCase route-name}}BodyType >({
     resolver: zodResolver({{camelCase route-name}}Schema),
@@ -59,6 +63,23 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       title="Create new {{sentenceCase route-name}}"
       submitText="Create"
       trigger={children}
+      {{#if (canFetchData dataKeys)}}
+      onOpenChange={ (c) => {
+        if (c) {
+            startLoadingTransition(() => {
+//                fetchSomething({ page_size: 1000 }).then((cc) =>
+//                    setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
+//                );
+//                fetchSomething({ page_size: 1000 }).then((cc) =>
+//                    setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
+//                );
+//                fetchSomething({ page_size: 1000 }).then((cc) =>
+//                    setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
+//                );
+            });
+        }
+      }}
+      {{/if}}
     >
         {{#if rawData}}
             {{#each rawData}}
