@@ -35,6 +35,7 @@ module.exports = {
 
       const data = {
         rawData: Object.entries(itemData).map(([key,value]) => ({ key, value })),
+        dataKeys: Object.keys(itemData),
         schema: jsonToZod(
           itemData,
           changeCase.camelCase((name || obj.name) + 'Schema'),
