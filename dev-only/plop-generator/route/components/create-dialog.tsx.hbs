@@ -67,15 +67,12 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       onOpenChange={ (c) => {
         if (c) {
             startLoadingTransition(() => {
-//                fetchSomething({ page_size: 1000 }).then((cc) =>
-//                    setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
-//                );
-//                fetchSomething({ page_size: 1000 }).then((cc) =>
-//                    setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
-//                );
-//                fetchSomething({ page_size: 1000 }).then((cc) =>
-//                    setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
-//                );
+        //          Promise.all([
+        //              fetchSomething().then(res => res?.data?.data || []),
+        //              fetchSomething().then(res => res?.data?.data || [])
+        //           ]).then(([example_cat_id, example_product_id]) => {
+        //                setDropdownData(prevData => ({ ...prevData, example_cat_id, example_product_id }));
+        //          });
             });
         }
       }}

@@ -74,17 +74,14 @@ export function UpdateDialog({
         {{#if (canFetchData dataKeys)}}
             onOpenChange={ (c) => {
               if (c) {
-                  startLoadingTransition(() => {
-//                      fetchSomething({ page_size: 1000 }).then((cc) =>
-//                        setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
-//                      );
-//                      fetchSomething({ page_size: 1000 }).then((cc) =>
-//                        setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
-//                      );
-//                      fetchSomething({ page_size: 1000 }).then((cc) =>
-//                        setDropdownData((prevData) => ({...prevData, ['something_id_key']: cc.data.data})),
-//                      );
-                  });
+                startLoadingTransition(() => {
+                //          Promise.all([
+                //              fetchSomething().then(res => res?.data?.data || []),
+                //              fetchSomething().then(res => res?.data?.data || [])
+                //           ]).then(([example_cat_id, example_product_id]) => {
+                //                setDropdownData(prevData => ({ ...prevData, example_cat_id, example_product_id }));
+                //          });
+                });
               }
           }}
         {{/if}}
