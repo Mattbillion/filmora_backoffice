@@ -104,7 +104,6 @@ export const {
           ]);
           const companyInfo = companyRes?.data;
 
-          console.log({ companyInfo });
           return {
             company_name: companyInfo?.company_name,
             company_register: companyInfo?.company_register,
