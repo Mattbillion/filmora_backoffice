@@ -66,8 +66,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             //          Promise.all([
             //              fetchSomething().then(res => res?.data?.data || []),
             //              fetchSomething().then(res => res?.data?.data || [])
-            //           ]).then(([example_cat_id, example_product_id]) => {
-            //                setDropdownData(prevData => ({ ...prevData, example_cat_id, example_product_id }));
+            //           ]).then(([com_id, example_product_id]) => {
+            //                setDropdownData(prevData => ({ ...prevData, com_id, example_product_id }));
             //          });
           });
         }

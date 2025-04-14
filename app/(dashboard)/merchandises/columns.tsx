@@ -32,8 +32,8 @@ const Action = ({ row }: CellContext<MerchandisesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = checkPermission(data, ['delete_company_merchandise']);
+  const canEdit = checkPermission(data, ['update_company_merchandise']);
 
   if (!canEdit && !canDelete) return null;
 
