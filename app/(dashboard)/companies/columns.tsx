@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import { deleteCompany } from '@/app/(dashboard)/companies/actions';
@@ -21,13 +22,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { checkPermission } from '@/lib/permission';
 
 import { CompanyItemType } from './schema';
 
 const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
+  const { data } = useSession();
+  const canDelete = checkPermission(data, ['delete_company']);
+  const canEdit = checkPermission(data, ['update_company']);
 
+  if (!canEdit && !canDelete) return null;
   return (
     <div className="me-2 flex justify-end gap-4">
       <DropdownMenu>
@@ -40,19 +46,20 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-
-          <UpdateDialog
-            initialData={row.original}
-            key={JSON.stringify(row.original)}
-          >
-            <DropdownMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
-              }}
+          {canEdit && (
+            <UpdateDialog
+              initialData={row.original}
+              key={JSON.stringify(row.original)}
             >
-              <Edit className="h-4 w-4" /> Edit
-            </DropdownMenuItem>
-          </UpdateDialog>
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <Edit className="h-4 w-4" /> Edit
+              </DropdownMenuItem>
+            </UpdateDialog>
+          )}
           <DeleteDialog
             permissions={['delete_company']}
             ref={deleteDialogRef}
