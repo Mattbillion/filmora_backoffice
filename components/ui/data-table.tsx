@@ -3,16 +3,21 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Column,
   ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
+  getFacetedMinMaxValues,
+  getFacetedRowModel,
+  getFacetedUniqueValues,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   PaginationState,
   RowData,
+  SortingState,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table';
 import { usePathname, useRouter } from 'next/navigation';
 
@@ -31,22 +36,25 @@ declare module '@tanstack/react-table' {
     filterVariant?: 'text' | 'range' | 'select';
   }
 }
+
+import { ColumnVisibility } from '@/components/custom/table/dropdown/column-visibility';
+import { FacetFilter } from '@/components/custom/table/facet-filter';
+import { ResetTable } from '@/components/custom/table/reset';
+import { SearchInput } from '@/components/custom/table/search-input';
 import { useQueryString } from '@/hooks/use-query-string';
-import { objToQs } from '@/lib/utils';
+import { objToQs, serializeColumnsFilters } from '@/lib/utils';
 
 import DataTableInfinte from './data-table-infinite';
 import { DataTablePagination } from './data-table-pagination';
-import { Input } from './input';
-import { ScrollArea, ScrollBar } from './scroll-area';
 
-interface DataTableProps<TData, TValue> {
+export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data?: TData[];
-  searchKey?: keyof TData;
   hidePagination?: boolean;
   infinite?: boolean;
   pageNumber?: number;
   pageCount?: number;
+  rowCount?: number;
   setPageNumber?: any;
   disabled?: boolean;
   setDisabled?: any;
@@ -56,112 +64,147 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data = [],
-  searchKey,
   hidePagination,
   infinite,
   pageNumber,
   pageCount,
+  rowCount,
   setPageNumber,
   disabled,
   setDisabled,
   isPending,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
+
   const pathname = usePathname();
-  const { page, limit, ...qsObj } = useQueryString<{
-    page: number;
-    limit: number;
-  }>({ page: 1, limit: 30 });
-  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
-    pageIndex: page - 1,
-    pageSize: limit,
+
+  const { page, page_size, ...qsObj } = useQueryString<QueryParamsType>({
+    page: 1,
+    page_size: 5,
+    filters: '',
+    sort_by: '',
+    sort_order: '',
   });
 
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    [],
-  );
-  const pagination = React.useMemo(
+  type QueryParamsType = {
+    page: number;
+    page_size: number;
+    filters?: string;
+    sort_by?: string;
+    sort_order?: string;
+  };
+
+  //pagination
+  const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
+    pageIndex: page - 1,
+    pageSize: page_size,
+  });
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+
+  const pagination = useMemo(
     () => ({
       pageIndex,
       pageSize,
     }),
     [pageIndex, pageSize],
   );
+
   const table = useReactTable({
     data,
     columns,
-    filterFns: {},
     getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getFacetedRowModel: getFacetedRowModel(),
+    getFacetedUniqueValues: getFacetedUniqueValues(),
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    getPaginationRowModel: getPaginationRowModel(),
     onPaginationChange: setPagination,
+    getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: setColumnFilters,
+    onColumnVisibilityChange: setColumnVisibility,
+    filterFns: {},
+    manualFiltering: true,
+    onSortingChange: setSorting,
     pageCount,
+    rowCount,
     manualPagination: true,
+    manualSorting: true,
     state: {
       pagination,
+      sorting,
       columnFilters,
+      columnVisibility,
     },
   });
 
-  const column = useMemo(
-    () => (searchKey ? table.getColumn(String(searchKey)) : undefined),
-    [table, searchKey],
-  );
+  function getSortingValue(sortingState: SortingState) {
+    return {
+      sortBy: sortingState[0]?.id || '',
+      sortOrder: sortingState[0]?.desc ? 'desc' : 'asc',
+    };
+  }
+
+  const sortValues = useMemo(() => {
+    return getSortingValue(table.getState().sorting);
+  }, [table.getState().sorting]);
+
+  const serializedFilters = useMemo(() => {
+    return serializeColumnsFilters(table.getState().columnFilters);
+  }, [table.getState().columnFilters]);
 
   useEffect(() => {
     if (!hidePagination) {
       router.replace(
         pathname +
-          `?${objToQs({ ...qsObj, page: pageIndex + 1, limit: pageSize })}`,
+          `?${objToQs({ ...qsObj, page: pageIndex + 1, page_size: pageSize, filters: serializedFilters, sort_by: sortValues?.sortBy, sort_order: sortValues?.sortOrder })}`,
         { scroll: true },
       );
     }
-  }, [pageIndex, pageSize]);
+  }, [pageIndex, pageSize, serializedFilters, sortValues]);
+
+  const availableFilters: string[] = table
+    .getAllColumns()
+    .filter((c) => c.getCanFilter())
+    .map((c) => c.id);
 
   return (
-    <>
-      {searchKey && (
-        <Input
-          id={String(searchKey)}
-          placeholder={`Search by ${String(searchKey)}...`}
-          value={column?.getFilterValue()?.toString()}
-          onChange={(event) => column?.setFilterValue(event.target.value)}
-          className="w-full md:max-w-sm"
-        />
-      )}
-      <ScrollArea className="h-[calc(100vh-268px)] rounded-md border">
-        <Table className="relative">
+    <div className="w-full">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2 p-2">
+          {availableFilters.map((cFilter, idx) => {
+            if (cFilter === 'status') {
+              return <FacetFilter table={table} field={cFilter} key={idx} />;
+            }
+            return (
+              <SearchInput
+                table={table}
+                field={cFilter}
+                placeholder={cFilter}
+                key={idx}
+              />
+            );
+          })}
+
+          <ResetTable table={table} />
+        </div>
+        <ColumnVisibility table={table} />
+      </div>
+      <div className="mb-4 w-full rounded-md border border-input">
+        <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead key={header.id}>
-                      {header.isPlaceholder ? null : (
-                        <>
-                          <div
-                            className={
-                              header.column.getCanSort() ? 'cursor-pointer' : ''
-                            }
-                            onClick={header.column.getToggleSortingHandler()}
-                          >
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                            {{
-                              asc: '🔼',
-                              desc: '🔽',
-                            }[header.column.getIsSorted() as string] ?? null}
-                          </div>
-                          {header.column.getCanFilter() ? (
-                            <div>
-                              <Filter column={header.column} />
-                            </div>
-                          ) : null}
-                        </>
-                      )}
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   );
                 })}
@@ -177,7 +220,7 @@ export function DataTable<TData, TValue>({
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <TableCell key={cell.id}>
+                      <TableCell key={cell.id} className="px-6 py-2">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),
@@ -199,11 +242,9 @@ export function DataTable<TData, TValue>({
             )}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
-
+      </div>
       {!hidePagination && (
-        <div className="flex flex-col-reverse items-center justify-between gap-2 md:flex-row">
+        <div className="flex w-full flex-col-reverse items-center justify-between gap-2 md:flex-row">
           {!infinite && <DataTablePagination table={table} />}
           {infinite && (
             <DataTableInfinte
@@ -216,96 +257,6 @@ export function DataTable<TData, TValue>({
           )}
         </div>
       )}
-
-      <pre>
-        {JSON.stringify(
-          { columnFilters: table.getState().columnFilters },
-          null,
-          2,
-        )}
-      </pre>
-    </>
-  );
-}
-
-function DebouncedInput({
-  value: initialValue,
-  onChange,
-  debounce = 500,
-  ...props
-}: {
-  value: string | number;
-  onChange: (value: string | number) => void;
-  debounce?: number;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'>) {
-  const [value, setValue] = React.useState(initialValue);
-
-  React.useEffect(() => {
-    setValue(initialValue);
-  }, [initialValue]);
-
-  React.useEffect(() => {
-    const timeout = setTimeout(() => {
-      onChange(value);
-    }, debounce);
-
-    return () => clearTimeout(timeout);
-  }, [value]);
-
-  return (
-    <input
-      {...props}
-      value={value}
-      onChange={(e) => setValue(e.target.value)}
-    />
-  );
-}
-
-function Filter({ column }: { column: Column<any, unknown> }) {
-  const columnFilterValue = column.getFilterValue();
-  const { filterVariant } = column.columnDef.meta ?? {};
-
-  return filterVariant === 'range' ? (
-    <div>
-      <div className="flex space-x-2">
-        {/* See faceted column filters example for min max values functionality */}
-        <DebouncedInput
-          type="number"
-          value={(columnFilterValue as [number, number])?.[0] ?? ''}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [value, old?.[1]])
-          }
-          placeholder={`Min`}
-          className="w-24 rounded border shadow"
-        />
-        <DebouncedInput
-          type="number"
-          value={(columnFilterValue as [number, number])?.[1] ?? ''}
-          onChange={(value) =>
-            column.setFilterValue((old: [number, number]) => [old?.[0], value])
-          }
-          placeholder={`Max`}
-          className="w-24 rounded border shadow"
-        />
-      </div>
-      <div className="h-1" />
     </div>
-  ) : filterVariant === 'select' ? (
-    <select
-      onChange={(e) => column.setFilterValue(e.target.value === 'true')}
-      value={columnFilterValue?.toString()}
-    >
-      <option value="true">Active</option>
-      <option value="false">Inactive</option>
-    </select>
-  ) : (
-    <DebouncedInput
-      className="w-36 rounded border shadow"
-      onChange={(value) => column.setFilterValue(value)}
-      placeholder={`Search...`}
-      type="text"
-      value={(columnFilterValue ?? '') as string}
-    />
-    // See faceted column filters example for datalist search suggestions
   );
 }

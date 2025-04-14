@@ -6,13 +6,13 @@ import { useSearchParams } from 'next/navigation';
 export function useQueryString<T extends Record<string, any>>(
   initialValues?: T,
 ) {
-  const sp = useSearchParams();
+  const searchParams = useSearchParams();
 
   const qsObj = useMemo(
     () =>
       Object.assign(
         initialValues || {},
-        Array.from(sp.entries()).reduce(
+        Array.from(searchParams.entries()).reduce(
           (acc: Record<string, string | string[]>, [k, v]) => ({
             ...acc,
             [k]: acc[k] ? [...acc[k], v] : v,
@@ -20,7 +20,7 @@ export function useQueryString<T extends Record<string, any>>(
           {},
         ) || {},
       ) as T,
-    [sp],
+    [searchParams],
   );
 
   return qsObj;

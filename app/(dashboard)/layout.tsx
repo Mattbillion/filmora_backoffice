@@ -8,11 +8,7 @@ import {
   BreadcrumbList,
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from '@/components/ui/sidebar';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import Dayjs from '@/lib/dayjs';
 
 import BreadcrumbLastPage from './breadcrumb';
@@ -22,7 +18,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
     <SidebarProvider>
       <Dayjs />
       <AppSidebar />
-      <SidebarInset>
+      <div className="w-full overflow-x-scroll">
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12">
           <div className="flex items-center gap-2 px-5">
             <SidebarTrigger className="-ml-1" />
@@ -38,7 +34,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-6 pt-0">{children}</div>
-      </SidebarInset>
+      </div>
     </SidebarProvider>
   );
 }

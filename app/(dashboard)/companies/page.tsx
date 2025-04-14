@@ -23,7 +23,7 @@ export default async function CompanyPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Company list (${data?.pagination?.total ?? data?.data?.length})`}
+          title={`Company list (${data?.total_count ?? data?.data?.length})`}
         />
         <CreateDialog>
           <Button className="text-xs md:text-sm">
@@ -33,12 +33,13 @@ export default async function CompanyPage(props: {
       </div>
       <Separator />
       <Suspense fallback="Loading">
-        <DataTable
-          columns={companyColumns}
-          data={data?.data}
-          pageNumber={data?.pagination?.nextPage - 1}
-          pageCount={data?.pagination?.pageCount}
-        />
+        <div className="">
+          <DataTable
+            columns={companyColumns}
+            data={data?.data}
+            rowCount={data?.total_count ?? data?.data?.length}
+          />
+        </div>
       </Suspense>
     </>
   );
