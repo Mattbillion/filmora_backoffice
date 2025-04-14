@@ -21,13 +21,12 @@ module.exports = function (
   plop.setHelper('isID', (key) => String(key).toLowerCase().endsWith('_id'));
   plop.setHelper('isCurrency', (key) => /(price|sale)/g.test(key));
   plop.setHelper('isArray', (value) => Array.isArray(value));
-  plop.setHelper('canFetchData', (dataKeys = []) => dataKeys.some(c => c.endsWith('_id')));
   registerFormPartials(plop);
 
   plop.setActionType('fetchSchema', async function (answers, config, plop) {
     const { templateFile, path: outputPath } = config;
 
-    const { rawData, schema: zodSchema, dataKeys } = fetchZodSchema(
+    const { rawData, schema: zodSchema } = fetchZodSchema(
       answers.endpoint,
       answers['route-name'],
     );
@@ -41,7 +40,6 @@ module.exports = function (
       ...answers,
       zodSchema,
       rawData,
-      dataKeys,
     });
 
     fs.writeFileSync(path.resolve(__dirname, outputPath), rendered);

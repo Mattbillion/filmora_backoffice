@@ -41,17 +41,16 @@ export async function xooxFetch<
     message?: string;
     data?: any;
     status?: string;
+    total_count?: number;
   },
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
   try {
+    const session = await auth();
+
     const headers = new Headers(options.headers);
 
-    if (!headers.has('Authorization')) {
-      // careful!!!
-      const session = await auth();
-      if (!!session?.user?.id)
-        headers.set('Authorization', `Bearer ${session?.user?.id}`);
-    }
+    if (!!session?.user?.id && !headers.has('Authorization'))
+      headers.set('Authorization', `Bearer ${session?.user?.id}`);
 
     const { endpoint, fetchOptions } = genFetchParams(url, {
       cache: 'force-cache',

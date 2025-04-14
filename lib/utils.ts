@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ColumnFiltersState } from '@tanstack/react-table';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
@@ -42,7 +43,7 @@ export function objToQs(params: QueryParams): string {
     }
   });
 
-  return searchParams.toString();
+  return searchParams.toString().replaceAll('%3D', '=');
 }
 
 export function qsToObj(queryString: string = '') {
@@ -165,3 +166,7 @@ export const isObject = (value: unknown) =>
   value !== null &&
   !Array.isArray(value) &&
   !(value instanceof FormData);
+
+export function serializeColumnsFilters(filters: ColumnFiltersState): string {
+  return filters.map((f) => `${f.id}=${f.value as string}`).join(',');
+}

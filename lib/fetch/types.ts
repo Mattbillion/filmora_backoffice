@@ -10,16 +10,7 @@ export type BaseType<T extends Record<string, any>> = {
 
 export type PaginatedResType<T> = {
   data: T;
-  pagination: PaginationType;
-};
-
-export type PaginationType = {
-  total: number;
-  pageCount: number;
-  start: number;
-  limit: number;
-  nextPage: number;
-  prevPage?: number;
+  total_count: number;
 };
 
 export type PrettyType<T> = T extends object

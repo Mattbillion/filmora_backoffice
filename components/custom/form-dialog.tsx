@@ -116,6 +116,6 @@ const FormSheet = forwardRef<FormDialogRef, FormSheetProps>(
   },
 );
 
-FormSheet.displayName = 'FormSheet';
+FormSheet.displayName = 'DeleteSheet';
 
 export default FormSheet;
