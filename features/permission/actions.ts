@@ -1,6 +1,6 @@
 import { xooxFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
+import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
 import {
@@ -56,10 +56,10 @@ export const getPermissionList = async (
 
     if (error) throw new Error(error);
 
-    return { data: body };
+    return { data: body, total_count: body.total_count };
   } catch (error) {
     console.error('Error fetching permissions:', error);
-    return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
+    return { data: { data: [], total_count: 0 }, error };
   }
 };
 
@@ -78,10 +78,10 @@ export const getAssignedPermission = async (
 
     if (error) throw new Error(error);
 
-    return { data: body };
+    return { data: body, total_count: body.total_count };
   } catch (error) {
     console.error('Error fetching assigned permissions:', error);
-    return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
+    return { data: { data: [], total_count: 0 }, error };
   }
 };
 
@@ -100,9 +100,9 @@ export const getPermissionsByRoleId = async (
 
     if (error) throw new Error(error);
 
-    return { data: body };
+    return { data: body, total_count: body.total_count };
   } catch (error) {
     console.error('Error fetching permissions by role id:', error);
-    return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
+    return { data: { data: [], total_count: 0 }, error };
   }
 };

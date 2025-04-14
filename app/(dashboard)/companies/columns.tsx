@@ -7,8 +7,6 @@ import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
-import { deleteCompany } from '@/app/(dashboard)/companies/actions';
-import { UpdateDialog } from '@/app/(dashboard)/companies/components';
 import {
   DeleteDialog,
   DeleteDialogRef,
@@ -24,6 +22,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
 
+import { deleteCompany } from './actions';
+import { UpdateDialog } from './components';
 import { CompanyItemType } from './schema';
 
 const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
@@ -60,36 +60,38 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
               </DropdownMenuItem>
             </UpdateDialog>
           )}
-          <DeleteDialog
-            permissions={['delete_company']}
-            ref={deleteDialogRef}
-            loading={loading}
-            action={() => {
-              setLoading(true);
-              deleteCompany(row.original.id)
-                .then((c) => toast.success(c.data.message))
-                .catch((c) => toast.error(c.message))
-                .finally(() => {
-                  deleteDialogRef.current?.close();
-                  setLoading(false);
-                });
-            }}
-            description={
-              <>
-                Are you sure you want to delete this{' '}
-                <b className="text-foreground">{row.original.company_name}</b>?
-              </>
-            }
-          >
-            <DropdownMenuItem
-              onSelect={(e) => {
-                e.preventDefault();
+          {canDelete && (
+            <DeleteDialog
+              ref={deleteDialogRef}
+              loading={loading}
+              action={() => {
+                setLoading(true);
+                deleteCompany(row.original.id)
+                  .then((c) => toast.success(c.data.message))
+                  .catch((c) => toast.error(c.message))
+                  .finally(() => {
+                    deleteDialogRef.current?.close();
+                    setLoading(false);
+                  });
               }}
+              description={
+                <>
+                  Are you sure you want to delete this{' '}
+                  <b className="text-foreground">{row.original.company_name}</b>
+                  ?
+                </>
+              }
             >
-              <Trash className="h-4 w-4" />
-              Delete
-            </DropdownMenuItem>
-          </DeleteDialog>
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                }}
+              >
+                <Trash className="h-4 w-4" />
+                Delete
+              </DropdownMenuItem>
+            </DeleteDialog>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
     </div>

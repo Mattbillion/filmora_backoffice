@@ -24,7 +24,7 @@ export default async function RolePage(props: { searchParams?: SearchParams }) {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Role list (${data?.pagination?.total ?? data?.data?.length})`}
+          title={`Role list (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_role']) && (
           <CreateDialog>
@@ -39,8 +39,7 @@ export default async function RolePage(props: { searchParams?: SearchParams }) {
         <DataTable
           columns={roleColumns}
           data={data?.data}
-          pageNumber={data?.pagination?.nextPage - 1}
-          pageCount={data?.pagination?.pageCount}
+          rowCount={data?.total_count ?? data?.data?.length}
         />
       </Suspense>
     </>
