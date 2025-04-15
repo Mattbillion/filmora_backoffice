@@ -8,56 +8,60 @@
   },
   "item": [
     {
-      "name": "employees",
+      "name": "category",
       "item": [
         {
-          "name": "employees list",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true,
-            "disabledSystemHeaders": {}
-          },
+          "name": "category list",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
             "url": {
-              "raw": "{{base_url}}/employees?company_id=11&page=1&page_size=10",
+              "raw": "{{base_url}}/category?company_id=9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "employees"
+                "category"
               ],
               "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "page_size",
+                  "value": "10",
+                  "disabled": true
+                },
+                {
+                  "key": "filters",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
+                },
                 {
                   "key": "company_id",
-                  "value": "11"
-                },
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
+                  "value": "9"
                 }
               ]
             }
@@ -65,57 +69,43 @@
           "response": []
         },
         {
-          "name": "get employee imformation",
+          "name": "get category",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk3ODk3MzJ9.VzIn0K6CEQtZ6SKByKrHltzm4UfWZqZdJApYcY_quNE",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/employees/cfbe5b23-2ad1-499d-860d-65920c6549ce?company_id=11",
+              "raw": "{{base_url}}/category/24",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "employees",
-                "cfbe5b23-2ad1-499d-860d-65920c6549ce"
-              ],
-              "query": [
-                {
-                  "key": "company_id",
-                  "value": "11"
-                }
+                "category",
+                "24"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "create employee",
+          "name": "create category",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk2MDQwNTh9._ri30n-uxr0wFQwuCQS5b97Thj-DRL8lXsAZhStl62o",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstname\": \"Munkhbat\",\n  \"lastname\": \"Enkhtuya\",\n  \"phone\": \"98119218\",\n  \"email\": \"matt22@gmail.com\",\n  \"profile\": \"link\",\n  \"password\": \"password123$\",\n  \"email_verified\": false,\n  \"company_id\": 11,\n  \"status\": true\n}",
+              "raw": "{\n    \"cat_type\": \"ITEM\",\n    \"cat_name\": \"Эмэгтэй\",\n    \"root\": null,\n    \"order\": 0,\n    \"special\": false,\n    \"description\": \"Эмэгтэй\",\n    \"image\": null\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -123,35 +113,25 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/employees",
+              "raw": "{{base_url}}/category",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "employees"
+                "category"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "update employee imformation",
+          "name": "category update",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PUT",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstname\": \"test\",\n  \"lastname\": \"test\",\n  \"phone\": \"string\",\n  \"profile\": \"string\",\n  \"email_verified\": true,\n  \"company_id\": 11,\n  \"status\": true\n}",
+              "raw": "{\n  \"cat_type\": \"ITEM\",\n  \"cat_name\": \"string\",\n  \"root\": 42,\n  \"order\": 1,\n  \"special\": false,\n  \"description\": \"string\",\n  \"image\": \"string\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -159,153 +139,31 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/employees/4e597bdf-9ff3-43ca-a96f-4b37efa016bf",
+              "raw": "{{base_url}}/category/53",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "employees",
-                "4e597bdf-9ff3-43ca-a96f-4b37efa016bf"
+                "category",
+                "53"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "change employee email",
+          "name": "category delete",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk0MTUxMDN9.CluQHrMDP3kepmDAvghflYPrBxp76lwcY-l39ALXC_M",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"email\": \"test@bandai.com\",\n  \"company_id\": 11\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/employees/866ba00f-96fb-4013-98df-03b7f3aa0401/change-email",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "employees",
-                "866ba00f-96fb-4013-98df-03b7f3aa0401",
-                "change-email"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "change employee password",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"password\": \"password1231231\",\n  \"company_id\": 11\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/employees/4e597bdf-9ff3-43ca-a96f-4b37efa016bf/change-password",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "employees",
-                "4e597bdf-9ff3-43ca-a96f-4b37efa016bf",
-                "change-password"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete employee",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI1MDkyODh9.o3NtzaIfKzixZ_mDud7FMnVt2CjuLyE7rhdEj3djQ_w",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/employees/b0e211d0-6025-4e34-a5f9-27e23b5f4efe",
+              "raw": "{{base_url}}/category/6",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "employees",
-                "b0e211d0-6025-4e34-a5f9-27e23b5f4efe"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "set role employees",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4MmQ3MjcyOS0yMWQ5LTQ5MGYtOGI2Ny05YzYxYTdiZmM2MTUiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzk5NDU3MDN9._XsrfSTNgx3ZnNOIXkBdvWZeKJu3KCwDKXuOcne-qbw",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"employee_id\": \"82d72729-21d9-490f-8b67-9c61a7bfc615\",\n  \"role_id\": 1\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/set_role_employees",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "set_role_employees"
+                "category",
+                "6"
               ]
             }
           },
@@ -314,504 +172,433 @@
       ]
     },
     {
-      "name": "venues",
+      "name": "hall uusgeh",
       "item": [
         {
-          "name": "venues list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/venues?page=1&page_size=10",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "venues"
-              ],
-              "query": [
+          "name": "venues",
+          "item": [
+            {
+              "name": "branches",
+              "item": [
                 {
-                  "key": "page",
-                  "value": "1"
+                  "name": "halls",
+                  "item": [
+                    {
+                      "name": "halls list",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/halls?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "halls"
+                          ],
+                          "query": [
+                            {
+                              "key": "page",
+                              "value": "1"
+                            },
+                            {
+                              "key": "page_size",
+                              "value": "10"
+                            },
+                            {
+                              "key": "filters",
+                              "value": ""
+                            },
+                            {
+                              "key": "start_date",
+                              "value": "2024-11-01"
+                            },
+                            {
+                              "key": "end_date",
+                              "value": "2024-12-13"
+                            },
+                            {
+                              "key": "date_column",
+                              "value": "updated_at",
+                              "disabled": true
+                            },
+                            {
+                              "key": "return_columns",
+                              "value": "id",
+                              "disabled": true
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "get hall",
+                      "request": {
+                        "method": "GET",
+                        "header": []
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "create hall",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"branch_id\": 12,\n  \"hall_name\": \"test\",\n  \"hall_desc\": \"test\",\n  \"capacity\": 10000,\n  \"hall_image\": \"test\",\n  \"hall_location\": \"tset\",\n  \"hall_order\": 1,\n  \"hall_type\": \"test\",\n  \"amenities\": \"test\",\n  \"status\": true\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/halls",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "halls"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "update hall",
+                      "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"branch_id\": 11,\n  \"hall_name\": \"test\",\n  \"hall_desc\": \"test\",\n  \"capacity\": 1000,\n  \"hall_image\": \"test\",\n  \"hall_location\": \"test\",\n  \"hall_order\": 2,\n  \"hall_type\": \"test\",\n  \"amenities\": \"test\",\n  \"status\": true\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/halls/33",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "halls",
+                            "33"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "delete hall",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/halls/40",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "halls",
+                            "40"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
                 },
                 {
-                  "key": "page_size",
-                  "value": "10"
+                  "name": "branch list",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/branches?page=1&page_size=10&filters=status=true&start_date=2024-11-01&end_date=2024-12-13",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "branches"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "page_size",
+                          "value": "10"
+                        },
+                        {
+                          "key": "filters",
+                          "value": "status=true"
+                        },
+                        {
+                          "key": "start_date",
+                          "value": "2024-11-01"
+                        },
+                        {
+                          "key": "end_date",
+                          "value": "2024-12-13"
+                        },
+                        {
+                          "key": "date_column",
+                          "value": "updated_at",
+                          "disabled": true
+                        },
+                        {
+                          "key": "return_columns",
+                          "value": "id",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
                 },
                 {
-                  "key": "filters",
-                  "value": "order_status=failed",
-                  "disabled": true
+                  "name": "get branch",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/branches/12",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "branches",
+                        "12"
+                      ]
+                    }
+                  },
+                  "response": []
                 },
                 {
-                  "key": "start_date",
-                  "value": "2024-12-01",
-                  "disabled": true
+                  "name": "create branch",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"venue_id\": 57,\n  \"branch_name\": \"string\",\n  \"branch_desc\": \"string\",\n  \"branch_logo\": \"string\",\n  \"branch_phone\": \"string\",\n  \"branch_location\": \"string\",\n  \"branch_long\": \"string\",\n  \"branch_lat\": \"string\",\n  \"branch_email\": \"string\",\n  \"branch_order\": 0,\n  \"status\": true,\n  \"branch_schedule\": \"string\",\n  \"branch_images\": \"string\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/branches",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "branches"
+                      ]
+                    }
+                  },
+                  "response": []
                 },
                 {
-                  "key": "end_date",
-                  "value": "2024-12-07",
-                  "disabled": true
+                  "name": "update branch",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"venue_id\": 57,\n  \"branch_name\": \"test\",\n  \"branch_desc\": \"string\",\n  \"branch_logo\": \"string\",\n  \"branch_phone\": \"string\",\n  \"branch_location\": \"string\",\n  \"branch_long\": \"string\",\n  \"branch_lat\": \"string\",\n  \"branch_email\": \"string\",\n  \"branch_order\": 0,\n  \"status\": true,\n  \"branch_schedule\": \"string\",\n  \"branch_images\": \"string\"\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/branches/12",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "branches",
+                        "12"
+                      ]
+                    }
+                  },
+                  "response": []
                 },
                 {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get venue information",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/venues/59",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "venues",
-                "59"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create venue",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI1OTc4OTh9.SxFm3u2jqupgWhD3f9h2-zbDELP_fxzXUos0ACMTfjI",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"venue_name\": \"string\",\n  \"venue_desc\": \"string\",\n  \"venue_logo\": \"string\",\n  \"venue_email\": \"string\",\n  \"venue_phone\": \"string\",\n  \"venue_location\": \"string\",\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/venues",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "venues"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update venue",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkyNTg4NDR9.l27z0hMBokzN7RowTrIUSuMMsqHzOldVzewKjK2TbTY",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"venue_name\": \"City Expo Arena\",\n    \"venue_desc\": \"A versatile venue for expos, concerts, and events test.\",\n    \"venue_logo\": \"https://example.com/images/city-expo-arena-logo.png\",\n    \"venue_email\": \"hello@cityarena.com\",\n    \"venue_phone\": \"+1122334455\",\n    \"venue_location\": \"789 Event Blvd, City Center\",\n    \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/venues/70",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "venues",
-                "70"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete venue",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI1OTc4OTh9.SxFm3u2jqupgWhD3f9h2-zbDELP_fxzXUos0ACMTfjI",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/venues/59",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "venues",
-                "59"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "branches",
-      "item": [
-        {
-          "name": "branch list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/branches?page=1&page_size=10&filters=status=true&start_date=2024-11-01&end_date=2024-12-13",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "branches"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "status=true"
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get branch",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/branches/12",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "branches",
-                "12"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create branch",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"venue_id\": 57,\n  \"branch_name\": \"string\",\n  \"branch_desc\": \"string\",\n  \"branch_logo\": \"string\",\n  \"branch_phone\": \"string\",\n  \"branch_location\": \"string\",\n  \"branch_long\": \"string\",\n  \"branch_lat\": \"string\",\n  \"branch_email\": \"string\",\n  \"branch_order\": 0,\n  \"status\": true,\n  \"branch_schedule\": \"string\",\n  \"branch_images\": \"string\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/branches",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "branches"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update branch",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
-                  "type": "string"
+                  "name": "delete branch",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/branches/17",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "branches",
+                        "17"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"venue_id\": 57,\n  \"branch_name\": \"test\",\n  \"branch_desc\": \"string\",\n  \"branch_logo\": \"string\",\n  \"branch_phone\": \"string\",\n  \"branch_location\": \"string\",\n  \"branch_long\": \"string\",\n  \"branch_lat\": \"string\",\n  \"branch_email\": \"string\",\n  \"branch_order\": 0,\n  \"status\": true,\n  \"branch_schedule\": \"string\",\n  \"branch_images\": \"string\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            {
+              "name": "venues list",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/venues?page=1&page_size=10&company_id=11",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "venues"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "order_status=failed",
+                      "disabled": true
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2024-12-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2024-12-07",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_column",
+                      "value": "updated_at",
+                      "disabled": true
+                    },
+                    {
+                      "key": "return_columns",
+                      "value": "id",
+                      "disabled": true
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "11"
+                    }
+                  ]
                 }
-              }
+              },
+              "response": []
             },
-            "url": {
-              "raw": "{{base_url}}/branches/12",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "branches",
-                "12"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete branch",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/branches/17",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "branches",
-                "17"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "halls",
-      "item": [
-        {
-          "name": "halls list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/halls?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "halls"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": ""
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
+            {
+              "name": "get venue information",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/venues/68",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "venues",
+                    "68"
+                  ]
                 }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get hall",
-          "request": {
-            "method": "GET",
-            "header": []
-          },
-          "response": []
-        },
-        {
-          "name": "create hall",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI2ODQzMTh9.jRB3hyZx2w7r7kqmLuKwIr-DXH77ur49aDLK_KF7Ifc",
-                  "type": "string"
-                }
-              ]
+              },
+              "response": []
             },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"branch_id\": 12,\n  \"hall_name\": \"test\",\n  \"hall_desc\": \"test\",\n  \"capacity\": 10000,\n  \"hall_image\": \"test\",\n  \"hall_location\": \"tset\",\n  \"hall_order\": 1,\n  \"hall_type\": \"test\",\n  \"amenities\": \"test\",\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
+            {
+              "name": "create venue",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"venue_name\": \"string\",\n  \"venue_desc\": \"string\",\n  \"venue_logo\": \"string\",\n  \"venue_email\": \"string\",\n  \"venue_phone\": \"string\",\n  \"venue_location\": \"string\",\n  \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/venues",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "venues"
+                  ]
                 }
-              }
+              },
+              "response": []
             },
-            "url": {
-              "raw": "{{base_url}}/halls",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "halls"
-              ]
+            {
+              "name": "update venue",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"venue_name\": \"City Expo Arena\",\n    \"venue_desc\": \"A versatile venue for expos, concerts, and events test.\",\n    \"venue_logo\": \"https://example.com/images/city-expo-arena-logo.png\",\n    \"venue_email\": \"hello@cityarena.com\",\n    \"venue_phone\": \"+1122334455\",\n    \"venue_location\": \"789 Event Blvd, City Center\",\n    \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/venues/70",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "venues",
+                    "70"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "delete venue",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/venues/59",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "venues",
+                    "59"
+                  ]
+                }
+              },
+              "response": []
             }
-          },
-          "response": []
-        },
-        {
-          "name": "update hall",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"branch_id\": 11,\n  \"hall_name\": \"test\",\n  \"hall_desc\": \"test\",\n  \"capacity\": 1000,\n  \"hall_image\": \"test\",\n  \"hall_location\": \"test\",\n  \"hall_order\": 2,\n  \"hall_type\": \"test\",\n  \"amenities\": \"test\",\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/halls/33",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "halls",
-                "33"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete hall",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/halls/40",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "halls",
-                "40"
-              ]
-            }
-          },
-          "response": []
+          ]
         }
       ]
     },
@@ -819,22 +606,1483 @@
       "name": "company",
       "item": [
         {
-          "name": "companies list",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
+          "name": "employees",
+          "item": [
+            {
+              "name": "employees list",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true,
+                "disabledSystemHeaders": {}
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/employees?company_id=11&page=1&page_size=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "employees"
+                  ],
+                  "query": [
+                    {
+                      "key": "company_id",
+                      "value": "11"
+                    },
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get employee imformation",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/employees/cfbe5b23-2ad1-499d-860d-65920c6549ce?company_id=11",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "employees",
+                    "cfbe5b23-2ad1-499d-860d-65920c6549ce"
+                  ],
+                  "query": [
+                    {
+                      "key": "company_id",
+                      "value": "11"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "create employee",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstname\": \"Munkhbat\",\n  \"lastname\": \"Enkhtuya\",\n  \"phone\": \"98119218\",\n  \"email\": \"matt22@gmail.com\",\n  \"profile\": \"link\",\n  \"password\": \"password123$\",\n  \"email_verified\": false,\n  \"company_id\": 11,\n  \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/employees",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "employees"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update employee imformation",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"firstname\": \"test\",\n  \"lastname\": \"test\",\n  \"phone\": \"string\",\n  \"profile\": \"string\",\n  \"email_verified\": true,\n  \"company_id\": 11,\n  \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/employees/4e597bdf-9ff3-43ca-a96f-4b37efa016bf",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "employees",
+                    "4e597bdf-9ff3-43ca-a96f-4b37efa016bf"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "change employee email",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"test@bandai.com\",\n  \"company_id\": 11\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/employees/866ba00f-96fb-4013-98df-03b7f3aa0401/change-email",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "employees",
+                    "866ba00f-96fb-4013-98df-03b7f3aa0401",
+                    "change-email"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "change employee password",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"password\": \"password1231231\",\n  \"company_id\": 11\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/employees/4e597bdf-9ff3-43ca-a96f-4b37efa016bf/change-password",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "employees",
+                    "4e597bdf-9ff3-43ca-a96f-4b37efa016bf",
+                    "change-password"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "delete employee",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/employees/b0e211d0-6025-4e34-a5f9-27e23b5f4efe",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "employees",
+                    "b0e211d0-6025-4e34-a5f9-27e23b5f4efe"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "set role employees",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"employee_id\": \"82d72729-21d9-490f-8b67-9c61a7bfc615\",\n  \"role_id\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/set_role_employees",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "set_role_employees"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "events",
+          "item": [
+            {
+              "name": "templates",
+              "item": [
                 {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NDY0NjZ9.nzfH6dQwB2I5ilewj_bYD0_vCN7L55mTHhknj4b3Z6Y",
-                  "type": "string"
+                  "name": "templates list",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/templates?page=1&page_size=10&event_id=1",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "templates"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "page_size",
+                          "value": "10"
+                        },
+                        {
+                          "key": "filters",
+                          "value": "order_status=failed",
+                          "disabled": true
+                        },
+                        {
+                          "key": "start_date",
+                          "value": "2024-11-01",
+                          "disabled": true
+                        },
+                        {
+                          "key": "end_date",
+                          "value": "2024-12-17",
+                          "disabled": true
+                        },
+                        {
+                          "key": "date_column",
+                          "value": "updated_at",
+                          "disabled": true
+                        },
+                        {
+                          "key": "return_columns",
+                          "value": "id",
+                          "disabled": true
+                        },
+                        {
+                          "key": "event_id",
+                          "value": "1"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create template",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "svg_file",
+                          "type": "file",
+                          "src": "postman-cloud:///1efbf71b-254b-4440-b316-f9f82b590f07"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/templates?event_id=41&template_name=test template&template_desc=test template&template_order=1&status=true&template_type=svg",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "templates"
+                      ],
+                      "query": [
+                        {
+                          "key": "event_id",
+                          "value": "41"
+                        },
+                        {
+                          "key": "template_name",
+                          "value": "test template"
+                        },
+                        {
+                          "key": "template_desc",
+                          "value": "test template"
+                        },
+                        {
+                          "key": "template_order",
+                          "value": "1"
+                        },
+                        {
+                          "key": "status",
+                          "value": "true"
+                        },
+                        {
+                          "key": "template_type",
+                          "value": "svg"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "delete template",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/templates/86",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "templates",
+                        "86"
+                      ]
+                    }
+                  },
+                  "response": []
                 }
               ]
             },
+            {
+              "name": "events list",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/events",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "events"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1",
+                      "disabled": true
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "filters",
+                      "value": "",
+                      "disabled": true
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2024-11-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2024-12-13",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_column",
+                      "value": "updated_at",
+                      "disabled": true
+                    },
+                    {
+                      "key": "return_columns",
+                      "value": "id",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get event",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/events/9",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "events",
+                    "9"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "create event",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"category_id\": 25,\n  \"hall_id\": 41,\n  \"company_id\": 9,\n  \"event_name\": \"Tech Conference 2024\",\n  \"event_desc\": \"Join us for a day of insightful talks and workshops on the latest tech trends.\",\n  \"event_capacity\": 500,\n  \"age_id\": 5,\n  \"event_type\": \"Conference\",\n  \"event_image\": \"https://example.com/images/tech-conference-2024.jpg\",\n  \"event_order\": 1,\n  \"event_genre\": \"Technology\",\n  \"duration\": 8,\n  \"openning_at\": \"2024-11-27T09:00:00.000Z\",\n  \"language\": \"English\",\n  \"sponsor_name\": \"TechCorp Solutions\",\n  \"contact_info\": \"contact@techconference.com\",\n  \"fb_link\": \"https://facebook.com/techconference2024\",\n  \"ig_link\": \"https://instagram.com/techconference2024\",\n  \"web_link\": \"https://www.techconference.com\",\n  \"status\": true\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/events",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "events"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update event",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n    \"category_id\": 25,\n    \"hall_id\": 132,\n    \"company_id\": 9,\n    \"event_name\": \"AI Expo 2024 zzzz\",\n    \"event_desc\": \"Discover the latest advancements in Artificial Intelligence through workshops, discussions, and live demos.\",\n    \"event_capacity\": 1000,\n    \"age_id\": 4,\n    \"event_type\": \"Exhibition\",\n    \"event_image\": \"https://example.com/images/ai-expo-2024.jpg\",\n    \"event_order\": 2,\n    \"event_genre\": \"Artificial Intelligence\",\n    \"duration\": 10,\n    \"openning_at\": \"2024-12-15T10:00:00+00:00\",\n    \"language\": \"English\",\n    \"sponsor_name\": \"AI Innovators\",\n    \"contact_info\": \"info@aiexpo.com\",\n    \"fb_link\": \"https://facebook.com/aiexpo2024\",\n    \"ig_link\": \"https://instagram.com/aiexpo2024\",\n    \"web_link\": \"https://www.aiexpo.com\",\n    \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/events/23",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "events",
+                    "23"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "delete event",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/events/17",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "events",
+                    "17"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "create event schedule",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"start_at\": \"08:28:29.866Z\",\n  \"end_at\": \"08:28:29.866Z\",\n  \"date\": \"2024-11-27T08:28:29.866Z\",\n  \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/events/9/create-schedule",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "events",
+                    "9",
+                    "create-schedule"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "orders",
+          "item": [
+            {
+              "name": "order list",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/orders?page=1&page_size=10&com_id=9",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2025-03-24",
+                      "disabled": true
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2025-03-26",
+                      "disabled": true
+                    },
+                    {
+                      "key": "com_id",
+                      "value": "9"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get order",
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "com_id",
+                    "value": "9",
+                    "type": "text",
+                    "disabled": true
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/orders/90?com_id=9",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "orders",
+                    "90"
+                  ],
+                  "query": [
+                    {
+                      "key": "com_id",
+                      "value": "9"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "company categories",
+          "item": [
+            {
+              "name": "category attributes",
+              "item": [
+                {
+                  "name": "category attribute values",
+                  "item": [
+                    {
+                      "name": "list attribute values",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/attribute_values",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "attribute_values"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "get attribute value",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/attribute_values/1",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "attribute_values",
+                            "1"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "create attribute values",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"attr_id\": 9,\n  \"value\": \"wtff\",\n  \"display_order\": 0,\n  \"status\": true\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/attribute_values",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "attribute_values"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "update attribute values",
+                      "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"attr_id\": 14,\n  \"value\": \"test\",\n  \"display_order\": 0,\n  \"status\": true\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/attribute_values/7",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "attribute_values",
+                            "7"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "delete attribute values",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/attribute_values/7",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "attribute_values",
+                            "7"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "category attributes list",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/category_attributes?page=1&page_size=10",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "category_attributes"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "page_size",
+                          "value": "10"
+                        },
+                        {
+                          "key": "filters",
+                          "value": "",
+                          "disabled": true
+                        },
+                        {
+                          "key": "start_date",
+                          "value": "2024-11-01",
+                          "disabled": true
+                        },
+                        {
+                          "key": "end_date",
+                          "value": "2024-12-13",
+                          "disabled": true
+                        },
+                        {
+                          "key": "date_column",
+                          "value": "updated_at",
+                          "disabled": true
+                        },
+                        {
+                          "key": "return_columns",
+                          "value": "id",
+                          "disabled": true
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get category attributes",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/category_attributes/16",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "category_attributes",
+                        "16"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create category attributes",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 4,\n  \"attr_name\": \"wut\",\n  \"attr_desc\": \"descripption test\",\n  \"attr_type\": \"SELECT\",\n  \"display_order\": 12,\n  \"status\": true\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/category_attributes",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "category_attributes"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "update category attributes",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"attr_name\": \"test\",\n  \"attr_desc\": \"test\",\n  \"attr_type\": \"TEXT\",\n  \"display_order\": 1,\n  \"status\": true\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/category_attributes/5",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "category_attributes",
+                        "5"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "delete category attributes",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/category_attributes/17",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "category_attributes",
+                        "17"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "company categories list",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/company_categories?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company_categories"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    },
+                    {
+                      "key": "filters",
+                      "value": ""
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2024-11-01"
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2024-12-13"
+                    },
+                    {
+                      "key": "date_column",
+                      "value": "updated_at",
+                      "disabled": true
+                    },
+                    {
+                      "key": "return_columns",
+                      "value": "id",
+                      "disabled": true
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get company category",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/company_categories/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company_categories",
+                    "1"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "create company category",
+              "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"com_id\": 1,\n  \"cat_id\": 6,\n  \"order\": 1,\n  \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/company_categories",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company_categories"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update company category",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"com_id\": 0,\n  \"cat_id\": 0,\n  \"order\": 0,\n  \"status\": true\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/company_categories/2",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company_categories",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "delete company category",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/company_categories/2",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "company_categories",
+                    "2"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "merchandises",
+          "item": [
+            {
+              "name": "merchandise attribute values",
+              "item": [
+                {
+                  "name": "merchandise_attribute_option_values",
+                  "item": [
+                    {
+                      "name": "list merchandise attribute option value",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/merchandise_attribute_option_values",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "merchandise_attribute_option_values"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "get merchandise attribute option value",
+                      "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/merchandise_attribute_option_values/6?company_id=9",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "merchandise_attribute_option_values",
+                            "6"
+                          ],
+                          "query": [
+                            {
+                              "key": "company_id",
+                              "value": "9"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "create merchandise attribute option value",
+                      "request": {
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"m_attr_val_id\": 10,\n  \"attr_id\": 21,\n  \"attr_val_id\": 18\n}",
+                          "options": {
+                            "raw": {
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{base_url}}/merchandise_attribute_option_values",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "merchandise_attribute_option_values"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "update merchandise attribute option value",
+                      "request": {
+                        "method": "PUT",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/merchandise_attribute_option_values/6",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "merchandise_attribute_option_values",
+                            "6"
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "delete merchandise attribute option value",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/merchandise_attribute_option_values/6",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "merchandise_attribute_option_values",
+                            "6"
+                          ]
+                        }
+                      },
+                      "response": []
+                    }
+                  ]
+                },
+                {
+                  "name": "list merchandise attribute values",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values?page=1&page_size=100",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values"
+                      ],
+                      "query": [
+                        {
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "key": "filters",
+                          "value": "",
+                          "disabled": true
+                        },
+                        {
+                          "key": "start_date",
+                          "value": "2024-11-01",
+                          "disabled": true
+                        },
+                        {
+                          "key": "end_date",
+                          "value": "2024-12-13",
+                          "disabled": true
+                        },
+                        {
+                          "key": "date_column",
+                          "value": "updated_at",
+                          "disabled": true
+                        },
+                        {
+                          "key": "return_columns",
+                          "value": "id",
+                          "disabled": true
+                        },
+                        {
+                          "key": "page_size",
+                          "value": "100"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get merchandise attribute values",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values/28",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values",
+                        "28"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create merchandise attribute values",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"value\": \"test\",\n  \"sku\": \"test1234\",\n  \"is_master\": true,\n  \"price\": 1000\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "update merchandise attribute values",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"sku\": \"test1234\",\n  \"stock\": 19,\n  \"is_master\": true,\n  \"price\": null\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values/13",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values",
+                        "13"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "delete merchandise attribute values",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values/13?company_id=9",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values",
+                        "13"
+                      ],
+                      "query": [
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "merchandises list",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/merchandises?page=1&page_size=10&company_id=9",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "merchandises"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "1"
+                    },
+                    {
+                      "key": "page_size",
+                      "value": "10"
+                    },
+                    {
+                      "key": "start_date",
+                      "value": "2024-11-01",
+                      "disabled": true
+                    },
+                    {
+                      "key": "end_date",
+                      "value": "2024-12-13",
+                      "disabled": true
+                    },
+                    {
+                      "key": "date_column",
+                      "value": "updated_at",
+                      "disabled": true
+                    },
+                    {
+                      "key": "return_columns",
+                      "value": "id",
+                      "disabled": true
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "9"
+                    }
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "get merchandise",
+              "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/merchandises/14",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "merchandises",
+                    "14"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "create merchandise",
+              "request": {
+                "auth": {
+                  "type": "bearer",
+                  "bearer": [
+                    {
+                      "key": "token",
+                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
+                      "type": "string"
+                    }
+                  ]
+                },
+                "method": "POST",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/merchandises",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "merchandises"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "update merchandise",
+              "request": {
+                "method": "PUT",
+                "header": [],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO test\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/merchandises/49",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "merchandises",
+                    "49"
+                  ]
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "delete merchandise",
+              "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/merchandises/45",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "merchandises",
+                    "45"
+                  ]
+                }
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "companies list",
+          "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/companies?page=1&page_size=1",
+              "raw": "{{base_url}}/companies?page=1&page_size=10&filters=company_name=test&sort_by=company_name&sort_order=asc",
               "host": [
                 "{{base_url}}"
               ],
@@ -848,7 +2096,39 @@
                 },
                 {
                   "key": "page_size",
-                  "value": "1"
+                  "value": "10"
+                },
+                {
+                  "key": "filters",
+                  "value": "company_name=test"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2024-11-01",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2024-12-13",
+                  "disabled": true
+                },
+                {
+                  "key": "date_column",
+                  "value": "updated_at",
+                  "disabled": true
+                },
+                {
+                  "key": "return_columns",
+                  "value": "id",
+                  "disabled": true
+                },
+                {
+                  "key": "sort_by",
+                  "value": "company_name"
+                },
+                {
+                  "key": "sort_order",
+                  "value": "asc"
                 }
               ]
             }
@@ -876,16 +2156,6 @@
         {
           "name": "create company",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkyNjI0NDd9.sntsp-Xrh9r6KnCWamfhsmrNML_6nQ3YiPUCNF7I1ds",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [],
             "body": {
@@ -912,16 +2182,6 @@
         {
           "name": "update company",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PUT",
             "header": [],
             "body": {
@@ -967,184 +2227,42 @@
       ]
     },
     {
-      "name": "events",
+      "name": "transactions",
       "item": [
         {
-          "name": "templates",
-          "item": [
-            {
-              "name": "templates list",
-              "request": {
-                "method": "GET",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/templates?page=1&page_size=10",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "templates"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1"
-                    },
-                    {
-                      "key": "page_size",
-                      "value": "10"
-                    },
-                    {
-                      "key": "filters",
-                      "value": "order_status=failed",
-                      "disabled": true
-                    },
-                    {
-                      "key": "start_date",
-                      "value": "2024-11-01",
-                      "disabled": true
-                    },
-                    {
-                      "key": "end_date",
-                      "value": "2024-12-17",
-                      "disabled": true
-                    },
-                    {
-                      "key": "date_column",
-                      "value": "updated_at",
-                      "disabled": true
-                    },
-                    {
-                      "key": "return_columns",
-                      "value": "id",
-                      "disabled": true
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "create template",
-              "request": {
-                "auth": {
-                  "type": "bearer",
-                  "bearer": [
-                    {
-                      "key": "token",
-                      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzYyMjAwNzZ9.xc4UTXSWKFZP1UHzJfXxFW7F2fMggeKUVf5qE6giVJA",
-                      "type": "string"
-                    }
-                  ]
-                },
-                "method": "POST",
-                "header": [],
-                "body": {
-                  "mode": "formdata",
-                  "formdata": [
-                    {
-                      "key": "svg_file",
-                      "type": "file",
-                      "src": "postman-cloud:///1efbf71b-254b-4440-b316-f9f82b590f07"
-                    }
-                  ]
-                },
-                "url": {
-                  "raw": "{{base_url}}/templates?event_id=41&template_name=test template&template_desc=test template&template_order=1&status=true&template_type=svg",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "templates"
-                  ],
-                  "query": [
-                    {
-                      "key": "event_id",
-                      "value": "41"
-                    },
-                    {
-                      "key": "template_name",
-                      "value": "test template"
-                    },
-                    {
-                      "key": "template_desc",
-                      "value": "test template"
-                    },
-                    {
-                      "key": "template_order",
-                      "value": "1"
-                    },
-                    {
-                      "key": "status",
-                      "value": "true"
-                    },
-                    {
-                      "key": "template_type",
-                      "value": "svg"
-                    }
-                  ]
-                }
-              },
-              "response": []
-            },
-            {
-              "name": "delete template",
-              "request": {
-                "method": "DELETE",
-                "header": [],
-                "url": {
-                  "raw": "{{base_url}}/templates/86",
-                  "host": [
-                    "{{base_url}}"
-                  ],
-                  "path": [
-                    "templates",
-                    "86"
-                  ]
-                }
-              },
-              "response": []
-            }
-          ]
-        },
-        {
-          "name": "events list",
+          "name": "transactions list",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/events",
+              "raw": "{{base_url}}/transactions?page=1&page_size=10&start_date=2024-12-01&end_date=2024-12-07",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "events"
+                "transactions"
               ],
               "query": [
                 {
                   "key": "page",
-                  "value": "1",
-                  "disabled": true
+                  "value": "1"
                 },
                 {
                   "key": "page_size",
-                  "value": "10",
-                  "disabled": true
+                  "value": "10"
                 },
                 {
                   "key": "filters",
-                  "value": "",
+                  "value": "order_status=failed",
                   "disabled": true
                 },
                 {
                   "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
+                  "value": "2024-12-01"
                 },
                 {
                   "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
+                  "value": "2024-12-07"
                 },
                 {
                   "key": "date_column",
@@ -1162,41 +2280,71 @@
           "response": []
         },
         {
-          "name": "get event",
+          "name": "get transaction",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/events/9",
+              "raw": "{{base_url}}/transactions/47",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "events",
-                "9"
+                "transactions",
+                "47"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "discounts",
+      "item": [
+        {
+          "name": "discounts list",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/discounts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "discounts"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "create event",
+          "name": "get discount",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDMxNjkwOTJ9.DXgKHFe7Fa4FdMs-Pec1dC87TW0XGw630kLFWy5H1Go",
-                  "type": "string"
-                }
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/discounts/6",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "discounts",
+                "6"
               ]
-            },
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create discount",
+          "request": {
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"category_id\": 25,\n  \"hall_id\": 41,\n  \"company_id\": 9,\n  \"event_name\": \"Tech Conference 2024\",\n  \"event_desc\": \"Join us for a day of insightful talks and workshops on the latest tech trends.\",\n  \"event_capacity\": 500,\n  \"age_id\": 5,\n  \"event_type\": \"Conference\",\n  \"event_image\": \"https://example.com/images/tech-conference-2024.jpg\",\n  \"event_order\": 1,\n  \"event_genre\": \"Technology\",\n  \"duration\": 8,\n  \"openning_at\": \"2024-11-27T09:00:00.000Z\",\n  \"language\": \"English\",\n  \"sponsor_name\": \"TechCorp Solutions\",\n  \"contact_info\": \"contact@techconference.com\",\n  \"fb_link\": \"https://facebook.com/techconference2024\",\n  \"ig_link\": \"https://instagram.com/techconference2024\",\n  \"web_link\": \"https://www.techconference.com\",\n  \"status\": true\n}\n",
+              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount test\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday test.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1204,35 +2352,25 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/events",
+              "raw": "{{base_url}}/discounts",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "events"
+                "discounts"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "update event",
+          "name": "update discount",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzUyNzMyMDR9.JeB7vvPM_24A3o0kgvzbo9eRERMvHKjZX1sCoW-phM4",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PUT",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"category_id\": 25,\n    \"hall_id\": 132,\n    \"company_id\": 9,\n    \"event_name\": \"AI Expo 2024 zzzz\",\n    \"event_desc\": \"Discover the latest advancements in Artificial Intelligence through workshops, discussions, and live demos.\",\n    \"event_capacity\": 1000,\n    \"age_id\": 4,\n    \"event_type\": \"Exhibition\",\n    \"event_image\": \"https://example.com/images/ai-expo-2024.jpg\",\n    \"event_order\": 2,\n    \"event_genre\": \"Artificial Intelligence\",\n    \"duration\": 10,\n    \"openning_at\": \"2024-12-15T10:00:00+00:00\",\n    \"language\": \"English\",\n    \"sponsor_name\": \"AI Innovators\",\n    \"contact_info\": \"info@aiexpo.com\",\n    \"fb_link\": \"https://facebook.com/aiexpo2024\",\n    \"ig_link\": \"https://instagram.com/aiexpo2024\",\n    \"web_link\": \"https://www.aiexpo.com\",\n    \"status\": true\n}",
+              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -1240,69 +2378,31 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/events/23",
+              "raw": "{{base_url}}/discounts/6",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "events",
-                "23"
+                "discounts",
+                "6"
               ]
             }
           },
           "response": []
         },
         {
-          "name": "delete event",
+          "name": "delete discount",
           "request": {
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/events/17",
+              "raw": "{{base_url}}/discounts/3",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "events",
-                "17"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create event schedule",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"start_at\": \"08:28:29.866Z\",\n  \"end_at\": \"08:28:29.866Z\",\n  \"date\": \"2024-11-27T08:28:29.866Z\",\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/events/9/create-schedule",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "events",
-                "9",
-                "create-schedule"
+                "discounts",
+                "3"
               ]
             }
           },
@@ -1385,16 +2485,6 @@
         {
           "name": "create age restrictions",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzgxMzA5MzN9.xlimjZS7nLY1JwMaTahTXHa6JqDeXdMJT0CTRRuWk8w",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [],
             "body": {
@@ -1421,16 +2511,6 @@
         {
           "name": "update age restrictions",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzI3NjY5MTV9.MwXqz18XyC7l_UErxGC-rDncIjvOCnuf6AV8eFtI5qg",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "PUT",
             "header": [],
             "body": {
@@ -1476,21 +2556,122 @@
       ]
     },
     {
+      "name": "banners",
+      "item": [
+        {
+          "name": "list banners",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/banners",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "banners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get banner",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/banners/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "banners",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create banner",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"tommorowland\",\n  \"picture\": \"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR__PNqojIBwfnqNipPMoRPi1DqI2OM92TtAt_cStej9T-D4l_L_XRl-4VZu-49XtxzGlU&usqp=CAU\",\n  \"link\": \"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR__PNqojIBwfnqNipPMoRPi1DqI2OM92TtAt_cStej9T-D4l_L_XRl-4VZu-49XtxzGlU&usqp=CAU\",\n  \"location\": \"string\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/banners",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "banners"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update banner",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"id6out\",\n  \"picture\": \"test\",\n  \"link\": \"test\",\n  \"location\": \"test\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/banners/6",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "banners",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete banner",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/banners/6",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "banners",
+                "6"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
       "name": "roles & permissions",
       "item": [
         {
           "name": "roles list",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1545,16 +2726,6 @@
         {
           "name": "create roles",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkyNjI0NDd9.sntsp-Xrh9r6KnCWamfhsmrNML_6nQ3YiPUCNF7I1ds",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [],
             "body": {
@@ -1581,16 +2752,6 @@
         {
           "name": "permissions list",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1640,16 +2801,6 @@
         {
           "name": "all role by permissions list",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1678,16 +2829,6 @@
         {
           "name": "role by permissions list",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNTg4MTh9.-uo9c_7MFqLBQIOSp3T7LLwrotG4dG2ozGLuXme8TCk",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1718,16 +2859,6 @@
         {
           "name": "create role by permission",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzYyNzR9.VBN_SUrLqPUdpAN4Aa9QjJWJDGpA_AFvJyidKuW-95A",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [],
             "body": {
@@ -1754,16 +2885,6 @@
         {
           "name": "delete role by permission",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzMxOTM1MjF9.1TLRrvjN7qDACERycgmNwFrQKqhvJJFYgKy10l2QgTo",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "DELETE",
             "header": [],
             "url": {
@@ -1781,17 +2902,19 @@
         },
         {
           "name": "get permissions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.globals.set(\"permissions\", JSON.stringify(pm.response.json().data.map(c => c.permission_name)));"
+                ],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NDY0NjZ9.nzfH6dQwB2I5ilewj_bYD0_vCN7L55mTHhknj4b3Z6Y",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "GET",
             "header": [],
             "url": {
@@ -1815,1677 +2938,191 @@
       ]
     },
     {
-      "name": "transactions",
-      "item": [
+      "name": "employees login",
+      "event": [
         {
-          "name": "transactions list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/transactions?page=1&page_size=10&start_date=2024-12-01&end_date=2024-12-07",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "transactions"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "order_status=failed",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-12-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-07"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get transaction",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/transactions/47",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "transactions",
-                "47"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "orders",
-      "item": [
-        {
-          "name": "order list",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzNDU1MDN9.MCtXxWyLaaxWTK6YM4xVeOrNUJinasNktbiT-nf54Wo",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/orders?page=1&page_size=10&com_id=9",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "orders"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                },
-                {
-                  "key": "start_date",
-                  "value": "2025-03-24",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2025-03-26",
-                  "disabled": true
-                },
-                {
-                  "key": "com_id",
-                  "value": "9"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get order",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzNDU1MDN9.MCtXxWyLaaxWTK6YM4xVeOrNUJinasNktbiT-nf54Wo",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [
-              {
-                "key": "com_id",
-                "value": "9",
-                "type": "text",
-                "disabled": true
-              }
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('token', pm.response.json().access_token)",
+              ""
             ],
-            "url": {
-              "raw": "{{base_url}}/orders/90?com_id=9",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "orders",
-                "90"
-              ],
-              "query": [
-                {
-                  "key": "com_id",
-                  "value": "9"
-                }
-              ]
-            }
-          },
-          "response": []
+            "type": "text/javascript",
+            "packages": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
         }
-      ]
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "username",
+              "value": "dambiikhorol@coretech.asia",
+              "description": "manager",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "password",
+              "value": "password123$",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "username",
+              "value": "admin@gmail.com",
+              "description": "admin",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "admin123$",
+              "type": "text"
+            },
+            {
+              "key": "username",
+              "value": "test@coretech.asia",
+              "description": "employee",
+              "type": "text",
+              "disabled": true
+            },
+            {
+              "key": "password",
+              "value": "password123$",
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/employee-login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "employee-login"
+          ]
+        }
+      },
+      "response": []
     },
     {
-      "name": "company categories",
-      "item": [
+      "name": "employees refresh token",
+      "event": [
         {
-          "name": "company categories list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/company_categories?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "company_categories"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": ""
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01"
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13"
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get company category",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/company_categories/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "company_categories",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create company category",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"com_id\": 1,\n  \"cat_id\": 6,\n  \"order\": 1,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/company_categories",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "company_categories"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update company category",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"com_id\": 0,\n  \"cat_id\": 0,\n  \"order\": 0,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/company_categories/2",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "company_categories",
-                "2"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete company category",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/company_categories/2",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "company_categories",
-                "2"
-              ]
-            }
-          },
-          "response": []
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('token', pm.response.json().access_token)",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
         }
-      ]
+      ],
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWVfcmVmcmVzaCIsImV4cCI6MTc0MTc2ODAxOH0.s4jnsfGsncupCHYjK1b_xnZlbO2Xow7jLAf7Q2VevOg\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/employee-refresh-token",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "employee-refresh-token"
+          ]
+        }
+      },
+      "response": []
     },
     {
-      "name": "discounts",
-      "item": [
-        {
-          "name": "discounts list",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/discounts",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "discounts"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get discount",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/discounts/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "discounts",
-                "6"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create discount",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount test\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday test.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/discounts",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "discounts"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update discount",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/discounts/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "discounts",
-                "6"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete discount",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/discounts/3",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "discounts",
-                "3"
-              ]
-            }
-          },
-          "response": []
+      "name": "admin only",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/admin-only",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "admin-only"
+          ]
         }
-      ]
+      },
+      "response": []
     },
     {
-      "name": "category",
-      "item": [
-        {
-          "name": "category list",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/category",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1",
-                  "disabled": true
-                },
-                {
-                  "key": "page_size",
-                  "value": "10",
-                  "disabled": true
-                },
-                {
-                  "key": "filters",
-                  "value": "",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                }
-              ]
+      "name": "employee info",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
             }
-          },
-          "response": []
+          }
         },
-        {
-          "name": "get category",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/category/24",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category",
-                "24"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create category",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3Mzc5MDE5OTF9.xXYK_AqaaaponGdnP6Tr1QE8-zsfiNECv_rnET2thU8",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cat_type\": \"ITEM\",\n  \"cat_name\": \"Эмэгтэй\",\n  \"root\": null,\n  \"order\": 0,\n  \"special\": false,\n  \"description\": \"Эмэгтэй\",\n  \"image\": null\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "category update",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM4MTEzNDZ9.58xlSaF4fik_lzppp5ljuVK3aXLnXu1KDkavyg5YN-w",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"cat_type\": \"string\",\n  \"cat_name\": \"string\",\n  \"root\": 8,\n  \"order\": 1,\n  \"special\": false,\n  \"description\": \"string\",\n  \"image\": \"string\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category/11",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category",
-                "11"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "category delete",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/category/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category",
-                "6"
-              ]
-            }
-          },
-          "response": []
+        "url": {
+          "raw": "{{base_url}}/employeeinfo",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "employeeinfo"
+          ]
         }
-      ]
-    },
-    {
-      "name": "category attributes",
-      "item": [
-        {
-          "name": "category attributes list",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category_attributes?page_size=10",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category_attributes"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1",
-                  "disabled": true
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                },
-                {
-                  "key": "filters",
-                  "value": "",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get category attributes",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/category_attributes/16",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category_attributes",
-                "16"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create category attributes",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 4,\n  \"attr_name\": \"wut\",\n  \"attr_desc\": \"descripption test\",\n  \"attr_type\": \"SELECT\",\n  \"display_order\": 12,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category_attributes",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category_attributes"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update category attributes",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"attr_name\": \"test\",\n  \"attr_desc\": \"test\",\n  \"attr_type\": \"TEXT\",\n  \"display_order\": 1,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category_attributes/5",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category_attributes",
-                "5"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete category attributes",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/category_attributes/17",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "category_attributes",
-                "17"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "category attribute values",
-      "item": [
-        {
-          "name": "list attribute values",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/attribute_values",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "attribute_values"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get attribute value",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/attribute_values/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "attribute_values",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create attribute values",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"attr_id\": 9,\n  \"value\": \"wtff\",\n  \"display_order\": 0,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/attribute_values",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "attribute_values"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update attribute values",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"attr_id\": 14,\n  \"value\": \"test\",\n  \"display_order\": 0,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/attribute_values/7",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "attribute_values",
-                "7"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete attribute values",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/attribute_values/7",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "attribute_values",
-                "7"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "merchandises",
-      "item": [
-        {
-          "name": "merchandises list",
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          },
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ0NTk3Nzd9.Z7rGCN25Z_CQGUCX343hB_h7MOMkS0kFHDLE5-wLmt0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/merchandises?page=1&page_size=10&company_id=9",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandises"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "page_size",
-                  "value": "10"
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                },
-                {
-                  "key": "company_id",
-                  "value": "9"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get merchandise",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQyNzMzNzB9.S2wAkKQ2qTUy-vkZBO988pjwCxVjHzbtksVWfntmZ-A",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandises/14",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandises",
-                "14"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create merchandise",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/merchandises",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandises"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update merchandise",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO test\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/merchandises/49",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandises",
-                "49"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete merchandise",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandises/45",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandises",
-                "45"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "merchandise attribute values",
-      "item": [
-        {
-          "name": "list merchandise attribute values",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values?page=1&page_size=100",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_values"
-              ],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1"
-                },
-                {
-                  "key": "filters",
-                  "value": "",
-                  "disabled": true
-                },
-                {
-                  "key": "start_date",
-                  "value": "2024-11-01",
-                  "disabled": true
-                },
-                {
-                  "key": "end_date",
-                  "value": "2024-12-13",
-                  "disabled": true
-                },
-                {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
-                },
-                {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
-                },
-                {
-                  "key": "page_size",
-                  "value": "100"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get merchandise attribute values",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values/28",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_values",
-                "28"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create merchandise attribute values",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"value\": \"test\",\n  \"sku\": \"test1234\",\n  \"is_master\": true,\n  \"price\": 1000\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_values"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update merchandise attribute values",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbkBnbWFpbC5jb20iLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzM5NzM2NjN9.c2NhkNLxvTVxI7evn1tuz-nTMC8uPLCxDLPHmDy7o4A",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"sku\": \"test1234\",\n  \"stock\": 19,\n  \"is_master\": true,\n  \"price\": null\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values/13",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_values",
-                "13"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete merchandise attribute values",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_values/13?company_id=9",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_values",
-                "13"
-              ],
-              "query": [
-                {
-                  "key": "company_id",
-                  "value": "9"
-                }
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "merchandise_attribute_option_values",
-      "item": [
-        {
-          "name": "list merchandise attribute option value",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_option_values",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_option_values"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get merchandise attribute option value",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_option_values/6?company_id=9",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_option_values",
-                "6"
-              ],
-              "query": [
-                {
-                  "key": "company_id",
-                  "value": "9"
-                }
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create merchandise attribute option value",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"m_attr_val_id\": 10,\n  \"attr_id\": 21,\n  \"attr_val_id\": 18\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_option_values",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_option_values"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update merchandise attribute option value",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_option_values/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_option_values",
-                "6"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete merchandise attribute option value",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQzMzc4NTZ9.eUY84xWZ9a4VWAvoLqZIRX8bQUutif6Lbcfn42w0Ao0",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/merchandise_attribute_option_values/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "merchandise_attribute_option_values",
-                "6"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
-    },
-    {
-      "name": "banners",
-      "item": [
-        {
-          "name": "list banners",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/banners",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "banners"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "get banner",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/banners/1",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "banners",
-                "1"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create banner",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"tommorowland\",\n  \"picture\": \"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR__PNqojIBwfnqNipPMoRPi1DqI2OM92TtAt_cStej9T-D4l_L_XRl-4VZu-49XtxzGlU&usqp=CAU\",\n  \"link\": \"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR__PNqojIBwfnqNipPMoRPi1DqI2OM92TtAt_cStej9T-D4l_L_XRl-4VZu-49XtxzGlU&usqp=CAU\",\n  \"location\": \"string\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/banners",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "banners"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "update banner",
-          "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3MzkzNTc1NTR9.dM6KEC9s99iBhSg6X_m-LK8k7iXR_JbK-kxa5lVhEnE",
-                  "type": "string"
-                }
-              ]
-            },
-            "method": "PUT",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"title\": \"id6out\",\n  \"picture\": \"test\",\n  \"link\": \"test\",\n  \"location\": \"test\",\n  \"special_cat_id\": null,\n  \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/banners/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "banners",
-                "6"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "delete banner",
-          "request": {
-            "method": "DELETE",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/banners/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "banners",
-                "6"
-              ]
-            }
-          },
-          "response": []
-        }
-      ]
+      },
+      "response": []
     }
   ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
   "event": [
     {
       "listen": "prerequest",
@@ -3493,7 +3130,12 @@
         "type": "text/javascript",
         "packages": {},
         "exec": [
-          ""
+          "pm.request.headers.remove('Authorization');",
+          "",
+          "pm.request.headers.add({",
+          "  key: 'Authorization',",
+          "  value: 'Bearer ' + pm.collectionVariables.get('token')",
+          "});"
         ]
       }
     },
@@ -3510,18 +3152,18 @@
   ],
   "variable": [
     {
+      "key": "base_url2",
+      "value": "http://127.0.0.1:8000/api/v1/dashboard",
+      "type": "string"
+    },
+    {
       "key": "base_url",
       "value": "http://3.95.231.68:3000/api/v1/dashboard",
       "type": "string"
     },
     {
-      "key": "base_url2",
-      "value": "http://3.95.231.68:3000/api/v1/dashboard",
-      "type": "string"
-    },
-    {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ2MzI4NjF9.SuvE11ig97-kE_BQ4wtJaq7T1dBKiDtOq-eooyF6-dk",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ2OTk4ODN9.4Jqn7wtgcRxR-_2ar5k17OSl2u0PpivsTrV2iyhTbpk",
       "type": "string"
     }
   ]

@@ -1,12 +1,50 @@
 import { xooxFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
+import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
-import { BannerBodyType, BannerItemType, RVK_BANNER } from './schema';
+import { BannersBodyType, BannersItemType, RVK_BANNERS } from './schema';
 
-export const createBanner = async (bodyData: BannerBodyType) => {
-  const { body, error } = await xooxFetch<{ data: BannerItemType }>('banners', {
+export const getBanners = async (searchParams?: QueryParams) => {
+  try {
+    const { body, error } = await xooxFetch<
+      PaginatedResType<BannersItemType[]>
+    >('/banners', {
+      method: 'GET',
+      searchParams,
+      next: { tags: [RVK_BANNERS] },
+    });
+
+    if (error) throw new Error(error);
+
+    return { data: body, total_count: body.total_count };
+  } catch (error) {
+    console.error(`Error fetching /banners:`, error);
+    return { data: { data: [], total_count: 0 }, error };
+  }
+};
+
+export const getBannersDetail = async (param1: string | ID) => {
+  try {
+    const { body, error } = await xooxFetch<{ data: BannersItemType }>(
+      `/banners/${param1}`,
+      {
+        method: 'GET',
+        next: { tags: [`${RVK_BANNERS}_${param1}`] },
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    return { data: body };
+  } catch (error) {
+    console.error(`Error fetching /banners/${param1}:`, error);
+    return { data: null, error };
+  }
+};
+
+export const createBanners = async (bodyData: BannersBodyType) => {
+  const { body, error } = await xooxFetch(`/banners`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -14,16 +52,16 @@ export const createBanner = async (bodyData: BannerBodyType) => {
 
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_BANNER]);
+  executeRevalidate([RVK_BANNERS]);
   return { data: body, error: null };
 };
 
-export const patchBanner = async ({
-  id,
+export const patchBannersDetail = async ({
+  id: param1,
   ...bodyData
-}: BannerBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: BannerItemType }>(
-    `/banners/${id}`,
+}: BannersBodyType & { id: ID }) => {
+  const { body, error } = await xooxFetch<{ data: BannersItemType }>(
+    `/banners/${param1}`,
     {
       method: 'PUT',
       body: bodyData,
@@ -33,57 +71,18 @@ export const patchBanner = async ({
 
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_BANNER, `${RVK_BANNER}_${id}`]);
+  executeRevalidate([RVK_BANNERS, `${RVK_BANNERS}_${param1}`]);
   return { data: body, error: null };
 };
 
-export const deleteBanner = async (id: ID) => {
-  const { body, error } = await xooxFetch(`/banners/${id}`, {
+export const deleteBannersDetail = async (param1: string | ID) => {
+  const { body, error } = await xooxFetch(`/banners/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });
 
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_BANNER, `${RVK_BANNER}_${id}`]);
+  executeRevalidate([RVK_BANNERS, `${RVK_BANNERS}_${param1}`]);
   return { data: body, error: null };
-};
-
-export const getBannerList = async (searchParams?: QueryParams) => {
-  try {
-    const { body, error } = await xooxFetch<PaginatedResType<BannerItemType[]>>(
-      '/banners',
-      {
-        method: 'GET',
-        searchParams,
-        next: { tags: [RVK_BANNER] },
-      },
-    );
-
-    if (error) throw new Error(error);
-
-    return { data: body };
-  } catch (error) {
-    console.error('Error fetching banners:', error);
-    return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
-  }
-};
-
-export const getBanner = async (id: string) => {
-  try {
-    const { body, error } = await xooxFetch<{ data: BannerItemType }>(
-      `/banners/${id}`,
-      {
-        method: 'GET',
-        next: { tags: [`${RVK_BANNER}_${id}`] },
-      },
-    );
-
-    if (error) throw new Error(error);
-
-    return { data: body };
-  } catch (error) {
-    console.error('Error fetching banners:', error);
-    return { data: null, error };
-  }
 };

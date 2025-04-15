@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { patch{{pascalCase route-name}} } from '../actions';
+import { {{getRequestNameByMethod endpointList 'PUT'}} } from '../actions';
 import { {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, {{camelCase route-name}}Schema } from '../schema';
 
 export function UpdateDialog({
@@ -48,7 +48,7 @@ export function UpdateDialog({
 
   function onSubmit({ status, ...values }: {{pascalCase route-name}}BodyType) {
     startTransition(() => {
-      patch{{pascalCase route-name}}({
+     {{getRequestNameByMethod endpointList "PUT"}}({
         ...values,
         id: initialData.id,
         status: (status as unknown as string) === 'true',

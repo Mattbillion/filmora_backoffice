@@ -1,10 +1,9 @@
-// const { execSync } = require("child_process");
 const { routeActions } = require('./route/plop-actions');
 const { fetchZodSchema } = require('../fetch-zod-schema');
 const {registerFormPartials} = require('./route/hbs-partials/form-items');
-// const dashboardSrc = '../../app/(dashboard)';
 const fs = require('fs');
 const path = require('path');
+const { endpointRequestPartials, endpointRequestHelpers } = require("./route/hbs-partials/endpoint-request");
 
 module.exports = function (
   /** @type {import('plop').NodePlopAPI} */
@@ -21,12 +20,31 @@ module.exports = function (
   plop.setHelper('isID', (key) => String(key).toLowerCase().endsWith('_id'));
   plop.setHelper('isCurrency', (key) => /(price|sale)/g.test(key));
   plop.setHelper('isArray', (value) => Array.isArray(value));
+  plop.setHelper('canFetchData', (dataKeys = []) => dataKeys.some(c => c.endsWith('_id')));
+  plop.setHelper('getNameField', (dataKeys = []) => dataKeys.find(c => c.includes('_name') || c.includes('title')));
+  plop.setHelper('canSort', (key, value) => {
+    const isImage = typeof value === 'string' && ['.jpg', '.jpeg', '.png', '.webp'].some(ext => value.toLowerCase().endsWith(ext));
+    const isHtml = typeof key === 'string' && (key.includes('desc') || key.includes('body'));
+    const isBool = typeof value === 'boolean';
+    const isArray = Array.isArray(value);
+
+    return !isImage && !isHtml && !isBool && !isArray;
+  });
+  plop.setHelper('canFilter', (key, value) => {
+    const isImage = typeof value === 'string' && ['.jpg', '.jpeg', '.png', '.webp'].some(ext => value.toLowerCase().endsWith(ext));
+    const isHtml = typeof key === 'string' && (key.includes('desc') || key.includes('body'));
+    const isArray = Array.isArray(value);
+
+    return !isImage && !isHtml && !isArray;
+  });
   registerFormPartials(plop);
+  endpointRequestPartials(plop);
+  endpointRequestHelpers(plop);
 
   plop.setActionType('fetchSchema', async function (answers, config, plop) {
     const { templateFile, path: outputPath } = config;
 
-    const { rawData, schema: zodSchema } = fetchZodSchema(
+    const { rawData, schema: zodSchema, dataKeys, endpointList } = fetchZodSchema(
       answers.endpoint,
       answers['route-name'],
     );
@@ -40,6 +58,8 @@ module.exports = function (
       ...answers,
       zodSchema,
       rawData,
+      dataKeys,
+      endpointList
     });
 
     fs.writeFileSync(path.resolve(__dirname, outputPath), rendered);

@@ -8,6 +8,7 @@ import { checkPermission } from '@/lib/permission';
 export default async function Layout({ children }: { children: ReactNode }) {
   const session = await auth();
 
-  if (checkPermission(session, permissionsByRoute.companies)) return children;
+  if (checkPermission(session, permissionsByRoute['merchandises'] || []))
+    return children;
   return notFound();
 }

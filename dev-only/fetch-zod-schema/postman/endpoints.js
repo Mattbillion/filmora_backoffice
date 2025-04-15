@@ -7,22 +7,11 @@ const objToQs = (arr) =>
     .map((c) => `${encodeURIComponent(c.key)}=${encodeURIComponent(c.value)}`)
     .join('&');
 
-const getEndpoints = () => {
-  const requests = [];
-  const unavailableRequests = [];
-
-  for (let i = 0; i < items.length; i++) {
-    let routeGroup = items[i];
-
-    for (let j = 0; j < routeGroup.item.length; j++) {
-      let reqItem = routeGroup.item[j];
-      if (!reqItem.request?.url?.path?.length)
-        unavailableRequests.push(reqItem.name);
-      if (
-        reqItem?.request?.method === 'GET' &&
-        !!reqItem.request.url?.path?.length
-      ) {
-        let queryArr = [
+const injectSearchQuery = (reqItem) => {
+  let query = '';
+  if(reqItem?.request?.method === 'GET' && !!reqItem.request.url?.path?.length) {
+    query += `?${
+        objToQs([
           {
             key: 'page',
             value: '1',
@@ -32,39 +21,68 @@ const getEndpoints = () => {
             value: '1',
           },
         ].concat(
-          reqItem.request.url.query?.filter(
-            (c) => !['page', 'page_size'].includes(c.key) && !c.disabled,
-          ) || [],
-        );
-        requests.push({
-          name: changeCase.camelCase(
-            reqItem.request.url.path[0] +
-              (reqItem.request.url.path.length > 1 ? ' detail' : ''),
-          ),
-          endpoint:
-            [variables.base_url, ...reqItem.request.url.path].join('/') +
-            '?' +
-            objToQs(queryArr),
-        });
-      }
+            reqItem.request.url.query?.filter(
+                (c) => !['page', 'page_size'].includes(c.key) && !c.disabled,
+            ) || [],
+        ))
+    }`;
+  }
+  return query;
+}
+
+const endpointLoop = (routeGroup, cb) => {
+  for (let j = 0; j < routeGroup.item.length; j++) {
+    let reqItem = routeGroup.item[j];
+    if (!!reqItem.request?.url?.path?.length) {
+      cb({
+        name: changeCase.camelCase(
+          [
+            {
+              GET: 'get',
+              POST: 'create',
+              PUT: 'patch',
+              DELETE: 'delete',
+            }[reqItem.request.method],
+            ...reqItem.request.url.path
+          ].map(c => !/(\w+\d|\d)/g.test(c) ? c : 'detail').join(' ')
+        ),
+        method: reqItem.request.method,
+        endpoint: ['', ...reqItem.request.url.path].join('/') + injectSearchQuery(reqItem),
+        pathList: reqItem.request.url.path.map(c => !/(\w+\d|\d)/g.test(c) ? c : '{param}'),
+        base: reqItem.request.url.path[0],
+      });
+    } else if(reqItem.item) {
+      endpointLoop(reqItem, cb);
     }
   }
+}
+
+const getEndpoints = () => {
+  const requests = [];
+
+  for (let i = 0; i < items.length; i++) {
+    let routeGroup = items[i];
+    if(routeGroup.item) endpointLoop(routeGroup, (endpointObj) => requests.push(endpointObj));
+  }
+
+  const groupedEndpoints = requests.reduce((acc, curr) => ({...acc, [curr.base]: [...(acc[curr.base] || []), curr]}), ({}));
+
+  console.log( 'endpoint groups: \n', groupedEndpoints);
+
   console.log(
     'available endpoints (Please check before generate!): \n',
-    requests
+    Object.keys(groupedEndpoints)
       .filter(
         (c) =>
           !generatedRoutes.find(
             (cc) =>
-              changeCase.kebabCase(c.name).includes(cc) ||
-              c.name.includes('Detail'),
+              changeCase.kebabCase(c).includes(cc),
           ),
       )
-      .map((c) => `${c.name}: ${c.endpoint}`),
+      .map((c) => changeCase.kebabCase(c)),
   );
-  console.error('postman endpoints empty URI: \n', unavailableRequests);
 
-  return requests;
+  return groupedEndpoints;
 };
 
 module.exports = { endpoints: getEndpoints() };

@@ -157,8 +157,6 @@ export const {
                 String(response.status),
             );
 
-          console.log('body', body);
-
           return {
             ...token,
             access_token: body?.access_token,

@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import UploadImageItem from '@/components/custom/upload-image-item';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
   FormControl,
   FormField,
@@ -23,8 +23,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createBanners } from '../actions';
-import { BannersBodyType, bannersSchema } from '../schema';
+import { createMerchandises } from '../actions';
+import { MerchandisesBodyType, merchandisesSchema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
@@ -32,13 +32,13 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const [dropdownData, setDropdownData] = useState<Record<string, any[]>>({});
   const [loading, startLoadingTransition] = useTransition();
 
-  const form = useForm<BannersBodyType>({
-    resolver: zodResolver(bannersSchema),
+  const form = useForm<MerchandisesBodyType>({
+    resolver: zodResolver(merchandisesSchema),
   });
 
-  function onSubmit({ status, ...values }: BannersBodyType) {
+  function onSubmit({ status, ...values }: MerchandisesBodyType) {
     startTransition(() => {
-      createBanners({
+      createMerchandises({
         ...values,
         status: (status as unknown as string) === 'true',
       })
@@ -57,7 +57,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Banners"
+      title="Create new Merchandises"
       submitText="Create"
       trigger={children}
       onOpenChange={(c) => {
@@ -66,8 +66,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             //          Promise.all([
             //              fetchSomething().then(res => res?.data?.data || []),
             //              fetchSomething().then(res => res?.data?.data || [])
-            //           ]).then(([example_cat_id, example_product_id]) => {
-            //                setDropdownData(prevData => ({ ...prevData, example_cat_id, example_product_id }));
+            //           ]).then(([com_id, example_product_id]) => {
+            //                setDropdownData(prevData => ({ ...prevData, com_id, example_product_id }));
             //          });
           });
         }
@@ -75,12 +75,58 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     >
       <FormField
         control={form.control}
-        name="title"
+        name="com_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Title</FormLabel>
+            <FormLabel>Com id</FormLabel>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Com id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="0">This</SelectItem>
+                <SelectItem value="2">Is</SelectItem>
+                <SelectItem value="3">Generated</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="cat_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Cat id</FormLabel>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Cat id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="0">This</SelectItem>
+                <SelectItem value="2">Is</SelectItem>
+                <SelectItem value="3">Generated</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="mer_name"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Mer name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Title" {...field} />
+              <Input placeholder="Enter Mer name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -89,24 +135,22 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="picture"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="picture"
-            label="Picture"
-          />
-        )}
+        name="mer_desc"
+        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
 
       <FormField
         control={form.control}
-        name="link"
+        name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Link</FormLabel>
+            <FormLabel>Price</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Link" {...field} />
+              <Input
+                placeholder="Enter Price"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -115,13 +159,22 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="location"
+        name="discount_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Location</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Location" {...field} />
-            </FormControl>
+            <FormLabel>Discount id</FormLabel>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Discount id" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="0">This</SelectItem>
+                <SelectItem value="2">Is</SelectItem>
+                <SelectItem value="3">Generated</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}

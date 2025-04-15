@@ -2,31 +2,36 @@ import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
-import { roleColumns } from '@/app/(dashboard)/role/columns';
 import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
-import { getRoleList } from '@/features/role/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
+import { getMerchandisesList } from './actions';
+import { merchandisesColumns } from './columns';
 import { CreateDialog } from './components';
 
 export const dynamic = 'force-dynamic';
 
-export default async function RolePage(props: { searchParams?: SearchParams }) {
-  const searchParams = await props.searchParams;
-  const { data } = await getRoleList(searchParams);
+export default async function MerchandisesPage(props: {
+  searchParams?: SearchParams;
+}) {
   const session = await auth();
+  const searchParams = await props.searchParams;
+  const { data } = await getMerchandisesList({
+    ...searchParams,
+    company_id: session?.user?.company_id,
+  });
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Role list (${data?.total_count ?? data?.data?.length})`}
+          title={`Merchandises list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, ['create_role']) && (
+        {checkPermission(session, []) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New
@@ -37,7 +42,7 @@ export default async function RolePage(props: { searchParams?: SearchParams }) {
       <Separator />
       <Suspense fallback="Loading">
         <DataTable
-          columns={roleColumns}
+          columns={merchandisesColumns}
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
         />

@@ -1,9 +1,9 @@
 'use client';
 
 import { useRef, useState } from 'react';
-// import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -22,19 +22,21 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
+import { currencyFormat, removeHTML } from '@/lib/utils';
 
-import { deleteCompany } from './actions';
+import { deleteMerchandises } from './actions';
 import { UpdateDialog } from './components';
-import { CompanyItemType } from './schema';
+import { MerchandisesItemType } from './schema';
 
-const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
+const Action = ({ row }: CellContext<MerchandisesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, ['delete_company']);
-  const canEdit = checkPermission(data, ['update_company']);
+  const canDelete = checkPermission(data, ['delete_company_merchandise']);
+  const canEdit = checkPermission(data, ['update_company_merchandise']);
 
   if (!canEdit && !canDelete) return null;
+
   return (
     <div className="me-2 flex justify-end gap-4">
       <DropdownMenu>
@@ -52,11 +54,7 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
               initialData={row.original}
               key={JSON.stringify(row.original)}
             >
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault();
-                }}
-              >
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                 <Edit className="h-4 w-4" /> Edit
               </DropdownMenuItem>
             </UpdateDialog>
@@ -67,7 +65,7 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
               loading={loading}
               action={() => {
                 setLoading(true);
-                deleteCompany(row.original.id)
+                deleteMerchandises(row.original.id)
                   .then((c) => toast.success(c.data.message))
                   .catch((c) => toast.error(c.message))
                   .finally(() => {
@@ -78,16 +76,11 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
               description={
                 <>
                   Are you sure you want to delete this{' '}
-                  <b className="text-foreground">{row.original.company_name}</b>
-                  ?
+                  <b className="text-foreground">{row.original.mer_name}</b>?
                 </>
               }
             >
-              <DropdownMenuItem
-                onSelect={(e) => {
-                  e.preventDefault();
-                }}
-              >
+              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
                 <Trash className="h-4 w-4" />
                 Delete
               </DropdownMenuItem>
@@ -99,59 +92,89 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
   );
 };
 
-export const companyColumns: ColumnDef<CompanyItemType>[] = [
+export const merchandisesColumns: ColumnDef<MerchandisesItemType>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
   },
   {
-    id: 'company_name',
-    accessorKey: 'company_name',
+    id: 'com_id',
+    accessorKey: 'com_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.com_id,
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    id: 'company_desc',
-    accessorKey: 'company_desc',
+    id: 'cat_id',
+    accessorKey: 'cat_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.cat_id,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'mer_name',
+    accessorKey: 'mer_name',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.mer_name?.slice(0, 300),
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'mer_desc',
+    accessorKey: 'mer_desc',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <p>
+        html:{' '}
+        <span className="opacity-70">
+          {removeHTML(row.original.mer_desc?.slice(0, 300))}
+        </span>
+      </p>
+    ),
     enableSorting: false,
     enableColumnFilter: false,
   },
   {
-    id: 'company_register',
-    accessorKey: 'company_register',
+    id: 'price',
+    accessorKey: 'price',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
+    cell: ({ row }) => currencyFormat(row.original.price),
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    id: 'company_logo',
-    accessorKey: 'company_logo',
+    id: 'discount_id',
+    accessorKey: 'discount_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableSorting: false,
-    enableColumnFilter: false,
+    cell: ({ row }) => row.original.discount_id,
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    id: 'company_email',
-    accessorKey: 'company_email',
+    id: 'medias',
+    accessorKey: 'medias',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableSorting: false,
-  },
-  {
-    id: 'company_phone',
-    accessorKey: 'company_phone',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'company_phone2',
-    accessorKey: 'company_phone2',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'company_location',
-    accessorKey: 'company_location',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => {
+      const cellData = row.original.medias;
+      if (!!cellData[0]?.media_url)
+        return (
+          <div className="flex items-center">
+            {cellData.slice(0, 3).map((c, idx) => (
+              <Image
+                key={idx}
+                src={c.media_url}
+                alt=""
+                width={48}
+                height={48}
+                className="-mr-6 rounded-full border-border"
+              />
+            ))}
+          </div>
+        );
+      return <p>{cellData.join(', ')}</p>;
+    },
     enableSorting: false,
     enableColumnFilter: false,
   },
@@ -159,11 +182,12 @@ export const companyColumns: ColumnDef<CompanyItemType>[] = [
     id: 'status',
     accessorKey: 'status',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+    enableSorting: false,
+    enableColumnFilter: true,
   },
   {
     id: 'actions',
-    header: 'Actions',
-    enableColumnFilter: false,
     cell: Action,
   },
 ];

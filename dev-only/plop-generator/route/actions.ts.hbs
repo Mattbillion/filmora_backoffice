@@ -1,91 +1,110 @@
 import { xooxFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
+import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
 import { {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, RVK_{{constantCase route-name}} } from './schema';
-
-export const create{{pascalCase route-name}} = async (bodyData: {{pascalCase route-name}}BodyType) => {
+{{#if rawData}}
+    {{#each endpointList}}
+        {{#if (isGetRequest method name)}}
+            {{> getRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isGetDetailRequest method name)}}
+            {{> getDetailRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isDeleteRequest method)}}
+            {{> deleteRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isPostRequest method)}}
+            {{> createRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isPutRequest method)}}
+            {{> updateRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+    {{/each}}
+{{else}}
+    export const create{{pascalCase route-name}} = async (bodyData: {{pascalCase route-name}}BodyType) => {
     const { body, error } = await xooxFetch<{ data: {{pascalCase route-name}}ItemType }>(
-        '{{snakeCase endpoint}}',
-        {
-            method: 'POST',
-            body: bodyData,
-            cache: 'no-store',
-        },
+    '{{snakeCase endpoint}}',
+    {
+    method: 'POST',
+    body: bodyData,
+    cache: 'no-store',
+    },
     );
 
     if (error) throw new Error(error);
 
     executeRevalidate([RVK_{{constantCase route-name}}]);
     return { data: body, error: null };
-};
+    };
 
-export const patch{{pascalCase route-name}} = async ({
+    export const patch{{pascalCase route-name}} = async ({
     id,
     ...bodyData
-}: {{pascalCase route-name}}BodyType & { id: ID }) => {
+    }: {{pascalCase route-name}}BodyType & { id: ID }) => {
     const { body, error } = await xooxFetch<{ data: {{pascalCase route-name}}ItemType }>(
-        `/{{snakeCase endpoint}}/${id}`,
-        {
-            method: 'PUT',
-            body: bodyData,
-            cache: 'no-store',
-        },
+    `/{{snakeCase endpoint}}/${id}`,
+    {
+    method: 'PUT',
+    body: bodyData,
+    cache: 'no-store',
+    },
     );
 
     if (error) throw new Error(error);
 
     executeRevalidate([RVK_{{constantCase route-name}}, `${ RVK_{{constantCase route-name}} }_${id}`]);
     return { data: body, error: null };
-};
+    };
 
-export const delete{{pascalCase route-name}} = async (id: ID) => {
+    export const delete{{pascalCase route-name}} = async (id: ID) => {
     const { body, error } = await xooxFetch(`/{{snakeCase endpoint}}/${id}`, {
-        method: 'DELETE',
-        cache: 'no-store',
+    method: 'DELETE',
+    cache: 'no-store',
     });
 
     if (error) throw new Error(error);
 
     executeRevalidate([RVK_{{constantCase route-name}}, `${ RVK_{{constantCase route-name}} }_${id}`]);
     return { data: body, error: null };
-};
+    };
 
-export const get{{pascalCase route-name}}List = async (searchParams?: QueryParams) => {
+    export const get{{pascalCase route-name}}List = async (searchParams?: QueryParams) => {
     try {
-        const { body, error } = await xooxFetch<
-            PaginatedResType< {{pascalCase route-name}}ItemType[] >
-        >('/{{snakeCase endpoint}}', {
-            method: 'GET',
-            searchParams,
-            next: { tags: [RVK_{{constantCase route-name}}] },
-        });
+    const { body, error } = await xooxFetch<
+    PaginatedResType< {{pascalCase route-name}}ItemType[] >
+    >('/{{snakeCase endpoint}}', {
+    method: 'GET',
+    searchParams,
+    next: { tags: [RVK_{{constantCase route-name}}] },
+    });
 
-        if (error) throw new Error(error);
+    if (error) throw new Error(error);
 
-        return { data: body };
+    return { data: body, total_count: body.total_count };
     } catch (error) {
-        console.error('Error fetching {{kebabCase endpoint}}:', error);
-        return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
+    console.error('Error fetching {{kebabCase endpoint}}:', error);
+    return { data: { data: [], total_count: 0 }, error };
     }
-};
+    };
 
-export const get{{pascalCase route-name}} = async (id: string) => {
+    export const get{{pascalCase route-name}} = async (id: string) => {
     try {
-        const { body, error } = await xooxFetch<{ data: {{pascalCase route-name}}ItemType }>(
-            `/{{snakeCase endpoint}}/${id}`,
-            {
-                method: 'GET',
-                next: { tags: [`${ RVK_{{constantCase route-name}} }_${id}`] },
-            },
-        );
+    const { body, error } = await xooxFetch<{ data: {{pascalCase route-name}}ItemType }>(
+    `/{{snakeCase endpoint}}/${id}`,
+    {
+    method: 'GET',
+    next: { tags: [`${ RVK_{{constantCase route-name}} }_${id}`] },
+    },
+    );
 
-        if (error) throw new Error(error);
+    if (error) throw new Error(error);
 
-        return { data: body };
+    return { data: body };
     } catch (error) {
-        console.error('Error fetching {{kebabCase endpoint}}:', error);
-        return { data: null, error };
+    console.error('Error fetching {{kebabCase endpoint}}:', error);
+    return { data: null, error };
     }
-};
+    };
+{{/if}}

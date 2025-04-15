@@ -48,7 +48,7 @@ export default async function RoleDetailPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`${currentRole?.role_name + ' '}Permission list (${data?.pagination?.total ?? data?.data?.length})`}
+          title={`${currentRole?.role_name + ' '}Permission list (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_role_permission']) && (
           <CreateDialog>
@@ -66,8 +66,7 @@ export default async function RoleDetailPage(props: {
             ...c,
             permission_name: permissionNameObj[c.permission_id],
           }))}
-          pageNumber={data?.pagination?.nextPage - 1}
-          pageCount={data?.pagination?.pageCount}
+          rowCount={data?.total_count ?? data?.data?.length}
         />
       </Suspense>
     </>
