@@ -7,7 +7,7 @@ import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
 
-import { get{{pascalCase route-name}}List } from './actions';
+import { {{getRequestNameByMethod endpointList 'GET'}} } from './actions';
 import { {{camelCase route-name}}Columns } from './columns';
 import { CreateDialog } from './components';
 import { auth } from '@/app/(auth)/auth';
@@ -20,7 +20,7 @@ export default async function {{pascalCase route-name}}Page(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
-  const { data } = await get{{pascalCase route-name}}List({
+  const { data } = await {{getRequestNameByMethod endpointList "GET"}}({
         ...searchParams,
         company_id: session?.user?.company_id,
     });

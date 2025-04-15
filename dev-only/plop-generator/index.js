@@ -5,6 +5,7 @@ const {registerFormPartials} = require('./route/hbs-partials/form-items');
 // const dashboardSrc = '../../app/(dashboard)';
 const fs = require('fs');
 const path = require('path');
+const {endpointRequestPartials, endpointRequestHelpers} = require("./route/hbs-partials/endpoint-request");
 
 module.exports = function (
   /** @type {import('plop').NodePlopAPI} */
@@ -39,11 +40,13 @@ module.exports = function (
     return !isImage && !isHtml && !isArray;
   });
   registerFormPartials(plop);
+  endpointRequestPartials(plop);
+  endpointRequestHelpers(plop);
 
   plop.setActionType('fetchSchema', async function (answers, config, plop) {
     const { templateFile, path: outputPath } = config;
 
-    const { rawData, schema: zodSchema, dataKeys } = fetchZodSchema(
+    const { rawData, schema: zodSchema, dataKeys, endpointList } = fetchZodSchema(
       answers.endpoint,
       answers['route-name'],
     );
@@ -58,6 +61,7 @@ module.exports = function (
       zodSchema,
       rawData,
       dataKeys,
+      endpointList
     });
 
     fs.writeFileSync(path.resolve(__dirname, outputPath), rendered);

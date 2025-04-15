@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { create{{pascalCase route-name}} } from '../actions';
+import { {{getRequestNameByMethod endpointList 'POST'}} } from '../actions';
 import { {{pascalCase route-name}}BodyType, {{camelCase route-name}}Schema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
@@ -41,7 +41,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
   function onSubmit({ status, ...values }: {{pascalCase route-name}}BodyType) {
     startTransition(() => {
-      create{{pascalCase route-name}}({
+      {{getRequestNameByMethod endpointList "POST"}}({
         ...values,
         status: (status as unknown as string) === 'true',
       })

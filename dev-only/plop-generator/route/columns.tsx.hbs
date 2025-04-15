@@ -24,7 +24,7 @@ import {
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { delete{{pascalCase route-name}} } from './actions';
+import { {{getRequestNameByMethod endpointList 'DELETE'}} } from './actions';
 import { UpdateDialog } from './components';
 import { {{pascalCase route-name}}ItemType } from './schema';
 import { removeHTML, currencyFormat } from '@/lib/utils';
@@ -66,7 +66,8 @@ const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown
                         loading={loading}
                         action={ () => {
                             setLoading(true);
-                            delete{{pascalCase route-name}}(row.original.id)
+                                // TODO: Please check after generate
+                               {{getRequestNameByMethod endpointList 'DELETE'}}(row.original.id)
                                 .then((c) => toast.success(c.data.message))
                                 .catch((c) => toast.error(c.message))
                                 .finally(() => {

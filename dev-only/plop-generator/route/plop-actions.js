@@ -12,12 +12,6 @@ const routeActions = (routeName, endpoint, path) => {
   return [
     {
       type: 'add',
-      path: `${directory}/actions.ts`,
-      templateFile: './route/actions.ts.hbs',
-      data: templateData,
-    },
-    {
-      type: 'add',
       path: `${directory}/layout.tsx`,
       templateFile: './route/layout.tsx.hbs',
       data: templateData,
@@ -30,14 +24,20 @@ const routeActions = (routeName, endpoint, path) => {
     },
     {
       type: 'add',
+      path: `${directory}/components/index.ts`,
+      templateFile: './route/components/index.ts.hbs',
+      data: templateData,
+    },
+    {
+      type: 'fetchSchema',
       path: `${directory}/page.tsx`,
       templateFile: './route/page.tsx.hbs',
       data: templateData,
     },
     {
-      type: 'add',
-      path: `${directory}/components/index.ts`,
-      templateFile: './route/components/index.ts.hbs',
+      type: 'fetchSchema',
+      path: `${directory}/actions.ts`,
+      templateFile: './route/actions.ts.hbs',
       data: templateData,
     },
     {
