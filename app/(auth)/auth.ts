@@ -148,6 +148,7 @@ export const {
           );
           const body: any = await response.json();
 
+          console.log(body);
           if (!response.ok || body?.status !== 'success')
             throw new Error(
               body?.detail?.[0]?.msg ||
