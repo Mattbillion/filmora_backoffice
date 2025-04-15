@@ -1,11 +1,9 @@
-// const { execSync } = require("child_process");
 const { routeActions } = require('./route/plop-actions');
 const { fetchZodSchema } = require('../fetch-zod-schema');
 const {registerFormPartials} = require('./route/hbs-partials/form-items');
-// const dashboardSrc = '../../app/(dashboard)';
 const fs = require('fs');
 const path = require('path');
-const {endpointRequestPartials, endpointRequestHelpers} = require("./route/hbs-partials/endpoint-request");
+const { endpointRequestPartials, endpointRequestHelpers } = require("./route/hbs-partials/endpoint-request");
 
 module.exports = function (
   /** @type {import('plop').NodePlopAPI} */
