@@ -5,13 +5,11 @@ import { Group, Layer, Rect, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
 import { debounce } from 'lodash';
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion';
+import { Sector } from '@/app/(builder)/templateDetail/[id]/client/sector';
 import { Button } from '@/components/ui/button';
+
+import { Floor } from './floor';
+import { Section } from './section';
 
 const scaleBy = 1.05;
 const maxScale = 10;
@@ -37,13 +35,19 @@ export default function Stage({
   const stageRef = useRef<Konva.Stage>(null);
   const sectionsRef = useRef<Konva.Node[]>([]);
   const [masks, setMasks] = useState<
-    { x: number; y: number; width: number; height: number }[]
+    {
+      x: number;
+      y: number;
+      width: number;
+      height: number;
+      id: string;
+      fill?: string;
+    }[]
   >([]);
 
   useEffect(() => {
     if (stageRef.current) {
       sectionsRef.current = stageRef.current.find('.ticketSection');
-      console.log('effect');
     }
   });
 
@@ -231,110 +235,69 @@ export default function Stage({
             {masks.map((mask, idx) => (
               <Rect
                 key={idx}
+                id={mask.id}
                 width={mask.width}
                 height={mask.height}
                 x={mask.x}
                 y={mask.y}
-                fill="#00D2FF"
-                stroke="black"
-                strokeWidth={2}
+                fill={mask.fill || '#1E3A8A'}
+                cornerRadius={4}
               />
             ))}
           </Group>
+          <Rect
+            name="el-indicator"
+            width={0}
+            height={0}
+            x={0}
+            y={0}
+            visible={false}
+            fill="rgba(0,210,255,0.49)"
+            stroke="#00D2FF"
+            strokeWidth={2}
+            cornerRadius={4}
+          />
         </Layer>
       </KonvaStage>
       <div className="flex h-[calc(100dvh-64px)] flex-[462px] flex-col border-l border-border">
         <h1 className="border-b p-4">Seatmap builder</h1>
         <div className="min-h-0 flex-1">
-          <div className="max-h-full space-y-4 overflow-y-auto p-4">
+          <div
+            className="max-h-full space-y-4 overflow-y-auto p-4"
+            onMouseLeave={() => {
+              const elIndicator = stageRef.current?.findOne('.el-indicator');
+              elIndicator?.visible(false);
+            }}
+          >
             {Object.entries(groupByFirstPart())?.map(
               ([label, seatmap], idx) => {
                 const stage = stageRef.current;
                 if (!stage) return null;
 
                 return (
-                  <Accordion type="single" key={idx} collapsible>
-                    <AccordionItem
-                      value={label}
-                      className="rounded-lg border px-4"
-                    >
-                      <AccordionTrigger>
-                        {label.replace(/^F+(\d+)/g, 'Floor: $1')}
-                      </AccordionTrigger>
-                      <AccordionContent className="space-y-2 [&>div:last-child>div]:border-b-0">
-                        {Object.entries(seatmap).map(
-                          ([sectionName, section], idx1) => {
-                            return (
-                              <Accordion type="multiple" key={idx1}>
-                                <AccordionItem
-                                  value={label}
-                                  className="px-4 [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
-                                >
-                                  <AccordionTrigger className="pb-4 pt-2">
-                                    {sectionName.replace(/^Z+(.)/g, 'Zone: $1')}
-                                  </AccordionTrigger>
-                                  <AccordionContent>
-                                    {section.map((sector, idx2) => {
-                                      const node = stage.findOne(
-                                        (cc: Konva.Shape) =>
-                                          cc.attrs['data-testid'] ===
-                                          sector.attrs['data-testid'],
-                                      );
-                                      // @ts-ignore
-                                      let sectorName = sector
-                                        .id()
-                                        .split(/[\s-]+/)
-                                        .at(-1)
-                                        .replace('_', ' ');
-
-                                      if (/(\S+-S(\d+))$/g.test(sector.id()))
-                                        sectorName = sector
-                                          .id()
-                                          .replace(
-                                            /(\S+-S(\d+))$/g,
-                                            'Section: $2',
-                                          );
-
-                                      return (
-                                        <button
-                                          key={idx2}
-                                          className="w-full"
-                                          disabled={!node}
-                                          onClick={() => {
-                                            if (node) {
-                                              const {
-                                                x,
-                                                y,
-                                                width: nodeW,
-                                                height: nodeH,
-                                              } = node.getClientRect({
-                                                relativeTo: stage,
-                                              });
-                                              setMasks([
-                                                ...masks,
-                                                {
-                                                  x,
-                                                  y,
-                                                  width: nodeW,
-                                                  height: nodeH,
-                                                },
-                                              ]);
-                                            }
-                                          }}
-                                        >
-                                          {sectorName}
-                                        </button>
-                                      );
-                                    })}
-                                  </AccordionContent>
-                                </AccordionItem>
-                              </Accordion>
-                            );
-                          },
-                        )}
-                      </AccordionContent>
-                    </AccordionItem>
-                  </Accordion>
+                  <Floor key={idx} label={label}>
+                    {Object.entries(seatmap).map(
+                      ([sectionName, section], idx1) => {
+                        return (
+                          <Section
+                            key={idx1}
+                            label={label}
+                            section={section}
+                            sectionName={sectionName}
+                            stage={stage}
+                          >
+                            {section.map((sector, idx2) => (
+                              <Sector
+                                key={idx2}
+                                sector={sector}
+                                stage={stage}
+                              />
+                            ))}
+                          </Section>
+                        );
+                      },
+                    )}
+                  </Floor>
                 );
               },
             )}
