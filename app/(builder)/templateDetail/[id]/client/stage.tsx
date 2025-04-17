@@ -200,33 +200,33 @@ export default function Stage({
         ref={stageRef}
         width={width}
         height={height}
-        draggable
+        // draggable
         scale={scale}
         x={centerCoord.x}
         y={centerCoord.y}
         onWheel={handleWheel}
-        dragBoundFunc={(pos) => {
-          const currentScale = stageRef.current?.scaleX() || scale.x;
-          const scaledLimit = {
-            x: limitX * currentScale,
-            y: limitY * currentScale,
-          };
-          const newX = Math.max(-scaledLimit.x, Math.min(pos.x, scaledLimit.x));
-          const newY = Math.max(-scaledLimit.y, Math.min(pos.y, scaledLimit.y));
-
-          if (currentScale > 2)
-            modifyCache(
-              {
-                x: newX,
-                y: newY,
-                scaleX: currentScale,
-                scaleY: currentScale,
-              },
-              true,
-            );
-
-          return { x: newX, y: newY };
-        }}
+        // dragBoundFunc={(pos) => {
+        //   const currentScale = stageRef.current?.scaleX() || scale.x;
+        //   const scaledLimit = {
+        //     x: limitX * currentScale,
+        //     y: limitY * currentScale,
+        //   };
+        //   const newX = Math.max(-scaledLimit.x, Math.min(pos.x, scaledLimit.x));
+        //   const newY = Math.max(-scaledLimit.y, Math.min(pos.y, scaledLimit.y));
+        //
+        //   if (currentScale > 2)
+        //     modifyCache(
+        //       {
+        //         x: newX,
+        //         y: newY,
+        //         scaleX: currentScale,
+        //         scaleY: currentScale,
+        //       },
+        //       true,
+        //     );
+        //
+        //   return { x: newX, y: newY };
+        // }}
         className="flex-1"
       >
         <Layer>
@@ -303,7 +303,12 @@ export default function Stage({
             )}
           </div>
         </div>
-        <Button className="m-4">Build</Button>
+        <Button
+          className="m-4"
+          onClick={() => console.log(stageRef.current?.toJSON())}
+        >
+          Build
+        </Button>
       </div>
     </div>
   );

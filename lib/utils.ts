@@ -130,8 +130,8 @@ export function stringifyError(error: Error & { error?: string }) {
   throw new Error(error?.error ?? error?.message ?? String(error));
 }
 
-export function currencyFormat(total: number) {
-  return String(total).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + '₮';
+export function currencyFormat(total: number, suffix: string = '₮') {
+  return String(total).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + suffix;
 }
 
 export const removeHTML = (str: string = '') =>
