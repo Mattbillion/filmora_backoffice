@@ -16,7 +16,7 @@ export function Floor({
 }) {
   return (
     <Accordion type="single" collapsible>
-      <AccordionItem value={label} className="rounded-lg border px-2">
+      <AccordionItem value={label} className="rounded-lg border px-3">
         <AccordionTrigger>
           {label.replace(/^F+(\d+)/g, 'Floor: $1')}
         </AccordionTrigger>

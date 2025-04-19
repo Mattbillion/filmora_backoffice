@@ -178,6 +178,7 @@ export default function Stage({
 
     for (let i = 0; i < sectionsRef.current.length; i++) {
       const node = sectionsRef.current[i];
+
       const [firstPart, secondPart] = node.id().replace(/_/g, '-').split('-');
 
       if (!result[firstPart]) result[firstPart] = {};

@@ -1,3 +1,6 @@
+'use client';
+
+import { useState } from 'react';
 import Konva from 'konva';
 import { Edit } from 'lucide-react';
 
@@ -9,7 +12,8 @@ import {
 } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { currencyFormat } from '@/lib/utils';
+
+import { translationMap } from './constants';
 
 export function Sector({
   stage,
@@ -18,21 +22,12 @@ export function Sector({
   stage: Konva.Stage;
   sector: Konva.Node & { children?: Konva.Node[] };
 }) {
+  const [count, setCount] = useState(0);
   const node = stage.findOne(
     (cc: Konva.Shape) =>
-      cc.attrs['data-testid'] === sector.attrs['data-testid'],
+      cc.attrs['data-testid'] === sector.attrs?.['data-testid'],
   );
   if (!node) return null;
-
-  // @ts-ignore
-  let sectorName = sector
-    .id()
-    .split(/[\s-]+/)
-    .at(-1)
-    .replace('_', ' ');
-
-  if (/(\S+-S(\d+))$/g.test(sector.id()))
-    sectorName = sector.id().replace(/(\S+-S(\d+))$/g, 'Section: $2');
 
   const {
     x: nodeX,
@@ -45,6 +40,7 @@ export function Sector({
 
   const elIndicator = stage.findOne('.el-indicator');
 
+  if (sector.attrs['data-floor'] === '5') console.log(sector.children);
   return (
     <Collapsible
       className="sector-collapse w-full [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
@@ -91,7 +87,8 @@ export function Sector({
           //   ]);
           // }}
         >
-          {sectorName}
+          Section:{' '}
+          {sector.attrs?.['data-sector'] || sector.attrs?.['data-name']}
           <Edit />
           {/*<Checkbox*/}
           {/*  checked={masks.some(*/}
@@ -105,113 +102,103 @@ export function Sector({
       <CollapsibleContent>
         <div className="space-y-2">
           <div className="border-b border-neutral-700 px-4 py-2">
-            <div className="flex flex-col space-y-1.5">
-              <Label htmlFor={sector.id() + '-sector-name'}>Section name</Label>
-              <Input
-                id={sector.id() + '-sector-name'}
-                placeholder={`Current: ${sector.id().match(/S([^-]+)/)?.[1]}`}
-                onChange={(e) => {
-                  if (e.target.value) {
-                    sector.setAttr('data-sector', e.target.value);
-                  } else {
-                    sector.setAttr(
-                      'data-sector',
-                      sector
-                        .id()
-                        .match(/S[^-]+/)?.[0]
-                        ?.replace('S', ''),
-                    );
-                  }
-                }}
-                className="flex-1 rounded-sm bg-neutral-600"
-              />
-            </div>
+            <SectorInput
+              node={sector}
+              dataFields={['data-sector', 'data-name']}
+            />
           </div>
-          {sector.children?.map((c, idx) => {
-            return (
-              <div
-                key={idx}
-                className="flex items-center gap-4 border-b border-neutral-700 px-4 py-2 font-mono text-sm shadow-sm last:border-b-0"
-                onMouseEnter={() => {
-                  const {
-                    x: rowX,
-                    y: rowY,
-                    width: rowW,
-                    height: rowH,
-                  } = c.getClientRect({
-                    relativeTo: stage,
-                  });
-                  elIndicator?.setAttr('cornerRadius', 2);
-                  elIndicator?.setAttr('strokeWidth', 1);
-                  elIndicator?.to({
-                    x: rowX - 2,
-                    y: rowY - 2,
-                    width: rowW + 4,
-                    height: rowH + 4,
-                    duration: 0.1,
-                    opacity: 1,
-                    visible: true,
-                  });
-                }}
-              >
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor={c.id() + '-row-number'}>
-                    {c.id().replace(/(\S+-R(\d+))$/g, 'Row number: $2')}
-                  </Label>
-                  <Input
-                    id={c.id() + '-row-number'}
-                    onChange={(e) => {
-                      if (e.target.value) {
-                        c.id(
-                          c
-                            .id()
-                            .replace(
-                              /(S+)(-R\d+)?(-|$)/,
-                              `$1-R${e.target.value}$3`,
-                            ),
-                        );
-                        c.setAttr('data-row', e.target.value);
-                      } else {
-                        c.setAttr(
-                          'data-row',
-                          c
-                            .id()
-                            .match(/R[^-]+/)?.[0]
-                            ?.replace('R', ''),
-                        );
-                      }
-                    }}
-                    placeholder={`Current: ${c.id().match(/R([^-]+)/)?.[1]}`}
-                    className="flex-1 rounded-sm bg-neutral-600"
+          {sector.children
+            ?.filter((c) => c.attrs['data-purchasable'])
+            ?.map((c, idx) => {
+              return (
+                <div
+                  key={idx}
+                  className="flex items-center gap-4 border-b border-neutral-700 px-4 py-2 font-mono text-sm shadow-sm last:border-b-0"
+                  onMouseEnter={() => {
+                    const {
+                      x: rowX,
+                      y: rowY,
+                      width: rowW,
+                      height: rowH,
+                    } = c.getClientRect({
+                      relativeTo: stage,
+                    });
+                    elIndicator?.setAttr('cornerRadius', 2);
+                    elIndicator?.setAttr('strokeWidth', 1);
+                    elIndicator?.to({
+                      x: rowX - 2,
+                      y: rowY - 2,
+                      width: rowW + 4,
+                      height: rowH + 4,
+                      duration: 0.1,
+                      opacity: 1,
+                      visible: true,
+                    });
+                  }}
+                >
+                  <SectorInput
+                    node={c}
+                    dataFields={['data-row', 'data-room']}
                   />
+                  <SectorInput node={c} dataFields={['data-price']} />
                 </div>
-                <div className="flex flex-col space-y-1.5">
-                  <Label htmlFor={c.id() + '-price'}>Price</Label>
-                  <Input
-                    id={c.id() + '-price'}
-                    onChange={(e) => {
-                      c.clearCache();
-                      c.setAttr('data-price', e.target.value);
-                      c.setAttr(
-                        'id',
-                        c
-                          .id()
-                          .replace(
-                            /(R\d+)(-P\d+)?(-|$)/,
-                            `$1-P${e.target.value}$3`,
-                          ),
-                      );
-                      c.cache();
-                    }}
-                    placeholder={`Current: ${currencyFormat(Number(c.id().match(/P([^-]+)/)?.[1] || 0))}`}
-                    className="flex-1 rounded-sm bg-neutral-600"
-                  />
-                </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </CollapsibleContent>
     </Collapsible>
+  );
+}
+
+const getFieldInfo = (
+  node: Konva.Node & { children?: Konva.Node[] },
+  fields: string[],
+) => {
+  let field = fields[0];
+  let label =
+    translationMap[field.replace('data-', '')] +
+    ': ' +
+    (node.attrs[field] || '');
+
+  for (let i = 0; i < fields.length; i++) {
+    if (node.attrs[fields[i]]) {
+      label =
+        translationMap[fields[i].replace('data-', '')] +
+        ': ' +
+        node.attrs[fields[i]];
+      field = fields[i];
+    }
+  }
+
+  return {
+    field,
+    label,
+  };
+};
+
+function SectorInput({
+  node,
+  dataFields,
+}: {
+  node: Konva.Node & { children?: Konva.Node[] };
+  dataFields: string[];
+}) {
+  const { field, label } = getFieldInfo(node, dataFields);
+  const [value, setValue] = useState(node.attrs[field]);
+
+  return (
+    <div className="flex flex-col space-y-1.5">
+      <Label htmlFor={node.id() + field}>{label}</Label>
+      <Input
+        id={node.id() + field}
+        value={value}
+        onChange={(e) => {
+          setValue(e.target.value);
+          node.setAttr(field, e.target.value);
+        }}
+        placeholder={`Current: ${label.split(': ')[1]}`}
+        className="flex-1 rounded-sm bg-neutral-600"
+      />
+    </div>
   );
 }

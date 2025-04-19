@@ -61,7 +61,7 @@ export function Section({
           }
         }}
       >
-        <AccordionTrigger className="pb-4 pt-2">
+        <AccordionTrigger className="py-2">
           {sectionName.replace(/^Z+(.)/g, 'Zone: $1')}
         </AccordionTrigger>
         <AccordionContent className="[&>div:last-child>div:border-b-0 space-y-2">
