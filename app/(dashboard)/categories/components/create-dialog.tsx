@@ -112,6 +112,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                 categories={categories}
                 onChange={field.onChange}
                 value={field.value}
+                depthLimit={2}
               />
             )}
             <FormMessage />

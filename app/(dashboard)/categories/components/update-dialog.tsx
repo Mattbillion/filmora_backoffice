@@ -121,6 +121,7 @@ export function UpdateDialog({
                 categories={categories}
                 onChange={field.onChange}
                 value={field.value}
+                depthLimit={2}
               />
             )}
             <FormMessage />

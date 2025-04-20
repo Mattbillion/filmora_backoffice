@@ -8,6 +8,7 @@ interface HierarchicalSelectProps {
   value?: ID;
   onChange: (value?: ID) => void;
   disabled?: boolean;
+  depthLimit?: number;
 }
 
 const findCategoryPath = (
@@ -38,6 +39,7 @@ export const HierarchicalSelect = ({
   value,
   onChange,
   disabled,
+  depthLimit = 3,
 }: HierarchicalSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentLevel, setCurrentLevel] =
@@ -46,7 +48,7 @@ export const HierarchicalSelect = ({
 
   useEffect(() => {
     if (value) {
-      const path = findCategoryPath(categories, value);
+      const path = findCategoryPath(categories, value).slice(0, depthLimit - 1);
       if (path.length > 0) {
         const selectedCategory = path[path.length - 1];
         if (selectedCategory.children.length === 0) {
@@ -68,7 +70,7 @@ export const HierarchicalSelect = ({
   }, [value, categories]);
 
   const handleSelect = (category: HierarchicalCategory) => {
-    if (category.children.length > 0) {
+    if (category.children.length > 0 && breadcrumbs.length < depthLimit - 1) {
       setCurrentLevel(category.children);
       setBreadcrumbs([...breadcrumbs, category]);
     } else {
@@ -144,7 +146,8 @@ export const HierarchicalSelect = ({
                 }`}
               >
                 <span>{category.cat_name}</span>
-                {category.children.length > 0 ? (
+                {category.children.length > 0 &&
+                breadcrumbs.length < depthLimit - 1 ? (
                   <span className="text-gray-500">→</span>
                 ) : (
                   value === category.id && (
