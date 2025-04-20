@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { CaretSortIcon } from '@radix-ui/react-icons';
 
 import { HierarchicalCategory } from '@/features/category/schema';
 import { ID } from '@/lib/fetch/types';
@@ -96,21 +97,21 @@ export const HierarchicalSelect = ({
         aria-label="Select category"
         className="flex w-full items-center justify-between rounded border p-2 hover:bg-accent"
       >
-        <span className="truncate">
+        <span className="truncate text-sm">
           {value
             ? findCategoryPath(categories, value)
                 .map((c) => c.cat_name)
                 .join(' › ')
             : 'Select a category'}
         </span>
-        <span className="ml-2">▼</span>
+        <CaretSortIcon className="ml-2 h-4 w-4 opacity-50" />
       </button>
 
       {isOpen && (
         <div className="absolute z-50 mt-1 w-full rounded border bg-background shadow-lg">
           <div className="max-h-80 overflow-y-auto p-2">
             {breadcrumbs.length > 0 && (
-              <div className="mb-2 flex flex-wrap gap-1">
+              <div className="mb-2 flex flex-wrap">
                 <button
                   type="button"
                   onClick={() => {
@@ -119,8 +120,7 @@ export const HierarchicalSelect = ({
                   }}
                   className="flex items-center rounded px-2 py-1 text-sm hover:bg-accent"
                 >
-                  <span className="mx-1">←</span>
-                  Back
+                  All <span className="mx-1">›</span>
                 </button>
                 {breadcrumbs.map((crumb, index) => (
                   <button
@@ -141,7 +141,7 @@ export const HierarchicalSelect = ({
                 key={category.id}
                 type="button"
                 onClick={() => handleSelect(category)}
-                className={`flex w-full items-center justify-between rounded p-2 text-left ${
+                className={`flex w-full items-center justify-between rounded p-2 text-left text-sm ${
                   value === category.id ? 'bg-accent' : 'hover:bg-accent'
                 }`}
               >
