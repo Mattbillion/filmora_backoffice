@@ -3,7 +3,7 @@
 import { JSX, useEffect, useRef, useState } from 'react';
 import { Group, Layer, Rect, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
-import { debounce } from 'lodash';
+import { debounce, pickBy } from 'lodash';
 
 import { Sector } from '@/app/(builder)/templateDetail/[id]/client/sector';
 import { Button } from '@/components/ui/button';
@@ -178,6 +178,10 @@ export default function Stage({
 
     for (let i = 0; i < sectionsRef.current.length; i++) {
       const node = sectionsRef.current[i];
+      console.log(
+        'attrs',
+        pickBy(node.attrs, (_, k) => k.startsWith('data-')),
+      );
 
       const [firstPart, secondPart] = node.id().replace(/_/g, '-').split('-');
 
@@ -201,33 +205,33 @@ export default function Stage({
         ref={stageRef}
         width={width}
         height={height}
-        // draggable
+        draggable
         scale={scale}
         x={centerCoord.x}
         y={centerCoord.y}
         onWheel={handleWheel}
-        // dragBoundFunc={(pos) => {
-        //   const currentScale = stageRef.current?.scaleX() || scale.x;
-        //   const scaledLimit = {
-        //     x: limitX * currentScale,
-        //     y: limitY * currentScale,
-        //   };
-        //   const newX = Math.max(-scaledLimit.x, Math.min(pos.x, scaledLimit.x));
-        //   const newY = Math.max(-scaledLimit.y, Math.min(pos.y, scaledLimit.y));
-        //
-        //   if (currentScale > 2)
-        //     modifyCache(
-        //       {
-        //         x: newX,
-        //         y: newY,
-        //         scaleX: currentScale,
-        //         scaleY: currentScale,
-        //       },
-        //       true,
-        //     );
-        //
-        //   return { x: newX, y: newY };
-        // }}
+        dragBoundFunc={(pos) => {
+          const currentScale = stageRef.current?.scaleX() || scale.x;
+          const scaledLimit = {
+            x: limitX * currentScale,
+            y: limitY * currentScale,
+          };
+          const newX = Math.max(-scaledLimit.x, Math.min(pos.x, scaledLimit.x));
+          const newY = Math.max(-scaledLimit.y, Math.min(pos.y, scaledLimit.y));
+
+          if (currentScale > 2)
+            modifyCache(
+              {
+                x: newX,
+                y: newY,
+                scaleX: currentScale,
+                scaleY: currentScale,
+              },
+              true,
+            );
+
+          return { x: newX, y: newY };
+        }}
         className="flex-1"
       >
         <Layer>

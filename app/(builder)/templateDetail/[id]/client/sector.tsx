@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { currencyFormat } from '@/lib/utils';
 
 import { translationMap } from './constants';
 
@@ -40,7 +41,7 @@ export function Sector({
 
   const elIndicator = stage.findOne('.el-indicator');
 
-  if (sector.attrs['data-floor'] === '5') console.log(sector.children);
+  // if (sector.attrs['data-floor'] === '5') console.log(sector.children);
   return (
     <Collapsible
       className="sector-collapse w-full [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
@@ -87,8 +88,7 @@ export function Sector({
           //   ]);
           // }}
         >
-          Section:{' '}
-          {sector.attrs?.['data-sector'] || sector.attrs?.['data-name']}
+          Sector: {sector.attrs?.['data-sector'] || sector.attrs?.['data-name']}
           <Edit />
           {/*<Checkbox*/}
           {/*  checked={masks.some(*/}
@@ -155,24 +155,28 @@ const getFieldInfo = (
   fields: string[],
 ) => {
   let field = fields[0];
-  let label =
-    translationMap[field.replace('data-', '')] +
-    ': ' +
-    (node.attrs[field] || '');
+  let label = translationMap[field.replace('data-', '')] + ': ';
+  let placeholder = node.attrs[field] || '';
 
   for (let i = 0; i < fields.length; i++) {
     if (node.attrs[fields[i]]) {
-      label =
-        translationMap[fields[i].replace('data-', '')] +
-        ': ' +
-        node.attrs[fields[i]];
+      const mappingKey = fields[i].replace('data-', '');
+
+      label = translationMap[mappingKey] + ': ';
       field = fields[i];
+      placeholder = ['price', 'unit'].includes(mappingKey)
+        ? currencyFormat(
+            node.attrs[fields[i]],
+            mappingKey === 'price' ? undefined : '',
+          )
+        : node.attrs[fields[i]];
     }
   }
 
   return {
     field,
     label,
+    placeholder,
   };
 };
 
@@ -183,7 +187,7 @@ function SectorInput({
   node: Konva.Node & { children?: Konva.Node[] };
   dataFields: string[];
 }) {
-  const { field, label } = getFieldInfo(node, dataFields);
+  const { field, label, placeholder } = getFieldInfo(node, dataFields);
   const [value, setValue] = useState(node.attrs[field]);
 
   return (
@@ -196,7 +200,7 @@ function SectorInput({
           setValue(e.target.value);
           node.setAttr(field, e.target.value);
         }}
-        placeholder={`Current: ${label.split(': ')[1]}`}
+        placeholder={`Current: ${placeholder}`}
         className="flex-1 rounded-sm bg-neutral-600"
       />
     </div>
