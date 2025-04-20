@@ -6,7 +6,7 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
-import { getCategories } from '@/features/category/actions';
+import { getCategories, getCategoriesHash } from '@/features/category/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
@@ -20,10 +20,13 @@ export default async function CategoryPage(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
-  const { data } = await getCategories({
-    ...searchParams,
-    company_id: session?.user?.company_id,
-  });
+  const [{ data }, { data: dataHash }] = await Promise.all([
+    getCategories({
+      ...searchParams,
+      company_id: session?.user?.company_id,
+    }),
+    getCategoriesHash(),
+  ]);
 
   return (
     <>
@@ -43,7 +46,10 @@ export default async function CategoryPage(props: {
       <Suspense fallback="Loading">
         <DataTable
           columns={categoryColumns}
-          data={data?.data}
+          data={data?.data?.map((c) => ({
+            ...c,
+            rootName: c.root ? dataHash[c.root] : undefined,
+          }))}
           rowCount={data?.total_count ?? data?.data?.length}
         />
       </Suspense>

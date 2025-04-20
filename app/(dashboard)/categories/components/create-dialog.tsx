@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -23,12 +23,22 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { createCategory } from '@/features/category/actions';
-import { CategoryBodyType, categorySchema } from '@/features/category/schema';
+import {
+  createCategory,
+  getHierarchicalCategories,
+} from '@/features/category/actions';
+import { HierarchicalSelect } from '@/features/category/components/hierarichal-select';
+import {
+  CategoryBodyType,
+  categorySchema,
+  HierarchicalCategory,
+} from '@/features/category/schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
+  const [categories, setCategories] = useState<HierarchicalCategory[]>([]);
+  const [loading, startLoadingTransition] = useTransition();
 
   const form = useForm<CategoryBodyType>({
     resolver: zodResolver(categorySchema),
@@ -58,6 +68,15 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       title="Create new Category"
       submitText="Create"
       trigger={children}
+      onOpenChange={(c) => {
+        if (c) {
+          startLoadingTransition(() => {
+            getHierarchicalCategories().then((res) =>
+              setCategories(res?.data || []),
+            );
+          });
+        }
+      }}
     >
       <FormField
         control={form.control}
@@ -76,6 +95,25 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                 <SelectItem value="EVENT">EVENT</SelectItem>
               </SelectContent>
             </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="root"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Root</FormLabel>
+            {loading ? (
+              'Loading'
+            ) : (
+              <HierarchicalSelect
+                categories={categories}
+                onChange={field.onChange}
+                value={field.value}
+              />
+            )}
             <FormMessage />
           </FormItem>
         )}
@@ -126,8 +164,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                 </SelectTrigger>
               </FormControl>
               <SelectContent defaultValue="false">
-                <SelectItem value="true">Active</SelectItem>
-                <SelectItem value="false">Inactive</SelectItem>
+                <SelectItem value="true">True</SelectItem>
+                <SelectItem value="false">False</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />

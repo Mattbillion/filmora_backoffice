@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -93,7 +92,9 @@ const Action = ({ row }: CellContext<CategoryItemType, unknown>) => {
   );
 };
 
-export const categoryColumns: ColumnDef<CategoryItemType>[] = [
+export const categoryColumns: ColumnDef<
+  CategoryItemType & { rootName?: string }
+>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
@@ -118,7 +119,7 @@ export const categoryColumns: ColumnDef<CategoryItemType>[] = [
     id: 'root',
     accessorKey: 'root',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.root,
+    cell: ({ row }) => row.original.rootName,
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -153,22 +154,22 @@ export const categoryColumns: ColumnDef<CategoryItemType>[] = [
     enableSorting: false,
     enableColumnFilter: false,
   },
-  {
-    id: 'image',
-    accessorKey: 'image',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <Image
-        src={row.original.image}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
+  // {
+  //   id: 'image',
+  //   accessorKey: 'image',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => (
+  //     <Image
+  //       src={row.original.image}
+  //       alt=""
+  //       width={48}
+  //       height={48}
+  //       className="rounded-md"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableColumnFilter: false,
+  // },
   {
     id: 'actions',
     cell: Action,

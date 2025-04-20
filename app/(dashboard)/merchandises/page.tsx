@@ -6,10 +6,7 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
-import {
-  getCategoriesHash,
-  getHierarchicalCategories,
-} from '@/features/category/actions';
+import { getCategoriesHash } from '@/features/category/actions';
 import { getCompanyListHash } from '@/features/companies/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
@@ -25,20 +22,15 @@ export default async function MerchandisesPage(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
-  const [
-    { data },
-    { data: categoryData },
-    { data: companyData },
-    { data: catList },
-  ] = await Promise.all([
-    getMerchandisesList({
-      ...searchParams,
-      company_id: session?.user?.company_id,
-    }),
-    getCategoriesHash(),
-    getCompanyListHash(),
-    getHierarchicalCategories(),
-  ]);
+  const [{ data }, { data: categoryData }, { data: companyData }] =
+    await Promise.all([
+      getMerchandisesList({
+        ...searchParams,
+        company_id: session?.user?.company_id,
+      }),
+      getCategoriesHash(),
+      getCompanyListHash(),
+    ]);
 
   return (
     <>

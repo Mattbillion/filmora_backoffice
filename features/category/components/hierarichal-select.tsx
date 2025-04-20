@@ -5,7 +5,7 @@ import { ID } from '@/lib/fetch/types';
 
 interface HierarchicalSelectProps {
   categories: HierarchicalCategory[];
-  value: ID;
+  value?: ID;
   onChange: (value?: ID) => void;
   disabled?: boolean;
 }
