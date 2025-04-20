@@ -1,7 +1,7 @@
 'use server';
 
 import { xooxFetch } from '@/lib/fetch';
-import { PaginatedResType } from '@/lib/fetch/types';
+import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
@@ -39,6 +39,30 @@ export const getCompanyList = async (searchParams?: QueryParams) => {
   } catch (error) {
     console.error('Error fetching companies:', error);
     return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
+  }
+};
+
+export const getCompanyListHash = async (searchParams?: QueryParams) => {
+  try {
+    const { body, error } = await xooxFetch<
+      PaginatedResType<CompanyItemType[]>
+    >('/companies', {
+      method: 'GET',
+      searchParams,
+      next: { tags: [RVK_COMPANY] },
+    });
+
+    if (error) throw new Error(error);
+
+    return {
+      data: (body.data || []).reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur.company_name }),
+        {},
+      ) as Record<ID, string>,
+    };
+  } catch (error) {
+    console.error('Error fetching companies:', error);
+    return { data: {} as Record<ID, string>, error };
   }
 };
 

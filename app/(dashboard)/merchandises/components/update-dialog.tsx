@@ -22,6 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getHierarchicalCategories } from '@/features/category/actions';
+import { HierarchicalSelect } from '@/features/category/components/hierarichal-select';
+import { HierarchicalCategory } from '@/features/category/schema';
+import { getCompanyList } from '@/features/companies/actions';
+import { CompanyItemType } from '@/features/companies/schema';
 
 import { patchMerchandises } from '../actions';
 import {
@@ -39,7 +44,10 @@ export function UpdateDialog({
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-  const [dropdownData, setDropdownData] = useState<Record<string, any[]>>({});
+  const [dropdownData, setDropdownData] = useState<{
+    com_id?: CompanyItemType[];
+    cat_id?: HierarchicalCategory[];
+  }>({});
   const [loading, startLoadingTransition] = useTransition();
 
   const form = useForm<MerchandisesBodyType>({
@@ -75,37 +83,33 @@ export function UpdateDialog({
       onOpenChange={(c) => {
         if (c) {
           startLoadingTransition(() => {
-            //          Promise.all([
-            //              fetchSomething().then(res => res?.data?.data || []),
-            //              fetchSomething().then(res => res?.data?.data || [])
-            //           ]).then(([example_cat_id, example_product_id]) => {
-            //                setDropdownData(prevData => ({ ...prevData, example_cat_id, example_product_id }));
-            //          });
+            Promise.all([
+              getCompanyList({ page_size: 1000 }).then(
+                (res) => res?.data?.data || [],
+              ),
+              getHierarchicalCategories().then((res) => res?.data || []),
+            ]).then(([com_id, cat_id]) => {
+              setDropdownData((prevData) => ({ ...prevData, com_id, cat_id }));
+            });
           });
         }
       }}
     >
       <FormField
         control={form.control}
-        name="com_id"
+        name="cat_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Com id</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(Number(value))}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Com id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="0">This</SelectItem>
-                <SelectItem value="2">Is</SelectItem>
-                <SelectItem value="3">Generated</SelectItem>
-              </SelectContent>
-            </Select>
+            <FormLabel>Category</FormLabel>
+            {loading ? (
+              'Loading'
+            ) : (
+              <HierarchicalSelect
+                categories={dropdownData.cat_id || []}
+                onChange={field.onChange}
+                value={field.value}
+              />
+            )}
             <FormMessage />
           </FormItem>
         )}
@@ -113,29 +117,39 @@ export function UpdateDialog({
 
       <FormField
         control={form.control}
-        name="cat_id"
+        name="com_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Cat id</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(Number(value))}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Cat id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="0">This</SelectItem>
-                <SelectItem value="2">Is</SelectItem>
-                <SelectItem value="3">Generated</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
+            <Input {...field} type="hidden" />
           </FormItem>
         )}
       />
+
+      {/*<FormField*/}
+      {/*  control={form.control}*/}
+      {/*  name="cat_id"*/}
+      {/*  render={({ field }) => (*/}
+      {/*    <FormItem>*/}
+      {/*      <FormLabel>Cat id</FormLabel>*/}
+      {/*      <Select*/}
+      {/*        onValueChange={(value) => field.onChange(Number(value))}*/}
+      {/*        value={field.value?.toString()}*/}
+      {/*      >*/}
+      {/*        <FormControl>*/}
+      {/*          <SelectTrigger>*/}
+      {/*            <SelectValue placeholder="Select a Cat id" />*/}
+      {/*          </SelectTrigger>*/}
+      {/*        </FormControl>*/}
+      {/*        <SelectContent defaultValue="false">*/}
+      {/*          <SelectItem value="0">This</SelectItem>*/}
+      {/*          <SelectItem value="2">Is</SelectItem>*/}
+      {/*          <SelectItem value="3">Generated</SelectItem>*/}
+      {/*        </SelectContent>*/}
+      {/*      </Select>*/}
+      {/*      <FormMessage />*/}
+      {/*    </FormItem>*/}
+      {/*  )}*/}
+      {/*/>*/}
 
       <FormField
         control={form.control}

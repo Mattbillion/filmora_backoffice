@@ -21,27 +21,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { deleteCategoryDetail } from '@/features/category/actions';
+import { CategoryItemType } from '@/features/category/schema';
 import { checkPermission } from '@/lib/permission';
-import { currencyFormat, removeHTML } from '@/lib/utils';
+import { removeHTML } from '@/lib/utils';
 
-import { deleteMerchandises } from './actions';
 import { UpdateDialog } from './components';
-import { MerchandisesItemType } from './schema';
 
-const Action = ({
-  row,
-}: CellContext<
-  MerchandisesItemType & {
-    company: string;
-    category?: string;
-  },
-  unknown
->) => {
+const Action = ({ row }: CellContext<CategoryItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, ['delete_company_merchandise']);
-  const canEdit = checkPermission(data, ['update_company_merchandise']);
+  const canDelete = checkPermission(data, ['delete_category']);
+  const canEdit = checkPermission(data, ['update_category']);
 
   if (!canEdit && !canDelete) return null;
 
@@ -73,7 +65,8 @@ const Action = ({
               loading={loading}
               action={() => {
                 setLoading(true);
-                deleteMerchandises(row.original.id)
+                // TODO: Please check after generate
+                deleteCategoryDetail(row.original.id)
                   .then((c) => toast.success(c.data.message))
                   .catch((c) => toast.error(c.message))
                   .finally(() => {
@@ -84,7 +77,7 @@ const Action = ({
               description={
                 <>
                   Are you sure you want to delete this{' '}
-                  <b className="text-foreground">{row.original.mer_name}</b>?
+                  <b className="text-foreground">{row.original.cat_name}</b>?
                 </>
               }
             >
@@ -100,49 +93,60 @@ const Action = ({
   );
 };
 
-export const merchandisesColumns: ColumnDef<
-  MerchandisesItemType & {
-    company: string;
-    category?: string;
-  }
->[] = [
+export const categoryColumns: ColumnDef<CategoryItemType>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
   },
   {
-    id: 'company',
-    accessorKey: 'company',
+    id: 'cat_type',
+    accessorKey: 'cat_type',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.company,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'category',
-    accessorKey: 'category',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.category,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'mer_name',
-    accessorKey: 'mer_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.mer_name?.slice(0, 300),
+    cell: ({ row }) => row.original.cat_type?.slice(0, 300),
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
-    id: 'mer_desc',
-    accessorKey: 'mer_desc',
+    id: 'cat_name',
+    accessorKey: 'cat_name',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.cat_name?.slice(0, 300),
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'root',
+    accessorKey: 'root',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.root,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'order',
+    accessorKey: 'order',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.order,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'special',
+    accessorKey: 'special',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (row.original.special ? 'Active' : 'Inactive'),
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'description',
+    accessorKey: 'description',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
       <p>
         html:{' '}
         <span className="opacity-70">
-          {removeHTML(row.original.mer_desc?.slice(0, 300))}
+          {removeHTML(row.original.description?.slice(0, 300))}
         </span>
       </p>
     ),
@@ -150,54 +154,20 @@ export const merchandisesColumns: ColumnDef<
     enableColumnFilter: false,
   },
   {
-    id: 'price',
-    accessorKey: 'price',
+    id: 'image',
+    accessorKey: 'image',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => currencyFormat(row.original.price),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'discount_id',
-    accessorKey: 'discount_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.discount_id,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'medias',
-    accessorKey: 'medias',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => {
-      const cellData = row.original.medias;
-      if (!!cellData[0]?.media_url)
-        return (
-          <div className="flex items-center">
-            {cellData.slice(0, 3).map((c, idx) => (
-              <Image
-                key={idx}
-                src={c.media_url}
-                alt=""
-                width={48}
-                height={48}
-                className="-mr-6 rounded-full border-border"
-              />
-            ))}
-          </div>
-        );
-      return <p>{cellData.join(', ')}</p>;
-    },
+    cell: ({ row }) => (
+      <Image
+        src={row.original.image}
+        alt=""
+        width={48}
+        height={48}
+        className="rounded-md"
+      />
+    ),
     enableSorting: false,
     enableColumnFilter: false,
-  },
-  {
-    id: 'status',
-    accessorKey: 'status',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
-    enableSorting: false,
-    enableColumnFilter: true,
   },
   {
     id: 'actions',

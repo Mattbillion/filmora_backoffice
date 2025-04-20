@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getCompanyList } from '@/features/companies/actions';
+import { CompanyItemType } from '@/features/companies/schema';
 
 import { createMerchandises } from '../actions';
 import { MerchandisesBodyType, merchandisesSchema } from '../schema';
@@ -29,7 +31,9 @@ import { MerchandisesBodyType, merchandisesSchema } from '../schema';
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-  const [dropdownData, setDropdownData] = useState<Record<string, any[]>>({});
+  const [dropdownData, setDropdownData] = useState<{
+    com_id?: CompanyItemType[];
+  }>({});
   const [loading, startLoadingTransition] = useTransition();
 
   const form = useForm<MerchandisesBodyType>({
@@ -63,12 +67,13 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       onOpenChange={(c) => {
         if (c) {
           startLoadingTransition(() => {
-            //          Promise.all([
-            //              fetchSomething().then(res => res?.data?.data || []),
-            //              fetchSomething().then(res => res?.data?.data || [])
-            //           ]).then(([com_id, example_product_id]) => {
-            //                setDropdownData(prevData => ({ ...prevData, com_id, example_product_id }));
-            //          });
+            Promise.all([
+              getCompanyList({ page_size: 1000 }).then(
+                (res) => res?.data?.data || [],
+              ),
+            ]).then(([com_id]) => {
+              setDropdownData((prevData) => ({ ...prevData, com_id }));
+            });
           });
         }
       }}
@@ -79,16 +84,21 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Com id</FormLabel>
-            <Select onValueChange={(value) => field.onChange(Number(value))}>
+            <Select
+              onValueChange={(value) => field.onChange(Number(value))}
+              value={field.value?.toString()}
+            >
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger disabled={loading}>
                   <SelectValue placeholder="Select a Com id" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="0">This</SelectItem>
-                <SelectItem value="2">Is</SelectItem>
-                <SelectItem value="3">Generated</SelectItem>
+              <SelectContent>
+                {dropdownData.com_id?.map((c, idx) => (
+                  <SelectItem key={idx} value={c.id.toString()}>
+                    {c.company_name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <FormMessage />

@@ -6,47 +6,32 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
-import {
-  getCategoriesHash,
-  getHierarchicalCategories,
-} from '@/features/category/actions';
-import { getCompanyListHash } from '@/features/companies/actions';
+import { getCategories } from '@/features/category/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
-import { getMerchandisesList } from './actions';
-import { merchandisesColumns } from './columns';
+import { categoryColumns } from './columns';
 import { CreateDialog } from './components';
 
 export const dynamic = 'force-dynamic';
 
-export default async function MerchandisesPage(props: {
+export default async function CategoryPage(props: {
   searchParams?: SearchParams;
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
-  const [
-    { data },
-    { data: categoryData },
-    { data: companyData },
-    { data: catList },
-  ] = await Promise.all([
-    getMerchandisesList({
-      ...searchParams,
-      company_id: session?.user?.company_id,
-    }),
-    getCategoriesHash(),
-    getCompanyListHash(),
-    getHierarchicalCategories(),
-  ]);
+  const { data } = await getCategories({
+    ...searchParams,
+    company_id: session?.user?.company_id,
+  });
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Merchandises list (${data?.total_count ?? data?.data?.length})`}
+          title={`Category list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, []) && (
+        {checkPermission(session, ['create_category']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New
@@ -57,12 +42,8 @@ export default async function MerchandisesPage(props: {
       <Separator />
       <Suspense fallback="Loading">
         <DataTable
-          columns={merchandisesColumns}
-          data={data?.data?.map((c) => ({
-            ...c,
-            category: categoryData[c.cat_id] || '',
-            company: companyData[c.com_id] || '',
-          }))}
+          columns={categoryColumns}
+          data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
         />
       </Suspense>

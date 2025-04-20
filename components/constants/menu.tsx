@@ -119,7 +119,7 @@ const managementRoutes: SubMenuItemType[] = [
   },
   {
     title: 'Categories',
-    url: '/category',
+    url: '/categories',
     icon: List,
     permissions: [
       'get_category_list',
