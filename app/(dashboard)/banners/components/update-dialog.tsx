@@ -151,9 +151,21 @@ export function UpdateDialog({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Location</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Location" {...field} />
-            </FormControl>
+            <Select
+              onValueChange={(value) => field.onChange(value)}
+              value={field.value}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Status" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="default">
+                <SelectItem value="default">Default</SelectItem>
+                <SelectItem value="hero">Hero</SelectItem>
+                <SelectItem value="bento">Bento</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
