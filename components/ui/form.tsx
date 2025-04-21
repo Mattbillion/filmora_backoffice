@@ -7,6 +7,8 @@ import {
   FieldPath,
   FieldValues,
   FormProvider,
+  useFieldArray,
+  UseFieldArrayReturn,
   useFormContext,
 } from 'react-hook-form';
 import * as LabelPrimitive from '@radix-ui/react-label';
@@ -167,7 +169,44 @@ const FormMessage = React.forwardRef<
 });
 FormMessage.displayName = 'FormMessage';
 
+interface FieldArrayContextValue<T extends FieldValues>
+  extends UseFieldArrayReturn<T> {
+  name: string;
+}
+
+const FieldArrayContext =
+  React.createContext<FieldArrayContextValue<any> | null>(null);
+
+function FieldArray<T extends FieldValues>({
+  name,
+  children,
+}: {
+  name: string;
+  children: (helpers: UseFieldArrayReturn<T>) => React.ReactNode;
+}) {
+  const { control } = useFormContext<T>();
+  const fieldArrayMethods = useFieldArray({
+    control,
+    name: name as any,
+  });
+
+  return (
+    <FieldArrayContext.Provider value={{ ...fieldArrayMethods, name }}>
+      {children(fieldArrayMethods)}
+    </FieldArrayContext.Provider>
+  );
+}
+
+function useFieldArrayContext<T extends FieldValues>() {
+  const context = React.useContext(FieldArrayContext);
+  if (!context) {
+    throw new Error('useFieldArrayContext must be used within a FieldArray');
+  }
+  return context as FieldArrayContextValue<T>;
+}
+
 export {
+  FieldArray,
   Form,
   FormControl,
   FormDescription,
@@ -175,5 +214,6 @@ export {
   FormItem,
   FormLabel,
   FormMessage,
+  useFieldArrayContext,
   useFormField,
 };

@@ -28,13 +28,15 @@ export const getCategories = async (searchParams?: QueryParams) => {
     return { data: { data: [], total_count: 0 }, error };
   }
 };
-export const getHierarchicalCategories = async () => {
+export const getHierarchicalCategories = async (isSpecial?: boolean) => {
+  let searchParams: QueryParams = { page_size: 100000 };
+  if (isSpecial) searchParams.filters = 'special=true';
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<CategoryItemType[]>
     >('/category', {
       method: 'GET',
-      searchParams: { page_size: 100000 },
+      searchParams,
       next: { tags: [`${RVK_CATEGORY}_hierarchical`] },
     });
 

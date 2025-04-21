@@ -1,12 +1,12 @@
 'use client';
 
-import { ReactNode, useRef, useState, useTransition } from 'react';
+import { ReactNode, useRef, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
-import UploadImageItem from '@/components/custom/upload-image-item';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
   FormControl,
   FormField,
@@ -22,30 +22,37 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getHierarchicalCategories } from '@/features/category/actions';
-import { HierarchicalSelect } from '@/features/category/components/hierarichal-select';
+import { patchDiscountsDetail } from '@/features/discounts/actions';
+import {
+  DiscountsBodyType,
+  DiscountsItemType,
+  discountsSchema,
+} from '@/features/discounts/schema';
 
-import { createBanners } from '../actions';
-import { BannersBodyType, bannersSchema } from '../schema';
-
-export function CreateDialog({ children }: { children: ReactNode }) {
+export function UpdateDialog({
+  children,
+  initialData,
+}: {
+  children: ReactNode;
+  initialData: DiscountsItemType;
+}) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-  const [dropdownData, setDropdownData] = useState<Record<string, any[]>>({});
-  const [loading, startLoadingTransition] = useTransition();
 
-  const form = useForm<BannersBodyType>({
-    resolver: zodResolver(bannersSchema),
+  const form = useForm<DiscountsBodyType>({
+    resolver: zodResolver(discountsSchema),
+    defaultValues: initialData,
   });
 
-  function onSubmit({ status, ...values }: BannersBodyType) {
+  function onSubmit({ status, ...values }: DiscountsBodyType) {
     startTransition(() => {
-      createBanners({
+      patchDiscountsDetail({
         ...values,
+        id: initialData.id,
         status: (status as unknown as string) === 'true',
       })
         .then(() => {
-          toast.success('Created successfully');
+          toast.success('Updated successfully');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -59,32 +66,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Banners"
-      submitText="Create"
+      title="Update Discounts"
+      submitText="Update"
       trigger={children}
-      onOpenChange={(c) => {
-        if (c) {
-          startLoadingTransition(() => {
-            Promise.all([
-              getHierarchicalCategories(true).then((res) => res?.data || []),
-            ]).then(([special_cat_id]) => {
-              setDropdownData((prevData) => ({
-                ...prevData,
-                special_cat_id,
-              }));
-            });
-          });
-        }
-      }}
     >
       <FormField
         control={form.control}
-        name="title"
+        name="discount_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Title</FormLabel>
+            <FormLabel>Discount name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Title" {...field} />
+              <Input placeholder="Enter Discount name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -93,25 +86,27 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="picture"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="picture"
-            label="Picture"
-          />
-        )}
+        name="discount_desc"
+        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
 
       <FormField
         control={form.control}
-        name="link"
+        name="discount_type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Link</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Link" {...field} />
-            </FormControl>
+            <FormLabel>Discount type</FormLabel>
+            <Select onValueChange={(value) => field.onChange(value)}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="AMOUNT">AMOUNT</SelectItem>
+                <SelectItem value="PERCENT">PERCENT</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -119,19 +114,17 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="special_cat_id"
+        name="discount"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Special category</FormLabel>
-            {loading ? (
-              'Loading'
-            ) : (
-              <HierarchicalSelect
-                categories={dropdownData.special_cat_id}
-                onChange={field.onChange}
-                value={field.value}
+            <FormLabel>Discount</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Enter Discount"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
               />
-            )}
+            </FormControl>
             <FormMessage />
           </FormItem>
         )}
@@ -139,12 +132,26 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="location"
+        name="start_at"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Location</FormLabel>
+            <FormLabel>Start at</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Location" {...field} />
+              <Input placeholder="Enter Start at" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="end_at"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>End at</FormLabel>
+            <FormControl>
+              <Input placeholder="Enter End at" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -157,13 +164,16 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value === 'true')}>
+            <Select
+              onValueChange={(value) => field.onChange(value === 'true')}
+              value={field.value?.toString()}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a Status" />
                 </SelectTrigger>
               </FormControl>
-              <SelectContent defaultValue="false">
+              <SelectContent>
                 <SelectItem value="true">Active</SelectItem>
                 <SelectItem value="false">Inactive</SelectItem>
               </SelectContent>

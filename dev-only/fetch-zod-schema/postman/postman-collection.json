@@ -2308,12 +2308,18 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/discounts",
+              "raw": "{{base_url}}/discounts?company_id=9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "discounts"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
               ]
             }
           },

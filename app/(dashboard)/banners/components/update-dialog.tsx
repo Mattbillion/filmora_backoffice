@@ -22,6 +22,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getHierarchicalCategories } from '@/features/category/actions';
+import { HierarchicalSelect } from '@/features/category/components/hierarichal-select';
 
 import { patchBannersDetail } from '../actions';
 import { BannersBodyType, BannersItemType, bannersSchema } from '../schema';
@@ -71,12 +73,14 @@ export function UpdateDialog({
       onOpenChange={(c) => {
         if (c) {
           startLoadingTransition(() => {
-            //          Promise.all([
-            //              fetchSomething().then(res => res?.data?.data || []),
-            //              fetchSomething().then(res => res?.data?.data || [])
-            //           ]).then(([example_cat_id, example_product_id]) => {
-            //                setDropdownData(prevData => ({ ...prevData, example_cat_id, example_product_id }));
-            //          });
+            Promise.all([
+              getHierarchicalCategories(true).then((res) => res?.data || []),
+            ]).then(([special_cat_id]) => {
+              setDropdownData((prevData) => ({
+                ...prevData,
+                special_cat_id,
+              }));
+            });
           });
         }
       }}
@@ -116,6 +120,26 @@ export function UpdateDialog({
             <FormControl>
               <Input placeholder="Enter Link" {...field} />
             </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="special_cat_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Special category</FormLabel>
+            {loading ? (
+              'Loading'
+            ) : (
+              <HierarchicalSelect
+                categories={dropdownData.special_cat_id}
+                onChange={field.onChange}
+                value={field.value}
+              />
+            )}
             <FormMessage />
           </FormItem>
         )}

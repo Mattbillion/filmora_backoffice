@@ -40,7 +40,7 @@ export const HierarchicalSelect = ({
   value,
   onChange,
   disabled,
-  depthLimit = 3,
+  depthLimit = 4,
 }: HierarchicalSelectProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentLevel, setCurrentLevel] =

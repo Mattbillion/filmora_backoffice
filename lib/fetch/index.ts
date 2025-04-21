@@ -46,17 +46,21 @@ export async function xooxFetch<
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
   try {
     const headers = new Headers(options.headers);
+    let opts = { ...options };
 
     if (!headers.has('Authorization')) {
       // careful!!!
       const session = await auth();
       if (!!session?.user?.id)
         headers.set('Authorization', `Bearer ${session?.user?.id}`);
+      if (!opts.searchParams) opts.searchParams = {};
+
+      opts.searchParams.company_id = session?.user?.company_id;
     }
 
     const { endpoint, fetchOptions } = genFetchParams(url, {
       cache: 'force-cache',
-      ...options,
+      ...opts,
       headers,
     });
 
