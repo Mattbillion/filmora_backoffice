@@ -2425,7 +2425,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10&filters=status=true,max_age=100",
+              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -2443,7 +2443,8 @@
                 },
                 {
                   "key": "filters",
-                  "value": "status=true,max_age=100"
+                  "value": "status=true,max_age=100",
+                  "disabled": true
                 },
                 {
                   "key": "start_date",
@@ -3169,7 +3170,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDUyMjIzODN9.77lHEENrEHPvThP5pp0akOEbXrYFE_eTlGwgr6qfYCo",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDUzMTk2NDd9.Xv00sZFrHjozABcx4bDJs_yURjnw2iAQ8x7kcJzdU9g",
       "type": "string"
     }
   ]
