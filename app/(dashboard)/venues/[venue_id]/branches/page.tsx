@@ -17,11 +17,14 @@ export const dynamic = 'force-dynamic';
 
 export default async function BranchesPage(props: {
   searchParams?: SearchParams;
+  params: Promise<{ venue_id: string }>;
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
+  const { venue_id } = await props.params;
   const { data } = await getBranches({
     ...searchParams,
+    filters: [searchParams?.filters || '', `venue_id=${venue_id}`].join(','),
     company_id: session?.user?.company_id,
   });
 
@@ -31,7 +34,7 @@ export default async function BranchesPage(props: {
         <Heading
           title={`Branches list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, []) && (
+        {checkPermission(session, ['create_branch']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New

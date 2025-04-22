@@ -106,6 +106,7 @@ const managementRoutes: SubMenuItemType[] = [
     ],
   },
   {
+    // TODO: remove and refactor auth.js!!!
     title: 'Branches',
     url: '/branches',
     icon: GitBranch,

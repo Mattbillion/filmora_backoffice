@@ -32,8 +32,8 @@ const Action = ({ row }: CellContext<BranchesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = checkPermission(data, ['delete_branch']);
+  const canEdit = checkPermission(data, ['update_branch']);
 
   if (!canEdit && !canDelete) return null;
 
@@ -97,14 +97,6 @@ export const branchesColumns: ColumnDef<BranchesItemType>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-  },
-  {
-    id: 'venue_id',
-    accessorKey: 'venue_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue_id,
-    enableSorting: true,
-    enableColumnFilter: true,
   },
   {
     id: 'branch_name',
