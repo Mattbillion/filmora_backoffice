@@ -189,7 +189,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                          "raw": "{{base_url}}/halls?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+                          "raw": "{{base_url}}/halls?page=1&page_size=10",
                           "host": [
                             "{{base_url}}"
                           ],
@@ -207,15 +207,18 @@
                             },
                             {
                               "key": "filters",
-                              "value": ""
+                              "value": "",
+                              "disabled": true
                             },
                             {
                               "key": "start_date",
-                              "value": "2024-11-01"
+                              "value": "2024-11-01",
+                              "disabled": true
                             },
                             {
                               "key": "end_date",
-                              "value": "2024-12-13"
+                              "value": "2024-12-13",
+                              "disabled": true
                             },
                             {
                               "key": "date_column",
