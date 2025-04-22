@@ -2235,7 +2235,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/transactions?page=1&page_size=10&start_date=2024-12-01&end_date=2024-12-07",
+              "raw": "{{base_url}}/transactions?page=1&page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -2258,11 +2258,13 @@
                 },
                 {
                   "key": "start_date",
-                  "value": "2024-12-01"
+                  "value": "2024-12-01",
+                  "disabled": true
                 },
                 {
                   "key": "end_date",
-                  "value": "2024-12-07"
+                  "value": "2024-12-07",
+                  "disabled": true
                 },
                 {
                   "key": "date_column",
