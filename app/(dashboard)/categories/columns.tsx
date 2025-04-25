@@ -2,7 +2,8 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, ListTree, MoreHorizontal, Trash } from 'lucide-react';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -11,7 +12,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,7 +24,7 @@ import {
 import { deleteCategoryDetail } from '@/features/category/actions';
 import { CategoryItemType } from '@/features/category/schema';
 import { checkPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
+import { cn, removeHTML } from '@/lib/utils';
 
 import { UpdateDialog } from './components';
 
@@ -89,6 +90,29 @@ const Action = ({ row }: CellContext<CategoryItemType, unknown>) => {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+};
+
+const Navigation = ({ row }: CellContext<CategoryItemType, unknown>) => {
+  const { data } = useSession();
+
+  if (
+    !checkPermission(data, [
+      'get_category_attribute_list',
+      'get_category_attribute',
+      'create_category_attribute',
+      'update_category_attribute',
+      'delete_category_attribute',
+    ])
+  )
+    return null;
+  return (
+    <Link
+      href={`/categories/${row.original.id}/attributes`}
+      className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+    >
+      <ListTree className="h-4 w-4" /> Attributes
+    </Link>
   );
 };
 
@@ -171,7 +195,15 @@ export const categoryColumns: ColumnDef<
   //   enableColumnFilter: false,
   // },
   {
+    id: 'navigation',
+    cell: Navigation,
+    enableSorting: false,
+    enableColumnFilter: false,
+  },
+  {
     id: 'actions',
     cell: Action,
+    enableSorting: false,
+    enableColumnFilter: false,
   },
 ];

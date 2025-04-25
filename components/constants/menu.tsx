@@ -1,11 +1,9 @@
 import { flattenDeep } from 'lodash';
 import {
   Building2,
+  CircleDollarSign,
   Combine,
-  DoorOpen,
   Flag,
-  GitBranch,
-  Layers,
   List,
   type LucideIcon,
   MapPin,
@@ -106,40 +104,16 @@ const managementRoutes: SubMenuItemType[] = [
     ],
   },
   {
-    // TODO: remove and refactor auth.js!!!
-    title: 'Branches',
-    url: '/branches',
-    icon: GitBranch,
-    permissions: [
-      'get_branch_list',
-      'get_branch',
-      'create_branch',
-      'update_branch',
-      'delete_branch',
-    ],
-  },
-  {
     title: 'Categories',
     url: '/categories',
     icon: List,
+    subRoutes: true,
     permissions: [
       'get_category_list',
       'get_category',
       'create_category',
       'update_category',
       'delete_category',
-    ],
-  },
-  {
-    title: 'Category Attributes',
-    url: '/category-attributes',
-    icon: Layers,
-    permissions: [
-      'get_category_attribute_list',
-      'get_category_attribute',
-      'create_category_attribute',
-      'update_category_attribute',
-      'delete_category_attribute',
     ],
   },
 ];
@@ -200,22 +174,17 @@ const operationsRoutes: SubMenuItemType[] = [
     ],
   },
   {
-    title: 'Halls',
-    url: '/halls',
-    icon: DoorOpen,
-    permissions: [
-      'get_hall_list',
-      'get_hall',
-      'create_hall',
-      'update_hall',
-      'delete_hall',
-    ],
-  },
-  {
     title: 'Orders',
     url: '/orders',
+    subRoutes: true,
     icon: ShoppingCart,
     permissions: ['get_order_list', 'get_order_detail'],
+  },
+  {
+    title: 'Transactions',
+    url: '/transactions',
+    icon: CircleDollarSign,
+    permissions: ['get_transaction_list', 'get_transaction_detail'],
   },
 ];
 
@@ -238,6 +207,7 @@ const settingsRoutes: SubMenuItemType[] = [
     title: 'Venues',
     url: '/venues',
     icon: MapPin,
+    subRoutes: true,
     permissions: [
       'get_venues_list',
       'get_venue',
