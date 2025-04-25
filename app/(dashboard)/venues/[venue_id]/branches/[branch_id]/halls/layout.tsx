@@ -2,13 +2,20 @@ import { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 
 import { auth } from '@/app/(auth)/auth';
-import { permissionsByRoute } from '@/components/constants/menu';
 import { checkPermission } from '@/lib/permission';
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const session = await auth();
 
-  if (checkPermission(session, permissionsByRoute['halls'] || []))
+  if (
+    checkPermission(session, [
+      'get_hall_list',
+      'get_hall',
+      'create_hall',
+      'update_hall',
+      'delete_hall',
+    ])
+  )
     return children;
   return notFound();
 }

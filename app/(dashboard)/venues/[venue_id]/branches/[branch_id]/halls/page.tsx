@@ -17,11 +17,20 @@ export const dynamic = 'force-dynamic';
 
 export default async function HallsPage(props: {
   searchParams?: SearchParams;
+  params: Promise<{ venue_id: string; branch_id: string }>;
 }) {
-  const session = await auth();
-  const searchParams = await props.searchParams;
+  const [session, searchParams, { venue_id, branch_id }] = await Promise.all([
+    auth(),
+    props.searchParams,
+    props.params,
+  ]);
   const { data } = await getHalls({
     ...searchParams,
+    filters: [
+      searchParams?.filters || '',
+      `venue_id=${venue_id}`,
+      `branch_id=${branch_id}`,
+    ].join(','),
     company_id: session?.user?.company_id,
   });
 
@@ -31,7 +40,7 @@ export default async function HallsPage(props: {
         <Heading
           title={`Halls list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, []) && (
+        {checkPermission(session, ['create_hall']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New

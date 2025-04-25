@@ -32,8 +32,8 @@ const Action = ({ row }: CellContext<HallsItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = checkPermission(data, ['delete_hall']);
+  const canEdit = checkPermission(data, ['update_hall']);
 
   if (!canEdit && !canDelete) return null;
 
@@ -97,22 +97,6 @@ export const hallsColumns: ColumnDef<HallsItemType>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-  },
-  {
-    id: 'venue_id',
-    accessorKey: 'venue_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue_id,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_id',
-    accessorKey: 'branch_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_id,
-    enableSorting: true,
-    enableColumnFilter: true,
   },
   {
     id: 'hall_name',
