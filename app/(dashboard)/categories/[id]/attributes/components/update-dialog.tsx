@@ -76,7 +76,6 @@ export function UpdateDialog({
         name="com_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Com id</FormLabel>
             <FormControl>
               <Input placeholder="Com id" {...field} type="hidden" />
             </FormControl>
@@ -90,7 +89,6 @@ export function UpdateDialog({
         name="cat_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Cat id</FormLabel>
             <FormControl>
               <Input placeholder="Cat id" {...field} type="hidden" />
             </FormControl>

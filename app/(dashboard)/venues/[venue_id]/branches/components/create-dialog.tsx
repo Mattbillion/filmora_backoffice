@@ -70,7 +70,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         name="venue_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue id</FormLabel>
             <FormControl>
               <Input placeholder="Venue id" {...field} type="hidden" />
             </FormControl>

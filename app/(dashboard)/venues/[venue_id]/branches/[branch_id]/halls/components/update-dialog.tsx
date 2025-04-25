@@ -73,7 +73,6 @@ export function UpdateDialog({
         name="venue_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Venue id</FormLabel>
             <FormControl>
               <Input placeholder="Venue id" {...field} type="hidden" />
             </FormControl>
@@ -87,7 +86,6 @@ export function UpdateDialog({
         name="branch_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Branch id</FormLabel>
             <FormControl>
               <Input placeholder="Branch id" {...field} type="hidden" />
             </FormControl>
