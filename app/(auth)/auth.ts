@@ -142,6 +142,9 @@ export const {
             `${process.env.XOOX_DOMAIN || 'http://3.95.231.68:3000/api/v1'}/dashboard/auth/employee-refresh-token`,
             {
               method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
               body: JSON.stringify({ refresh_token: token.refresh_token }),
               cache: 'no-store',
             },

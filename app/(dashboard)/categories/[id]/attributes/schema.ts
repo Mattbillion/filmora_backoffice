@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { BaseType, PrettyType } from '@/lib/fetch/types';
+import type { BaseType, ID, PrettyType } from '@/lib/fetch/types';
 
 export const categoryAttributesSchema = z.object({
   com_id: z.number(),
@@ -20,4 +20,15 @@ export type CategoryAttributesItemType = PrettyType<
   BaseType<CategoryAttributesBodyType>
 >;
 
+export type CategoryAttributesValueItemType = BaseType<{
+  com_id: ID;
+  cat_id: ID;
+  attr_id: ID;
+  value: string;
+  display_order: number;
+  status: Boolean;
+}>;
+
 export const RVK_CATEGORY_ATTRIBUTES = 'category-attributes';
+
+export const RVK_CATEGORY_ATTRIBUTE_VALUES = 'category-attribute-values';

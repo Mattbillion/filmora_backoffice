@@ -6,6 +6,8 @@ import { executeRevalidate } from '@/lib/xoox';
 import {
   CategoryAttributesBodyType,
   CategoryAttributesItemType,
+  CategoryAttributesValueItemType,
+  RVK_CATEGORY_ATTRIBUTE_VALUES,
   RVK_CATEGORY_ATTRIBUTES,
 } from './schema';
 
@@ -95,5 +97,83 @@ export const deleteCategoryAttributesDetail = async (param1: string | ID) => {
     RVK_CATEGORY_ATTRIBUTES,
     `${RVK_CATEGORY_ATTRIBUTES}_${param1}`,
   ]);
+  return { data: body, error: null };
+};
+
+export const getCategoryAttributeValues = async (
+  searchParams?: QueryParams,
+) => {
+  try {
+    const { body, error } = await xooxFetch<
+      PaginatedResType<CategoryAttributesValueItemType[]>
+    >('/attribute_values', {
+      method: 'GET',
+      searchParams,
+      next: { tags: [RVK_CATEGORY_ATTRIBUTE_VALUES] },
+    });
+
+    if (error) throw new Error(error);
+
+    return { data: body, total_count: body.total_count };
+  } catch (error) {
+    console.error(`Error fetching /attribute_values:`, error);
+    return { data: { data: [], total_count: 0 }, error };
+  }
+};
+
+export const deleteCategoryAttributeValue = async (param1: string | ID) => {
+  const { body, error } = await xooxFetch(`/attribute_values/${param1}`, {
+    method: 'DELETE',
+    cache: 'no-store',
+  });
+
+  if (error) throw new Error(error);
+
+  executeRevalidate([
+    RVK_CATEGORY_ATTRIBUTE_VALUES,
+    `${RVK_CATEGORY_ATTRIBUTE_VALUES}_${param1}`,
+  ]);
+  return { data: body, error: null };
+};
+
+export const patchCategoryAttributeValue = async ({
+  id: param1,
+  ...bodyData
+}: {
+  id: ID;
+  value: string;
+}) => {
+  const { body, error } = await xooxFetch<{
+    data: CategoryAttributesValueItemType;
+  }>(`/attribute_values/${param1}`, {
+    method: 'PUT',
+    body: bodyData,
+    cache: 'no-store',
+  });
+
+  if (error) throw new Error(error);
+
+  executeRevalidate([
+    RVK_CATEGORY_ATTRIBUTE_VALUES,
+    `${RVK_CATEGORY_ATTRIBUTE_VALUES}_${param1}`,
+  ]);
+  return { data: body, error: null };
+};
+
+export const createCategoryAttributeValue = async (bodyData: {
+  attr_id: ID;
+  display_order: number;
+  status: boolean;
+  value: string;
+}) => {
+  const { body, error } = await xooxFetch(`/attribute_values`, {
+    method: 'POST',
+    body: bodyData,
+    cache: 'no-store',
+  });
+
+  if (error) throw new Error(error);
+
+  executeRevalidate([RVK_CATEGORY_ATTRIBUTE_VALUES]);
   return { data: body, error: null };
 };

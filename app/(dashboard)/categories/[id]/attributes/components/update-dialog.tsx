@@ -1,12 +1,14 @@
 'use client';
 
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import {
   FormControl,
   FormField,
@@ -22,12 +24,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { ID } from '@/lib/fetch/types';
 
-import { patchCategoryAttributesDetail } from '../actions';
+import {
+  createCategoryAttributeValue,
+  deleteCategoryAttributeValue,
+  getCategoryAttributeValues,
+  patchCategoryAttributesDetail,
+  patchCategoryAttributeValue,
+} from '../actions';
 import {
   CategoryAttributesBodyType,
   CategoryAttributesItemType,
   categoryAttributesSchema,
+  CategoryAttributesValueItemType,
 } from '../schema';
 
 export function UpdateDialog({
@@ -39,6 +49,10 @@ export function UpdateDialog({
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
+  const [loading, startLoadingTransition] = useTransition();
+  const [attributeValues, setAttributeValues] = useState<
+    CategoryAttributesValueItemType[]
+  >([]);
 
   const form = useForm<CategoryAttributesBodyType>({
     resolver: zodResolver(categoryAttributesSchema),
@@ -70,6 +84,13 @@ export function UpdateDialog({
       title="Update Category attributes"
       submitText="Update"
       trigger={children}
+      onOpenChange={() =>
+        startLoadingTransition(() => {
+          getCategoryAttributeValues({
+            filters: `attr_id=${initialData.id}`,
+          }).then((c) => setAttributeValues(c.data?.data || []));
+        })
+      }
     >
       <FormField
         control={form.control}
@@ -140,6 +161,51 @@ export function UpdateDialog({
           </FormItem>
         )}
       />
+      <FormItem>
+        <FormLabel>Attr values</FormLabel>
+        <div className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            {attributeValues.map((value, idx) => (
+              <AttributeValueItem
+                key={idx}
+                defaultValue={value.value}
+                valueId={value.id}
+                onRemove={() =>
+                  setAttributeValues(
+                    attributeValues.filter((c) => c.id !== value.id),
+                  )
+                }
+                onUpdate={(newValue) =>
+                  setAttributeValues(
+                    attributeValues.map((c) => ({
+                      ...c,
+                      value: value.id === c.id ? newValue : c.value,
+                    })),
+                  )
+                }
+              />
+            ))}
+          </div>
+          {attributeValues.length < 10 && (
+            <CreateAttributeValueItem
+              attrId={initialData.id}
+              displayOrder={
+                Math.max(
+                  0,
+                  ...attributeValues.map((c) => c.display_order || 0),
+                ) + 1
+              }
+              onCreate={() =>
+                startLoadingTransition(() => {
+                  getCategoryAttributeValues({
+                    filters: `attr_id=${initialData.id}`,
+                  }).then((c) => setAttributeValues(c.data?.data || []));
+                })
+              }
+            />
+          )}
+        </div>
+      </FormItem>
 
       <FormField
         control={form.control}
@@ -184,5 +250,104 @@ export function UpdateDialog({
         )}
       />
     </FormDialog>
+  );
+}
+
+function AttributeValueItem({
+  defaultValue = '',
+  valueId,
+  onRemove,
+  onUpdate,
+}: {
+  defaultValue?: string;
+  valueId: ID;
+  onRemove: () => void;
+  onUpdate: (val: string) => void;
+}) {
+  const [value, setValue] = useState(defaultValue);
+  const [removing, startRemoveTransition] = useTransition();
+  const [updating, startUpdateTransition] = useTransition();
+
+  return (
+    <Card className="space-y-4 p-3">
+      <Input
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        disabled={removing || updating}
+      />
+      <div className="flex justify-end gap-3">
+        <Button
+          size="sm"
+          type="button"
+          variant="destructive"
+          disabled={removing}
+          onClick={() =>
+            startRemoveTransition(() =>
+              deleteCategoryAttributeValue(valueId).then(() => onRemove()),
+            )
+          }
+        >
+          Remove
+        </Button>
+        <Button
+          size="sm"
+          type="button"
+          disabled={updating || value === defaultValue}
+          onClick={() =>
+            startUpdateTransition(() =>
+              patchCategoryAttributeValue({ id: valueId, value }).then(() =>
+                onUpdate(value),
+              ),
+            )
+          }
+        >
+          Edit
+        </Button>
+      </div>
+    </Card>
+  );
+}
+
+function CreateAttributeValueItem({
+  attrId,
+  onCreate,
+  displayOrder,
+}: {
+  attrId: ID;
+  onCreate: () => void;
+  displayOrder: number;
+}) {
+  const [value, setValue] = useState('');
+  const [creating, startCreateTransition] = useTransition();
+
+  return (
+    <div className="flex items-center gap-3">
+      <Input
+        placeholder="Add new attribute value"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
+      <Button
+        type="button"
+        onClick={() =>
+          startCreateTransition(() =>
+            // force fuck
+            createCategoryAttributeValue({
+              attr_id: attrId,
+              value,
+              display_order: displayOrder,
+              status: true,
+            }).then(() => {
+              onCreate();
+              setValue('');
+            }),
+          )
+        }
+        className="h-11"
+        disabled={creating}
+      >
+        Add value
+      </Button>
+    </div>
   );
 }
