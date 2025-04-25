@@ -2,8 +2,9 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, GitBranch, MoreHorizontal, Trash } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -12,7 +13,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
+import { cn, removeHTML } from '@/lib/utils';
 
 import { deleteVenuesDetail } from './actions';
 import { UpdateDialog } from './components';
@@ -32,8 +33,8 @@ const Action = ({ row }: CellContext<VenuesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = checkPermission(data, ['delete_venue']);
+  const canEdit = checkPermission(data, ['update_venue']);
 
   if (!canEdit && !canDelete) return null;
 
@@ -90,6 +91,29 @@ const Action = ({ row }: CellContext<VenuesItemType, unknown>) => {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+};
+
+const Navigation = ({ row }: CellContext<VenuesItemType, unknown>) => {
+  const { data } = useSession();
+
+  if (
+    !checkPermission(data, [
+      'get_branch_list',
+      'get_branch',
+      'create_branch',
+      'update_branch',
+      'delete_branch',
+    ])
+  )
+    return null;
+  return (
+    <Link
+      href={`/venues/${row.original.id}/branches`}
+      className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+    >
+      <GitBranch className="h-4 w-4" /> Branches
+    </Link>
   );
 };
 
@@ -168,6 +192,10 @@ export const venuesColumns: ColumnDef<VenuesItemType>[] = [
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
     enableSorting: false,
     enableColumnFilter: true,
+  },
+  {
+    id: 'navigation',
+    cell: Navigation,
   },
   {
     id: 'actions',

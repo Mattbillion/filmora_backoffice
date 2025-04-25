@@ -31,7 +31,7 @@ export default async function VenuesPage(props: {
         <Heading
           title={`Venues list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, []) && (
+        {checkPermission(session, ['create_venue']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New

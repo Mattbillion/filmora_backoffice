@@ -2,8 +2,10 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { DoorOpen, Edit, MoreHorizontal, Trash } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -12,7 +14,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +24,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
+import { cn, removeHTML } from '@/lib/utils';
 
 import { deleteBranchesDetail } from './actions';
 import { UpdateDialog } from './components';
@@ -90,6 +92,30 @@ const Action = ({ row }: CellContext<BranchesItemType, unknown>) => {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+};
+
+const Navigation = ({ row }: CellContext<BranchesItemType, unknown>) => {
+  const { data } = useSession();
+  const params = useParams();
+
+  if (
+    !checkPermission(data, [
+      'get_hall_list',
+      'get_hall',
+      'create_hall',
+      'update_hall',
+      'delete_hall',
+    ])
+  )
+    return null;
+  return (
+    <Link
+      href={`/venues/${params.venue_id}/branches/${row.original.id}/halls`}
+      className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+    >
+      <DoorOpen className="h-4 w-4" /> Halls
+    </Link>
   );
 };
 
@@ -216,6 +242,10 @@ export const branchesColumns: ColumnDef<BranchesItemType>[] = [
     ),
     enableSorting: false,
     enableColumnFilter: false,
+  },
+  {
+    id: 'navigation',
+    cell: Navigation,
   },
   {
     id: 'actions',
