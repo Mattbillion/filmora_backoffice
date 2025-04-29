@@ -75,7 +75,7 @@ export const getMerchandisesList = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getMerchandises = async (id: string) => {
+export const getMerchandiseDetail = async (id: string) => {
   try {
     const { body, error } = await xooxFetch<{ data: MerchandisesItemType }>(
       `/merchandises/${id}`,

@@ -38,14 +38,13 @@ export default async function MerchandisesPage(props: {
     getDiscountsHash({ company_id: session?.user?.company_id }),
   ]);
 
-  console.log(discountData);
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
           title={`Merchandises list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, []) && (
+        {checkPermission(session, ['create_company_merchandise']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New
@@ -62,6 +61,16 @@ export default async function MerchandisesPage(props: {
             category: categoryData[c.cat_id] || '',
             company: companyData[c.com_id] || '',
             discount: discountData[c.discount_id] || '',
+            canModify: checkPermission(session, [
+              'get_company_merchandise',
+              'update_company_merchandise',
+              'delete_company_merchandise',
+              'get_company_merchandise_attribute_option_value_list',
+              'get_company_merchandise_attribute_option_value',
+              'create_company_merchandise_attribute_option_value',
+              'update_company_merchandise_attribute_option_value',
+              'delete_company_merchandise_attribute_option_value',
+            ]),
           }))}
           rowCount={data?.total_count ?? data?.data?.length}
         />

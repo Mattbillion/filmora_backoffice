@@ -152,6 +152,7 @@ export const {
           const body: any = await response.json();
 
           console.log(JSON.stringify(body, null, 2));
+          console.log(JSON.stringify(token, null, 2));
           if (!response.ok || body?.status !== 'success')
             throw new Error(
               body?.detail?.[0]?.msg ||

@@ -25,11 +25,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createCategoryAttributes } from '../actions';
+import { createAttribute } from '../../../../../../features/attributes/actions';
 import {
   CategoryAttributesBodyType,
   categoryAttributesSchema,
-} from '../schema';
+} from '../../../../../../features/attributes/schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
@@ -48,7 +48,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
   function onSubmit({ status, ...values }: CategoryAttributesBodyType) {
     startTransition(() => {
-      createCategoryAttributes({
+      createAttribute({
         ...values,
         status: (status as unknown as string) === 'true',
       })

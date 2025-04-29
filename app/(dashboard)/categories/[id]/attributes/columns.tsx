@@ -20,12 +20,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { deleteAttribute } from '@/features/attributes/actions';
+import { CategoryAttributesItemType } from '@/features/attributes/schema';
 import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
 
-import { deleteCategoryAttributesDetail } from './actions';
 import { UpdateDialog } from './components';
-import { CategoryAttributesItemType } from './schema';
 
 const Action = ({ row }: CellContext<CategoryAttributesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
@@ -65,7 +65,7 @@ const Action = ({ row }: CellContext<CategoryAttributesItemType, unknown>) => {
               action={() => {
                 setLoading(true);
                 // TODO: Please check after generate
-                deleteCategoryAttributesDetail(row.original.id)
+                deleteAttribute(row.original.id)
                   .then((c) => toast.success(c.data.message))
                   .catch((c) => toast.error(c.message))
                   .finally(() => {

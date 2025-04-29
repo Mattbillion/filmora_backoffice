@@ -9,7 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
-import { getCategoryAttributes } from './actions';
+import { getAttributes } from '../../../../../features/attributes/actions';
 import { categoryAttributesColumns } from './columns';
 import { CreateDialog } from './components';
 
@@ -24,7 +24,7 @@ export default async function CategoryAttributesPage(props: {
     props.params,
     props.searchParams,
   ]);
-  const { data } = await getCategoryAttributes({
+  const { data } = await getAttributes({
     ...searchParams,
     filters: [
       searchParams?.filters || '',

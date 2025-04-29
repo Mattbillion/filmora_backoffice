@@ -11,7 +11,7 @@ import {
   RVK_CATEGORY_ATTRIBUTES,
 } from './schema';
 
-export const getCategoryAttributes = async (searchParams?: QueryParams) => {
+export const getAttributes = async (searchParams?: QueryParams) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<CategoryAttributesItemType[]>
@@ -30,27 +30,7 @@ export const getCategoryAttributes = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getCategoryAttributesDetail = async (param1: string | ID) => {
-  try {
-    const { body, error } = await xooxFetch<{
-      data: CategoryAttributesItemType;
-    }>(`/category_attributes/${param1}`, {
-      method: 'GET',
-      next: { tags: [`${RVK_CATEGORY_ATTRIBUTES}_${param1}`] },
-    });
-
-    if (error) throw new Error(error);
-
-    return { data: body };
-  } catch (error) {
-    console.error(`Error fetching /category_attributes/${param1}:`, error);
-    return { data: null, error };
-  }
-};
-
-export const createCategoryAttributes = async (
-  bodyData: CategoryAttributesBodyType,
-) => {
+export const createAttribute = async (bodyData: CategoryAttributesBodyType) => {
   const { body, error } = await xooxFetch(`/category_attributes`, {
     method: 'POST',
     body: bodyData,
@@ -63,7 +43,7 @@ export const createCategoryAttributes = async (
   return { data: body, error: null };
 };
 
-export const patchCategoryAttributesDetail = async ({
+export const patchAttribute = async ({
   id: param1,
   ...bodyData
 }: CategoryAttributesBodyType & { id: ID }) => {
@@ -85,7 +65,7 @@ export const patchCategoryAttributesDetail = async ({
   return { data: body, error: null };
 };
 
-export const deleteCategoryAttributesDetail = async (param1: string | ID) => {
+export const deleteAttribute = async (param1: string | ID) => {
   const { body, error } = await xooxFetch(`/category_attributes/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
@@ -100,9 +80,7 @@ export const deleteCategoryAttributesDetail = async (param1: string | ID) => {
   return { data: body, error: null };
 };
 
-export const getCategoryAttributeValues = async (
-  searchParams?: QueryParams,
-) => {
+export const getAttributeValues = async (searchParams?: QueryParams) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<CategoryAttributesValueItemType[]>
@@ -121,7 +99,7 @@ export const getCategoryAttributeValues = async (
   }
 };
 
-export const deleteCategoryAttributeValue = async (param1: string | ID) => {
+export const deleteAttributeValue = async (param1: string | ID) => {
   const { body, error } = await xooxFetch(`/attribute_values/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
@@ -136,7 +114,7 @@ export const deleteCategoryAttributeValue = async (param1: string | ID) => {
   return { data: body, error: null };
 };
 
-export const patchCategoryAttributeValue = async ({
+export const patchAttributeValue = async ({
   id: param1,
   ...bodyData
 }: {
@@ -160,7 +138,7 @@ export const patchCategoryAttributeValue = async ({
   return { data: body, error: null };
 };
 
-export const createCategoryAttributeValue = async (bodyData: {
+export const createAttributeValue = async (bodyData: {
   attr_id: ID;
   display_order: number;
   status: boolean;

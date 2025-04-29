@@ -27,18 +27,18 @@ import {
 import { ID } from '@/lib/fetch/types';
 
 import {
-  createCategoryAttributeValue,
-  deleteCategoryAttributeValue,
-  getCategoryAttributeValues,
-  patchCategoryAttributesDetail,
-  patchCategoryAttributeValue,
-} from '../actions';
+  createAttributeValue,
+  deleteAttributeValue,
+  getAttributeValues,
+  patchAttribute,
+  patchAttributeValue,
+} from '../../../../../../features/attributes/actions';
 import {
   CategoryAttributesBodyType,
   CategoryAttributesItemType,
   categoryAttributesSchema,
   CategoryAttributesValueItemType,
-} from '../schema';
+} from '../../../../../../features/attributes/schema';
 
 export function UpdateDialog({
   children,
@@ -61,7 +61,7 @@ export function UpdateDialog({
 
   function onSubmit({ status, ...values }: CategoryAttributesBodyType) {
     startTransition(() => {
-      patchCategoryAttributesDetail({
+      patchAttribute({
         ...values,
         id: initialData.id,
         status: (status as unknown as string) === 'true',
@@ -86,7 +86,7 @@ export function UpdateDialog({
       trigger={children}
       onOpenChange={() =>
         startLoadingTransition(() => {
-          getCategoryAttributeValues({
+          getAttributeValues({
             filters: `attr_id=${initialData.id}`,
           }).then((c) => setAttributeValues(c.data?.data || []));
         })
@@ -165,6 +165,7 @@ export function UpdateDialog({
         <FormLabel>Attr values</FormLabel>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
+            {loading && 'Loading...'}
             {attributeValues.map((value, idx) => (
               <AttributeValueItem
                 key={idx}
@@ -197,7 +198,7 @@ export function UpdateDialog({
               }
               onCreate={() =>
                 startLoadingTransition(() => {
-                  getCategoryAttributeValues({
+                  getAttributeValues({
                     filters: `attr_id=${initialData.id}`,
                   }).then((c) => setAttributeValues(c.data?.data || []));
                 })
@@ -283,7 +284,7 @@ function AttributeValueItem({
           disabled={removing}
           onClick={() =>
             startRemoveTransition(() =>
-              deleteCategoryAttributeValue(valueId).then(() => onRemove()),
+              deleteAttributeValue(valueId).then(() => onRemove()),
             )
           }
         >
@@ -295,7 +296,7 @@ function AttributeValueItem({
           disabled={updating || value === defaultValue}
           onClick={() =>
             startUpdateTransition(() =>
-              patchCategoryAttributeValue({ id: valueId, value }).then(() =>
+              patchAttributeValue({ id: valueId, value }).then(() =>
                 onUpdate(value),
               ),
             )
@@ -332,7 +333,7 @@ function CreateAttributeValueItem({
         onClick={() =>
           startCreateTransition(() =>
             // force fuck
-            createCategoryAttributeValue({
+            createAttributeValue({
               attr_id: attrId,
               value,
               display_order: displayOrder,

@@ -10,7 +10,6 @@ import {
   Percent,
   Shield,
   ShoppingCart,
-  Tag,
   UserCog,
   UserIcon,
 } from 'lucide-react';
@@ -40,6 +39,7 @@ const managementRoutes: SubMenuItemType[] = [
   {
     title: 'Merch',
     url: '/merchandises',
+    subRoutes: true,
     icon: Shield,
     permissions: [
       'company_merchandise_list',
@@ -48,30 +48,13 @@ const managementRoutes: SubMenuItemType[] = [
       'create_company_merchandise',
       'update_company_merchandise',
       'delete_company_merchandise',
-    ],
-  },
-  {
-    title: 'Merch attributes',
-    url: '/merchandises/attributes',
-    icon: Shield,
-    permissions: [
-      // 'get_merchandise_attribute_list',
-      // 'get_merchandise_attribute',
-      // 'create_merchandise_attribute',
-      // 'update_merchandise_attribute',
-      // 'delete_merchandise_attribute',
+      // variants
       'get_company_merchandise_attribute_value_list',
       'get_company_merchandise_attribute_value',
       'create_company_merchandise_attribute_value',
       'update_company_merchandise_attribute_value',
       'delete_company_merchandise_attribute_value',
-    ],
-  },
-  {
-    title: 'Merch attributes values',
-    url: '/merchandises/attributes/values',
-    icon: Shield,
-    permissions: [
+      // variant attributes
       'get_company_merchandise_attribute_option_value_list',
       'get_company_merchandise_attribute_option_value',
       'create_company_merchandise_attribute_option_value',
@@ -79,18 +62,23 @@ const managementRoutes: SubMenuItemType[] = [
       'delete_company_merchandise_attribute_option_value',
     ],
   },
-  {
-    title: 'Attribute Values',
-    url: '/attribute-values',
-    icon: Tag,
-    permissions: [
-      'get_category_attribute_value_list',
-      'get_category_attribute_value',
-      'create_category_attribute_value',
-      'update_category_attribute_value',
-      'delete_category_attribute_value',
-    ],
-  },
+  // {
+  //   title: 'Merch attributes',
+  //   url: '/merchandises/attributes',
+  //   icon: Shield,
+  //   permissions: [
+  //     // 'get_merchandise_attribute_list',
+  //     // 'get_merchandise_attribute',
+  //     // 'create_merchandise_attribute',
+  //     // 'update_merchandise_attribute',
+  //     // 'delete_merchandise_attribute',
+  //     'get_company_merchandise_attribute_value_list',
+  //     'get_company_merchandise_attribute_value',
+  //     'create_company_merchandise_attribute_value',
+  //     'update_company_merchandise_attribute_value',
+  //     'delete_company_merchandise_attribute_value',
+  //   ],
+  // },
   {
     title: 'Banners',
     url: '/banners',
@@ -114,6 +102,11 @@ const managementRoutes: SubMenuItemType[] = [
       'create_category',
       'update_category',
       'delete_category',
+      'get_category_attribute_value_list',
+      'get_category_attribute_value',
+      'create_category_attribute_value',
+      'update_category_attribute_value',
+      'delete_category_attribute_value',
     ],
   },
 ];
