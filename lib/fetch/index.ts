@@ -44,9 +44,9 @@ export async function xooxFetch<
     total_count?: number;
   },
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
+  let opts = { ...options };
   try {
     const headers = new Headers(options.headers);
-    let opts = { ...options };
 
     if (!headers.has('Authorization')) {
       // careful!!!
@@ -82,7 +82,7 @@ export async function xooxFetch<
     };
   } catch (error: any) {
     console.error('url: ', url);
-    console.error('Fetch options: ', JSON.stringify(options, null, 2));
+    console.error('Fetch options: ', JSON.stringify(opts, null, 2));
     console.error(
       `Fetch error: `,
       error instanceof Error ? error.message : String(error),
