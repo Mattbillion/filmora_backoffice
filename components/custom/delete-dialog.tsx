@@ -63,7 +63,7 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={action} disabled={loading}>
+              <Button onClick={action} disabled={loading} variant="destructive">
                 {loading && <Loader2 size={10} className="animate-spin" />}
                 {confirmText || 'Continue'}
               </Button>

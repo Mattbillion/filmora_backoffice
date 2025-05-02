@@ -6,6 +6,7 @@ import { Edit, Trash } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
+import { VariantEditSheet } from '@/app/(dashboard)/merchandises/[id]/tabs/variants-tab/variant-update-sheet';
 import {
   DeleteDialog,
   DeleteDialogRef,
@@ -19,6 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -73,38 +75,44 @@ export function VariantsTab() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {variants.map((variant, idx) => (
-                <TableRow key={idx}>
-                  <TableCell className="font-medium">{variant.id}</TableCell>
-                  <TableCell>{variant.sku}</TableCell>
-                  <TableCell>{variant.stock}</TableCell>
-                  <TableCell>
-                    {variant.is_master ? (
-                      <Badge>Master</Badge>
-                    ) : (
-                      <Badge variant="outline">No</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {variant.status ? (
-                      <Badge variant="default">Active</Badge>
-                    ) : (
-                      <Badge variant="destructive">Inactive</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>
-                    {dayjs(variant.created_at).format('YYYY-MM-DD hh:mm')}
-                  </TableCell>
-                  <TableAction
-                    variant={variant}
-                    onRemove={() =>
-                      setVariants((oldVariants) =>
-                        oldVariants.filter((c) => c.id !== variant.id),
-                      )
-                    }
-                  />
-                </TableRow>
-              ))}
+              {loading
+                ? Array.from({ length: 3 }).map((_, idx) => (
+                    <RowSkeleton key={idx} />
+                  ))
+                : variants.map((variant, idx) => (
+                    <TableRow key={idx}>
+                      <TableCell className="font-medium">
+                        {variant.id}
+                      </TableCell>
+                      <TableCell>{variant.sku}</TableCell>
+                      <TableCell>{variant.stock}</TableCell>
+                      <TableCell>
+                        {variant.is_master ? (
+                          <Badge>Master</Badge>
+                        ) : (
+                          <Badge variant="outline">No</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {variant.status ? (
+                          <Badge variant="default">Active</Badge>
+                        ) : (
+                          <Badge variant="destructive">Inactive</Badge>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {dayjs(variant.created_at).format('YYYY-MM-DD hh:mm')}
+                      </TableCell>
+                      <TableAction
+                        variant={variant}
+                        onRemove={() =>
+                          setVariants((oldVariants) =>
+                            oldVariants.filter((c) => c.id !== variant.id),
+                          )
+                        }
+                      />
+                    </TableRow>
+                  ))}
             </TableBody>
           </Table>
         </CardContent>
@@ -130,9 +138,13 @@ function TableAction({
   return (
     <TableCell className="text-right">
       <div className="flex justify-end gap-2">
-        <Button size="icon" variant="ghost" type="button">
-          <Edit className="h-4 w-4" />
-        </Button>
+        {canEdit && (
+          <VariantEditSheet variant={variant} onSave={console.log}>
+            <Button size="icon" variant="ghost" type="button">
+              <Edit className="h-4 w-4" />
+            </Button>
+          </VariantEditSheet>
+        )}
         {canDelete && (
           <DeleteDialog
             ref={deleteDialogRef}
@@ -142,6 +154,7 @@ function TableAction({
                 deleteVariant(variant.id).then(() => onRemove());
               });
             }}
+            confirmText="Delete"
             description={
               <>
                 Are you sure you want to delete this{' '}
@@ -161,5 +174,36 @@ function TableAction({
         )}
       </div>
     </TableCell>
+  );
+}
+
+function RowSkeleton() {
+  return (
+    <TableRow className="animate-pulse">
+      <TableCell>
+        <Skeleton className="h-5 w-12" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-5 w-24" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-5 w-16" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-6 w-16 rounded-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-6 w-16 rounded-full" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-5 w-32" />
+      </TableCell>
+      <TableCell>
+        <div className="flex space-x-2">
+          <Skeleton className="h-8 w-8 rounded-md" />
+          <Skeleton className="h-8 w-8 rounded-md" />
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }

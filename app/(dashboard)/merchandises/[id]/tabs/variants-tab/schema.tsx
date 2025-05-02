@@ -6,10 +6,11 @@ export const variantsSchema = z.object({
   merch_id: z.number(),
   value: z.string(),
   sku: z.string(),
-  is_master: z.boolean(),
+  is_master: z.boolean().default(false),
+  body: z.string().optional().default(''),
   price: z.number().optional(),
-  stock: z.number().optional(),
-  status: z.boolean(),
+  stock: z.number().optional().default(0),
+  status: z.boolean().default(true),
 });
 
 export type VariantBodyType = z.infer<typeof variantsSchema>;
@@ -22,19 +23,3 @@ export type VariantItemType = PrettyType<
 >;
 
 export const RVK_VARIANTS = 'variants';
-
-export const variantOptionValueSchema = z.object({
-  m_attr_val_id: z.number(),
-  attr_id: z.number(),
-  attr_val_id: z.number(),
-});
-
-export type VariantOptionValueBodyType = z.infer<
-  typeof variantOptionValueSchema
->;
-
-export type VariantOptionValueItemType = PrettyType<
-  BaseType<VariantOptionValueBodyType>
->;
-
-export const RVK_VARIANT_OPTION_VALUE = 'variant_option_value';
