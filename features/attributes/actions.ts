@@ -13,7 +13,9 @@ import {
 
 export const getAttributesHash = async (searchParams?: QueryParams) => {
   try {
-    const { data } = await getAttributes(searchParams);
+    const { data } = await getAttributes(searchParams, [
+      `${RVK_CATEGORY_ATTRIBUTES}_${Buffer.from(JSON.stringify(searchParams || {})).toString('base64')}`,
+    ]);
 
     return {
       data: (data.data || []).reduce(
@@ -27,14 +29,19 @@ export const getAttributesHash = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getAttributes = async (searchParams?: QueryParams) => {
+export const getAttributes = async (
+  searchParams: QueryParams = {},
+  cacheKeys?: string[],
+) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<CategoryAttributesItemType[]>
     >('/category_attributes', {
       method: 'GET',
       searchParams,
-      next: { tags: [RVK_CATEGORY_ATTRIBUTES] },
+      next: {
+        tags: [RVK_CATEGORY_ATTRIBUTES, ...(cacheKeys || [])],
+      },
     });
 
     if (error) throw new Error(error);
@@ -98,7 +105,9 @@ export const deleteAttribute = async (param1: string | ID) => {
 
 export const getAttributeValuesHash = async (searchParams?: QueryParams) => {
   try {
-    const { data } = await getAttributeValues(searchParams);
+    const { data } = await getAttributeValues(searchParams, [
+      `${RVK_CATEGORY_ATTRIBUTE_VALUES}_${Buffer.from(JSON.stringify(searchParams || {})).toString('base64')}`,
+    ]);
 
     return {
       data: (data.data || []).reduce(
@@ -112,14 +121,19 @@ export const getAttributeValuesHash = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getAttributeValues = async (searchParams?: QueryParams) => {
+export const getAttributeValues = async (
+  searchParams: QueryParams = {},
+  cacheKeys?: string[],
+) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<CategoryAttributesValueItemType[]>
     >('/attribute_values', {
       method: 'GET',
       searchParams,
-      next: { tags: [RVK_CATEGORY_ATTRIBUTE_VALUES] },
+      next: {
+        tags: [RVK_CATEGORY_ATTRIBUTE_VALUES, ...(cacheKeys || [])],
+      },
     });
 
     if (error) throw new Error(error);

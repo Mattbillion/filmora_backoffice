@@ -1,10 +1,10 @@
 'use client';
 
 import { ReactNode, useEffect, useState, useTransition } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { patchVariantOptionValue } from '@/app/(dashboard)/merchandises/[id]/tabs/variants-tab/option-values/actions';
+import { createVariantOptionValue } from '@/app/(dashboard)/merchandises/[id]/tabs/variants-tab/option-values/actions';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -42,22 +42,11 @@ import {
 } from '@/features/attributes/schema';
 import { ID } from '@/lib/fetch/types';
 
-import {
-  VariantOptionValueBodyType,
-  VariantOptionValueItemType,
-  variantOptionValueSchema,
-} from './schema';
+import { VariantOptionValueBodyType, variantOptionValueSchema } from './schema';
 
-export function OptionValueDialog({
-  children,
-  initialData,
-}: {
-  children: ReactNode;
-  initialData: VariantOptionValueItemType;
-}) {
+export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
   const optionForm = useForm<VariantOptionValueBodyType>({
     resolver: zodResolver(variantOptionValueSchema),
-    defaultValues: initialData,
   });
   const [open, setOpen] = useState(false);
   const [attributes, setAttributes] = useState<
@@ -67,28 +56,23 @@ export function OptionValueDialog({
     Record<ID, CategoryAttributesValueItemType>
   >({});
   const [loadingAttr, startLoadingAttrTransition] = useTransition();
+  const [loadingAttrValues, startLoadingAttrValuesTransition] = useTransition();
   const [updating, startUpdateTransition] = useTransition();
+  const selectedAttrId = useWatch({ name: 'attr_id' });
 
   useEffect(() => {
     startLoadingAttrTransition(() => {
-      Promise.all([
-        getAttributesHash({ page_size: 10000 }),
-        getAttributeValuesHash({
-          page_size: 10000,
-          filters: `attr_id=${initialData.attr_id}`,
-        }),
-      ]).then(([attributesData, attributeValuesData]) => {
-        setAttributes(attributesData.data);
-        setAttributeValues(attributeValuesData.data);
-      });
+      Promise.all([getAttributesHash({ page_size: 10000 })]).then(
+        ([attributesData]) => {
+          setAttributes(attributesData.data);
+        },
+      );
     });
   }, []);
 
   function onSubmit(values: VariantOptionValueBodyType) {
     startUpdateTransition(() => {
-      patchVariantOptionValue({ id: initialData.id, ...values }).then(() =>
-        setOpen(false),
-      );
+      createVariantOptionValue(values).then(() => setOpen(false));
     });
   }
 
@@ -97,9 +81,9 @@ export function OptionValueDialog({
       <DialogTrigger>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Option Value</DialogTitle>
+          <DialogTitle>Add Option Value</DialogTitle>
           <DialogDescription>
-            Update the option details below.
+            Add option value to current variant
           </DialogDescription>
         </DialogHeader>
         <Form {...optionForm}>
@@ -119,19 +103,37 @@ export function OptionValueDialog({
                 </FormItem>
               )}
             />
-
             <FormField
               control={optionForm.control}
               name="attr_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Option Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      value={attributes[field.value]?.attr_name}
-                      disabled
-                    />
-                  </FormControl>
+                  <FormLabel>Option name</FormLabel>
+                  <Select
+                    onValueChange={(value) => {
+                      startLoadingAttrValuesTransition(() => {
+                        getAttributeValuesHash({
+                          page_size: 10000,
+                        }).then((c) => setAttributeValues(c.data || {}));
+                      });
+                      field.onChange(Number(value));
+                    }}
+                    value={field.value?.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger disabled={loadingAttr}>
+                        <SelectValue placeholder="Select a option" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent defaultValue="false">
+                      {Object.entries(attributes).map(([attrId, attr], idx) => (
+                        <SelectItem key={idx} value={attrId}>
+                          {attr.attr_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -146,11 +148,13 @@ export function OptionValueDialog({
                     value={field.value?.toString()}
                   >
                     <FormControl>
-                      <SelectTrigger disabled={loadingAttr}>
+                      <SelectTrigger
+                        disabled={loadingAttrValues || !selectedAttrId}
+                      >
                         <SelectValue placeholder="Select a option" />
                       </SelectTrigger>
                     </FormControl>
-                    <SelectContent defaultValue="false">
+                    <SelectContent>
                       {Object.entries(attributeValues).map(
                         ([attrId, attr], idx) => (
                           <SelectItem key={idx} value={attrId}>
@@ -171,7 +175,7 @@ export function OptionValueDialog({
                 </Button>
               </DialogClose>
               <Button type="submit" disabled={updating}>
-                Update
+                Create
               </Button>
             </DialogFooter>
           </form>

@@ -1,9 +1,13 @@
 'use client';
 
-import { useEffect, useState, useTransition } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import { Edit, Plus, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
+import {
+  DeleteDialog,
+  DeleteDialogRef,
+} from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
@@ -21,7 +25,8 @@ import {
 import { ID } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
-import { getVariantOptionValueList } from './actions';
+import { deleteVariantOptionValue, getVariantOptionValueList } from './actions';
+import { CreateOptionValueDialog } from './option-create-dialog';
 import { OptionValueDialog } from './option-update-dialog';
 import { VariantOptionValueItemType } from './schema';
 
@@ -33,6 +38,8 @@ export function OptionValues({ variantId }: { variantId: ID }) {
   const [attributeValues, setAttributeValues] = useState<Record<ID, string>>(
     [],
   );
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
+  const [removing, startRemoveTransition] = useTransition();
   const [loading, startLoadingTransition] = useTransition();
   const [loadingAttr, startLoadingAttrTransition] = useTransition();
   const { data: session } = useSession();
@@ -74,10 +81,12 @@ export function OptionValues({ variantId }: { variantId: ID }) {
         {checkPermission(session, [
           'create_company_merchandise_attribute_option_value',
         ]) && (
-          <Button type="button" variant="outline" size="sm">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Option
-          </Button>
+          <CreateOptionValueDialog>
+            <Button type="button" variant="outline" size="sm">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Option
+            </Button>
+          </CreateOptionValueDialog>
         )}
       </div>
 
@@ -124,10 +133,37 @@ export function OptionValues({ variantId }: { variantId: ID }) {
                       {checkPermission(session, [
                         'delete_company_merchandise_attribute_option_value',
                       ]) && (
-                        <Button variant="ghost" size="icon">
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete</span>
-                        </Button>
+                        <DeleteDialog
+                          ref={deleteDialogRef}
+                          loading={removing}
+                          action={() => {
+                            startRemoveTransition(() => {
+                              deleteVariantOptionValue(optionValue.id).then(
+                                () =>
+                                  setOptionValues((prevOptVals) =>
+                                    prevOptVals.filter(
+                                      (c) => c.id !== optionValue.id,
+                                    ),
+                                  ),
+                              );
+                            });
+                          }}
+                          confirmText="Delete"
+                          description={
+                            <>
+                              Are you sure you want to delete this{' '}
+                              <b className="text-foreground">
+                                {attributes[optionValue.attr_id]}
+                              </b>
+                              ?
+                            </>
+                          }
+                        >
+                          <Button variant="ghost" size="icon">
+                            <Trash2 className="h-4 w-4" />
+                            <span className="sr-only">Delete</span>
+                          </Button>
+                        </DeleteDialog>
                       )}
                     </div>
                   </TableCell>
