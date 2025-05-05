@@ -11,6 +11,22 @@ import {
   RVK_CATEGORY_ATTRIBUTES,
 } from './schema';
 
+export const getAttributesHash = async (searchParams?: QueryParams) => {
+  try {
+    const { data } = await getAttributes(searchParams);
+
+    return {
+      data: (data.data || []).reduce(
+        (acc, curr) => ({ ...acc, [curr.id]: curr.attr_name }),
+        {},
+      ),
+    };
+  } catch (error) {
+    console.error(`Error fetching category_attributes_hash:`, error);
+    return { data: {}, error };
+  }
+};
+
 export const getAttributes = async (searchParams?: QueryParams) => {
   try {
     const { body, error } = await xooxFetch<
@@ -78,6 +94,22 @@ export const deleteAttribute = async (param1: string | ID) => {
     `${RVK_CATEGORY_ATTRIBUTES}_${param1}`,
   ]);
   return { data: body, error: null };
+};
+
+export const getAttributeValuesHash = async (searchParams?: QueryParams) => {
+  try {
+    const { data } = await getAttributeValues(searchParams);
+
+    return {
+      data: (data.data || []).reduce(
+        (acc, curr) => ({ ...acc, [curr.id]: curr.value }),
+        {},
+      ),
+    };
+  } catch (error) {
+    console.error(`Error fetching category_attribute_values_hash:`, error);
+    return { data: {}, error };
+  }
 };
 
 export const getAttributeValues = async (searchParams?: QueryParams) => {

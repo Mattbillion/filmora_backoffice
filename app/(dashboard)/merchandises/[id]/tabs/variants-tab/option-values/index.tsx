@@ -5,6 +5,7 @@ import { Edit, Plus, Trash2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -14,8 +15,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
-  getAttributes,
-  getAttributeValues,
+  getAttributesHash,
+  getAttributeValuesHash,
 } from '@/features/attributes/actions';
 import { ID } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
@@ -33,25 +34,19 @@ export function OptionValues({ variantId }: { variantId: ID }) {
     [],
   );
   const [loading, startLoadingTransition] = useTransition();
+  const [loadingAttr, startLoadingAttrTransition] = useTransition();
   const { data: session } = useSession();
 
   useEffect(() => {
-    getAttributes({ page_size: 10000 }).then((c) =>
-      setAttributes(
-        (c.data.data || []).reduce(
-          (acc, curr) => ({ ...acc, [curr.id]: curr.attr_name }),
-          {},
-        ),
-      ),
-    );
-    getAttributeValues({ page_size: 10000 }).then((c) =>
-      setAttributeValues(
-        (c.data.data || []).reduce(
-          (acc, curr) => ({ ...acc, [curr.id]: curr.value }),
-          {},
-        ),
-      ),
-    );
+    startLoadingAttrTransition(() => {
+      Promise.all([
+        getAttributesHash({ page_size: 10000 }),
+        getAttributeValuesHash({ page_size: 10000 }),
+      ]).then(([attributesData, attributeValuesData]) => {
+        setAttributes(attributesData.data);
+        setAttributeValues(attributeValuesData.data);
+      });
+    });
   }, []);
 
   useEffect(() => {
@@ -76,10 +71,14 @@ export function OptionValues({ variantId }: { variantId: ID }) {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg font-medium">Option Values</h3>
-        <Button type="button" variant="outline" size="sm">
-          <Plus className="mr-2 h-4 w-4" />
-          Add Option
-        </Button>
+        {checkPermission(session, [
+          'create_company_merchandise_attribute_option_value',
+        ]) && (
+          <Button type="button" variant="outline" size="sm">
+            <Plus className="mr-2 h-4 w-4" />
+            Add Option
+          </Button>
+        )}
       </div>
 
       <div className="rounded-md border">
@@ -92,7 +91,9 @@ export function OptionValues({ variantId }: { variantId: ID }) {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {optionValues.length === 0 ? (
+            {loading || loadingAttr ? (
+              <RowSkeleton />
+            ) : optionValues.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={3}
@@ -110,16 +111,24 @@ export function OptionValues({ variantId }: { variantId: ID }) {
                   </TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end space-x-2">
-                      <OptionValueDialog initialData={optionValue}>
-                        <Button variant="ghost" size="icon" type="button">
-                          <Edit className="h-4 w-4" />
-                          <span className="sr-only">Edit</span>
+                      {checkPermission(session, [
+                        'update_company_merchandise_attribute_option_value',
+                      ]) && (
+                        <OptionValueDialog initialData={optionValue}>
+                          <Button variant="ghost" size="icon" type="button">
+                            <Edit className="h-4 w-4" />
+                            <span className="sr-only">Edit</span>
+                          </Button>
+                        </OptionValueDialog>
+                      )}
+                      {checkPermission(session, [
+                        'delete_company_merchandise_attribute_option_value',
+                      ]) && (
+                        <Button variant="ghost" size="icon">
+                          <Trash2 className="h-4 w-4" />
+                          <span className="sr-only">Delete</span>
                         </Button>
-                      </OptionValueDialog>
-                      <Button variant="ghost" size="icon">
-                        <Trash2 className="h-4 w-4" />
-                        <span className="sr-only">Delete</span>
-                      </Button>
+                      )}
                     </div>
                   </TableCell>
                 </TableRow>
@@ -129,5 +138,24 @@ export function OptionValues({ variantId }: { variantId: ID }) {
         </Table>
       </div>
     </div>
+  );
+}
+
+function RowSkeleton() {
+  return (
+    <TableRow className="animate-pulse">
+      <TableCell>
+        <Skeleton className="h-5 w-12" />
+      </TableCell>
+      <TableCell>
+        <Skeleton className="h-5 w-24" />
+      </TableCell>
+      <TableCell>
+        <div className="flex space-x-2">
+          <Skeleton className="h-8 w-8 rounded-md" />
+          <Skeleton className="h-8 w-8 rounded-md" />
+        </div>
+      </TableCell>
+    </TableRow>
   );
 }
