@@ -2,7 +2,7 @@ import { xooxFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
 
-import { OrdersItemType, RVK_ORDERS } from './schema';
+import { OrderDetail, OrdersItemType, RVK_ORDERS } from './schema';
 
 export const getOrders = async (searchParams?: QueryParams) => {
   try {
@@ -26,7 +26,7 @@ export const getOrders = async (searchParams?: QueryParams) => {
 
 export const getOrdersDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await xooxFetch<{ data: OrdersItemType }>(
+    const { body, error } = await xooxFetch<{ data: OrderDetail }>(
       `/orders/${param1}`,
       {
         method: 'GET',
