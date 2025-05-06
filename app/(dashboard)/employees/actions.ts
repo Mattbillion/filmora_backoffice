@@ -107,7 +107,7 @@ export const getEmployee = async ({
       {
         method: 'GET',
         searchParams,
-        next: { tags: [`${RVK_EMPLOYEE}_${id}`] },
+        next: { tags: [RVK_EMPLOYEE, `${RVK_EMPLOYEE}_${id}`] },
       },
     );
 
@@ -163,6 +163,37 @@ export const changeEmployeeEmail = async ({
     if (error) throw new Error(error);
 
     executeRevalidate([RVK_EMPLOYEE, `${RVK_EMPLOYEE}_${userId}`]);
+
+    return { data: body };
+  } catch (error) {
+    return { data: null, error: (error as Error).message };
+  }
+};
+
+export const updateEmployeeRole = async (bodyData: {
+  employee_id: string;
+  role_id: ID;
+}) => {
+  try {
+    const { body, error } = await xooxFetch<{
+      data: {
+        updated_employee_id: string;
+        new_role_id: ID;
+      };
+      message?: string;
+      status?: string;
+    }>(`/set_role_employees`, {
+      method: 'POST',
+      body: bodyData,
+      cache: 'no-cache',
+    });
+
+    if (error) throw new Error(error);
+
+    executeRevalidate([
+      RVK_EMPLOYEE,
+      `${RVK_EMPLOYEE}_${bodyData.employee_id}`,
+    ]);
 
     return { data: body };
   } catch (error) {
