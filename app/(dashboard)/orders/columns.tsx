@@ -1,6 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import Link from 'next/link';
 
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
 
@@ -11,7 +12,11 @@ export const ordersColumns: ColumnDef<OrdersItemType>[] = [
     id: 'order_id',
     accessorKey: 'order_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.order_id,
+    cell: ({ row }) => (
+      <Link href={`/orders/${row.original.order_id}`}>
+        {row.original.order_id}
+      </Link>
+    ),
     enableSorting: true,
     enableColumnFilter: true,
   },

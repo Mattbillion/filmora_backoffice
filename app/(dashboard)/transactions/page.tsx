@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -14,12 +13,8 @@ export const dynamic = 'force-dynamic';
 export default async function TransactionsPage(props: {
   searchParams?: SearchParams;
 }) {
-  const session = await auth();
   const searchParams = await props.searchParams;
-  const { data } = await getTransactions({
-    ...searchParams,
-    company_id: session?.user?.company_id,
-  });
+  const { data } = await getTransactions(searchParams);
 
   return (
     <>

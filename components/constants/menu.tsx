@@ -177,6 +177,7 @@ const operationsRoutes: SubMenuItemType[] = [
     title: 'Transactions',
     url: '/transactions',
     icon: CircleDollarSign,
+    subRoutes: true,
     permissions: ['get_transaction_list', 'get_transaction_detail'],
   },
 ];
