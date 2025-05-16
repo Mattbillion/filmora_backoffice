@@ -12,8 +12,8 @@ importers:
         specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.54.2(react@19.1.0))
       '@interpriz/eslint-config':
-        specifier: ^0.0.18
-        version: 0.0.18(@typescript-eslint/parser@8.22.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(react@19.1.0)(typescript@5.7.3)
+        specifier: ^0.0.19
+        version: 0.0.19(@typescript-eslint/parser@8.22.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(react@19.1.0)(typescript@5.7.3)
       '@interpriz/lib':
         specifier: ^0.0.3
         version: 0.0.3(jiti@1.21.7)(postcss@8.5.1)(yaml@2.7.0)
@@ -612,8 +612,8 @@ packages:
     resolution: {integrity: sha512-Ey6176gZmeqZuY/W/nZiUyvmb1/qInjcpiZjXWi6nON+nxJpD1bxtSoBxNliGISae32n6OwbY+TSXPZ1CfS4bw==}
     engines: {node: '>=18'}
 
-  '@interpriz/eslint-config@0.0.18':
-    resolution: {integrity: sha512-FuDLuSQ88GUto857ps924+PZoohokMwoPeRD3dy0UnWr7K7WD9IFLqVuNpixQQdSg/QXd+A+cwFlHb32GAWhAg==}
+  '@interpriz/eslint-config@0.0.19':
+    resolution: {integrity: sha512-Mj5Tehm6uEonvFwInLzNXfAfvAwD5NyloE3oxVuiRxtUBOSQPALcxWELmpfmwiBT4iVL/0dhspF0Cl2P+J7fgA==}
     peerDependencies:
       '@typescript-eslint/parser': ^6.15.0
       eslint: ^8.56.0
@@ -4728,7 +4728,7 @@ snapshots:
 
   '@inquirer/figures@1.0.10': {}
 
-  '@interpriz/eslint-config@0.0.18(@typescript-eslint/parser@8.22.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(react@19.1.0)(typescript@5.7.3)':
+  '@interpriz/eslint-config@0.0.19(@typescript-eslint/parser@8.22.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(react@19.1.0)(typescript@5.7.3)':
     dependencies:
       '@typescript-eslint/eslint-plugin': 6.21.0(@typescript-eslint/parser@8.22.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(typescript@5.7.3)
       '@typescript-eslint/parser': 8.22.0(eslint@8.57.1)(typescript@5.7.3)
@@ -5959,7 +5959,7 @@ snapshots:
       graphemer: 1.4.0
       ignore: 5.3.2
       natural-compare: 1.4.0
-      semver: 7.6.3
+      semver: 7.7.1
       ts-api-utils: 1.4.3(typescript@5.7.3)
     optionalDependencies:
       typescript: 5.7.3
@@ -6040,7 +6040,7 @@ snapshots:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
-      semver: 7.6.3
+      semver: 7.7.1
       ts-api-utils: 1.4.3(typescript@5.7.3)
     optionalDependencies:
       typescript: 5.7.3
@@ -6070,7 +6070,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.7.3)
       eslint: 8.57.1
-      semver: 7.6.3
+      semver: 7.7.1
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -8335,8 +8335,7 @@ snapshots:
 
   semver@7.6.3: {}
 
-  semver@7.7.1:
-    optional: true
+  semver@7.7.1: {}
 
   sentence-case@3.0.4:
     dependencies:
