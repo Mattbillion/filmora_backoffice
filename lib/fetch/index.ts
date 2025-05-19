@@ -44,6 +44,7 @@ export async function xooxFetch<
     total_count?: number;
   },
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
+  let opts = { ...options };
   try {
     const headers = new Headers(options.headers);
 
@@ -52,11 +53,14 @@ export async function xooxFetch<
       const session = await auth();
       if (!!session?.user?.id)
         headers.set('Authorization', `Bearer ${session?.user?.id}`);
+      if (!opts.searchParams) opts.searchParams = {};
+
+      opts.searchParams.company_id = session?.user?.company_id;
     }
 
     const { endpoint, fetchOptions } = genFetchParams(url, {
       cache: 'force-cache',
-      ...options,
+      ...opts,
       headers,
     });
 
@@ -78,7 +82,7 @@ export async function xooxFetch<
     };
   } catch (error: any) {
     console.error('url: ', url);
-    console.error('Fetch options: ', JSON.stringify(options, null, 2));
+    console.error('Fetch options: ', JSON.stringify(opts, null, 2));
     console.error(
       `Fetch error: `,
       error instanceof Error ? error.message : String(error),

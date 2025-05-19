@@ -7,7 +7,7 @@ export const bannersSchema = z.object({
   picture: z.string(),
   link: z.string(),
   location: z.string(),
-  special_cat_id: z.null(),
+  special_cat_id: z.number().optional(),
   status: z.boolean(),
 });
 

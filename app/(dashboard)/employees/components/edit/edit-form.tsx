@@ -1,11 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { Loader } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
-import { patchEmployee } from '@/app/(dashboard)/employees/actions';
+import {
+  patchEmployee,
+  updateEmployeeRole,
+} from '@/app/(dashboard)/employees/actions';
 import {
   EmployeeBodyType,
   EmployeeItemType,
@@ -22,6 +26,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -29,6 +34,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getRoleList } from '@/features/role/actions';
+import { RoleItemType } from '@/features/role/schema';
+import { checkPermission } from '@/lib/permission';
 
 export const EditForm = ({
   initialData,
@@ -179,6 +187,7 @@ export const EditForm = ({
                   </FormItem>
                 )}
               />
+              <RoleSelect employee={initialData} />
             </div>
           </form>
           <div className="mt-4 flex items-center gap-1">
@@ -201,3 +210,43 @@ export const EditForm = ({
     </Card>
   );
 };
+
+function RoleSelect({ employee }: { employee: EmployeeItemType }) {
+  const [roles, setRoles] = useState<RoleItemType[]>([]);
+  const [loading, startLoadingTransition] = useTransition();
+  const [updating, startUpdatingTransition] = useTransition();
+  const { data: session } = useSession();
+  useEffect(() => {
+    startLoadingTransition(() => {
+      getRoleList().then((c) => setRoles(c.data.data || []));
+    });
+  }, []);
+  if (!checkPermission(session, ['set_company_employee_role'])) return null;
+
+  return (
+    <div className="space-y-2">
+      <Label>Role</Label>
+      <Select
+        onValueChange={(val) =>
+          startUpdatingTransition(() => {
+            updateEmployeeRole({
+              employee_id: employee.id.toString(),
+              role_id: Number(val),
+            }).then(() => toast.success('Role updated successfully'));
+          })
+        }
+      >
+        <SelectTrigger disabled={loading || updating}>
+          <SelectValue placeholder="Assign role" />
+        </SelectTrigger>
+        <SelectContent>
+          {roles.map((c, idx) => (
+            <SelectItem value={c.id.toString()} key={idx}>
+              {c.role_name}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}

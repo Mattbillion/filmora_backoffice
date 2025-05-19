@@ -91,7 +91,7 @@ const FormSheet = forwardRef<FormDialogRef, FormSheetProps>(
             <form onSubmit={form.handleSubmit(onSubmit, console.error)}>
               <div
                 className={cn(
-                  'max-h-[calc(100vh-200px)] space-y-4 overflow-y-scroll px-2 py-1',
+                  'max-h-[calc(100vh-150px)] space-y-4 overflow-y-scroll px-2 py-1',
                   containerClassName,
                 )}
               >

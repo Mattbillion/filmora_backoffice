@@ -1,3 +1,5 @@
+import { Fragment } from 'react';
+
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -26,9 +28,9 @@ export function SidebarMenuGroup({
       {!!label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
       <SidebarGroupContent>
         <SidebarMenu>
-          {items.map((item) => (
-            <>
-              <SidebarMenuItem key={item.title}>
+          {items.map((item, idx) => (
+            <Fragment key={idx}>
+              <SidebarMenuItem>
                 <SidebarMenuButton tooltip={item.title} asChild>
                   <Link
                     href={item.url}
@@ -43,7 +45,7 @@ export function SidebarMenuGroup({
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {!!item.children?.length && (
-                <SidebarMenuSub key={item.title}>
+                <SidebarMenuSub>
                   {item.children.map((child) => (
                     <SidebarMenuSubItem key={child.title}>
                       <SidebarMenuSubButton asChild>
@@ -62,7 +64,7 @@ export function SidebarMenuGroup({
                   ))}
                 </SidebarMenuSub>
               )}
-            </>
+            </Fragment>
           ))}
         </SidebarMenu>
       </SidebarGroupContent>

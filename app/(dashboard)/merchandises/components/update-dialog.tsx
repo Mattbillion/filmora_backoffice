@@ -3,11 +3,16 @@
 import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { X } from 'lucide-react';
+import Image from 'next/image';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
+import { Button } from '@/components/ui/button';
 import {
+  FieldArray,
   FormControl,
   FormField,
   FormItem,
@@ -22,6 +27,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getHierarchicalCategories } from '@/features/category/actions';
+import { HierarchicalSelect } from '@/features/category/components/hierarichal-select';
+import { HierarchicalCategory } from '@/features/category/schema';
+import { getDiscounts } from '@/features/discounts/actions';
+import { DiscountsItemType } from '@/features/discounts/schema';
 
 import { patchMerchandises } from '../actions';
 import {
@@ -39,7 +49,10 @@ export function UpdateDialog({
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-  const [dropdownData, setDropdownData] = useState<Record<string, any[]>>({});
+  const [dropdownData, setDropdownData] = useState<{
+    cat_id?: HierarchicalCategory[];
+    discount_id?: DiscountsItemType[];
+  }>({});
   const [loading, startLoadingTransition] = useTransition();
 
   const form = useForm<MerchandisesBodyType>({
@@ -75,37 +88,35 @@ export function UpdateDialog({
       onOpenChange={(c) => {
         if (c) {
           startLoadingTransition(() => {
-            //          Promise.all([
-            //              fetchSomething().then(res => res?.data?.data || []),
-            //              fetchSomething().then(res => res?.data?.data || [])
-            //           ]).then(([example_cat_id, example_product_id]) => {
-            //                setDropdownData(prevData => ({ ...prevData, example_cat_id, example_product_id }));
-            //          });
+            Promise.all([
+              getHierarchicalCategories().then((res) => res?.data || []),
+              getDiscounts().then((res) => res?.data?.data || []),
+            ]).then(([cat_id, discount_id]) => {
+              setDropdownData((prevData) => ({
+                ...prevData,
+                cat_id,
+                discount_id,
+              }));
+            });
           });
         }
       }}
     >
       <FormField
         control={form.control}
-        name="com_id"
+        name="cat_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Com id</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(Number(value))}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Com id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="0">This</SelectItem>
-                <SelectItem value="2">Is</SelectItem>
-                <SelectItem value="3">Generated</SelectItem>
-              </SelectContent>
-            </Select>
+            <FormLabel>Category</FormLabel>
+            {loading ? (
+              'Loading'
+            ) : (
+              <HierarchicalSelect
+                categories={dropdownData.cat_id || []}
+                onChange={field.onChange}
+                value={field.value}
+              />
+            )}
             <FormMessage />
           </FormItem>
         )}
@@ -113,26 +124,10 @@ export function UpdateDialog({
 
       <FormField
         control={form.control}
-        name="cat_id"
+        name="com_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Cat id</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(Number(value))}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Cat id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="0">This</SelectItem>
-                <SelectItem value="2">Is</SelectItem>
-                <SelectItem value="3">Generated</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
+            <Input {...field} type="hidden" />
           </FormItem>
         )}
       />
@@ -175,6 +170,111 @@ export function UpdateDialog({
         )}
       />
 
+      <FieldArray name="medias">
+        {({ fields, append, remove }) => (
+          <div className="space-y-4">
+            <FormLabel>Medias</FormLabel>
+            <div className="space-y-4 rounded-lg border border-input py-4">
+              <div className="flex flex-col gap-4">
+                {fields.map((field, index) => (
+                  <>
+                    <div
+                      key={field.id}
+                      className="relative flex items-start gap-2 px-4"
+                    >
+                      <FormField
+                        control={form.control}
+                        name={`medias.${index}.media_url`}
+                        render={({ field: itemField }) => (
+                          <div className="relative aspect-square w-32 overflow-hidden rounded-md">
+                            <Image
+                              src={itemField.value}
+                              alt=""
+                              fill
+                              className="object-cover"
+                            />
+
+                            <Button
+                              type="button"
+                              variant="destructive"
+                              size="icon"
+                              className="absolute left-2 top-2"
+                              onClick={() => remove(index)}
+                            >
+                              <X />
+                            </Button>
+                          </div>
+                        )}
+                      />
+                      <div className="flex-1 space-y-2">
+                        <FormField
+                          control={form.control}
+                          name={`medias.${index}.media_label`}
+                          render={({ field: itemField }) => (
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">
+                                Media label
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...itemField}
+                                  placeholder="Media label"
+                                  className="h-8"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name={`medias.${index}.media_desc`}
+                          render={({ field: itemField }) => (
+                            <FormItem className="space-y-1">
+                              <FormLabel className="text-sm">
+                                Media desc
+                              </FormLabel>
+                              <FormControl>
+                                <Input
+                                  {...itemField}
+                                  placeholder="Media desc"
+                                  className="h-8"
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
+                    <div className="border border-dashed border-border" />
+                  </>
+                ))}
+              </div>
+
+              <div className="px-4">
+                <UploadImageItem
+                  field={
+                    {
+                      value: undefined,
+                      onChange: (newFile: string) => {
+                        append({
+                          media_url: newFile,
+                          media_desc: '',
+                          media_type: 'image',
+                          media_label: '',
+                        });
+                      },
+                    } as any
+                  }
+                  imagePrefix="picture"
+                />
+              </div>
+            </div>
+          </div>
+        )}
+      </FieldArray>
+
       <FormField
         control={form.control}
         name="discount_id"
@@ -186,14 +286,16 @@ export function UpdateDialog({
               value={field.value?.toString()}
             >
               <FormControl>
-                <SelectTrigger>
+                <SelectTrigger disabled={loading}>
                   <SelectValue placeholder="Select a Discount id" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent defaultValue="false">
-                <SelectItem value="0">This</SelectItem>
-                <SelectItem value="2">Is</SelectItem>
-                <SelectItem value="3">Generated</SelectItem>
+                {dropdownData.discount_id?.map((c, idx) => (
+                  <SelectItem key={idx} value={c.id.toString()}>
+                    {c.discount_name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
             <FormMessage />

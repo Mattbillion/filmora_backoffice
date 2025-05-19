@@ -94,6 +94,7 @@ export async function uploadImage(formData: FormData) {
         result?.error || (result as any)?.message || String(res.status),
       );
 
+    console.log(JSON.stringify(result, null, 2));
     const filePath = result?.data?.data?.original;
 
     return { data: filePath, error: null };

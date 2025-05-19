@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { notFound } from 'next/navigation';
 
 import { getEmployee } from '@/app/(dashboard)/employees/actions';
 import { ChangeEmail } from '@/app/(dashboard)/employees/components/edit/change-email';
@@ -19,9 +19,7 @@ export default async function Page({
 
   const userData = data?.data;
 
-  if (!userData) {
-    return 'Alga alaa';
-  }
+  if (!userData) return notFound();
 
   return (
     <div className="flex flex-col gap-6">
@@ -34,16 +32,3 @@ export default async function Page({
     </div>
   );
 }
-
-const userInfoSchema = z.object({
-  firstname: z.string(),
-  lastname: z.string(),
-  phone: z.string(),
-  email: z.string(),
-  profile: z.string(),
-  emailVerified: z.string(),
-  company_id: z.string(),
-  status: z.boolean(),
-});
-
-export type UserBodyType = z.infer<typeof userInfoSchema>;

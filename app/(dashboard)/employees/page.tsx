@@ -28,7 +28,7 @@ export default async function EmployeePage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Employee list (${data?.pagination?.total ?? data?.data?.length})`}
+          title={`Employee list (${data?.total_count ?? data?.data?.length})`}
           description={session?.user?.company_name}
         />
         <CreateDialog>
@@ -42,8 +42,7 @@ export default async function EmployeePage(props: {
         <DataTable
           columns={employeeColumns}
           data={data.data}
-          pageNumber={data?.pagination?.nextPage - 1}
-          pageCount={data?.pagination?.pageCount}
+          rowCount={data?.total_count ?? data?.data?.length}
         />
       </Suspense>
     </>

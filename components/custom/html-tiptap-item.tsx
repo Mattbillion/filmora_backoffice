@@ -14,15 +14,19 @@ import { MinimalTiptapEditor } from './minimal-tiptap';
 
 export default function HtmlTipTapItem({
   field,
+  label,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
+  label?: string;
 }) {
   const { formState } = useFormContext();
 
   return (
     <FormItem>
-      <FormLabel className="sr-only">Body</FormLabel>
+      <FormLabel className={cn({ 'sr-only': !label })}>
+        {label || 'Body'}
+      </FormLabel>
       <FormControl>
         <MinimalTiptapEditor
           {...field}

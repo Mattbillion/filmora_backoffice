@@ -21,7 +21,7 @@ module.exports = function (
   plop.setHelper('isCurrency', (key) => /(price|sale)/g.test(key));
   plop.setHelper('isArray', (value) => Array.isArray(value));
   plop.setHelper('canFetchData', (dataKeys = []) => dataKeys.some(c => c.endsWith('_id')));
-  plop.setHelper('getNameField', (dataKeys = []) => dataKeys.find(c => c.includes('_name') || c.includes('title')));
+  plop.setHelper('getNameField', (dataKeys = []) => dataKeys.find(c => c.includes('_name') || c.includes('title')) || dataKeys[0] || 'no_name');
   plop.setHelper('canSort', (key, value) => {
     const isImage = typeof value === 'string' && ['.jpg', '.jpeg', '.png', '.webp'].some(ext => value.toLowerCase().endsWith(ext));
     const isHtml = typeof key === 'string' && (key.includes('desc') || key.includes('body'));

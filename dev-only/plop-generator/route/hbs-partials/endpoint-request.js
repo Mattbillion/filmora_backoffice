@@ -114,5 +114,5 @@ export const endpointRequestHelpers = (plop) => {
 	plop.setHelper('genRequestCacheKey', (pathList) => {
 		return pathList.filter(c => c === '{param}').map((c, idx) => '${param' + `${idx+1}}`).join('_');
 	});
-	plop.setHelper('getRequestNameByMethod', (endpointList, method) => endpointList.find(c => c.method === method)?.name || 'undefined');
+	plop.setHelper('getRequestNameByMethod', (endpointList, method) => endpointList.find(c => c.method === method)?.name || endpointList[0]?.name);
 }

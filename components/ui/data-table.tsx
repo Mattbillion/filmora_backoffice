@@ -80,7 +80,7 @@ export function DataTable<TData, TValue>({
 
   const { page, page_size, ...qsObj } = useQueryString<QueryParamsType>({
     page: 1,
-    page_size: 5,
+    page_size: 30,
     filters: '',
     sort_by: '',
     sort_order: '',

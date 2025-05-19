@@ -189,7 +189,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                          "raw": "{{base_url}}/halls?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+                          "raw": "{{base_url}}/halls?page=1&page_size=10",
                           "host": [
                             "{{base_url}}"
                           ],
@@ -207,15 +207,18 @@
                             },
                             {
                               "key": "filters",
-                              "value": ""
+                              "value": "",
+                              "disabled": true
                             },
                             {
                               "key": "start_date",
-                              "value": "2024-11-01"
+                              "value": "2024-11-01",
+                              "disabled": true
                             },
                             {
                               "key": "end_date",
-                              "value": "2024-12-13"
+                              "value": "2024-12-13",
+                              "disabled": true
                             },
                             {
                               "key": "date_column",
@@ -319,7 +322,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{base_url}}/branches?page=1&page_size=10&filters=status=true&start_date=2024-11-01&end_date=2024-12-13",
+                      "raw": "{{base_url}}/branches?page=1&page_size=10",
                       "host": [
                         "{{base_url}}"
                       ],
@@ -337,15 +340,18 @@
                         },
                         {
                           "key": "filters",
-                          "value": "status=true"
+                          "value": "status=true",
+                          "disabled": true
                         },
                         {
                           "key": "start_date",
-                          "value": "2024-11-01"
+                          "value": "2024-11-01",
+                          "disabled": true
                         },
                         {
                           "key": "end_date",
-                          "value": "2024-12-13"
+                          "value": "2024-12-13",
+                          "disabled": true
                         },
                         {
                           "key": "date_column",
@@ -2235,7 +2241,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/transactions?page=1&page_size=10&start_date=2024-12-01&end_date=2024-12-07",
+              "raw": "{{base_url}}/transactions?page=1&page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -2258,11 +2264,13 @@
                 },
                 {
                   "key": "start_date",
-                  "value": "2024-12-01"
+                  "value": "2024-12-01",
+                  "disabled": true
                 },
                 {
                   "key": "end_date",
-                  "value": "2024-12-07"
+                  "value": "2024-12-07",
+                  "disabled": true
                 },
                 {
                   "key": "date_column",
@@ -2308,12 +2316,18 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/discounts",
+              "raw": "{{base_url}}/discounts?company_id=9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "discounts"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
               ]
             }
           },
@@ -2419,7 +2433,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10&filters=status=true,max_age=100",
+              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -2437,7 +2451,8 @@
                 },
                 {
                   "key": "filters",
-                  "value": "status=true,max_age=100"
+                  "value": "status=true,max_age=100",
+                  "disabled": true
                 },
                 {
                   "key": "start_date",
@@ -3163,7 +3178,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDQ2OTk4ODN9.4Jqn7wtgcRxR-_2ar5k17OSl2u0PpivsTrV2iyhTbpk",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDU2NDIwODF9.3rgbIA6mIz1BlWYKtdST5Y84R35Na9ON2JS-7s9VPAI",
       "type": "string"
     }
   ]
