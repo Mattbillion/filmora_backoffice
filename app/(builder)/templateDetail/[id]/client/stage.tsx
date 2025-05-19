@@ -3,7 +3,7 @@
 import { JSX, useEffect, useRef } from 'react';
 import { Group, Layer, Rect, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
-import { debounce, pickBy } from 'lodash';
+import { debounce } from 'lodash';
 
 import { Sector } from '@/app/(builder)/templateDetail/[id]/client/sector';
 import { Button } from '@/components/ui/button';
@@ -178,10 +178,6 @@ export default function Stage({
 
     for (let i = 0; i < sectionsRef.current.length; i++) {
       const node = sectionsRef.current[i];
-      console.log(
-        'attrs',
-        pickBy(node.attrs, (_, k) => k.startsWith('data-')),
-      );
 
       const [firstPart, secondPart] = node.id().replace(/_/g, '-').split('-');
 

@@ -48,6 +48,10 @@ export const dataMap = {
   E: 'entrance',
 } as const;
 
+export const dataMapReverse = Object.fromEntries(
+  Object.entries(dataMap).map(([k, v]) => [v, k]),
+);
+
 export const translationMap: Record<string, string> = {
   seat: 'Суудал',
   table: 'Ширээ',

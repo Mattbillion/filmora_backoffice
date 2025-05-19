@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { currencyFormat } from '@/lib/utils';
 
-import { translationMap } from './constants';
+import { dataMapReverse, translationMap } from './constants';
 
 export function Sector({
   stage,
@@ -23,7 +23,6 @@ export function Sector({
   stage: Konva.Stage;
   sector: Konva.Node & { children?: Konva.Node[] };
 }) {
-  const [count, setCount] = useState(0);
   const node = stage.findOne(
     (cc: Konva.Shape) =>
       cc.attrs['data-testid'] === sector.attrs?.['data-testid'],
@@ -61,42 +60,9 @@ export function Sector({
         <Button
           variant="ghost"
           className="flex w-full items-center justify-between"
-          // onClick={() => {
-          //   const existedMask = masks.some(
-          //     (c) =>
-          //       c.id ===
-          //       sector.attrs['data-testid'],
-          //   );
-          //   node?.visible(existedMask);
-          //   if (existedMask)
-          //     return setMasks(
-          //       masks.filter(
-          //         (f) =>
-          //           f.id !==
-          //           sector.attrs['data-testid'],
-          //       ),
-          //     );
-          //   setMasks([
-          //     ...masks,
-          //     {
-          //       id: sector.attrs['data-testid'],
-          //       x: nodeX,
-          //       y: nodeY,
-          //       width: nodeW,
-          //       height: nodeH,
-          //     },
-          //   ]);
-          // }}
         >
           Sector: {sector.attrs?.['data-sector'] || sector.attrs?.['data-name']}
           <Edit />
-          {/*<Checkbox*/}
-          {/*  checked={masks.some(*/}
-          {/*    (c) =>*/}
-          {/*      c.id ===*/}
-          {/*      sector.attrs['data-testid'],*/}
-          {/*  )}*/}
-          {/*/>*/}
         </Button>
       </CollapsibleTrigger>
       <CollapsibleContent>
@@ -105,42 +71,58 @@ export function Sector({
             <SectorInput
               node={sector}
               dataFields={['data-sector', 'data-name']}
+              onFocus={() => {
+                elIndicator?.to({
+                  x: nodeX - 2,
+                  y: nodeY - 2,
+                  width: nodeW + 4,
+                  height: nodeH + 4,
+                  duration: 0.1,
+                  opacity: 1,
+                  visible: true,
+                });
+              }}
             />
           </div>
           {sector.children
             ?.filter((c) => c.attrs['data-purchasable'])
             ?.map((c, idx) => {
+              const placeIndicator = () => {
+                const {
+                  x: rowX,
+                  y: rowY,
+                  width: rowW,
+                  height: rowH,
+                } = c.getClientRect({
+                  relativeTo: stage,
+                });
+                elIndicator?.setAttr('cornerRadius', 2);
+                elIndicator?.setAttr('strokeWidth', 1);
+                elIndicator?.to({
+                  x: rowX - 2,
+                  y: rowY - 2,
+                  width: rowW + 4,
+                  height: rowH + 4,
+                  duration: 0.1,
+                  opacity: 1,
+                  visible: true,
+                });
+              };
               return (
                 <div
                   key={idx}
                   className="flex items-center gap-4 border-b border-neutral-700 px-4 py-2 font-mono text-sm shadow-sm last:border-b-0"
-                  onMouseEnter={() => {
-                    const {
-                      x: rowX,
-                      y: rowY,
-                      width: rowW,
-                      height: rowH,
-                    } = c.getClientRect({
-                      relativeTo: stage,
-                    });
-                    elIndicator?.setAttr('cornerRadius', 2);
-                    elIndicator?.setAttr('strokeWidth', 1);
-                    elIndicator?.to({
-                      x: rowX - 2,
-                      y: rowY - 2,
-                      width: rowW + 4,
-                      height: rowH + 4,
-                      duration: 0.1,
-                      opacity: 1,
-                      visible: true,
-                    });
-                  }}
                 >
                   <SectorInput
                     node={c}
                     dataFields={['data-row', 'data-room']}
+                    onFocus={placeIndicator}
                   />
-                  <SectorInput node={c} dataFields={['data-price']} />
+                  <SectorInput
+                    node={c}
+                    dataFields={['data-price']}
+                    onFocus={placeIndicator}
+                  />
                 </div>
               );
             })}
@@ -183,23 +165,34 @@ const getFieldInfo = (
 function SectorInput({
   node,
   dataFields,
+  onFocus,
 }: {
   node: Konva.Node & { children?: Konva.Node[] };
   dataFields: string[];
+  onFocus?: () => void;
 }) {
   const { field, label, placeholder } = getFieldInfo(node, dataFields);
   const [value, setValue] = useState(node.attrs[field]);
+  const nodeId = node.id();
 
   return (
     <div className="flex flex-col space-y-1.5">
-      <Label htmlFor={node.id() + field}>{label}</Label>
+      <Label htmlFor={nodeId + field}>{label}</Label>
       <Input
-        id={node.id() + field}
+        id={nodeId + field}
         value={value}
         onChange={(e) => {
-          setValue(e.target.value);
-          node.setAttr(field, e.target.value);
+          const val = e.target.value;
+          const dataKey = field.replace('data-', '');
+          const reversedK =
+            dataMapReverse[dataKey === 'name' ? 'sector' : dataKey];
+          const reg = new RegExp(`(?<=-)(${reversedK}[^-]*)(?=-|$)`);
+
+          node.setAttr('id', nodeId.replace(reg, `${reversedK}${val}`));
+          node.setAttr(field, val);
+          setValue(val);
         }}
+        onFocus={onFocus}
         placeholder={`Current: ${placeholder}`}
         className="flex-1 rounded-sm bg-neutral-600"
       />
