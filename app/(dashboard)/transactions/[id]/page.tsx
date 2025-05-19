@@ -36,9 +36,10 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 export default async function TransactionDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
-  const { data } = await getTransactionsDetail(params.id);
+  const { id } = await params;
+  const { data } = await getTransactionsDetail(id);
   const { data: orderData } = await getOrdersDetail(data?.data.order_id!);
   const transaction = data?.data;
   const order = orderData?.data;

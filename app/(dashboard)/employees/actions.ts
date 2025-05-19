@@ -1,6 +1,6 @@
 import { xooxFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
+import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
 import {
@@ -74,7 +74,7 @@ export const getEmployeeList = async (searchParams?: QueryParams) => {
     return { data: body };
   } catch (error) {
     console.error('Error fetching employees:', error);
-    return { data: { data: [], pagination: INITIAL_PAGINATION }, error };
+    return { data: { data: [], total_count: 0 }, error };
   }
 };
 

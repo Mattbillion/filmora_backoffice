@@ -46,7 +46,7 @@ const ImageEditBlock = ({
 
       if (file?.size >= 5000000) throw new Error('Зургийн хэмжээ том байна.');
 
-      const { data } = (await uploadImage(formData, 'large'))!;
+      const { data } = (await uploadImage(formData))!;
 
       editor.chain().focus().setImage({ src: data.url }).run();
 

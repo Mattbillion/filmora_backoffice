@@ -1,4 +1,3 @@
-import { flattenDeep } from 'lodash';
 import {
   Building2,
   CircleDollarSign,
@@ -238,12 +237,19 @@ export const permissionsByRoute: Record<string, string[]> = flattenDeep(
     return [...arr, ...c];
   }),
 ).reduce(
-  (acc, cur) => ({
+  (acc: any, cur: any) => ({
     ...acc,
     [cur.url
       .split('/')
-      .filter((cc) => !!cc)
+      .filter((cc: any) => !!cc)
       .join('/')]: cur.permissions,
   }),
   {},
 );
+
+export function flattenDeep(arr: any[]) {
+  return arr.reduce(
+    (acc, val) => acc.concat(Array.isArray(val) ? flattenDeep(val) : val),
+    [],
+  );
+}
