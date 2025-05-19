@@ -1,6 +1,6 @@
 'use client';
 
-import { JSX, useEffect, useRef, useState } from 'react';
+import { JSX, useEffect, useRef } from 'react';
 import { Group, Layer, Rect, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
 import { debounce, pickBy } from 'lodash';
@@ -34,16 +34,16 @@ export default function Stage({
 }) {
   const stageRef = useRef<Konva.Stage>(null);
   const sectionsRef = useRef<Konva.Node[]>([]);
-  const [masks, setMasks] = useState<
-    {
-      x: number;
-      y: number;
-      width: number;
-      height: number;
-      id: string;
-      fill?: string;
-    }[]
-  >([]);
+  // const [masks, setMasks] = useState<
+  //   {
+  //     x: number;
+  //     y: number;
+  //     width: number;
+  //     height: number;
+  //     id: string;
+  //     fill?: string;
+  //   }[]
+  // >([]);
 
   useEffect(() => {
     if (stageRef.current) {
@@ -237,18 +237,18 @@ export default function Stage({
         <Layer>
           {shapes}
           <Group id="mask">
-            {masks.map((mask, idx) => (
-              <Rect
-                key={idx}
-                id={mask.id}
-                width={mask.width}
-                height={mask.height}
-                x={mask.x}
-                y={mask.y}
-                fill={mask.fill || '#1E3A8A'}
-                cornerRadius={4}
-              />
-            ))}
+            {/*{masks.map((mask, idx) => (*/}
+            {/*  <Rect*/}
+            {/*    key={idx}*/}
+            {/*    id={mask.id}*/}
+            {/*    width={mask.width}*/}
+            {/*    height={mask.height}*/}
+            {/*    x={mask.x}*/}
+            {/*    y={mask.y}*/}
+            {/*    fill={mask.fill || '#1E3A8A'}*/}
+            {/*    cornerRadius={4}*/}
+            {/*  />*/}
+            {/*))}*/}
           </Group>
           <Rect
             name="el-indicator"
