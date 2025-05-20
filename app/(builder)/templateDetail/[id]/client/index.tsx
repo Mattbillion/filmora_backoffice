@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { imageResize } from '@/lib/utils';
 
+import { INITIAL_SCALE } from './constants';
 import XooxStage from './stage';
 import {
   getStyleStr,
@@ -23,8 +24,6 @@ import {
   type SVGJsonType,
   svgToKonva,
 } from './svg-to-konva';
-
-const INITIAL_SCALE = { x: 0.9, y: 0.9 };
 
 export default function Client({
   templateJSON = [],

@@ -5,11 +5,11 @@ import { Group, Layer, Rect, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
 import { debounce } from 'lodash';
 
-import { Sector } from '@/app/(builder)/templateDetail/[id]/client/sector';
 import { Button } from '@/components/ui/button';
 
 import { Floor } from './floor';
 import { Section } from './section';
+import { Sector } from './sector';
 
 const scaleBy = 1.05;
 const maxScale = 10;
@@ -256,7 +256,7 @@ export default function Stage({
             fill="rgba(0,210,255,0.49)"
             stroke="#00D2FF"
             strokeWidth={2}
-            cornerRadius={4}
+            cornerRadius={2}
           />
         </Layer>
       </KonvaStage>
@@ -306,7 +306,9 @@ export default function Stage({
         </div>
         <Button
           className="m-4"
-          onClick={() => console.log(stageRef.current?.toJSON())}
+          onClick={() => {
+            console.log(stageRef.current?.toObject());
+          }}
         >
           Build
         </Button>

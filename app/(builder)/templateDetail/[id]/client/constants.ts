@@ -70,7 +70,7 @@ export const translationMap: Record<string, string> = {
   block: 'Блок',
 };
 
-const INITIAL_SCALE = { x: 0.9, y: 0.9 };
+export const INITIAL_SCALE = { x: 0.9, y: 0.9 };
 
 export const KEY_CHARS = Object.keys(dataMap).join('');
 

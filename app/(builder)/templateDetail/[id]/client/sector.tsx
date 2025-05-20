@@ -16,12 +16,20 @@ import { currencyFormat } from '@/lib/utils';
 
 import { dataMapReverse, translationMap } from './constants';
 
+type KonvaNode = Konva.Node & { children?: Konva.Node[] };
+type ShapeRect = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+};
+
 export function Sector({
   stage,
   sector,
 }: {
   stage: Konva.Stage;
-  sector: Konva.Node & { children?: Konva.Node[] };
+  sector: KonvaNode;
 }) {
   const node = stage.findOne(
     (cc: Konva.Shape) =>
@@ -29,32 +37,27 @@ export function Sector({
   );
   if (!node) return null;
 
-  const {
-    x: nodeX,
-    y: nodeY,
-    width: nodeW,
-    height: nodeH,
-  } = node.getClientRect({
-    relativeTo: stage,
-  });
+  const getShapeRect = (n: KonvaNode) => n.getClientRect({ relativeTo: stage });
+
+  const nodeRect = getShapeRect(node);
 
   const elIndicator = stage.findOne('.el-indicator');
+  const navigateIndicator = (shapeRect: ShapeRect) =>
+    elIndicator?.to({
+      x: shapeRect.x - 2,
+      y: shapeRect.y - 2,
+      width: shapeRect.width + 4,
+      height: shapeRect.height + 4,
+      duration: 0.1,
+      opacity: 1,
+      visible: true,
+    });
 
   // if (sector.attrs['data-floor'] === '5') console.log(sector.children);
   return (
     <Collapsible
       className="sector-collapse w-full [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
-      onMouseEnter={() => {
-        elIndicator?.to({
-          x: nodeX - 2,
-          y: nodeY - 2,
-          width: nodeW + 4,
-          height: nodeH + 4,
-          duration: 0.1,
-          opacity: 1,
-          visible: true,
-        });
-      }}
+      onMouseEnter={() => navigateIndicator(nodeRect)}
     >
       <CollapsibleTrigger asChild>
         <Button
@@ -71,43 +74,13 @@ export function Sector({
             <SectorInput
               node={sector}
               dataFields={['data-sector', 'data-name']}
-              onFocus={() => {
-                elIndicator?.to({
-                  x: nodeX - 2,
-                  y: nodeY - 2,
-                  width: nodeW + 4,
-                  height: nodeH + 4,
-                  duration: 0.1,
-                  opacity: 1,
-                  visible: true,
-                });
-              }}
+              onFocus={() => navigateIndicator(nodeRect)}
             />
           </div>
           {sector.children
             ?.filter((c) => c.attrs['data-purchasable'])
             ?.map((c, idx) => {
-              const placeIndicator = () => {
-                const {
-                  x: rowX,
-                  y: rowY,
-                  width: rowW,
-                  height: rowH,
-                } = c.getClientRect({
-                  relativeTo: stage,
-                });
-                elIndicator?.setAttr('cornerRadius', 2);
-                elIndicator?.setAttr('strokeWidth', 1);
-                elIndicator?.to({
-                  x: rowX - 2,
-                  y: rowY - 2,
-                  width: rowW + 4,
-                  height: rowH + 4,
-                  duration: 0.1,
-                  opacity: 1,
-                  visible: true,
-                });
-              };
+              const rowRect = getShapeRect(c);
               return (
                 <div
                   key={idx}
@@ -116,12 +89,12 @@ export function Sector({
                   <SectorInput
                     node={c}
                     dataFields={['data-row', 'data-room']}
-                    onFocus={placeIndicator}
+                    onFocus={() => navigateIndicator(rowRect)}
                   />
                   <SectorInput
                     node={c}
                     dataFields={['data-price']}
-                    onFocus={placeIndicator}
+                    onFocus={() => navigateIndicator(rowRect)}
                   />
                 </div>
               );
@@ -134,24 +107,27 @@ export function Sector({
 
 const getFieldInfo = (
   node: Konva.Node & { children?: Konva.Node[] },
-  fields: string[],
+  fields: string[] = [],
 ) => {
-  let field = fields[0];
+  let [field, ...rest] = fields;
   let label = translationMap[field.replace('data-', '')] + ': ';
   let placeholder = node.attrs[field] || '';
 
-  for (let i = 0; i < fields.length; i++) {
-    if (node.attrs[fields[i]]) {
-      const mappingKey = fields[i].replace('data-', '');
+  for (let i = 0; i < rest.length; i++) {
+    const currentField = rest[i];
+
+    if (node.attrs[currentField]) {
+      const mappingKey = currentField.replace('data-', '');
 
       label = translationMap[mappingKey] + ': ';
-      field = fields[i];
-      placeholder = ['price', 'unit'].includes(mappingKey)
-        ? currencyFormat(
-            node.attrs[fields[i]],
-            mappingKey === 'price' ? undefined : '',
-          )
-        : node.attrs[fields[i]];
+      field = currentField;
+      placeholder =
+        mappingKey === 'price' || mappingKey === 'unit'
+          ? currencyFormat(
+              node.attrs[currentField],
+              mappingKey === 'price' ? undefined : '',
+            )
+          : node.attrs[currentField];
     }
   }
 
@@ -174,6 +150,8 @@ function SectorInput({
   const { field, label, placeholder } = getFieldInfo(node, dataFields);
   const [value, setValue] = useState(node.attrs[field]);
   const nodeId = node.id();
+  const dataKey = field.replace('data-', '');
+  const reversedK = dataMapReverse[dataKey === 'name' ? 'sector' : dataKey];
 
   return (
     <div className="flex flex-col space-y-1.5">
@@ -183,11 +161,9 @@ function SectorInput({
         value={value}
         onChange={(e) => {
           const val = e.target.value;
-          const dataKey = field.replace('data-', '');
-          const reversedK =
-            dataMapReverse[dataKey === 'name' ? 'sector' : dataKey];
           const reg = new RegExp(`(?<=-)(${reversedK}[^-]*)(?=-|$)`);
 
+          console.log('attrs', node.attrs);
           node.setAttr('id', nodeId.replace(reg, `${reversedK}${val}`));
           node.setAttr(field, val);
           setValue(val);

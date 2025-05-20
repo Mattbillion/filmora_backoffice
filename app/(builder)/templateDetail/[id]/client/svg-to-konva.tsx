@@ -185,7 +185,7 @@ export const svgToKonva = (
           if (needEl) ref.name('ticketSection');
           if (forceCache || canCache) {
             if (canCache) ref.name('cachedGroup');
-            (ref as unknown as Konva.Node).cache();
+            // (ref as unknown as Konva.Node).cache();
           }
         }
       }}
