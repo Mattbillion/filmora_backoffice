@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
+import DatePickerItem from '@/components/custom/datepicker-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
@@ -134,13 +135,11 @@ export function UpdateDialog({
         control={form.control}
         name="start_at"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Start at</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Start at" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <DatePickerItem
+            field={field}
+            label="Discount start at"
+            disableBy="none"
+          />
         )}
       />
 
@@ -148,13 +147,11 @@ export function UpdateDialog({
         control={form.control}
         name="end_at"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>End at</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter End at" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <DatePickerItem
+            field={field}
+            label="Discount end at"
+            disableBy="past"
+          />
         )}
       />
 
