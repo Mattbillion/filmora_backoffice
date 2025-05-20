@@ -16,6 +16,24 @@ import {
 } from 'react-konva';
 import { camelCase } from 'change-case-all';
 import Konva from 'konva';
+import { pick } from 'lodash';
+
+import { dataMap, idRegex } from './constants';
+
+// type sda = keyof typeof dataMap;
+// type DataAttributes = {
+//   -readonly [K in `data-${(typeof dataMap)[sda]}`]?: string;
+// };
+//
+// declare module 'konva' {
+//   interface NodeConfig {
+//     attrs: PrettyType<
+//       DataAttributes & {
+//         'data-testid': string;
+//       }
+//     >;
+//   }
+// }
 
 export type SVGJsonType = {
   type: string;
@@ -106,18 +124,19 @@ export const svgToKonva = (
 
   konvaProps.children = transformedChildren;
 
-  const forceCache =
-    properties.id === 'bg' ||
-    properties.id === 'background' ||
-    properties.id === 'mask';
-  const isTextNode = tagName === 'text' || tagName === 'tspan';
+  // const isTextNode = tagName === 'text' || tagName === 'tspan';
 
   return (
     <KonvaNode
       ref={(ref?: Konva.Node) => {
         if (ref) {
-          const groupInsideTicket =
-            ref.findAncestor('#tickets') && ref.getType() === 'Group';
+          const canBeTicket = !!ref.findAncestor('#tickets');
+          const forceCache =
+            properties.id === 'bg' ||
+            properties.id === 'background' ||
+            properties.id === 'mask' ||
+            !canBeTicket;
+          const groupInsideTicket = canBeTicket && ref.getType() === 'Group';
           const canCache =
             groupInsideTicket && !children?.some((c) => c.tagName === 'g');
           const needEl =
@@ -128,10 +147,41 @@ export const svgToKonva = (
                 !c.children?.some((cc) => cc.tagName === 'g'),
             );
 
-          ref.listening(
-            ref.id() === 'tickets' ||
-              (!!ref.findAncestor('#tickets') && !isTextNode),
-          );
+          // ref.listening(
+          //   ref.id() === 'tickets' ||
+          //     (!!ref.findAncestor('#tickets') && !isTextNode),
+          // );
+          if (
+            !forceCache &&
+            !!ref.findAncestor('#tickets') &&
+            idRegex.test(ref.id())
+          ) {
+            const prevDataAttr = pick(
+              ref.attrs,
+              Object.values(dataMap).map((c) => `data-${c}`),
+            );
+
+            ref.setAttrs(
+              ref
+                .id()
+                .split('-')
+                .reduce((acc, cur) => {
+                  const [tickedCode, ...codeValue] = idRegex.test(cur)
+                    ? cur || ''
+                    : [/^V(IP)?/.test(cur) ? 'r' : 'S', ...cur];
+                  return Object.assign(
+                    {
+                      ...acc,
+                      [`data-${(dataMap as any)[tickedCode as any]}`]:
+                        codeValue.join(''),
+                      'data-purchasable':
+                        idRegex.test(cur) || /^V(IP)?/.test(cur),
+                    },
+                    prevDataAttr,
+                  );
+                }, {}),
+            );
+          }
           if (needEl) ref.name('ticketSection');
           if (forceCache || canCache) {
             if (canCache) ref.name('cachedGroup');
@@ -141,6 +191,7 @@ export const svgToKonva = (
       }}
       key={compKey}
       hitStrokeWidth={0}
+      listening={false}
       shadowForStrokeEnabled={false}
       {...konvaProps}
     />
@@ -189,6 +240,7 @@ const propertyToProp = (
         context.fillStrokeShape(shape);
       };
       break;
+
     case 'text':
       konvaProps.text =
         children?.[0]?.value ||
