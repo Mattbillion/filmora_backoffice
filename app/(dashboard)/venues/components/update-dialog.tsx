@@ -23,9 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { patchVenuesDetail } from '../actions';
-import { VenuesBodyType, VenuesItemType, venuesSchema } from '../schema';
+import { patchVenuesDetail } from '@/features/venues/actions';
+import {
+  VenuesBodyType,
+  VenuesItemType,
+  venuesSchema,
+} from '@/features/venues/schema';
 
 export function UpdateDialog({
   children,

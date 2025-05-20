@@ -23,9 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { patchHallsDetail } from '../actions';
-import { HallsBodyType, HallsItemType, hallsSchema } from '../schema';
+import { patchHallsDetail } from '@/features/halls/actions';
+import {
+  HallsBodyType,
+  HallsItemType,
+  hallsSchema,
+} from '@/features/halls/schema';
 
 export function UpdateDialog({
   children,

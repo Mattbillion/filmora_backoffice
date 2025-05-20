@@ -23,12 +23,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { deleteBranchesDetail } from '@/features/branches/actions';
+import { BranchesItemType } from '@/features/branches/schema';
 import { checkPermission } from '@/lib/permission';
 import { cn, removeHTML } from '@/lib/utils';
 
-import { deleteBranchesDetail } from './actions';
 import { UpdateDialog } from './components';
-import { BranchesItemType } from './schema';
 
 const Action = ({ row }: CellContext<BranchesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);

@@ -24,9 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { createHalls } from '../actions';
-import { HallsBodyType, hallsSchema } from '../schema';
+import { createHalls } from '@/features/halls/actions';
+import { HallsBodyType, hallsSchema } from '@/features/halls/schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);

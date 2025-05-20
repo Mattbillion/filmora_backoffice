@@ -24,9 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { createBranches } from '../actions';
-import { BranchesBodyType, branchesSchema } from '../schema';
+import { createBranches } from '@/features/branches/actions';
+import { BranchesBodyType, branchesSchema } from '@/features/branches/schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);

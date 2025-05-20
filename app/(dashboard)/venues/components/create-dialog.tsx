@@ -23,9 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { createVenues } from '../actions';
-import { VenuesBodyType, venuesSchema } from '../schema';
+import { createVenues } from '@/features/venues/actions';
+import { VenuesBodyType, venuesSchema } from '@/features/venues/schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);

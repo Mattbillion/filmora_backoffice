@@ -23,9 +23,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { patchBranchesDetail } from '../actions';
-import { BranchesBodyType, BranchesItemType, branchesSchema } from '../schema';
+import { patchBranchesDetail } from '@/features/branches/actions';
+import {
+  BranchesBodyType,
+  BranchesItemType,
+  branchesSchema,
+} from '@/features/branches/schema';
 
 export function UpdateDialog({
   children,

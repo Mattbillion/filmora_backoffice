@@ -21,12 +21,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { deleteHallsDetail } from '@/features/halls/actions';
+import { HallsItemType } from '@/features/halls/schema';
 import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
 
-import { deleteHallsDetail } from './actions';
 import { UpdateDialog } from './components';
-import { HallsItemType } from './schema';
 
 const Action = ({ row }: CellContext<HallsItemType, unknown>) => {
   const [loading, setLoading] = useState(false);

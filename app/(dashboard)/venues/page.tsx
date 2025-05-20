@@ -6,10 +6,10 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
+import { getVenues } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
-import { getVenues } from './actions';
 import { venuesColumns } from './columns';
 import { CreateDialog } from './components';
 

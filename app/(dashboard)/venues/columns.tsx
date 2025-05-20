@@ -22,12 +22,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { deleteVenuesDetail } from '@/features/venues/actions';
+import { VenuesItemType } from '@/features/venues/schema';
 import { checkPermission } from '@/lib/permission';
 import { cn, removeHTML } from '@/lib/utils';
 
-import { deleteVenuesDetail } from './actions';
 import { UpdateDialog } from './components';
-import { VenuesItemType } from './schema';
 
 const Action = ({ row }: CellContext<VenuesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
