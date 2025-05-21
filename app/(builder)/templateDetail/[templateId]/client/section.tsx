@@ -21,20 +21,20 @@ export function Section({
   section: Konva.Node[];
   children: ReactNode;
 }) {
+  const elIndicator = stage.findOne('.el-indicator');
+
   return (
     <Accordion type="multiple">
       <AccordionItem
         value={label}
         className="px-2 has-[.sector-collapse[data-state=open]]:border has-[.sector-collapse[data-state=open]]:bg-transparent [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
-        onMouseLeave={() => {
-          const elIndicator = stage.findOne('.el-indicator');
+        onMouseLeave={() =>
           elIndicator?.to({
             opacity: 0,
             duration: 0.5,
-          });
-        }}
+          })
+        }
         onMouseEnter={() => {
-          const elIndicator = stage.findOne('.el-indicator');
           const sectionNode = stage.findOne(
             (cc: Konva.Shape) =>
               cc.attrs['data-testid'] === section[0]?.attrs['data-testid'],

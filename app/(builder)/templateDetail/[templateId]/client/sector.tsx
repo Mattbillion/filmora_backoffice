@@ -148,7 +148,7 @@ function SectorInput({
   onFocus?: () => void;
 }) {
   const { field, label, placeholder } = getFieldInfo(node, dataFields);
-  const [value, setValue] = useState(node.attrs[field]);
+  const [value, setValue] = useState(node.attrs[field]?.replace('_', ' '));
   const nodeId = node.id();
   const dataKey = field.replace('data-', '');
   const reversedK = dataMapReverse[dataKey === 'name' ? 'sector' : dataKey];
@@ -194,7 +194,7 @@ function SectorInput({
         onChange={(e) => {
           const val = e.target.value;
           setValue(val);
-          replaceChildrenId(node, val);
+          replaceChildrenId(node, val.replace(/\s/g, '_'));
         }}
         onFocus={onFocus}
         placeholder={`Current: ${placeholder || 'N/A'}`}
