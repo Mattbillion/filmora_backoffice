@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -97,13 +98,11 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         control={form.control}
         name="company_logo"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Company logo</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Company logo" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <UploadImageItem
+            field={field}
+            imagePrefix="picture"
+            label="Company logo"
+          />
         )}
       />
 

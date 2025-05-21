@@ -22,13 +22,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { patchAgeRestrictionsDetail } from '../actions';
+import { patchAgeRestrictionsDetail } from '@/features/age/actions';
 import {
   AgeRestrictionsBodyType,
   AgeRestrictionsItemType,
   ageRestrictionsSchema,
-} from '../schema';
+} from '@/features/age/schema';
 
 export function UpdateDialog({
   children,

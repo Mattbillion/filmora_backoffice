@@ -36,10 +36,7 @@ import {
   getAttributesHash,
   getAttributeValuesHash,
 } from '@/features/attributes/actions';
-import {
-  CategoryAttributesItemType,
-  CategoryAttributesValueItemType,
-} from '@/features/attributes/schema';
+import { CategoryAttributesItemType } from '@/features/attributes/schema';
 import { ID } from '@/lib/fetch/types';
 
 import { VariantOptionValueBodyType, variantOptionValueSchema } from './schema';
@@ -52,9 +49,9 @@ export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
   const [attributes, setAttributes] = useState<
     Record<ID, CategoryAttributesItemType>
   >({});
-  const [attributeValues, setAttributeValues] = useState<
-    Record<ID, CategoryAttributesValueItemType>
-  >({});
+  const [attributeValues, setAttributeValues] = useState<Record<ID, string>>(
+    {},
+  );
   const [loadingAttr, startLoadingAttrTransition] = useTransition();
   const [loadingAttrValues, startLoadingAttrValuesTransition] = useTransition();
   const [updating, startUpdateTransition] = useTransition();
@@ -114,6 +111,7 @@ export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
                       startLoadingAttrValuesTransition(() => {
                         getAttributeValuesHash({
                           page_size: 10000,
+                          filters: `attr_id=${value}`,
                         }).then((c) => setAttributeValues(c.data || {}));
                       });
                       field.onChange(Number(value));
@@ -158,7 +156,7 @@ export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
                       {Object.entries(attributeValues).map(
                         ([attrId, attr], idx) => (
                           <SelectItem key={idx} value={attrId}>
-                            {attr.value}
+                            {attr}
                           </SelectItem>
                         ),
                       )}

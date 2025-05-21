@@ -6,10 +6,10 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
+import { getAgeRestrictions } from '@/features/age/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
-import { getAgeRestrictions } from './actions';
 import { ageRestrictionsColumns } from './columns';
 import { CreateDialog } from './components';
 

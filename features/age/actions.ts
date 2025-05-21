@@ -28,6 +28,30 @@ export const getAgeRestrictions = async (searchParams?: QueryParams) => {
   }
 };
 
+export const getAgeRestrictionsHash = async () => {
+  try {
+    const { body, error } = await xooxFetch<
+      PaginatedResType<AgeRestrictionsItemType[]>
+    >('/age_restrictions', {
+      method: 'GET',
+      searchParams: { page_size: 100000 },
+      next: { tags: [`${RVK_AGE_RESTRICTIONS}_hierarchical`] },
+    });
+
+    if (error) throw new Error(error);
+
+    return {
+      data: (body.data || []).reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur.age_name }),
+        {},
+      ) as Record<ID, string>,
+    };
+  } catch (error) {
+    console.error(`Error fetching getCategoriesHash`, error);
+    return { data: {} as Record<ID, string>, error };
+  }
+};
+
 export const getAgeRestrictionsDetail = async (param1: string | ID) => {
   try {
     const { body, error } = await xooxFetch<{ data: AgeRestrictionsItemType }>(

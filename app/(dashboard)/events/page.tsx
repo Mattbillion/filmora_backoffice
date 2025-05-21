@@ -6,45 +6,52 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
+import { getAgeRestrictionsHash } from '@/features/age/actions';
+import { getBranchesHash } from '@/features/branches/actions';
 import { getCategoriesHash } from '@/features/category/actions';
-import { getCompanyListHash } from '@/features/companies/actions';
-import { getDiscountsHash } from '@/features/discounts/actions';
+import { getHallsHash } from '@/features/halls/actions';
+import { getVenuesHash } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
-import { getMerchandisesList } from './actions';
-import { merchandisesColumns } from './columns';
+import { getEventsList } from './actions';
+import { eventsColumns } from './columns';
 import { CreateDialog } from './components';
 
 export const dynamic = 'force-dynamic';
 
-export default async function MerchandisesPage(props: {
+export default async function EventsPage(props: {
   searchParams?: SearchParams;
 }) {
+  // age_id venue_id branch_id hall_id
   const session = await auth();
   const searchParams = await props.searchParams;
   const [
     { data },
     { data: categoryData },
-    { data: companyData },
-    { data: discountData },
+    { data: venueData },
+    { data: branchData },
+    { data: hallData },
+    { data: ageData },
   ] = await Promise.all([
-    getMerchandisesList({
+    getEventsList({
       ...searchParams,
       company_id: session?.user?.company_id,
     }),
     getCategoriesHash(),
-    getCompanyListHash(),
-    getDiscountsHash({ company_id: session?.user?.company_id }),
+    getVenuesHash(),
+    getBranchesHash(),
+    getHallsHash(),
+    getAgeRestrictionsHash(),
   ]);
 
   return (
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Merchandises list (${data?.total_count ?? data?.data?.length})`}
+          title={`Events list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, ['create_company_merchandise']) && (
+        {checkPermission(session, ['create_event']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New
@@ -55,21 +62,19 @@ export default async function MerchandisesPage(props: {
       <Separator />
       <Suspense fallback="Loading">
         <DataTable
-          columns={merchandisesColumns}
+          columns={eventsColumns}
           data={data?.data?.map((c) => ({
             ...c,
-            category: categoryData[c.cat_id] || '',
-            company: companyData[c.com_id] || '',
-            discount: discountData[c.discount_id!] || '',
+            category: categoryData[c.category_id] || '',
+            venue: venueData[c.venue_id] || '',
+            branch: branchData[c.branch_id] || '',
+            hall: hallData[c.hall_id] || '',
+            age: ageData[c.age_id] || '',
             canModify: checkPermission(session, [
-              'get_company_merchandise',
-              'update_company_merchandise',
-              'delete_company_merchandise',
-              'get_company_merchandise_attribute_option_value_list',
-              'get_company_merchandise_attribute_option_value',
-              'create_company_merchandise_attribute_option_value',
-              'update_company_merchandise_attribute_option_value',
-              'delete_company_merchandise_attribute_option_value',
+              'get_event',
+              'update_event',
+              'delete_event',
+              'create_event_schedule',
             ]),
           }))}
           rowCount={data?.total_count ?? data?.data?.length}

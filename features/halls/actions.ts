@@ -5,14 +5,17 @@ import { executeRevalidate } from '@/lib/xoox';
 
 import { HallsBodyType, HallsItemType, RVK_HALLS } from './schema';
 
-export const getHalls = async (searchParams?: QueryParams) => {
+export const getHalls = async (
+  searchParams: QueryParams = {},
+  cacheKeys: string[] = [],
+) => {
   try {
     const { body, error } = await xooxFetch<PaginatedResType<HallsItemType[]>>(
       '/halls',
       {
         method: 'GET',
         searchParams,
-        next: { tags: [RVK_HALLS] },
+        next: { tags: [RVK_HALLS, ...cacheKeys] },
       },
     );
 
@@ -22,6 +25,24 @@ export const getHalls = async (searchParams?: QueryParams) => {
   } catch (error) {
     console.error(`Error fetching /halls:`, error);
     return { data: { data: [], total_count: 0 }, error };
+  }
+};
+
+export const getHallsHash = async (searchParams?: QueryParams) => {
+  try {
+    const { data } = await getHalls(searchParams, [
+      `${RVK_HALLS}_${Buffer.from(JSON.stringify(searchParams || {})).toString('base64')}`,
+    ]);
+
+    return {
+      data: (data.data || []).reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur.hall_name }),
+        {},
+      ) as Record<ID, string>,
+    };
+  } catch (error) {
+    console.error(`Error fetching getCategoriesHash`, error);
+    return { data: {} as Record<ID, string>, error };
   }
 };
 

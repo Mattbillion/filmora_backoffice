@@ -20,12 +20,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { deleteAgeRestrictionsDetail } from '@/features/age/actions';
+import { AgeRestrictionsItemType } from '@/features/age/schema';
 import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
 
-import { deleteAgeRestrictionsDetail } from './actions';
 import { UpdateDialog } from './components';
-import { AgeRestrictionsItemType } from './schema';
 
 const Action = ({ row }: CellContext<AgeRestrictionsItemType, unknown>) => {
   const [loading, setLoading] = useState(false);

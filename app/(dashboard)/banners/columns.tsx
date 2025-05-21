@@ -31,8 +31,8 @@ const Action = ({ row }: CellContext<BannersItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = checkPermission(data, ['delete_banner']);
+  const canEdit = checkPermission(data, ['update_banner']);
 
   if (!canEdit && !canDelete) return null;
 

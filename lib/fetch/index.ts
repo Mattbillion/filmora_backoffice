@@ -55,7 +55,8 @@ export async function xooxFetch<
         headers.set('Authorization', `Bearer ${session?.user?.id}`);
       if (!opts.searchParams) opts.searchParams = {};
 
-      opts.searchParams.company_id = session?.user?.company_id;
+      if (opts.method === 'GET')
+        opts.searchParams.company_id = session?.user?.company_id;
     }
 
     const { endpoint, fetchOptions } = genFetchParams(url, {

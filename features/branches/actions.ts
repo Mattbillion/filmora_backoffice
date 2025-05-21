@@ -5,14 +5,17 @@ import { executeRevalidate } from '@/lib/xoox';
 
 import { BranchesBodyType, BranchesItemType, RVK_BRANCHES } from './schema';
 
-export const getBranches = async (searchParams?: QueryParams) => {
+export const getBranches = async (
+  searchParams: QueryParams = {},
+  cacheKeys: string[] = [],
+) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<BranchesItemType[]>
     >('/branches', {
       method: 'GET',
       searchParams,
-      next: { tags: [RVK_BRANCHES] },
+      next: { tags: [RVK_BRANCHES, ...cacheKeys] },
     });
 
     if (error) throw new Error(error);
@@ -21,6 +24,24 @@ export const getBranches = async (searchParams?: QueryParams) => {
   } catch (error) {
     console.error(`Error fetching /branches:`, error);
     return { data: { data: [], total_count: 0 }, error };
+  }
+};
+
+export const getBranchesHash = async (searchParams?: QueryParams) => {
+  try {
+    const { data } = await getBranches(searchParams, [
+      `${RVK_BRANCHES}_${Buffer.from(JSON.stringify(searchParams || {})).toString('base64')}`,
+    ]);
+
+    return {
+      data: (data.data || []).reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur.branch_name }),
+        {},
+      ) as Record<ID, string>,
+    };
+  } catch (error) {
+    console.error(`Error fetching getCategoriesHash`, error);
+    return { data: {} as Record<ID, string>, error };
   }
 };
 

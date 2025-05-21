@@ -91,14 +91,18 @@ export async function uploadImage(formData: FormData) {
 
     if (!res.ok)
       throw new Error(
-        result?.error || (result as any)?.message || String(res.status),
+        result?.detail?.[0]?.msg ||
+          result?.error ||
+          (result as any)?.message ||
+          (typeof result?.detail === 'string' ? result?.detail : undefined) ||
+          String(res.status),
       );
 
-    console.log(JSON.stringify(result, null, 2));
     const filePath = result?.data?.data?.original;
 
     return { data: filePath, error: null };
   } catch (error: any) {
+    console.log(error);
     stringifyError(error);
   }
 }

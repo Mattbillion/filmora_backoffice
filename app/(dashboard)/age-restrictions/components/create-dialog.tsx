@@ -22,9 +22,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-
-import { createAgeRestrictions } from '../actions';
-import { AgeRestrictionsBodyType, ageRestrictionsSchema } from '../schema';
+import { createAgeRestrictions } from '@/features/age/actions';
+import {
+  AgeRestrictionsBodyType,
+  ageRestrictionsSchema,
+} from '@/features/age/schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);

@@ -25,6 +25,31 @@ export const getVenues = async (searchParams?: QueryParams) => {
   }
 };
 
+export const getVenuesHash = async () => {
+  try {
+    const { body, error } = await xooxFetch<PaginatedResType<VenuesItemType[]>>(
+      '/venues',
+      {
+        method: 'GET',
+        searchParams: { page_size: 100000 },
+        next: { tags: [`${RVK_VENUES}_hierarchical`] },
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    return {
+      data: (body.data || []).reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur.venue_name }),
+        {},
+      ) as Record<ID, string>,
+    };
+  } catch (error) {
+    console.error(`Error fetching getCategoriesHash`, error);
+    return { data: {} as Record<ID, string>, error };
+  }
+};
+
 export const getVenuesDetail = async (param1: string | ID) => {
   try {
     const { body, error } = await xooxFetch<{ data: VenuesItemType }>(
