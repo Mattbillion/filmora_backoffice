@@ -1,8 +1,8 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,26 +16,27 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { imageResize } from '@/lib/utils';
 
+import { getTemplateDetail } from '../actions';
+import { SVGJsonType } from '../schema';
 import { INITIAL_SCALE } from './constants';
 import XooxStage from './stage';
-import {
-  getStyleStr,
-  parseCSS,
-  type SVGJsonType,
-  svgToKonva,
-} from './svg-to-konva';
+import { getStyleStr, parseCSS, svgToKonva } from './svg-to-konva';
 
-export default function Client({
-  templateJSON = [],
-  viewBox,
-}: {
-  templateJSON: SVGJsonType[];
-  viewBox: [number, number];
-}) {
+export default function Client() {
   const router = useRouter();
+  const { templateId } = useParams();
   const { data: session } = useSession();
+  const [{ templateJSON = [], viewBox }, setTemplateData] = useState<{
+    templateJSON: SVGJsonType[];
+    viewBox: [number, number];
+  }>({ templateJSON: [], viewBox: [1024, 960] });
   const [vbw = 1024, vbh = 960] = viewBox;
   const styleJson = parseCSS(getStyleStr(templateJSON));
+
+  useEffect(() => {
+    if (!isNaN(Number(templateId as unknown as string)))
+      getTemplateDetail(Number(templateId)).then((c) => setTemplateData(c));
+  }, [templateId]);
 
   const shapes = useMemo(
     () => templateJSON.map((c) => svgToKonva(c, styleJson)),

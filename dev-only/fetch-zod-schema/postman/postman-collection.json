@@ -3173,12 +3173,12 @@
     },
     {
       "key": "base_url",
-      "value": "http://3.95.231.68:3000/api/v1/dashboard",
+      "value": "http://47.128.225.144:3000/api/v1/dashboard",
       "type": "string"
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDU2NDIwODF9.3rgbIA6mIz1BlWYKtdST5Y84R35Na9ON2JS-7s9VPAI",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDc4MjgwNDN9.Ic-MCPXVY9RJY28-SrdItVJREinYEBFPU0h2oZIhTt0",
       "type": "string"
     }
   ]

@@ -18,6 +18,7 @@ import { camelCase } from 'change-case-all';
 import Konva from 'konva';
 import { pick } from 'lodash';
 
+import { ClassObjType, StyleObjType, SVGJsonType } from '../schema';
 import { dataMap, idRegex } from './constants';
 
 // type sda = keyof typeof dataMap;
@@ -34,14 +35,6 @@ import { dataMap, idRegex } from './constants';
 //     >;
 //   }
 // }
-
-export type SVGJsonType = {
-  type: string;
-  tagName: string;
-  properties: Record<string, string>;
-  children: SVGJsonType[];
-  value?: string;
-};
 
 const elMap: Record<string, KonvaNodeComponent<any, any>> = {
   circle: Circle,
@@ -298,9 +291,6 @@ const propertyToProp = (
 
   return konvaProps;
 };
-
-type StyleObjType = Record<string, any>;
-type ClassObjType = Record<string, StyleObjType>;
 
 const konvaStyleKeyMap: Record<string, string> = {
   strokeDasharray: 'dash',

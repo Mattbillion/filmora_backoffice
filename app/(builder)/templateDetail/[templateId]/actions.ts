@@ -2,8 +2,9 @@
 import { parse } from 'svg-parser';
 
 import { xooxFetch } from '@/lib/fetch';
+import { ID } from '@/lib/fetch/types';
 
-import Client from './client';
+import { SVGJsonType } from './schema';
 
 type TemplateDetail = {
   id: number;
@@ -20,12 +21,8 @@ type TemplateDetail = {
   created_employee: string;
 };
 
-export default async function TemplateDetailPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const { body } = await xooxFetch<{ data: TemplateDetail[] }>('templates');
+export async function getTemplateDetail(templateId: ID) {
+  const { body } = await xooxFetch<{ data: TemplateDetail[] }>(`/templates`);
   const template = body.data[0];
   const templateJSON = template?.layout_svg
     ? parse(template?.layout_svg)
@@ -34,8 +31,10 @@ export default async function TemplateDetailPage({
   const viewBox = svgRoot?.properties?.viewBox
     ?.split(' ')
     ?.slice(2, 4)
-    ?.map(parseFloat);
+    ?.map(parseFloat) as [number, number];
 
-  // console.log(JSON.stringify(svgRoot, null, 2));
-  return <Client templateJSON={svgRoot?.children} viewBox={viewBox || []} />;
+  return {
+    templateJSON: svgRoot?.children as SVGJsonType[],
+    viewBox,
+  };
 }
