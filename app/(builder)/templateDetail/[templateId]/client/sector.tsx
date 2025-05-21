@@ -152,6 +152,38 @@ function SectorInput({
   const nodeId = node.id();
   const dataKey = field.replace('data-', '');
   const reversedK = dataMapReverse[dataKey === 'name' ? 'sector' : dataKey];
+  const reg = new RegExp(`(?<=-)(${reversedK}[^-]*)(?=-|$)`);
+
+  const modifyId = (id: string, val: string) => {
+    let newId;
+
+    if (reg.test(id)) {
+      newId = id.replace(reg, `${reversedK}${val}`);
+    } else {
+      const parts = id.split('-');
+      parts.splice(parts.length - 1, 0, `${reversedK}${val}`);
+      newId = parts.join('-');
+    }
+
+    return newId;
+  };
+
+  const replaceChildrenId = (n: KonvaNode, val: string) => {
+    if (n.hasChildren()) {
+      const nodeChildren = n.children!;
+      for (let i = 0; i < nodeChildren.length; i++) {
+        const child = nodeChildren[i];
+        const childId = child.id();
+        if (child.hasChildren()) replaceChildrenId(child, val);
+        if (childId) {
+          child.setAttr('id', modifyId(childId, val));
+          child.setAttr(field, val);
+        }
+      }
+    }
+    n.setAttr('id', modifyId(n.id(), val));
+    n.setAttr(field, val);
+  };
 
   return (
     <div className="flex flex-col space-y-1.5">
@@ -161,15 +193,11 @@ function SectorInput({
         value={value}
         onChange={(e) => {
           const val = e.target.value;
-          const reg = new RegExp(`(?<=-)(${reversedK}[^-]*)(?=-|$)`);
-
-          console.log('attrs', node.attrs);
-          node.setAttr('id', nodeId.replace(reg, `${reversedK}${val}`));
-          node.setAttr(field, val);
           setValue(val);
+          replaceChildrenId(node, val);
         }}
         onFocus={onFocus}
-        placeholder={`Current: ${placeholder}`}
+        placeholder={`Current: ${placeholder || 'N/A'}`}
         className="flex-1 rounded-sm bg-neutral-600"
       />
     </div>
