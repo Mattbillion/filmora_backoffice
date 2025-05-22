@@ -3,6 +3,7 @@
 import { ReactNode, useRef, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import DatePickerItem from '@/components/custom/datepicker-item';
@@ -32,9 +33,12 @@ import {
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-
+  const { data: session } = useSession();
   const form = useForm<DiscountsBodyType>({
     resolver: zodResolver(discountsSchema),
+    defaultValues: {
+      com_id: Number(session?.user?.company_id),
+    },
   });
 
   function onSubmit({ status, ...values }: DiscountsBodyType) {
@@ -62,6 +66,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       submitText="Create"
       trigger={children}
     >
+      <FormField
+        control={form.control}
+        name="com_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder="Com id" {...field} type="hidden" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={form.control}
         name="discount_name"
