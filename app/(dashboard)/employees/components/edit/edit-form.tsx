@@ -218,7 +218,6 @@ function RoleSelect({
   employee: EmployeeItemType;
   disabled: boolean;
 }) {
-  console.log(employee, 'dadad');
   const [roles, setRoles] = useState<RoleItemType[]>([]);
   const [loading, startLoadingTransition] = useTransition();
   const [updating, startUpdatingTransition] = useTransition();
