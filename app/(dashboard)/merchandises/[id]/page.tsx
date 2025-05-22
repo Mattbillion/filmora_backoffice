@@ -1,7 +1,7 @@
 import { notFound } from 'next/navigation';
 
 import { getMerchandiseDetail } from '@/app/(dashboard)/merchandises/actions';
-import { getHierarchicalCategories } from '@/features/category/actions';
+import { getHierarchicalComCat } from '@/features/category/actions';
 import { getDiscounts } from '@/features/discounts/actions';
 
 import MerchDetailClient from './client';
@@ -15,7 +15,7 @@ export default async function MerchandiseDetailPage({
   const [{ data }, { data: categoriesData }, { data: discountsData }] =
     await Promise.all([
       getMerchandiseDetail(id),
-      getHierarchicalCategories(),
+      getHierarchicalComCat(),
       getDiscounts(),
     ]);
   const merchData = data?.data;

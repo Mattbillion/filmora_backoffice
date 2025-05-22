@@ -28,7 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getHierarchicalCategories } from '@/features/category/actions';
+import { getHierarchicalComCat } from '@/features/category/actions';
 import { HierarchicalSelect } from '@/features/category/components/hierarichal-select';
 import { HierarchicalCategory } from '@/features/category/schema';
 import { getDiscounts } from '@/features/discounts/actions';
@@ -80,7 +80,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         if (c) {
           startLoadingTransition(() => {
             Promise.all([
-              getHierarchicalCategories().then((res) => res?.data || []),
+              getHierarchicalComCat().then((res) => res?.data || []),
               getDiscounts().then((res) => res?.data?.data || []),
             ]).then(([cat_id, discount_id]) => {
               setDropdownData((prevData) => ({

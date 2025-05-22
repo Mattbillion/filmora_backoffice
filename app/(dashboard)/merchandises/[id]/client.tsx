@@ -75,7 +75,6 @@ export default function MerchDetailClient({
         .then(() => {
           toast.success('Updated successfully');
           dialogRef?.current?.close();
-          form.reset();
         })
         .catch((e) => toast.error(e.message));
     });

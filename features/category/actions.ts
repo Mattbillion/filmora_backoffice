@@ -28,6 +28,60 @@ export const getCategories = async (searchParams?: QueryParams) => {
     return { data: { data: [], total_count: 0 }, error };
   }
 };
+
+const getComCats = async (searchParams?: QueryParams) => {
+  try {
+    const { body, error } = await xooxFetch<PaginatedResType<ComCatType[]>>(
+      '/company_categories',
+      {
+        method: 'GET',
+        searchParams,
+        next: { tags: [RVK_CATEGORY] },
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    return { data: body, total_count: body.total_count };
+  } catch (error) {
+    console.error(`Error fetching /category:`, error);
+    return { data: { data: [], total_count: 0 }, error };
+  }
+};
+
+export const getCompanyCategories = async (searchParams?: QueryParams) => {
+  try {
+    const [comCats, cats] = await Promise.all([
+      getComCats(searchParams),
+      getCategories({ page_size: 100000000 }),
+    ]);
+
+    const filteredCats = cats.data.data?.filter((cat) =>
+      comCats.data.data?.some((comCat) => comCat.cat_id === cat.id),
+    );
+
+    return { data: { data: filteredCats }, total_count: filteredCats.length };
+  } catch (error) {
+    console.error(`Error fetching /category:`, error);
+    return { data: { data: [], total_count: 0 }, error };
+  }
+};
+
+type ComCatType = {
+  id: ID;
+  com_id: ID;
+  cat_id: ID;
+  order: number;
+  status: boolean;
+};
+
+export const getHierarchicalComCat = async () => {
+  const { data } = await getCompanyCategories({ page_size: 100000000 });
+
+  return {
+    data: buildCategoryHierarchy(data.data || []),
+  };
+};
 export const getHierarchicalCategories = async (isSpecial?: boolean) => {
   let searchParams: QueryParams = { page_size: 100000 };
   if (isSpecial) searchParams.filters = 'special=true';
