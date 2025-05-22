@@ -1,12 +1,23 @@
 'use client';
 
-import { ColumnDef } from '@tanstack/react-table';
+import { useRef, useState } from 'react';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
+import { Trash } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
 
+import {
+  DeleteDialog,
+  DeleteDialogRef,
+} from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Button } from '@/components/ui/button';
+import { checkPermission } from '@/lib/permission';
 import { currencyFormat, removeHTML } from '@/lib/utils';
 
+import { deleteMerchandises } from './actions';
 import { MerchandisesItemType } from './schema';
 
 const Action = ({
@@ -34,7 +45,7 @@ const Action = ({
       action={() => {
         setLoading(true);
         // TODO: Please check after generate
-        deleteEvents(row.original.id)
+        deleteMerchandises(row.original.id)
           .then((c) => toast.success(c.data.message))
           .catch((c) => toast.error(c.message))
           .finally(() => {
@@ -45,7 +56,7 @@ const Action = ({
       description={
         <>
           Are you sure you want to delete this{' '}
-          <b className="text-foreground">{row.original.event_name}</b>?
+          <b className="text-foreground">{row.original.mer_name}</b>?
         </>
       }
     >
