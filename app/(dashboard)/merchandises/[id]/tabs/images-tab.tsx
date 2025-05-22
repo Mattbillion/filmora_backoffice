@@ -22,6 +22,7 @@ import { Input } from '@/components/ui/input';
 import { TabsContent } from '@/components/ui/tabs';
 
 export function ImagesTab({ control }: { control: any }) {
+  console.log('control', control);
   return (
     <TabsContent value="images" className="space-y-4">
       <Card>

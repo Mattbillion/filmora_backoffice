@@ -45,7 +45,6 @@ export async function xooxFetch<
   },
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
   let opts = { ...options };
-  console.log(opts, 'opts');
   try {
     const headers = new Headers(options.headers);
 
@@ -63,9 +62,9 @@ export async function xooxFetch<
     }
 
     const { endpoint, fetchOptions } = genFetchParams(url, {
-      cache: 'force-cache',
-      ...opts,
       headers,
+      ...opts,
+      cache: 'force-cache',
     });
 
     const response = await fetch(endpoint, fetchOptions);
@@ -85,14 +84,14 @@ export async function xooxFetch<
       error: null,
     };
   } catch (error: any) {
-    console.error('url: ', url);
-    console.error('Fetch options: ', JSON.stringify(opts, null, 2));
-    console.error(
+    console.log('url: ', url);
+    console.log('Fetch options: ', JSON.stringify(opts, null, 2));
+    console.log(
       `Fetch error: `,
       error instanceof Error ? error.message : String(error),
     );
     const errString: string = error?.error ?? error?.message ?? String(error);
-
+    console.log(errString, 'error string');
     if (errString.toLocaleLowerCase().includes('хүчингүй токен'))
       return signOut();
     throw new Error(errString);

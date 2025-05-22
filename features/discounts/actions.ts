@@ -19,7 +19,7 @@ export const getDiscounts = async (searchParams?: QueryParams) => {
 
     return { data: body, total_count: body.total_count };
   } catch (error) {
-    console.error(`Error fetching /discounts:`, error);
+    console.log(`Error fetching /discounts:`, error);
     return { data: { data: [], total_count: 0 }, error };
   }
 };
