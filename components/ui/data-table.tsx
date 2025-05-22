@@ -78,9 +78,6 @@ export function DataTable<TData, TValue>({
   const { page, page_size, ...qsObj } = useQueryString<QueryParamsType>({
     page: 1,
     page_size: 30,
-    filters: '',
-    sort_by: '',
-    sort_order: '',
   });
 
   type QueryParamsType = {
@@ -153,18 +150,25 @@ export function DataTable<TData, TValue>({
 
   useEffect(() => {
     if (!hidePagination) {
-      router.replace(
-        pathname +
-          `?${objToQs({ ...qsObj, page: pageIndex + 1, page_size: pageSize, filters: serializedFilters, sort_by: sortValues?.sortBy, sort_order: sortValues?.sortOrder })}`,
-        { scroll: true },
-      );
+      const queryString = {
+        ...qsObj,
+        page: pageIndex + 1,
+        page_size: pageSize,
+      };
+
+      if (serializedFilters) queryString.filters = serializedFilters;
+      if (sortValues?.sortBy) {
+        queryString.sort_by = sortValues?.sortBy;
+        queryString.sort_order = sortValues?.sortOrder;
+      }
+      router.replace(pathname + `?${objToQs(queryString)}`, { scroll: true });
     }
   }, [pageIndex, pageSize, serializedFilters, sortValues]);
 
-  const availableFilters: string[] = table
-    .getAllColumns()
-    .filter((c) => c.getCanFilter())
-    .map((c) => c.id);
+  // const availableFilters: string[] = table
+  //   .getAllColumns()
+  //   .filter((c) => c.getCanFilter())
+  //   .map((c) => c.id);
 
   return (
     <div className="w-full">

@@ -41,6 +41,8 @@ export const patchEmployee = async ({
     cache: 'no-store',
   });
 
+  console.log(body, 'body llraa');
+
   if (error) throw new Error(error);
 
   executeRevalidate([RVK_EMPLOYEE, `${RVK_EMPLOYEE}_${id}`]);

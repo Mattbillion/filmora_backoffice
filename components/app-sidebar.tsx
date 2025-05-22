@@ -3,7 +3,8 @@
 
 import { ComponentProps, Suspense, useEffect } from 'react';
 import { sentenceCase } from 'change-case-all';
-import { Command } from 'lucide-react';
+import { Command as CommandIcon } from 'lucide-react';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 
 import { menuData } from '@/components/constants/menu';
@@ -18,6 +19,7 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar';
 import { checkPermission } from '@/lib/permission';
+import { isUri } from '@/lib/utils';
 
 import RevalidateMenu from './revalidate-menu';
 
@@ -47,10 +49,27 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         ) : (
           <div className="flex items-center gap-2 p-2">
             <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-              <Command className="size-4" />
+              {isUri(session?.user?.company_logo || '') ? (
+                <Image
+                  src={session?.user?.company_logo!}
+                  width={16}
+                  height={16}
+                  alt={`${session?.user?.company_name} logo`}
+                  className="overflow-hidden object-cover"
+                />
+              ) : (
+                <CommandIcon className="size-4" />
+              )}
             </div>
             <div className="flex-1 text-left text-sm leading-tight">
-              <p className="truncate font-semibold">XOOX</p>
+              <p className="truncate font-semibold">
+                {session?.user?.company_name || 'XOOX'}
+              </p>
+              {session?.user?.company_register && (
+                <p className="text-xs text-muted-foreground">
+                  {session?.user?.company_register}
+                </p>
+              )}
             </div>
           </div>
         )}
