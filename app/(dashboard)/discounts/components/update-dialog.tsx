@@ -97,7 +97,10 @@ export function UpdateDialog({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Discount type</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value)}>
+            <Select
+              value={field.value}
+              onValueChange={(value) => field.onChange(value)}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select type" />

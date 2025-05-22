@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormDescription,
@@ -162,9 +163,19 @@ export function UpdateDialog({
         render={({ field }) => (
           <FormItem>
             <FormLabel>Language</FormLabel>
-            <FormControl>
-              <Input placeholder="English, Spanish, etc." {...field} />
-            </FormControl>
+            <Select
+              value={field.value?.toString()}
+              onValueChange={(value) => field.onChange(value)}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Language" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value={'Mongolia'}>Mongolia</SelectItem>
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -293,6 +304,8 @@ export function UpdateDialog({
                     })),
                   );
                 });
+                // @ts-ignore
+                form.setValue('hall_id', undefined);
                 field.onChange(Number(value));
               }}
               value={field.value?.toString()}
@@ -380,7 +393,7 @@ export function UpdateDialog({
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select hall id" />
+                  <SelectValue placeholder="Select age" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
@@ -497,14 +510,11 @@ export function UpdateDialog({
         control={form.control}
         name="event_image"
         render={({ field }) => (
-          <FormItem className="md:col-span-2">
-            <FormLabel>Event Image</FormLabel>
-            <FormControl>
-              <Input placeholder="Image URL" {...field} />
-            </FormControl>
-            <FormDescription>Enter the URL of the event image.</FormDescription>
-            <FormMessage />
-          </FormItem>
+          <UploadImageItem
+            field={field}
+            imagePrefix="event_image"
+            label="Event Image"
+          />
         )}
       />
 
