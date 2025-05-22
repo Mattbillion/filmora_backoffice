@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode, useEffect, useRef, useState, useTransition } from 'react';
+import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
@@ -60,11 +60,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       status: false,
     },
   });
-  useEffect(() => {
-    if (session?.user?.company_id) {
-      form.setValue('company_id', Number(session?.user?.company_id));
-    }
-  }, [session?.user?.company_id]);
+
   function onSubmit(values: EventsBodyType) {
     startTransition(() => {
       createEvents({
@@ -112,6 +108,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         }
       }}
     >
+      <FormField
+        control={form.control}
+        name="company_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder="Com id" {...field} type="hidden" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={form.control}
         name="event_name"

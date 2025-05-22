@@ -3,8 +3,9 @@
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, ListTree, MoreHorizontal, Trash } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -14,7 +15,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,7 +25,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
+import { cn, removeHTML } from '@/lib/utils';
 
 import { UpdateDialog } from './components';
 import { EventsItemType } from './schema';
@@ -103,6 +104,20 @@ const Action = ({
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+};
+
+const Navigation = ({ row }: CellContext<CategoryItemType, unknown>) => {
+  const { data } = useSession();
+
+  if (!checkPermission(data, ['get_event'])) return null;
+  return (
+    <Link
+      href={`/events/${row.original.id}/templates`}
+      className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+    >
+      <ListTree className="h-4 w-4" /> Templates
+    </Link>
   );
 };
 
@@ -344,6 +359,12 @@ export const eventsColumns: ColumnDef<
         : 'N/A',
     enableSorting: false,
     enableColumnFilter: true,
+  },
+  {
+    id: 'navigation',
+    cell: Navigation,
+    enableSorting: false,
+    enableColumnFilter: false,
   },
   {
     id: 'actions',
