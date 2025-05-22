@@ -73,6 +73,7 @@ export const getAssignedPermission = async (
       method: 'GET',
       searchParams: { page_size: 1000 },
       headers,
+      cache: 'no-store',
       next: { tags: [`ASSIGNED_${RVK_PERMISSION}`] },
     });
 
