@@ -4,7 +4,6 @@ import { usePathname } from 'next/navigation';
 
 import {
   BreadcrumbItem,
-  BreadcrumbLink,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
@@ -20,13 +19,7 @@ export default function BreadcrumbLastPage() {
         <Fragment key={idx}>
           <BreadcrumbSeparator className="hidden md:block" />
           <BreadcrumbItem>
-            {idx + 1 < pageNames.length ? (
-              <BreadcrumbLink href={`/${c}`} className="capitalize">
-                {c}
-              </BreadcrumbLink>
-            ) : (
-              <BreadcrumbPage className="capitalize">{c}</BreadcrumbPage>
-            )}
+            <BreadcrumbPage className="capitalize">{c}</BreadcrumbPage>
           </BreadcrumbItem>
         </Fragment>
       ))}
