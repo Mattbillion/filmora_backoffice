@@ -9,6 +9,58 @@ import { currencyFormat, removeHTML } from '@/lib/utils';
 
 import { MerchandisesItemType } from './schema';
 
+const Action = ({
+  row,
+}: CellContext<
+  MerchandisesItemType & {
+    company: string;
+    category?: string;
+    discount?: string;
+    canModify?: boolean;
+  },
+  unknown
+>) => {
+  const [loading, setLoading] = useState(false);
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
+  const { data } = useSession();
+  const canDelete = checkPermission(data, ['delete_company_merchandise']);
+
+  if (!canDelete) return null;
+
+  return (
+    <DeleteDialog
+      ref={deleteDialogRef}
+      loading={loading}
+      action={() => {
+        setLoading(true);
+        // TODO: Please check after generate
+        deleteEvents(row.original.id)
+          .then((c) => toast.success(c.data.message))
+          .catch((c) => toast.error(c.message))
+          .finally(() => {
+            deleteDialogRef.current?.close();
+            setLoading(false);
+          });
+      }}
+      description={
+        <>
+          Are you sure you want to delete this{' '}
+          <b className="text-foreground">{row.original.event_name}</b>?
+        </>
+      }
+    >
+      <Button
+        type="button"
+        size="icon"
+        variant="ghost"
+        className="text-red-500"
+      >
+        <Trash className="h-4 w-4" />
+      </Button>
+    </DeleteDialog>
+  );
+};
+
 export const merchandisesColumns: ColumnDef<
   MerchandisesItemType & {
     company: string;
@@ -118,4 +170,5 @@ export const merchandisesColumns: ColumnDef<
     enableSorting: false,
     enableColumnFilter: true,
   },
+  { id: 'action', cell: Action },
 ];
