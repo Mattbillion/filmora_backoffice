@@ -11,6 +11,7 @@ export const getOrders = async (searchParams?: QueryParams) => {
       {
         method: 'GET',
         searchParams,
+        cache: 'no-store',
         next: { tags: [RVK_ORDERS] },
       },
     );

@@ -66,7 +66,7 @@ export default async function AdminOrderDetailPage({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Button variant="outline" size="icon" asChild>
-            <Link href="/admin/orders">
+            <Link href="/orders">
               <ArrowLeft className="h-4 w-4" />
               <span className="sr-only">Back to orders</span>
             </Link>
