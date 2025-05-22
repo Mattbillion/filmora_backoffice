@@ -38,7 +38,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     startTransition(() => {
       createVenues({
         ...values,
-        status: (status as unknown as string) === 'true',
+        status: status,
       })
         .then(() => {
           toast.success('Created successfully');

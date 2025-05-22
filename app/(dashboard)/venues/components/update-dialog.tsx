@@ -50,7 +50,7 @@ export function UpdateDialog({
       patchVenuesDetail({
         ...values,
         id: initialData.id,
-        status: (status as unknown as string) === 'true',
+        status: status,
       })
         .then(() => {
           toast.success('Updated successfully');

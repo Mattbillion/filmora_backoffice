@@ -88,19 +88,22 @@ export const merchandisesColumns: ColumnDef<
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => {
       const cellData = row.original.medias;
+      console.log(cellData, 'cellData');
       if (!!cellData[0]?.media_url)
         return (
           <div className="flex items-center">
-            {cellData.slice(0, 3).map((c, idx) => (
-              <Image
-                key={idx}
-                src={c.media_url}
-                alt=""
-                width={48}
-                height={48}
-                className="-mr-6 rounded-full border-border"
-              />
-            ))}
+            {cellData.slice(0, 3).map((c, idx) => {
+              return (
+                <Image
+                  key={idx}
+                  src={c.media_url}
+                  alt=""
+                  width={48}
+                  height={48}
+                  className="-mr-6 rounded-full border-border"
+                />
+              );
+            })}
           </div>
         );
       return <p>{cellData.join(', ')}</p>;

@@ -43,7 +43,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     startTransition(() => {
       createBranches({
         ...values,
-        status: (status as unknown as string) === 'true',
+        status: status,
       })
         .then(() => {
           toast.success('Created successfully');
