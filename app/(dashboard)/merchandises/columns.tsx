@@ -88,7 +88,6 @@ export const merchandisesColumns: ColumnDef<
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => {
       const cellData = row.original.medias;
-      console.log(cellData, 'cellData');
       if (!!cellData[0]?.media_url)
         return (
           <div className="flex items-center">

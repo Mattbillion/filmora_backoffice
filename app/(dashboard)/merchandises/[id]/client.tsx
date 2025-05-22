@@ -96,12 +96,6 @@ export default function MerchDetailClient({
             {initialData.status ? 'Active' : 'Inactive'}
           </Badge>
         </div>
-        <div className="flex gap-2">
-          <Button disabled={isPending}>
-            <Save className="mr-2 h-4 w-4" />
-            Save Changes
-          </Button>
-        </div>
       </div>
 
       {/* Product ID and metadata */}
@@ -139,6 +133,15 @@ export default function MerchDetailClient({
             />
 
             <ImagesTab control={form.control} />
+
+            {activeTab !== 'variants' && (
+              <div className="mt-6 flex justify-end">
+                <Button disabled={isPending} type={'submit'}>
+                  <Save className="mr-2 h-4 w-4" />
+                  Save Changes
+                </Button>
+              </div>
+            )}
           </form>
         </Form>
         {canAccessVariants && <VariantsTab cat_id={cat_id} />}

@@ -114,6 +114,7 @@ export function VariantsTab({ cat_id }: { cat_id: number }) {
                       </TableCell>
                       <TableAction
                         variant={variant}
+                        onSave={fetchVariants}
                         onRemove={() =>
                           setVariants((oldVariants) =>
                             oldVariants.filter((c) => c.id !== variant.id),
@@ -133,9 +134,11 @@ export function VariantsTab({ cat_id }: { cat_id: number }) {
 function TableAction({
   variant,
   onRemove,
+  onSave,
 }: {
   variant: VariantItemType;
   onRemove: () => void;
+  onSave: () => void;
 }) {
   const { data } = useSession();
   const [removing, startRemoveTransition] = useTransition();
@@ -152,7 +155,7 @@ function TableAction({
     <TableCell className="text-right">
       <div className="flex justify-end gap-2">
         {canEdit && (
-          <VariantEditSheet variant={variant} onSave={console.log}>
+          <VariantEditSheet variant={variant} onSave={onSave}>
             <Button size="icon" variant="ghost" type="button">
               <Edit className="h-4 w-4" />
             </Button>

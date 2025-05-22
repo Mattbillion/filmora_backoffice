@@ -19,7 +19,7 @@ export default async function MerchandiseDetailPage({
       getDiscounts(),
     ]);
   const merchData = data?.data;
-  console.log(data);
+
   if (!merchData) return notFound();
 
   return (

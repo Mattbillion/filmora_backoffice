@@ -36,26 +36,37 @@ import {
   getAttributesHash,
   getAttributeValuesHash,
 } from '@/features/attributes/actions';
-import { CategoryAttributesItemType } from '@/features/attributes/schema';
 import { ID } from '@/lib/fetch/types';
 
 import { VariantOptionValueBodyType, variantOptionValueSchema } from './schema';
 
-export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
+export function CreateOptionValueDialog({
+  children,
+  variantId,
+  onSave,
+}: {
+  children: ReactNode;
+  variantId: ID;
+  onSave: () => void;
+}) {
   const optionForm = useForm<VariantOptionValueBodyType>({
     resolver: zodResolver(variantOptionValueSchema),
+    defaultValues: {
+      m_attr_val_id: variantId,
+    },
   });
   const [open, setOpen] = useState(false);
-  const [attributes, setAttributes] = useState<
-    Record<ID, CategoryAttributesItemType>
-  >({});
+  const [attributes, setAttributes] = useState<Record<ID, string>>({});
   const [attributeValues, setAttributeValues] = useState<Record<ID, string>>(
     {},
   );
   const [loadingAttr, startLoadingAttrTransition] = useTransition();
   const [loadingAttrValues, startLoadingAttrValuesTransition] = useTransition();
   const [updating, startUpdateTransition] = useTransition();
-  const selectedAttrId = useWatch({ name: 'attr_id' });
+  const selectedAttrId = useWatch({
+    name: 'attr_id',
+    control: optionForm.control,
+  });
 
   useEffect(() => {
     startLoadingAttrTransition(() => {
@@ -69,7 +80,10 @@ export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
 
   function onSubmit(values: VariantOptionValueBodyType) {
     startUpdateTransition(() => {
-      createVariantOptionValue(values).then(() => setOpen(false));
+      createVariantOptionValue(values).then(() => {
+        onSave();
+        setOpen(false);
+      });
     });
   }
 
@@ -85,7 +99,12 @@ export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
         </DialogHeader>
         <Form {...optionForm}>
           <form
-            onSubmit={optionForm.handleSubmit(onSubmit)}
+            id={'option-create-form'}
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              optionForm.handleSubmit(onSubmit)(e);
+            }}
             className="space-y-4"
           >
             <FormField
@@ -126,7 +145,7 @@ export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
                     <SelectContent defaultValue="false">
                       {Object.entries(attributes).map(([attrId, attr], idx) => (
                         <SelectItem key={idx} value={attrId}>
-                          {attr.attr_name}
+                          {attr}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -172,7 +191,11 @@ export function CreateOptionValueDialog({ children }: { children: ReactNode }) {
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={updating}>
+              <Button
+                type="submit"
+                disabled={updating}
+                form={'option-create-form'}
+              >
                 Create
               </Button>
             </DialogFooter>

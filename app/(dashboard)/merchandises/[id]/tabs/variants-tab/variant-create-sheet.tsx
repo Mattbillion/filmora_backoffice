@@ -54,7 +54,6 @@ export function VariantCreateSheet({
     startLoadingTransition(() => {
       createVariant({ ...values })
         .then((c) => {
-          console.log(c, 'res');
           onSave(c.data?.data);
           toast.success('Created successfully');
           dialogRef.current?.close();

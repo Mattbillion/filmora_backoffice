@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { X } from 'lucide-react';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
@@ -35,7 +36,6 @@ import { DiscountsItemType } from '@/features/discounts/schema';
 
 import { createMerchandises } from '../actions';
 import { MerchandisesBodyType, merchandisesSchema } from '../schema';
-
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
@@ -44,9 +44,12 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     discount_id?: DiscountsItemType[];
   }>({});
   const [loading, startLoadingTransition] = useTransition();
-
+  const { data: session } = useSession();
   const form = useForm<MerchandisesBodyType>({
     resolver: zodResolver(merchandisesSchema),
+    defaultValues: {
+      com_id: session?.user?.company_id || 0,
+    },
   });
 
   function onSubmit({ status, ...values }: MerchandisesBodyType) {
@@ -90,6 +93,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         }
       }}
     >
+      <FormField
+        control={form.control}
+        name="com_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder="Com id" {...field} type="hidden" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={form.control}
         name="cat_id"

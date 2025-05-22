@@ -56,12 +56,18 @@ export function OptionValues({ variantId }: { variantId: ID }) {
     });
   }, []);
 
-  useEffect(() => {
+  const fetchVariantOptionValueList = () => {
     startLoadingTransition(() => {
       getVariantOptionValueList({ filters: `m_attr_val_id=${variantId}` }).then(
-        (c) => setOptionValues(c.data.data || []),
+        (c) => {
+          setOptionValues(c.data.data || []);
+        },
       );
     });
+  };
+
+  useEffect(() => {
+    fetchVariantOptionValueList();
   }, [variantId]);
 
   if (
@@ -81,7 +87,10 @@ export function OptionValues({ variantId }: { variantId: ID }) {
         {checkPermission(session, [
           'create_company_merchandise_attribute_option_value',
         ]) && (
-          <CreateOptionValueDialog>
+          <CreateOptionValueDialog
+            variantId={variantId}
+            onSave={fetchVariantOptionValueList}
+          >
             <Button type="button" variant="outline" size="sm">
               <Plus className="mr-2 h-4 w-4" />
               Add Option
@@ -123,7 +132,10 @@ export function OptionValues({ variantId }: { variantId: ID }) {
                       {checkPermission(session, [
                         'update_company_merchandise_attribute_option_value',
                       ]) && (
-                        <OptionValueDialog initialData={optionValue}>
+                        <OptionValueDialog
+                          initialData={optionValue}
+                          onSave={fetchVariantOptionValueList}
+                        >
                           <Button variant="ghost" size="icon" type="button">
                             <Edit className="h-4 w-4" />
                             <span className="sr-only">Edit</span>

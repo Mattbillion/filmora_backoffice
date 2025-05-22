@@ -23,7 +23,7 @@ import { VariantBodyType, VariantItemType, variantsSchema } from './schema';
 
 interface VariantEditSheetProps {
   variant: VariantItemType;
-  onSave: (variant: VariantItemType) => void;
+  onSave: () => void;
   children: ReactNode;
 }
 
@@ -43,6 +43,9 @@ export function VariantEditSheet({
       price: variant?.price || 0,
       is_master: variant?.is_master || false,
       status: variant?.status || true,
+      cat_id: variant?.cat_id || 0,
+      com_id: variant?.com_id || 0,
+      merch_id: variant?.merch_id || 0,
     },
   });
 
@@ -50,6 +53,7 @@ export function VariantEditSheet({
     startLoadingTransition(() => {
       patchVariant({ id: variant.id, ...values })
         .then(() => {
+          onSave();
           toast.success('Updated successfully');
           dialogRef.current?.close();
           form.reset();
@@ -68,6 +72,42 @@ export function VariantEditSheet({
       submitText="Update"
       trigger={children}
     >
+      <FormField
+        control={form.control}
+        name="merch_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder="Com id" {...field} type="hidden" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="com_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder="Com id" {...field} type="hidden" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+      <FormField
+        control={form.control}
+        name="cat_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input placeholder="Com id" {...field} type="hidden" />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
       <FormField
         control={form.control}
         name="sku"

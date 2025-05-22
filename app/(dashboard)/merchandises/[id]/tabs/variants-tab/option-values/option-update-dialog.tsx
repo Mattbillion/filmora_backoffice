@@ -36,10 +36,6 @@ import {
   getAttributesHash,
   getAttributeValuesHash,
 } from '@/features/attributes/actions';
-import {
-  CategoryAttributesItemType,
-  CategoryAttributesValueItemType,
-} from '@/features/attributes/schema';
 import { ID } from '@/lib/fetch/types';
 
 import {
@@ -51,7 +47,9 @@ import {
 export function OptionValueDialog({
   children,
   initialData,
+  onSave,
 }: {
+  onSave: () => void;
   children: ReactNode;
   initialData: VariantOptionValueItemType;
 }) {
@@ -60,12 +58,10 @@ export function OptionValueDialog({
     defaultValues: initialData,
   });
   const [open, setOpen] = useState(false);
-  const [attributes, setAttributes] = useState<
-    Record<ID, CategoryAttributesItemType>
-  >({});
-  const [attributeValues, setAttributeValues] = useState<
-    Record<ID, CategoryAttributesValueItemType>
-  >({});
+  const [attributes, setAttributes] = useState<Record<ID, string>>({});
+  const [attributeValues, setAttributeValues] = useState<Record<ID, string>>(
+    {},
+  );
   const [loadingAttr, startLoadingAttrTransition] = useTransition();
   const [updating, startUpdateTransition] = useTransition();
 
@@ -86,9 +82,10 @@ export function OptionValueDialog({
 
   function onSubmit(values: VariantOptionValueBodyType) {
     startUpdateTransition(() => {
-      patchVariantOptionValue({ id: initialData.id, ...values }).then(() =>
-        setOpen(false),
-      );
+      patchVariantOptionValue({ id: initialData.id, ...values }).then(() => {
+        onSave();
+        setOpen(false);
+      });
     });
   }
 
@@ -104,7 +101,12 @@ export function OptionValueDialog({
         </DialogHeader>
         <Form {...optionForm}>
           <form
-            onSubmit={optionForm.handleSubmit(onSubmit)}
+            id={'option-update-form'}
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              optionForm.handleSubmit(onSubmit)(e);
+            }}
             className="space-y-4"
           >
             <FormField
@@ -127,10 +129,7 @@ export function OptionValueDialog({
                 <FormItem>
                   <FormLabel>Option Name</FormLabel>
                   <FormControl>
-                    <Input
-                      value={attributes[field.value]?.attr_name}
-                      disabled
-                    />
+                    <Input value={attributes[field.value]} disabled />
                   </FormControl>
                 </FormItem>
               )}
@@ -154,7 +153,7 @@ export function OptionValueDialog({
                       {Object.entries(attributeValues).map(
                         ([attrId, attr], idx) => (
                           <SelectItem key={idx} value={attrId}>
-                            {attr.value}
+                            {attr}
                           </SelectItem>
                         ),
                       )}
@@ -170,7 +169,11 @@ export function OptionValueDialog({
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit" disabled={updating}>
+              <Button
+                type="submit"
+                form={'option-update-form'}
+                disabled={updating}
+              >
                 Update
               </Button>
             </DialogFooter>
