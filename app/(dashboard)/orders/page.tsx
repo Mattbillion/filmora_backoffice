@@ -5,6 +5,7 @@ import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
+import { checkPermission } from '@/lib/permission';
 
 import { getOrders } from './actions';
 import { ordersColumns } from './columns';
@@ -32,7 +33,10 @@ export default async function OrdersPage(props: {
       <Suspense fallback="Loading">
         <DataTable
           columns={ordersColumns}
-          data={data?.data}
+          data={data?.data?.map((c) => ({
+            ...c,
+            canModify: checkPermission(session, ['get_order_detail']),
+          }))}
           rowCount={data?.total_count ?? data?.data?.length}
         />
       </Suspense>

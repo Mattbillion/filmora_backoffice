@@ -7,16 +7,23 @@ import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
 
 import { OrdersItemType } from './schema';
 
-export const ordersColumns: ColumnDef<OrdersItemType>[] = [
+export const ordersColumns: ColumnDef<
+  OrdersItemType & {
+    canModify?: boolean;
+  }
+>[] = [
   {
     id: 'order_id',
     accessorKey: 'order_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <Link href={`/orders/${row.original.order_id}`}>
-        {row.original.order_id}
-      </Link>
-    ),
+    cell: ({ row }) =>
+      row.original.canModify ? (
+        <Link href={`/orders/${row.original.order_id}`}>
+          {row.original.order_id}
+        </Link>
+      ) : (
+        row.original.order_id
+      ),
     enableSorting: true,
     enableColumnFilter: true,
   },
