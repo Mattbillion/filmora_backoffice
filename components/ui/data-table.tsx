@@ -38,9 +38,6 @@ declare module '@tanstack/react-table' {
 }
 
 import { ColumnVisibility } from '@/components/custom/table/dropdown/column-visibility';
-import { FacetFilter } from '@/components/custom/table/facet-filter';
-import { ResetTable } from '@/components/custom/table/reset';
-import { SearchInput } from '@/components/custom/table/search-input';
 import { useQueryString } from '@/hooks/use-query-string';
 import { objToQs, serializeColumnsFilters } from '@/lib/utils';
 
@@ -172,23 +169,23 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center justify-between">
-        <div className="flex items-center gap-2 p-2">
-          {availableFilters.map((cFilter, idx) => {
-            if (cFilter === 'status') {
-              return <FacetFilter table={table} field={cFilter} key={idx} />;
-            }
-            return (
-              <SearchInput
-                table={table}
-                field={cFilter}
-                placeholder={cFilter}
-                key={idx}
-              />
-            );
-          })}
+        {/*<div className="flex items-center gap-2 p-2">*/}
+        {/*  {availableFilters.map((cFilter, idx) => {*/}
+        {/*    if (cFilter === 'status') {*/}
+        {/*      return <FacetFilter table={table} field={cFilter} key={idx} />;*/}
+        {/*    }*/}
+        {/*    return (*/}
+        {/*      <SearchInput*/}
+        {/*        table={table}*/}
+        {/*        field={cFilter}*/}
+        {/*        placeholder={cFilter}*/}
+        {/*        key={idx}*/}
+        {/*      />*/}
+        {/*    );*/}
+        {/*  })}*/}
 
-          <ResetTable table={table} />
-        </div>
+        {/*  <ResetTable table={table} />*/}
+        {/*</div>*/}
         <ColumnVisibility table={table} />
       </div>
       <div className="mb-4 w-full rounded-md border border-input">

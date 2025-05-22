@@ -45,6 +45,7 @@ export async function xooxFetch<
   },
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
   let opts = { ...options };
+  console.log(opts, 'opts');
   try {
     const headers = new Headers(options.headers);
 

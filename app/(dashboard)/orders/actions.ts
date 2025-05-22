@@ -5,6 +5,7 @@ import { QueryParams } from '@/lib/utils';
 import { OrderDetail, OrdersItemType, RVK_ORDERS } from './schema';
 
 export const getOrders = async (searchParams?: QueryParams) => {
+  console.log(searchParams, 'searchParams');
   try {
     const { body, error } = await xooxFetch<PaginatedResType<OrdersItemType[]>>(
       '/orders',
@@ -34,6 +35,9 @@ export const getOrdersDetail = async (param1: string | ID) => {
         next: { tags: [`${RVK_ORDERS}_${param1}`] },
       },
     );
+
+    console.log(body, 'body');
+    console.log(error, 'aldaa');
 
     if (error) throw new Error(error);
 

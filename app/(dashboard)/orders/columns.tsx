@@ -41,7 +41,7 @@ export const ordersColumns: ColumnDef<
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => row.original.order_status?.slice(0, 300),
     enableSorting: true,
-    enableColumnFilter: true,
+    enableColumnFilter: false,
   },
   {
     id: 'payment_deadline',

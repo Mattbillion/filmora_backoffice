@@ -7,7 +7,6 @@ import {
   Calendar,
   Clock,
   Copy,
-  Edit,
   MapPin,
   Percent,
   Phone,
@@ -213,17 +212,11 @@ export default function OrderDetailClient({ order }: { order: OrderDetail }) {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <div>
-              <CardTitle>Order Items</CardTitle>
-              <CardDescription>
-                {order.items_count} item{order.items_count > 1 ? 's' : ''} in
-                this order
-              </CardDescription>
-            </div>
-            <Button variant="outline" size="sm">
-              <Edit className="mr-2 h-4 w-4" />
-              Edit Items
-            </Button>
+            <CardTitle>Order Items</CardTitle>
+            <CardDescription>
+              {order.items_count} item{order.items_count > 1 ? 's' : ''} in this
+              order
+            </CardDescription>
           </div>
         </CardHeader>
         <CardContent>
