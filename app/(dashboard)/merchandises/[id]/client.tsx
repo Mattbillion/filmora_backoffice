@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { ArrowLeft, Save } from 'lucide-react';
@@ -80,6 +80,7 @@ export default function MerchDetailClient({
         .catch((e) => toast.error(e.message));
     });
   }
+  const cat_id = useWatch({ name: 'cat_id', control: form.control });
 
   return (
     <div className="container mx-auto space-y-6 py-6">
@@ -140,7 +141,7 @@ export default function MerchDetailClient({
             <ImagesTab control={form.control} />
           </form>
         </Form>
-        {canAccessVariants && <VariantsTab />}
+        {canAccessVariants && <VariantsTab cat_id={cat_id} />}
       </Tabs>
     </div>
   );
