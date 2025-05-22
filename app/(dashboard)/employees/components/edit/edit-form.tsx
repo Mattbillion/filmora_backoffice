@@ -187,7 +187,7 @@ export const EditForm = ({
                   </FormItem>
                 )}
               />
-              <RoleSelect employee={initialData} />
+              <RoleSelect employee={initialData} disabled={!edit || loading} />
             </div>
           </form>
           <div className="mt-4 flex items-center gap-1">
@@ -211,11 +211,19 @@ export const EditForm = ({
   );
 };
 
-function RoleSelect({ employee }: { employee: EmployeeItemType }) {
+function RoleSelect({
+  employee,
+  disabled,
+}: {
+  employee: EmployeeItemType;
+  disabled: boolean;
+}) {
+  console.log(employee, 'dadad');
   const [roles, setRoles] = useState<RoleItemType[]>([]);
   const [loading, startLoadingTransition] = useTransition();
   const [updating, startUpdatingTransition] = useTransition();
   const { data: session } = useSession();
+
   useEffect(() => {
     startLoadingTransition(() => {
       getRoleList().then((c) => setRoles(c.data.data || []));
@@ -235,9 +243,12 @@ function RoleSelect({ employee }: { employee: EmployeeItemType }) {
             }).then(() => toast.success('Role updated successfully'));
           })
         }
+        disabled={disabled}
       >
         <SelectTrigger disabled={loading || updating}>
-          <SelectValue placeholder="Assign role" />
+          <SelectValue
+            placeholder={`${session?.user?.role}` || 'Assign role'}
+          />
         </SelectTrigger>
         <SelectContent>
           {roles.map((c, idx) => (
