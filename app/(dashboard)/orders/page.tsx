@@ -18,7 +18,7 @@ export default async function OrdersPage(props: {
   const searchParams = await props.searchParams;
   const { data } = await getOrders({
     ...searchParams,
-    company_id: session?.user?.company_id,
+    com_id: session?.user?.company_id,
   });
 
   return (

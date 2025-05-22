@@ -186,7 +186,7 @@ function SectorInput({
   };
 
   return (
-    <div className="flex flex-col space-y-1.5">
+    <div className="flex flex-col space-y-1.5" onMouseEnter={onFocus}>
       <Label htmlFor={nodeId + field}>{label}</Label>
       <Input
         id={nodeId + field}
