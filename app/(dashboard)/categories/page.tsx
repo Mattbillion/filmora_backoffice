@@ -21,10 +21,7 @@ export default async function CategoryPage(props: {
   const session = await auth();
   const searchParams = await props.searchParams;
   const [{ data }, { data: dataHash }] = await Promise.all([
-    getCategories({
-      ...searchParams,
-      company_id: session?.user?.company_id,
-    }),
+    getCategories(searchParams),
     getCategoriesHash(),
   ]);
 
