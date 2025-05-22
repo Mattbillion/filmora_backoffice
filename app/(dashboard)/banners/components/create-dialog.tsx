@@ -42,7 +42,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     startTransition(() => {
       createBanners({
         ...values,
-        status: (status as unknown as string) === 'true',
+        status,
       })
         .then(() => {
           toast.success('Created successfully');
