@@ -50,7 +50,7 @@ export function UpdateDialog({
       patchBannersDetail({
         ...values,
         id: initialData.id,
-        status: (status as unknown as string) === 'true',
+        status,
       })
         .then(() => {
           toast.success('Updated successfully');

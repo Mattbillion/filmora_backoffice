@@ -6,6 +6,7 @@ import { Edit, Trash } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
+import { VariantCreateSheet } from '@/app/(dashboard)/merchandises/[id]/tabs/variants-tab/variant-create-sheet';
 import { VariantEditSheet } from '@/app/(dashboard)/merchandises/[id]/tabs/variants-tab/variant-update-sheet';
 import {
   DeleteDialog,
@@ -35,18 +36,22 @@ import { checkPermission } from '@/lib/permission';
 import { deleteVariant, getVariantList } from './actions';
 import { VariantItemType } from './schema';
 
-export function VariantsTab() {
+export function VariantsTab({ cat_id }: { cat_id: number }) {
   const { data: session } = useSession();
   const params = useParams();
   const [loading, startLoadingTransition] = useTransition();
   const [variants, setVariants] = useState<VariantItemType[]>([]);
 
-  useEffect(() => {
+  const fetchVariants = () => {
     startLoadingTransition(() =>
       getVariantList({ filters: `merch_id=${params.id}` }).then((c) =>
         setVariants(c.data.data || []),
       ),
     );
+  };
+
+  useEffect(() => {
+    fetchVariants();
   }, []);
 
   return (
@@ -59,7 +64,11 @@ export function VariantsTab() {
           </div>
           {checkPermission(session, [
             'create_company_merchandise_attribute_value',
-          ]) && <Button>Add Variant</Button>}
+          ]) && (
+            <VariantCreateSheet onSave={fetchVariants} cat_id={cat_id}>
+              <Button>Add Variant</Button>
+            </VariantCreateSheet>
+          )}
         </CardHeader>
         <CardContent>
           <Table>
@@ -131,8 +140,12 @@ function TableAction({
   const { data } = useSession();
   const [removing, startRemoveTransition] = useTransition();
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
-  const canDelete = checkPermission(data, ['delete_company_merchandise']);
-  const canEdit = checkPermission(data, ['update_company_merchandise']);
+  const canDelete = checkPermission(data, [
+    'delete_company_merchandise_attribute_value',
+  ]);
+  const canEdit = checkPermission(data, [
+    'update_company_merchandise_attribute_value',
+  ]);
 
   if (!canEdit && !canDelete) return null;
   return (
