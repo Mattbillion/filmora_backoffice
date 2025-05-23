@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
+import CurrencyItem from '@/components/custom/currency-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import { MultiImageUpload } from '@/components/custom/Image-uploader';
@@ -162,15 +163,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           <FormItem>
             <FormLabel>Price</FormLabel>
             <FormControl>
-              <Input
-                placeholder="Enter Price"
-                {...field}
-                value={field.value ?? ''}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  field.onChange(val === '' ? undefined : Number(val));
-                }}
-              />
+              <CurrencyItem field={field} placeholder={'Enter Price'} />
             </FormControl>
             <FormMessage />
           </FormItem>

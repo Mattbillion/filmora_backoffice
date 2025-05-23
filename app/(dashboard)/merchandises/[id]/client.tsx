@@ -4,17 +4,25 @@ import { useRef, useState, useTransition } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Trash } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
-import { patchMerchandises } from '@/app/(dashboard)/merchandises/actions';
+import {
+  deleteMerchandises,
+  patchMerchandises,
+} from '@/app/(dashboard)/merchandises/actions';
 import {
   MerchandisesBodyType,
   MerchandisesItemType,
   merchandisesSchema,
 } from '@/app/(dashboard)/merchandises/schema';
+import {
+  DeleteDialog,
+  DeleteDialogRef,
+} from '@/components/custom/delete-dialog';
 import { FormDialogRef } from '@/components/custom/form-dialog';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -46,7 +54,13 @@ export default function MerchDetailClient({
   const [activeTab, setActiveTab] = useState('details');
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
+  const [deleting, setDeleting] = useState(false);
+
   const { data: session } = useSession();
+  const router = useRouter();
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
+  const canDelete = checkPermission(session, ['delete_company_merchandise']);
+
   const canAccessVariants = checkPermission(session, [
     'get_company_merchandise_attribute_value_list',
     'get_company_merchandise_attribute_value',
@@ -134,7 +148,40 @@ export default function MerchDetailClient({
             <ImagesTab control={form.control} />
 
             {activeTab !== 'variants' && (
-              <div className="mt-6 flex justify-end">
+              <div className="mt-6 flex justify-end gap-6">
+                {canDelete && (
+                  <DeleteDialog
+                    ref={deleteDialogRef}
+                    loading={deleting}
+                    action={() => {
+                      setDeleting(true);
+                      deleteMerchandises(initialData.id)
+                        .then((c) => {
+                          toast.success(c.data.message);
+                          router.push('/merchandises');
+                        })
+                        .catch((c) => toast.error(c.message))
+                        .finally(() => {
+                          deleteDialogRef.current?.close();
+                          setDeleting(false);
+                        });
+                    }}
+                    description={
+                      <>
+                        Are you sure you want to delete this{' '}
+                        <b className="text-foreground">
+                          {initialData.mer_name}
+                        </b>
+                        ?
+                      </>
+                    }
+                  >
+                    <Button type="button" variant="destructive">
+                      <Trash className="h-4 w-4" />
+                      Delete
+                    </Button>
+                  </DeleteDialog>
+                )}
                 <Button disabled={isPending} type={'submit'}>
                   <Save className="mr-2 h-4 w-4" />
                   Save Changes

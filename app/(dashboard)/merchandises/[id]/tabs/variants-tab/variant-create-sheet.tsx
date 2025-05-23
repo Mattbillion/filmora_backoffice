@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
+import CurrencyItem from '@/components/custom/currency-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -135,12 +136,7 @@ export function VariantCreateSheet({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  onChange={(e) => field.onChange(Number(e.target.value))}
-                  placeholder="Enter variant price"
-                />
+                <CurrencyItem field={field} placeholder={'Enter Price'} />
               </FormControl>
               <FormMessage />
             </FormItem>
