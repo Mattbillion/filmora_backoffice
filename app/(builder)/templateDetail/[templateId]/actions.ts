@@ -1,10 +1,5 @@
-// @ts-ignore
-import { parse } from 'svg-parser';
-
 import { xooxFetch } from '@/lib/fetch';
 import { ID } from '@/lib/fetch/types';
-
-import { SVGJsonType } from './schema';
 
 type TemplateDetail = {
   id: number;
@@ -23,18 +18,6 @@ type TemplateDetail = {
 
 export async function getTemplateDetail(templateId: ID) {
   const { body } = await xooxFetch<{ data: TemplateDetail[] }>(`/templates`);
-  const template = body.data[0];
-  const templateJSON = template?.layout_svg
-    ? parse(template?.layout_svg)
-    : null;
-  const svgRoot = templateJSON?.children?.[0];
-  const viewBox = svgRoot?.properties?.viewBox
-    ?.split(' ')
-    ?.slice(2, 4)
-    ?.map(parseFloat) as [number, number];
 
-  return {
-    templateJSON: svgRoot?.children as SVGJsonType[],
-    viewBox,
-  };
+  return body.data[0]?.layout_svg;
 }
