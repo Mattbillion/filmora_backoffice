@@ -148,6 +148,14 @@ export const discountsColumns: ColumnDef<DiscountsItemType>[] = [
       row.original.start_at
         ? dayjs(row.original.start_at).format('YYYY-MM-DD hh:mm')
         : undefined,
+    filterFn: (row, columnId, filterValue) => {
+      const cellDate = dayjs(row.getValue(columnId));
+      const start = dayjs(filterValue?.start);
+      const end = dayjs(filterValue?.end);
+
+      if (!start.isValid() || !end.isValid()) return true;
+      return cellDate.isAfter(start) && cellDate.isBefore(end);
+    },
     enableSorting: true,
     enableColumnFilter: true,
   },

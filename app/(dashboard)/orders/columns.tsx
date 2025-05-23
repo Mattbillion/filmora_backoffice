@@ -1,6 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 import Link from 'next/link';
 
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
@@ -47,7 +48,11 @@ export const ordersColumns: ColumnDef<
     id: 'payment_deadline',
     accessorKey: 'payment_deadline',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.payment_deadline?.slice(0, 300),
+    cell: ({ row }) =>
+      row.original.payment_deadline
+        ? dayjs(row.original.payment_deadline).format('YYYY/MM/DD hh:mm:ss')
+        : undefined,
+
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -55,7 +60,10 @@ export const ordersColumns: ColumnDef<
     id: 'order_date',
     accessorKey: 'order_date',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.order_date?.slice(0, 300),
+    cell: ({ row }) =>
+      row.original.order_date
+        ? dayjs(row.original.order_date).format('YYYY/MM/DD hh:mm:ss')
+        : undefined,
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -63,7 +71,7 @@ export const ordersColumns: ColumnDef<
     id: 'order_time',
     accessorKey: 'order_time',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.order_time?.slice(0, 300),
+    cell: ({ row }) => row.original.order_time,
     enableSorting: true,
     enableColumnFilter: true,
   },

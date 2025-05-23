@@ -1,76 +1,13 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Trash } from 'lucide-react';
+import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { toast } from 'sonner';
 
-import {
-  DeleteDialog,
-  DeleteDialogRef,
-} from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Button } from '@/components/ui/button';
-import { checkPermission } from '@/lib/permission';
 import { currencyFormat, removeHTML } from '@/lib/utils';
 
-import { deleteMerchandises } from './actions';
 import { MerchandisesItemType } from './schema';
-
-const Action = ({
-  row,
-}: CellContext<
-  MerchandisesItemType & {
-    company: string;
-    category?: string;
-    discount?: string;
-    canModify?: boolean;
-  },
-  unknown
->) => {
-  const [loading, setLoading] = useState(false);
-  const deleteDialogRef = useRef<DeleteDialogRef>(null);
-  const { data } = useSession();
-  const canDelete = checkPermission(data, ['delete_company_merchandise']);
-
-  if (!canDelete) return null;
-
-  return (
-    <DeleteDialog
-      ref={deleteDialogRef}
-      loading={loading}
-      action={() => {
-        setLoading(true);
-        // TODO: Please check after generate
-        deleteMerchandises(row.original.id)
-          .then((c) => toast.success(c.data.message))
-          .catch((c) => toast.error(c.message))
-          .finally(() => {
-            deleteDialogRef.current?.close();
-            setLoading(false);
-          });
-      }}
-      description={
-        <>
-          Are you sure you want to delete this{' '}
-          <b className="text-foreground">{row.original.mer_name}</b>?
-        </>
-      }
-    >
-      <Button
-        type="button"
-        size="icon"
-        variant="ghost"
-        className="text-red-500"
-      >
-        <Trash className="h-4 w-4" />
-      </Button>
-    </DeleteDialog>
-  );
-};
 
 export const merchandisesColumns: ColumnDef<
   MerchandisesItemType & {
@@ -156,14 +93,17 @@ export const merchandisesColumns: ColumnDef<
           <div className="flex items-center">
             {cellData.slice(0, 3).map((c, idx) => {
               return (
-                <Image
+                <div
+                  className="relative -mr-4 size-10 overflow-hidden rounded-full border-border object-cover"
                   key={idx}
-                  src={c.media_url}
-                  alt=""
-                  width={48}
-                  height={48}
-                  className="-mr-6 rounded-full border-border"
-                />
+                >
+                  <Image
+                    src={c.media_url}
+                    alt=""
+                    fill
+                    className="object-center"
+                  />
+                </div>
               );
             })}
           </div>
@@ -181,5 +121,4 @@ export const merchandisesColumns: ColumnDef<
     enableSorting: false,
     enableColumnFilter: true,
   },
-  { id: 'action', cell: Action },
 ];

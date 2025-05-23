@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
+import { DateRangeFilter } from '@/components/custom/date-range-filter';
 import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
@@ -19,6 +20,7 @@ export default async function DiscountsPage(props: {
   searchParams?: SearchParams;
 }) {
   const session = await auth();
+
   const searchParams = await props.searchParams;
   const { data } = await getDiscounts({
     ...searchParams,
@@ -40,6 +42,7 @@ export default async function DiscountsPage(props: {
         )}
       </div>
       <Separator />
+      <DateRangeFilter />
       <Suspense fallback="Loading">
         <DataTable
           columns={discountsColumns}

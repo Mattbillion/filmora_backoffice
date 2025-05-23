@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const discountsSchema = z.object({
-  com_id: z.number(),
+  company_id: z.number(),
   discount_name: z.string(),
   discount_desc: z.string(),
   discount_type: z.string(),

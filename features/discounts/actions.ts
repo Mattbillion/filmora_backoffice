@@ -74,6 +74,7 @@ export const createDiscounts = async (bodyData: DiscountsBodyType) => {
   const { body, error } = await xooxFetch(`/discounts`, {
     method: 'POST',
     body: bodyData,
+    searchParams: { company_id: bodyData.company_id },
     cache: 'no-store',
   });
 
