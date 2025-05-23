@@ -20,6 +20,7 @@ export function DateRangeFilter() {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
+  // Load initial values from searchParams
   const initialFrom = searchParams.get('start_at')
     ? new Date(searchParams.get('start_at')!)
     : undefined;
@@ -37,8 +38,28 @@ export function DateRangeFilter() {
     if (!range?.from || !range?.to) return;
 
     const params = new URLSearchParams(searchParams.toString());
-    params.set('start_at', range.from.toISOString());
-    params.set('end_at', range.to.toISOString());
+
+    // Parse filters param
+    const filtersRaw = params.get('filters');
+    const filters: Record<string, string> = {};
+
+    if (filtersRaw) {
+      filtersRaw.split(',').forEach((pair) => {
+        const [key, value] = pair.split('=');
+        if (key && value) filters[key] = value;
+      });
+    }
+
+    // Update date values
+    filters['start_at'] = range.from.toISOString();
+    filters['end_at'] = range.to.toISOString();
+
+    // Serialize back to query string
+    const serializedFilters = Object.entries(filters)
+      .map(([key, value]) => `${key}=${value}`)
+      .join(',');
+
+    params.set('filters', serializedFilters);
 
     startTransition(() => {
       router.push(`?${params.toString()}`);
@@ -51,22 +72,22 @@ export function DateRangeFilter() {
         <Button
           variant={'outline'}
           className={cn(
-            'w-[260px] justify-start text-left font-normal',
+            'w-[196px] justify-start text-left font-normal',
             !date?.from && 'text-muted-foreground',
           )}
         >
-          <CalendarIcon className="mr-2 h-4 w-4" />
+          <CalendarIcon className="mr-0 h-4 w-4" />
           {date?.from ? (
             date.to ? (
               <>
-                {format(date.from, 'yyyy-MM-dd')} -
+                {format(date.from, 'yyyy-MM-dd')} -{' '}
                 {format(date.to, 'yyyy-MM-dd')}
               </>
             ) : (
               format(date.from, 'yyyy-MM-dd')
             )
           ) : (
-            <span>Pick a date range</span>
+            <span>Он/сар/өдөр</span>
           )}
         </Button>
       </PopoverTrigger>

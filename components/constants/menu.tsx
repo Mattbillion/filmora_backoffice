@@ -112,7 +112,7 @@ const managementRoutes: SubMenuItemType[] = [
 
 const companyRoutes: SubMenuItemType[] = [
   {
-    title: 'Company',
+    title: 'Компани',
     url: '/companies',
     icon: Building2,
     permissions: [
@@ -124,7 +124,7 @@ const companyRoutes: SubMenuItemType[] = [
     ],
   },
   {
-    title: 'Employees',
+    title: 'Ажилчид',
     url: '/employees',
     icon: UserIcon,
     permissions: [
@@ -154,7 +154,7 @@ const companyRoutes: SubMenuItemType[] = [
 
 const operationsRoutes: SubMenuItemType[] = [
   {
-    title: 'Discounts',
+    title: 'Хямдралууд',
     url: '/discounts',
     icon: Percent,
     permissions: [
@@ -166,14 +166,14 @@ const operationsRoutes: SubMenuItemType[] = [
     ],
   },
   {
-    title: 'Orders',
+    title: 'Захиалгууд',
     url: '/orders',
     subRoutes: true,
     icon: ShoppingCart,
     permissions: ['get_order_list', 'get_order_detail'],
   },
   {
-    title: 'Transactions',
+    title: 'Гүйлгээ',
     url: '/transactions',
     icon: CircleDollarSign,
     subRoutes: true,

@@ -11,7 +11,7 @@ import {
   DeleteDialog,
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
-import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -99,55 +99,64 @@ const Action = ({ row }: CellContext<DiscountsItemType, unknown>) => {
 export const discountsColumns: ColumnDef<DiscountsItemType>[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'ID',
   },
   {
     id: 'discount_name',
     accessorKey: 'discount_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.discount_name?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
+    header: 'Discount name',
+    cell: ({ row }) => <div className="">{row.original.discount_name}</div>,
   },
   {
     id: 'discount_desc',
     accessorKey: 'discount_desc',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: () => <p className="font-medium">Discount description</p>,
     cell: ({ row }) => (
-      <p>
-        html:{' '}
-        <span className="opacity-70">
-          {removeHTML(row.original.discount_desc?.slice(0, 300))}
-        </span>
-      </p>
+      <div className="max-w-[156px] truncate">
+        {removeHTML(row.original.discount_desc?.slice(0, 300))}
+      </div>
     ),
-    enableSorting: false,
-    enableColumnFilter: false,
   },
   {
     id: 'discount_type',
     accessorKey: 'discount_type',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.discount_type?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
+    header: 'Discount type',
+    cell: ({ row }) => (
+      <Badge variant="outline">
+        {row.original.discount_type === 'PERCENT' ? 'Хувиар' : 'Дүнгээр'}
+      </Badge>
+    ),
   },
   {
     id: 'discount',
     accessorKey: 'discount',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.discount,
-    enableSorting: true,
-    enableColumnFilter: true,
+    header: 'Discount Value',
+    cell: ({ row }) => {
+      const type = row.original.discount_type;
+      const value = row.original.discount;
+
+      const formatted =
+        type === 'PERCENT' ? `${value}%` : `${value.toLocaleString()}₮`;
+
+      return (
+        <Badge variant="outline" className="text-end">
+          {formatted}
+        </Badge>
+      );
+    },
   },
   {
     id: 'start_at',
     accessorKey: 'start_at',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) =>
-      row.original.start_at
-        ? dayjs(row.original.start_at).format('YYYY-MM-DD hh:mm')
-        : undefined,
+    header: 'Эхлэх огноо',
+    cell: ({ row }) => (
+      <Badge variant="secondary">
+        {row.original.start_at
+          ? dayjs(row.original.start_at).format('YYYY-MM-DD hh:mm')
+          : undefined}
+      </Badge>
+    ),
+
     filterFn: (row, columnId, filterValue) => {
       const cellDate = dayjs(row.getValue(columnId));
       const start = dayjs(filterValue?.start);
@@ -156,25 +165,31 @@ export const discountsColumns: ColumnDef<DiscountsItemType>[] = [
       if (!start.isValid() || !end.isValid()) return true;
       return cellDate.isAfter(start) && cellDate.isBefore(end);
     },
-    enableSorting: true,
-    enableColumnFilter: true,
   },
   {
     id: 'end_at',
     accessorKey: 'end_at',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) =>
-      row.original.end_at
-        ? dayjs(row.original.end_at).format('YYYY-MM-DD hh:mm')
-        : undefined,
-    enableSorting: true,
-    enableColumnFilter: false,
+    header: 'Дуусах огноо',
+    cell: ({ row }) => (
+      <Badge variant="secondary">
+        {row.original.end_at
+          ? dayjs(row.original.end_at).format('YYYY-MM-DD hh:mm')
+          : undefined}
+      </Badge>
+    ),
   },
   {
     id: 'status',
     accessorKey: 'status',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+    header: 'Төлөв',
+    cell: ({ row }) => {
+      const badgeStatus = row.original.status ? 'Active' : 'Inactive';
+      return (
+        <Badge variant={badgeStatus === 'Active' ? 'outline' : 'destructive'}>
+          {row.original.status ? 'Active' : 'Inactive'}
+        </Badge>
+      );
+    },
     enableSorting: false,
     enableColumnFilter: true,
   },

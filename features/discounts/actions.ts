@@ -93,6 +93,7 @@ export const patchDiscountsDetail = async ({
     {
       method: 'PUT',
       body: bodyData,
+      searchParams: { company_id: bodyData.company_id },
       cache: 'no-store',
     },
   );
