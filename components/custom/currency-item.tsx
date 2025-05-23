@@ -15,11 +15,13 @@ import { Input } from '../ui/input';
 export default function CurrencyItem({
   field,
   label,
+  placeholder,
   description,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
   label?: string;
+  placeholder?: string;
   description?: string;
 }) {
   return (
@@ -31,6 +33,8 @@ export default function CurrencyItem({
         thousandSeparator
         customInput={Input}
         valueIsNumericString
+        placeholder={placeholder}
+        suffix="₮"
       />
       {description && <FormDescription>{description}</FormDescription>}
       <FormMessage />

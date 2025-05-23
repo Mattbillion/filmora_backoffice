@@ -70,7 +70,7 @@ export function Sector({
       </CollapsibleTrigger>
       <CollapsibleContent>
         <div className="space-y-2">
-          <div className="border-b border-neutral-700 px-4 py-2">
+          <div className="border-b px-4 py-2 dark:border-neutral-700">
             <SectorInput
               node={sector}
               dataFields={['data-sector', 'data-name']}
@@ -84,7 +84,7 @@ export function Sector({
               return (
                 <div
                   key={idx}
-                  className="flex items-center gap-4 border-b border-neutral-700 px-4 py-2 font-mono text-sm shadow-sm last:border-b-0"
+                  className="flex items-center gap-4 border-b px-4 py-2 font-mono text-sm shadow-sm last:border-b-0 dark:border-neutral-700"
                 >
                   <SectorInput
                     node={c}
@@ -198,7 +198,7 @@ function SectorInput({
         }}
         onFocus={onFocus}
         placeholder={`Current: ${placeholder || 'N/A'}`}
-        className="flex-1 rounded-sm bg-neutral-600"
+        className="flex-1 rounded-sm border-neutral-400 dark:border-neutral-600 dark:bg-neutral-600"
       />
     </div>
   );

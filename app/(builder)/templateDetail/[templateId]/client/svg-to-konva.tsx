@@ -14,11 +14,11 @@ import {
   Ring,
   Text,
 } from 'react-konva';
-import { camelCase } from 'change-case-all';
 import Konva from 'konva';
 import { pick } from 'lodash';
 
-import { ClassObjType, StyleObjType, SVGJsonType } from '../schema';
+import { SVGJsonType } from '../schema';
+import { parseCSS } from '../util';
 import { dataMap, idRegex } from './constants';
 
 // type sda = keyof typeof dataMap;
@@ -117,12 +117,11 @@ export const svgToKonva = (
 
   konvaProps.children = transformedChildren;
 
-  // const isTextNode = tagName === 'text' || tagName === 'tspan';
-
   return (
     <KonvaNode
       ref={(ref?: Konva.Node) => {
         if (ref) {
+          const nodeId = ref.id();
           const canBeTicket = !!ref.findAncestor('#tickets');
           const forceCache =
             properties.id === 'bg' ||
@@ -140,45 +139,34 @@ export const svgToKonva = (
                 !c.children?.some((cc) => cc.tagName === 'g'),
             );
 
-          // ref.listening(
-          //   ref.id() === 'tickets' ||
-          //     (!!ref.findAncestor('#tickets') && !isTextNode),
-          // );
-          if (
-            !forceCache &&
-            !!ref.findAncestor('#tickets') &&
-            idRegex.test(ref.id())
-          ) {
+          if (!forceCache && canBeTicket && idRegex.test(nodeId)) {
             const prevDataAttr = pick(
               ref.attrs,
               Object.values(dataMap).map((c) => `data-${c}`),
             );
 
             ref.setAttrs(
-              ref
-                .id()
-                .split('-')
-                .reduce((acc, cur) => {
-                  const [tickedCode, ...codeValue] = idRegex.test(cur)
-                    ? cur || ''
-                    : [/^V(IP)?/.test(cur) ? 'r' : 'S', ...cur];
-                  return Object.assign(
-                    {
-                      ...acc,
-                      [`data-${(dataMap as any)[tickedCode as any]}`]:
-                        codeValue.join(''),
-                      'data-purchasable':
-                        idRegex.test(cur) || /^V(IP)?/.test(cur),
-                    },
-                    prevDataAttr,
-                  );
-                }, {}),
+              nodeId.split('-').reduce((acc, cur) => {
+                const [tickedCode, ...codeValue] = idRegex.test(cur)
+                  ? cur || ''
+                  : [/^V(IP)?/.test(cur) ? 'r' : 'S', ...cur];
+                return Object.assign(
+                  {
+                    ...acc,
+                    [`data-${(dataMap as any)[tickedCode as any]}`]:
+                      codeValue.join(''),
+                    'data-purchasable':
+                      idRegex.test(cur) || /^V(IP)?/.test(cur),
+                  },
+                  prevDataAttr,
+                );
+              }, {}),
             );
           }
           if (needEl) ref.name('ticketSection');
           if (forceCache || canCache) {
             if (canCache) ref.name('cachedGroup');
-            // (ref as unknown as Konva.Node).cache();
+            (ref as unknown as Konva.Node).cache();
           }
         }
       }}
@@ -292,67 +280,12 @@ const propertyToProp = (
   return konvaProps;
 };
 
-const konvaStyleKeyMap: Record<string, string> = {
-  strokeDasharray: 'dash',
-  strokeLinejoin: 'lineJoin',
-  strokeLinecap: 'lineCap',
-  pathData: 'data',
-  textAlign: 'align',
-  textBaseline: 'verticalAlign',
-};
-
-export const parseCSS = (css: string): ClassObjType => {
-  const styles: ClassObjType = {};
-  const regex = /\.([\w-]+(?:,\s*\.[\w-]+)*)\s*\{([^}]+)}/g; // .cls-any {...} or .csl-s, .cls-sda {...}
-  let match;
-
-  while ((match = regex.exec(css)) !== null) {
-    const classNames = match[1]
-      .split(',')
-      .map((className) => className.trim().replace('.', ''));
-
-    const rules: StyleObjType = {};
-    const rulesArray = match[2].split(';');
-
-    for (let i = 0; i < rulesArray.length; i++) {
-      const rule = rulesArray[i];
-      const [key, value] = rule.split(':').map((s) => s.trim());
-
-      if (key && value) {
-        const camelKey = camelCase(key);
-        const transformedKey = konvaStyleKeyMap[camelKey] || camelKey;
-
-        rules[transformedKey] = transformValue(transformedKey, value);
-      }
-    }
-
-    for (let i = 0; i < classNames.length; i++) {
-      const className = classNames[i];
-      styles[className] = Object.assign({}, styles[className], rules);
-    }
-  }
-
-  return styles;
-};
-
-const transformValue = (key: string, value: string) => {
-  const v = value.replace(/(\s|,)\.(\d+)/g, '0.$1').replace(/px$/, '');
-
-  if (key === 'dash') return v.split(' ');
-  if (key === 'fill' && v === 'none') return 'transparent';
-  if (isNaN(Number(v))) return v;
-  return Number(v);
-};
-
-export const getStyleStr = (json: SVGJsonType[]): string => {
-  const jsonLength = json.length;
-
-  for (let i = 0; i < jsonLength; i++) {
-    const item = json[i];
-
-    if (item.tagName === 'style') return item.children?.[0]?.value || '';
-    if (item.children?.length) return getStyleStr(item.children);
-  }
-
-  return '';
-};
+export const cssToKonvaStyle = (css: string) =>
+  parseCSS(css, {
+    strokeDasharray: 'dash',
+    strokeLinejoin: 'lineJoin',
+    strokeLinecap: 'lineCap',
+    pathData: 'data',
+    textAlign: 'align',
+    textBaseline: 'verticalAlign',
+  });

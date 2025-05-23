@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
+import CurrencyItem from '@/components/custom/currency-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -133,11 +134,7 @@ export function VariantEditSheet({
             <FormItem>
               <FormLabel>Price</FormLabel>
               <FormControl>
-                <Input
-                  type="number"
-                  {...field}
-                  placeholder="Enter variant price"
-                />
+                <CurrencyItem field={field} placeholder={'Enter Price'} />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -1,5 +1,6 @@
 import { omit } from 'lodash';
 
+import CurrencyItem from '@/components/custom/currency-item';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
   Card,
@@ -75,11 +76,7 @@ export function DetailsTab({
               <FormItem>
                 <FormLabel>Price</FormLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Enter Price"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                  />
+                  <CurrencyItem field={field} placeholder={'Enter Price'} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

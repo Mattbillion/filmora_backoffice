@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, LogOut } from 'lucide-react';
+import { JSX, useEffect, useMemo, useState } from 'react';
+import { ArrowLeft, Loader2, LogOut } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -17,25 +17,29 @@ import {
 import { imageResize } from '@/lib/utils';
 
 import { getTemplateDetail } from '../actions';
-import { SVGJsonType } from '../schema';
+import { TemplateType } from '../schema';
+import { getStyleStr, svgStrToJSON } from '../util';
 import { INITIAL_SCALE } from './constants';
 import XooxStage from './stage';
-import { getStyleStr, parseCSS, svgToKonva } from './svg-to-konva';
+import { cssToKonvaStyle, svgToKonva } from './svg-to-konva';
+import { UploadView } from './uploader';
 
 export default function Client() {
   const router = useRouter();
   const { templateId } = useParams();
   const { data: session } = useSession();
-  const [{ templateJSON = [], viewBox }, setTemplateData] = useState<{
-    templateJSON: SVGJsonType[];
-    viewBox: [number, number];
-  }>({ templateJSON: [], viewBox: [1024, 960] });
-  const [vbw = 1024, vbh = 960] = viewBox;
-  const styleJson = parseCSS(getStyleStr(templateJSON));
+  const [{ templateJSON = [], viewBox }, setTemplateData] =
+    useState<TemplateType>({ templateJSON: [], viewBox: [1024, 960] });
+  const [view, setView] = useState<'loading' | 'stage' | 'upload'>('loading');
+  const styleJson = cssToKonvaStyle(getStyleStr(templateJSON));
 
   useEffect(() => {
+    setView('loading');
     if (!isNaN(Number(templateId as unknown as string)))
-      getTemplateDetail(Number(templateId)).then((c) => setTemplateData(c));
+      getTemplateDetail(Number(templateId))
+        .then((c) => setTemplateData(svgStrToJSON(c)))
+        .then(() => setView('stage'));
+    else setView('upload');
   }, [templateId]);
 
   const shapes = useMemo(
@@ -43,15 +47,11 @@ export default function Client() {
     [templateJSON],
   );
 
-  const [width, height] = (() => {
-    if (typeof window === 'undefined') return viewBox;
-    return [window.innerWidth, window.innerHeight];
-  })();
-  const stageWidth = width - 462;
-  const stageHeight = height - 64;
-
   return (
-    <div>
+    <div
+      className="flex h-screen w-screen flex-col overflow-hidden bg-background"
+      style={{ minHeight: '100vh' }}
+    >
       <header className="flex h-16 items-center border-b px-4">
         <div className="flex flex-1 items-center gap-2">
           <button
@@ -89,7 +89,6 @@ export default function Client() {
                     alt={session?.user?.name ?? ''}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {' '}
                     {session?.user?.email?.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
@@ -115,18 +114,53 @@ export default function Client() {
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
-      <XooxStage
-        shapes={shapes}
-        height={stageHeight}
-        width={stageWidth}
-        limitX={vbw * 0.9}
-        limitY={vbh * 0.9}
-        scale={INITIAL_SCALE}
-        centerCoord={{
-          x: (stageWidth - vbw * INITIAL_SCALE.x) / 2,
-          y: (stageHeight - vbh * INITIAL_SCALE.y) / 2,
-        }}
-      />
+      {view === 'loading' ? (
+        <div className="relative w-full flex-1">
+          <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
+            <Loader2 size={32} className="animate-spin" />
+          </div>
+        </div>
+      ) : view === 'stage' ? (
+        <StageView shapes={shapes} viewBox={viewBox} />
+      ) : (
+        <UploadView
+          onChange={(c) => {
+            setTemplateData(c);
+            setView('stage');
+          }}
+        />
+      )}
     </div>
+  );
+}
+
+function StageView({
+  shapes,
+  viewBox = [1024, 960],
+}: {
+  shapes: JSX.Element[];
+  viewBox: [number, number];
+}) {
+  const [vbw, vbh] = viewBox;
+  const [width, height] = (() => {
+    if (typeof window === 'undefined') return viewBox;
+    return [window.innerWidth, window.innerHeight];
+  })();
+  const stageWidth = width - 462;
+  const stageHeight = height - 64;
+
+  return (
+    <XooxStage
+      shapes={shapes}
+      height={stageHeight}
+      width={stageWidth}
+      limitX={vbw * 0.9}
+      limitY={vbh * 0.9}
+      scale={INITIAL_SCALE}
+      centerCoord={{
+        x: (stageWidth - vbw * INITIAL_SCALE.x) / 2,
+        y: (stageHeight - vbh * INITIAL_SCALE.y) / 2,
+      }}
+    />
   );
 }
