@@ -1,8 +1,9 @@
 'use client';
 
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useEffect, useRef, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import DatePickerItem from '@/components/custom/datepicker-item';
@@ -39,6 +40,14 @@ export function UpdateDialog({
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
+  const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user?.company_id) {
+      form.setValue('company_id', session.user.company_id);
+      console.log('here');
+    }
+  }, [session?.user?.company_id]);
 
   const form = useForm<DiscountsBodyType>({
     resolver: zodResolver(discountsSchema),
@@ -50,7 +59,7 @@ export function UpdateDialog({
       patchDiscountsDetail({
         ...values,
         id: initialData.id,
-        status: (status as unknown as string) === 'true',
+        status,
       })
         .then(() => {
           toast.success('Updated successfully');

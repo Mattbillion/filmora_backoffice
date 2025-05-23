@@ -53,7 +53,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         status,
       })
         .then(() => {
-          toast.success('Created successfully');
+          toast.success('Шинээр хямдрал үүслээ.');
           dialogRef?.current?.close();
           form.reset();
         })
@@ -67,8 +67,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Discounts"
-      submitText="Create"
+      title="Шинэ хямдрал үүсгэх"
+      submitText="Үүсгэх"
       trigger={children}
     >
       <FormField
@@ -88,19 +88,13 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         name="discount_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Discount name</FormLabel>
+            <FormLabel>Хямдралын нэр</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Discount name" {...field} />
+              <Input placeholder="Хүүхдийн баярын хямдрал..." {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
-      />
-
-      <FormField
-        control={form.control}
-        name="discount_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
 
       <FormField
@@ -112,12 +106,12 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             <Select onValueChange={(value) => field.onChange(value)}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="Хямдралын төрөл сонгох" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="AMOUNT">AMOUNT</SelectItem>
-                <SelectItem value="PERCENT">PERCENT</SelectItem>
+                <SelectItem value="AMOUNT">Үнийн дүнгээр</SelectItem>
+                <SelectItem value="PERCENT">Хувиар</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
@@ -143,41 +137,42 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           </FormItem>
         )}
       />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="start_at"
+          render={({ field }) => (
+            <DatePickerItem
+              field={field}
+              label="Эхлэх огноо сонгох"
+              disableBy="none"
+            />
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="start_at"
-        render={({ field }) => (
-          <DatePickerItem
-            field={field}
-            label="Discount start at"
-            disableBy="none"
-          />
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="end_at"
-        render={({ field }) => (
-          <DatePickerItem
-            field={field}
-            label="Discount end at"
-            disableBy="past"
-          />
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="end_at"
+          render={({ field }) => (
+            <DatePickerItem
+              field={field}
+              label="Дуусах огноо"
+              disableBy="past"
+            />
+          )}
+        />
+      </div>
 
       <FormField
         control={form.control}
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Status</FormLabel>
+            <FormLabel>Хямдралын төлөв сонгох</FormLabel>
             <Select onValueChange={(value) => field.onChange(value === 'true')}>
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a Status" />
+                  <SelectValue placeholder="Төлөв сонгох" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent defaultValue="false">
@@ -187,6 +182,14 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             </Select>
             <FormMessage />
           </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="discount_desc"
+        render={({ field }) => (
+          <HtmlTipTapItem field={field} label="Дэлгэрэнгүй мэдээлэл" />
         )}
       />
     </FormDialog>

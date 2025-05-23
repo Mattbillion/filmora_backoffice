@@ -1,58 +1,97 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { Badge } from '@/components/ui/badge';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
 
-export function SelectFilter() {
-  const searchParams = useSearchParams();
+const StatusFilter = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const [statusFilter, setStatusFilter] = useState('');
+  const [status, setStatus] = useState('all');
 
-  // Set initial state from URL
   useEffect(() => {
-    const filtersParam = searchParams.get('filters');
-    const match = filtersParam?.match(/status=(.*)/);
+    const filters = searchParams.get('filters');
+    const match = filters?.match(/status=(true|false)/);
     if (match?.[1]) {
-      setStatusFilter(match[1]);
+      setStatus(match[1]);
+    } else {
+      setStatus('all');
     }
   }, [searchParams]);
 
-  // Sync value to URL
   useEffect(() => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Remove old filter
-    params.delete('filters');
+    // Step 1: Parse filters into object
+    const filtersRaw = params.get('filters');
+    const filters: Record<string, string> = {};
 
-    if (statusFilter) {
-      params.set('filters', `status=${statusFilter}`);
+    if (filtersRaw) {
+      filtersRaw.split(',').forEach((pair) => {
+        const [key, value] = pair.split('=');
+        if (key && value) filters[key] = value;
+      });
+    }
+
+    // Step 2: Update or remove status
+    if (status !== 'all') {
+      filters['status'] = status;
+    } else {
+      delete filters['status'];
+    }
+
+    // Step 3: Re-serialize and set new filters
+    const serializedFilters = Object.entries(filters)
+      .map(([key, value]) => `${key}=${value}`)
+      .join(',');
+
+    if (serializedFilters) {
+      params.set('filters', serializedFilters);
+    } else {
+      params.delete('filters');
     }
 
     router.push(`${pathname}?${params.toString()}`);
-  }, [statusFilter]);
+  }, [status]);
 
   return (
-    <Select
-      value={statusFilter}
-      onValueChange={(value) => setStatusFilter(value)}
-    >
-      <SelectTrigger className="w-48">
-        <SelectValue placeholder="Filter by status" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectItem value="true">Active</SelectItem>
-        <SelectItem value="false">Inactive</SelectItem>
-      </SelectContent>
-    </Select>
+    <div className="flex items-center gap-2">
+      <Select value={status} onValueChange={(value) => setStatus(value)}>
+        <SelectTrigger className="w-[180px]">
+          <SelectValue placeholder="Төлөв сонгох" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectItem defaultChecked value="all">
+              Бүгд (Төлөв)
+            </SelectItem>
+            <SelectItem value="true">
+              <Badge
+                variant="outline"
+                className="rounded-md bg-green-600 text-white"
+              >
+                Идэвхтэй
+              </Badge>
+            </SelectItem>
+            <SelectItem value="false">
+              <Badge variant="destructive">Идэвхгүй</Badge>
+            </SelectItem>
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
   );
-}
+};
+
+export default StatusFilter;
