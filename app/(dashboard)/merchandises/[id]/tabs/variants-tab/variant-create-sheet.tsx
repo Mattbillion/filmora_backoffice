@@ -40,7 +40,6 @@ export function VariantCreateSheet({
   const form = useForm<VariantBodyType>({
     resolver: zodResolver(variantsSchema),
     defaultValues: {
-      sku: '',
       merch_id: Number(id),
       stock: 0,
       price: 0,
@@ -105,19 +104,6 @@ export function VariantCreateSheet({
           <FormItem>
             <FormControl>
               <Input placeholder="Com id" {...field} type="hidden" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="sku"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>SKU</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder="Enter SKU" />
             </FormControl>
             <FormMessage />
           </FormItem>

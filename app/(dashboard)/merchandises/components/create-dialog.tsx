@@ -3,18 +3,14 @@
 import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { X } from 'lucide-react';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import CurrencyItem from '@/components/custom/currency-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
-import { Button } from '@/components/ui/button';
+import { MultiImageUpload } from '@/components/custom/Image-uploader';
 import {
-  FieldArray,
   FormControl,
   FormField,
   FormItem,
@@ -143,7 +139,11 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           <FormItem>
             <FormLabel>Mer name</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Mer name" {...field} />
+              <Input
+                placeholder="Enter Mer name"
+                {...field}
+                value={field.value ?? ''}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -170,110 +170,13 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         )}
       />
 
-      <FieldArray name="medias">
-        {({ fields, append, remove }) => (
-          <div className="space-y-4">
-            <FormLabel>Medias</FormLabel>
-            <div className="space-y-4 rounded-lg border border-input py-4">
-              <div className="flex flex-col gap-4">
-                {fields.map((field, index) => (
-                  <>
-                    <div
-                      key={field.id}
-                      className="relative flex items-start gap-2 px-4"
-                    >
-                      <FormField
-                        control={form.control}
-                        name={`medias.${index}.media_url`}
-                        render={({ field: itemField }) => (
-                          <div className="relative aspect-square w-32 overflow-hidden rounded-md">
-                            <Image
-                              src={itemField.value}
-                              alt=""
-                              fill
-                              className="object-cover"
-                            />
-
-                            <Button
-                              type="button"
-                              variant="destructive"
-                              size="icon"
-                              className="absolute left-2 top-2"
-                              onClick={() => remove(index)}
-                            >
-                              <X />
-                            </Button>
-                          </div>
-                        )}
-                      />
-                      <div className="flex-1 space-y-2">
-                        <FormField
-                          control={form.control}
-                          name={`medias.${index}.media_label`}
-                          render={({ field: itemField }) => (
-                            <FormItem className="space-y-1">
-                              <FormLabel className="text-sm">
-                                Media label
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...itemField}
-                                  placeholder="Media label"
-                                  className="h-8"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          control={form.control}
-                          name={`medias.${index}.media_desc`}
-                          render={({ field: itemField }) => (
-                            <FormItem className="space-y-1">
-                              <FormLabel className="text-sm">
-                                Media desc
-                              </FormLabel>
-                              <FormControl>
-                                <Input
-                                  {...itemField}
-                                  placeholder="Media desc"
-                                  className="h-8"
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    </div>
-                    <div className="border border-dashed border-border" />
-                  </>
-                ))}
-              </div>
-
-              <div className="px-4">
-                <UploadImageItem
-                  field={
-                    {
-                      value: undefined,
-                      onChange: (newFile: string) => {
-                        append({
-                          media_url: newFile,
-                          media_desc: '',
-                          media_type: 'image',
-                          media_label: '',
-                        });
-                      },
-                    } as any
-                  }
-                  imagePrefix="picture"
-                />
-              </div>
-            </div>
-          </div>
+      <FormField
+        control={form.control}
+        name="medias"
+        render={({ field }) => (
+          <MultiImageUpload field={field} imagePrefix="merchandise" />
         )}
-      </FieldArray>
+      />
 
       <FormField
         control={form.control}

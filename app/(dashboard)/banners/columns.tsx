@@ -101,7 +101,11 @@ export const bannersColumns: ColumnDef<BannersItemType>[] = [
     id: 'title',
     accessorKey: 'title',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.title?.slice(0, 300),
+    cell: ({ row }) => (
+      <p className="line-clamp-2 w-full min-w-40 overflow-hidden">
+        {row.original.title?.slice(0, 300)}
+      </p>
+    ),
     enableSorting: false,
     enableColumnFilter: false,
   },
@@ -110,13 +114,14 @@ export const bannersColumns: ColumnDef<BannersItemType>[] = [
     accessorKey: 'picture',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
-      <Image
-        src={row.original.picture}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
+      <div className="relative aspect-square size-14 overflow-hidden rounded-lg">
+        <Image
+          src={row.original.picture}
+          alt=""
+          fill
+          className="object-cover"
+        />
+      </div>
     ),
     enableSorting: false,
     enableColumnFilter: false,

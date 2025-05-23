@@ -3,6 +3,8 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import { SearchInput } from '@/components/custom/table/search-input';
+import { SelectFilter } from '@/components/custom/table/status-filter';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -45,7 +47,16 @@ export default async function BannersPage(props: {
           columns={bannersColumns}
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <div className="flex items-center">
+            <SearchInput
+              filterField="title"
+              paramKey="filters"
+              placeholder="Нэрээр хайх"
+            />
+            <SelectFilter />
+          </div>
+        </DataTable>
       </Suspense>
     </>
   );

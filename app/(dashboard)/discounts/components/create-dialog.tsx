@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useEffect, useRef, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
@@ -34,18 +34,23 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user?.company_id) {
+      form.setValue('company_id', session.user.company_id);
+    }
+  }, [session?.user?.company_id]);
+
   const form = useForm<DiscountsBodyType>({
     resolver: zodResolver(discountsSchema),
-    defaultValues: {
-      com_id: Number(session?.user?.company_id),
-    },
+    defaultValues: {},
   });
 
   function onSubmit({ status, ...values }: DiscountsBodyType) {
     startTransition(() => {
       createDiscounts({
         ...values,
-        status: (status as unknown as string) === 'true',
+        status,
       })
         .then(() => {
           toast.success('Created successfully');
@@ -68,16 +73,16 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     >
       <FormField
         control={form.control}
-        name="com_id"
+        name="company_id"
         render={({ field }) => (
           <FormItem>
             <FormControl>
-              <Input placeholder="Com id" {...field} type="hidden" />
+              <Input {...field} type="hidden" />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
       />
+
       <FormField
         control={form.control}
         name="discount_name"

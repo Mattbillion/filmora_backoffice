@@ -39,7 +39,6 @@ export function VariantEditSheet({
   const form = useForm<VariantBodyType>({
     resolver: zodResolver(variantsSchema),
     defaultValues: {
-      sku: variant?.sku || '',
       stock: variant?.stock || 0,
       price: variant?.price || 0,
       is_master: variant?.is_master || false,
@@ -104,19 +103,6 @@ export function VariantEditSheet({
           <FormItem>
             <FormControl>
               <Input placeholder="Com id" {...field} type="hidden" />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="sku"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>SKU</FormLabel>
-            <FormControl>
-              <Input {...field} placeholder="Enter SKU" />
             </FormControl>
             <FormMessage />
           </FormItem>

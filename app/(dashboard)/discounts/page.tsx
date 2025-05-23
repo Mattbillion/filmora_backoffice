@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import { SearchInput } from '@/components/custom/table/search-input';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -19,6 +20,7 @@ export default async function DiscountsPage(props: {
   searchParams?: SearchParams;
 }) {
   const session = await auth();
+
   const searchParams = await props.searchParams;
   const { data } = await getDiscounts({
     ...searchParams,
@@ -40,12 +42,20 @@ export default async function DiscountsPage(props: {
         )}
       </div>
       <Separator />
+
+      {/*<DateRangeFilter />*/}
       <Suspense fallback="Loading">
         <DataTable
           columns={discountsColumns}
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <SearchInput
+            filterField="discount_name"
+            paramKey="filters"
+            placeholder="Нэрээр хайх"
+          />
+        </DataTable>
       </Suspense>
     </>
   );
