@@ -1,4 +1,5 @@
 import { Table } from '@tanstack/react-table';
+import { Columns2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -13,7 +14,8 @@ export function ColumnVisibility<TData>({ table }: { table: Table<TData> }) {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="ml-auto">
-          Column Visibility
+          Багануудын харагдац
+          <Columns2 size="sm" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
