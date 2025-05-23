@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -56,6 +56,7 @@ export interface DataTableProps<TData, TValue> {
   disabled?: boolean;
   setDisabled?: any;
   isPending?: boolean;
+  children?: ReactNode;
 }
 
 export function DataTable<TData, TValue>({
@@ -70,6 +71,7 @@ export function DataTable<TData, TValue>({
   disabled,
   setDisabled,
   isPending,
+  children,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
 
@@ -173,23 +175,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center justify-between">
-        {/*<div className="flex items-center gap-2 p-2">*/}
-        {/*  {availableFilters.map((cFilter, idx) => {*/}
-        {/*    if (cFilter === 'status') {*/}
-        {/*      return <FacetFilter table={table} field={cFilter} key={idx} />;*/}
-        {/*    }*/}
-        {/*    return (*/}
-        {/*      <SearchInput*/}
-        {/*        table={table}*/}
-        {/*        field={cFilter}*/}
-        {/*        placeholder={cFilter}*/}
-        {/*        key={idx}*/}
-        {/*      />*/}
-        {/*    );*/}
-        {/*  })}*/}
-
-        {/*  <ResetTable table={table} />*/}
-        {/*</div>*/}
+        {children}
         <ColumnVisibility table={table} />
       </div>
       <div className="mb-4 w-full rounded-md border border-input">

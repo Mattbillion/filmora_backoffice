@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
-import { DateRangeFilter } from '@/components/custom/date-range-filter';
 import { Heading } from '@/components/custom/heading';
+import { SearchInput } from '@/components/custom/table/search-input';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -42,13 +42,20 @@ export default async function DiscountsPage(props: {
         )}
       </div>
       <Separator />
-      <DateRangeFilter />
+
+      {/*<DateRangeFilter />*/}
       <Suspense fallback="Loading">
         <DataTable
           columns={discountsColumns}
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <SearchInput
+            filterField="discount_name"
+            paramKey="filters"
+            placeholder="Нэрээр хайх"
+          />
+        </DataTable>
       </Suspense>
     </>
   );
