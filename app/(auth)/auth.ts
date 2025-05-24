@@ -3,10 +3,7 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
 import { getCompany } from '@/features/companies/actions';
-import {
-  getAssignedPermission,
-  getPermissionList,
-} from '@/features/permission/actions';
+import { getAssignedPermission } from '@/features/permission/actions';
 import { xooxFetch } from '@/lib/fetch';
 
 import { authConfig } from './auth.config';
@@ -84,24 +81,17 @@ export const {
           });
           const userData = userInfo.data || {};
 
-          const [
-            { data: permissionListData },
-            { data: assignedPermissionData },
-            { data: companyRes },
-          ] = await Promise.all([
-            getPermissionList(
-              { page_size: 10000 },
-              {
+          const [{ data: assignedPermissionData }, { data: companyRes }] =
+            await Promise.all([
+              getAssignedPermission({
                 Authorization: `Bearer ${body.access_token}`,
-              },
-            ),
-            getAssignedPermission({
-              Authorization: `Bearer ${body.access_token}`,
-            }),
-            userData.company_id
-              ? getCompany(userData.company_id)
-              : Promise.resolve({ data: null, error: null }),
-          ]);
+              }),
+              userData.company_id
+                ? getCompany(userData.company_id, {
+                    Authorization: `Bearer ${body.access_token}`,
+                  })
+                : Promise.resolve({ data: null, error: null }),
+            ]);
           const companyInfo = companyRes?.data;
 
           return {
@@ -110,10 +100,7 @@ export const {
             company_logo: companyInfo?.company_logo,
             ...userData,
             permissions: assignedPermissionData.data.map(
-              (c) =>
-                permissionListData.data.find(
-                  (cc) => cc.id === Number(c.permission_id),
-                )?.permission_name,
+              (c) => c?.permission_name,
             ),
             access_token: body.access_token,
             refresh_token: body.refresh_token,

@@ -81,7 +81,11 @@ export function CreateDialog({
         if (c) {
           startLoadingTransition(() => {
             getPermissionList({ page_size: 1000 }).then((cc) =>
-              setPermissions(cc.data.data),
+              setPermissions(
+                cc.data.data.sort((a, b) =>
+                  a.permission_name.localeCompare(b.permission_name),
+                ) || [],
+              ),
             );
           });
         }
