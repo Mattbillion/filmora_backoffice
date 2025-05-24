@@ -29,12 +29,12 @@ export default async function AgeRestrictionsPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Age restrictions list (${data?.total_count ?? data?.data?.length})`}
+          title={`Насны хязгаарлалтууд (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_age_restriction']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
-              <Plus className="h-4 w-4" /> Add New
+              <Plus className="h-4 w-4" /> Насны хязгаар нэмэх
             </Button>
           </CreateDialog>
         )}

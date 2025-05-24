@@ -15,6 +15,7 @@ export const employeeSchema = z
     last_logged_at: z.null().optional(),
     password: z.string().min(6).optional(),
     confirmPassword: z.string().min(6).optional(),
+    company_name: z.string().optional(),
   })
   .superRefine(({ confirmPassword, password }, ctx) => {
     if (confirmPassword !== password) {

@@ -22,6 +22,7 @@ export default async function CompanyPage(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
+
   const { data } = await getCompanyList(searchParams);
 
   return (

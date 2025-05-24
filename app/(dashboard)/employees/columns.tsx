@@ -2,9 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import dayjs from 'dayjs';
 import { Trash } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
@@ -68,20 +66,7 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
       );
     },
   },
-  {
-    id: 'profile',
-    accessorKey: 'profile',
-    header: 'Profile',
-    cell: ({ row }) => (
-      <Image
-        src={row.original.profile}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
-    ),
-  },
+
   {
     id: 'firstname',
     accessorKey: 'firstname',
@@ -103,6 +88,11 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
     header: 'Email',
   },
   {
+    id: 'profile',
+    accessorKey: 'profile',
+    header: 'Profile',
+  },
+  {
     id: 'email_verified',
     accessorKey: 'email_verified',
     header: 'Email verified',
@@ -121,13 +111,6 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
     id: 'last_logged_at',
     accessorKey: 'last_logged_at',
     header: 'Last logged at',
-    cell: ({ row }) => (
-      <Badge variant="secondary">
-        {row.original.last_logged_at
-          ? dayjs(row.original.last_logged_at).format('YYYY-MM-DD hh:mm')
-          : undefined}
-      </Badge>
-    ),
   },
   {
     id: 'actions',

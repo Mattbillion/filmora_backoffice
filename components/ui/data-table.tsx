@@ -175,7 +175,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       <div className="mb-4 flex items-center justify-between">
-        {children}
+        <div className="flex items-center gap-2">{children}</div>
         <ColumnVisibility table={table} />
       </div>
       <div className="mb-4 w-full rounded-md border border-input">
