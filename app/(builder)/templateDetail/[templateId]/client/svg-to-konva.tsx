@@ -14,27 +14,9 @@ import {
   Ring,
   Text,
 } from 'react-konva';
-import Konva from 'konva';
-import { pick } from 'lodash';
 
 import { SVGJsonType } from '../schema';
 import { parseCSS } from '../util';
-import { dataMap, idRegex } from './constants';
-
-// type sda = keyof typeof dataMap;
-// type DataAttributes = {
-//   -readonly [K in `data-${(typeof dataMap)[sda]}`]?: string;
-// };
-//
-// declare module 'konva' {
-//   interface NodeConfig {
-//     attrs: PrettyType<
-//       DataAttributes & {
-//         'data-testid': string;
-//       }
-//     >;
-//   }
-// }
 
 const elMap: Record<string, KonvaNodeComponent<any, any>> = {
   circle: Circle,
@@ -119,57 +101,6 @@ export const svgToKonva = (
 
   return (
     <KonvaNode
-      ref={(ref?: Konva.Node) => {
-        if (ref) {
-          const nodeId = ref.id();
-          const canBeTicket = !!ref.findAncestor('#tickets');
-          const forceCache =
-            properties.id === 'bg' ||
-            properties.id === 'background' ||
-            properties.id === 'mask' ||
-            !canBeTicket;
-          const groupInsideTicket = canBeTicket && ref.getType() === 'Group';
-          const canCache =
-            groupInsideTicket && !children?.some((c) => c.tagName === 'g');
-          const needEl =
-            groupInsideTicket &&
-            children?.some(
-              (c) =>
-                c.tagName === 'g' &&
-                !c.children?.some((cc) => cc.tagName === 'g'),
-            );
-
-          if (!forceCache && canBeTicket && idRegex.test(nodeId)) {
-            const prevDataAttr = pick(
-              ref.attrs,
-              Object.values(dataMap).map((c) => `data-${c}`),
-            );
-
-            ref.setAttrs(
-              nodeId.split('-').reduce((acc, cur) => {
-                const [tickedCode, ...codeValue] = idRegex.test(cur)
-                  ? cur || ''
-                  : [/^V(IP)?/.test(cur) ? 'r' : 'S', ...cur];
-                return Object.assign(
-                  {
-                    ...acc,
-                    [`data-${(dataMap as any)[tickedCode as any]}`]:
-                      codeValue.join(''),
-                    'data-purchasable':
-                      idRegex.test(cur) || /^V(IP)?/.test(cur),
-                  },
-                  prevDataAttr,
-                );
-              }, {}),
-            );
-          }
-          if (needEl) ref.name('ticketSection');
-          if (forceCache || canCache) {
-            if (canCache) ref.name('cachedGroup');
-            (ref as unknown as Konva.Node).cache();
-          }
-        }
-      }}
       key={compKey}
       hitStrokeWidth={0}
       listening={false}

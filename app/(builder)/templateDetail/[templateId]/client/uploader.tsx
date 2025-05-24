@@ -31,11 +31,11 @@ export function UploadView({
                 const json = svgStrToJSON(svgString);
                 const validationResult = validateSVG(json.templateJSON);
 
-                if (
-                  !validationResult.svgGrouped ||
-                  !validationResult.ticketsChildrenGrouped
-                )
-                  return setErrors(validationResult);
+                // if (
+                //   !validationResult.svgGrouped ||
+                //   !validationResult.ticketsChildrenGrouped
+                // )
+                //   return setErrors(validationResult);
                 onChange(json, validationResult);
                 setErrors(undefined);
                 event.target.value = '';
