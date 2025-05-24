@@ -10,7 +10,6 @@ import {
   DeleteDialog,
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 
 import { deleteEmployee } from './actions';
