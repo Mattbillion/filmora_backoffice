@@ -66,7 +66,7 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update Age restrictions"
+      title="Насны ангилал засах"
       submitText="Update"
       trigger={children}
     >
@@ -75,7 +75,7 @@ export function UpdateDialog({
         name="age_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Age name</FormLabel>
+            <FormLabel>Насны ангилал нэр</FormLabel>
             <FormControl>
               <Input placeholder="Enter Age name" {...field} />
             </FormControl>
@@ -100,16 +100,73 @@ export function UpdateDialog({
 
       <FormField
         control={form.control}
-        name="age_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
+        name="status"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Status</FormLabel>
+            <Select
+              onValueChange={(value) => field.onChange(value === 'true')}
+              value={field.value?.toString()}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Төлөв сонгох" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                <SelectItem value="true">Идэвхтэй</SelectItem>
+                <SelectItem value="false">Идэвхгүй</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
       />
+
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="min_age"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Min age</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter Min age"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="max_age"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Max age</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter Max age"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={form.control}
         name="age_order"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Age order</FormLabel>
+            <FormLabel>Эрэмблэх</FormLabel>
             <FormControl>
               <Input
                 placeholder="Enter Age order"
@@ -124,63 +181,8 @@ export function UpdateDialog({
 
       <FormField
         control={form.control}
-        name="min_age"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Min age</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Min age"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="max_age"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Max age</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Max age"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(value === 'true')}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Status" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value="true">Active</SelectItem>
-                <SelectItem value="false">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
+        name="age_desc"
+        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
     </FormDialog>
   );

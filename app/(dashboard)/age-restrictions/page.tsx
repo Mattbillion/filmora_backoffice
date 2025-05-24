@@ -3,9 +3,9 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import StatusFilter from '@/components/custom/table/status-filter';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
-import { Separator } from '@/components/ui/separator';
 import { getAgeRestrictions } from '@/features/age/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
@@ -39,13 +39,20 @@ export default async function AgeRestrictionsPage(props: {
           </CreateDialog>
         )}
       </div>
-      <Separator />
+
       <Suspense fallback="Loading">
         <DataTable
           columns={ageRestrictionsColumns}
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <StatusFilter
+            options={[
+              { value: 'false', label: 'InActive' },
+              { value: 'true', label: 'Active' },
+            ]}
+          />
+        </DataTable>
       </Suspense>
     </>
   );

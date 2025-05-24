@@ -57,8 +57,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Age restrictions"
-      submitText="Create"
+      title="Шинээр насны хязгаарлалт нэмэх"
+      submitText="Үргэлжлүүлэх"
       trigger={children}
     >
       <FormField
@@ -66,7 +66,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         name="age_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Age name</FormLabel>
+            <FormLabel>Насны ангилал нэр</FormLabel>
             <FormControl>
               <Input placeholder="Enter Age name" {...field} />
             </FormControl>
@@ -91,9 +91,63 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="age_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
+        name="status"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Status</FormLabel>
+            <Select onValueChange={(value) => field.onChange(value === 'true')}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder="Төлөв сонгох" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent defaultValue="false">
+                <SelectItem value="true">Идэвхтэй</SelectItem>
+                <SelectItem value="false">Идэвхгүй</SelectItem>
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
       />
+
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="min_age"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Min age</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter Min age"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="max_age"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Max age</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder="Enter Max age"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={form.control}
@@ -115,59 +169,9 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="min_age"
+        name="age_desc"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Min age</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Min age"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="max_age"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Max age</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Max age"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="status"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Status</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value === 'true')}>
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Status" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="true">Active</SelectItem>
-                <SelectItem value="false">Inactive</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
+          <HtmlTipTapItem field={field} label="Дэлгэрэнгүй" />
         )}
       />
     </FormDialog>
