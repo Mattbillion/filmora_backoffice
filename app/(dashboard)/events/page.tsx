@@ -2,7 +2,9 @@ import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
+import { DateRangeFilter } from '@/components/custom/date-range-filter';
 import { Heading } from '@/components/custom/heading';
+import InputFilter from '@/components/custom/input-filter';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -78,7 +80,15 @@ export default async function EventsPage(props: {
             ]),
           }))}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <div className="flex items-center gap-2">
+            <InputFilter
+              name={'filters.event_name'}
+              placeholder={'Search Event Name'}
+            />
+            <DateRangeFilter fieldNames={['start_date', 'end_date']} />
+          </div>
+        </DataTable>
       </Suspense>
     </>
   );

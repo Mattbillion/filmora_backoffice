@@ -30,19 +30,16 @@ import { cn, removeHTML } from '@/lib/utils';
 import { UpdateDialog } from './components';
 import { EventsItemType } from './schema';
 
-const Action = ({
-  row,
-}: CellContext<
-  EventsItemType & {
-    category?: string;
-    venue?: string;
-    branch?: string;
-    hall?: string;
-    age?: string;
-    canModify: boolean;
-  },
-  unknown
->) => {
+type EventColumnType = EventsItemType & {
+  category?: string;
+  venue?: string;
+  branch?: string;
+  hall?: string;
+  age?: string;
+  canModify: boolean;
+};
+
+const Action = ({ row }: CellContext<EventColumnType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
@@ -107,7 +104,7 @@ const Action = ({
   );
 };
 
-const Navigation = ({ row }: CellContext<CategoryItemType, unknown>) => {
+const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
   const { data } = useSession();
 
   if (!checkPermission(data, ['get_event'])) return null;
@@ -121,16 +118,7 @@ const Navigation = ({ row }: CellContext<CategoryItemType, unknown>) => {
   );
 };
 
-export const eventsColumns: ColumnDef<
-  EventsItemType & {
-    category?: string;
-    venue?: string;
-    branch?: string;
-    hall?: string;
-    age?: string;
-    canModify: boolean;
-  }
->[] = [
+export const eventsColumns: ColumnDef<EventColumnType>[] = [
   {
     id: 'id',
     accessorKey: 'id',
@@ -143,7 +131,7 @@ export const eventsColumns: ColumnDef<
     id: 'venue_id',
     accessorKey: 'venue_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue_id,
+    cell: ({ row }) => row.original.venue,
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -151,7 +139,7 @@ export const eventsColumns: ColumnDef<
     id: 'branch_id',
     accessorKey: 'branch_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_id,
+    cell: ({ row }) => row.original.branch,
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -159,7 +147,7 @@ export const eventsColumns: ColumnDef<
     id: 'hall_id',
     accessorKey: 'hall_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.hall_id,
+    cell: ({ row }) => row.original.hall,
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -167,7 +155,7 @@ export const eventsColumns: ColumnDef<
     id: 'category_id',
     accessorKey: 'category_id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.category_id,
+    cell: ({ row }) => row.original.category,
     enableSorting: true,
     enableColumnFilter: true,
   },

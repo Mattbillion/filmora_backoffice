@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import { result, set as lodashSet } from 'lodash';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -13,19 +15,24 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
+import { cn, objToQs, qsToObj } from '@/lib/utils';
 
-export function DateRangeFilter() {
+export function DateRangeFilter({
+  fieldNames = ['filters.start_at', 'filters.end_at'],
+}: {
+  fieldNames?: string[];
+}) {
   const searchParams = useSearchParams();
+  const queryParams = qsToObj(searchParams.toString());
+  const [start, end] = fieldNames;
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
 
   // Load initial values from searchParams
-  const initialFrom = searchParams.get('start_at')
-    ? new Date(searchParams.get('start_at')!)
+  const initialFrom = result(queryParams, start)
+    ? new Date(result(queryParams, start))
     : undefined;
-  const initialTo = searchParams.get('end_at')
-    ? new Date(searchParams.get('end_at')!)
+  const initialTo = result(queryParams, end)
+    ? new Date(result(queryParams, end))
     : undefined;
 
   const [date, setDate] = useState<DateRange | undefined>({
@@ -37,33 +44,18 @@ export function DateRangeFilter() {
     setDate(range);
     if (!range?.from || !range?.to) return;
 
-    const params = new URLSearchParams(searchParams.toString());
+    let paramsObj = { ...queryParams };
 
-    // Parse filters param
-    const filtersRaw = params.get('filters');
-    const filters: Record<string, string> = {};
+    lodashSet(paramsObj, start, dayjs(range.from).format('YYYY-MM-DD'));
+    lodashSet(paramsObj, end, dayjs(range.to).format('YYYY-MM-DD'));
 
-    if (filtersRaw) {
-      filtersRaw.split(',').forEach((pair) => {
-        const [key, value] = pair.split('=');
-        if (key && value) filters[key] = value;
-      });
+    if (paramsObj.filters) {
+      paramsObj.filters = Object.entries(paramsObj.filters)
+        .map(([k, v]) => `${k}=${v}`)
+        .join(',');
     }
 
-    // Update date values
-    filters['start_at'] = range.from.toISOString();
-    filters['end_at'] = range.to.toISOString();
-
-    // Serialize back to query string
-    const serializedFilters = Object.entries(filters)
-      .map(([key, value]) => `${key}=${value}`)
-      .join(',');
-
-    params.set('filters', serializedFilters);
-
-    startTransition(() => {
-      router.push(`?${params.toString()}`);
-    });
+    router.replace(`?${objToQs(paramsObj)}`);
   };
 
   return (
@@ -72,7 +64,7 @@ export function DateRangeFilter() {
         <Button
           variant={'outline'}
           className={cn(
-            'w-[196px] justify-start text-left font-normal',
+            'min-w-[200px] justify-start text-left font-normal',
             !date?.from && 'text-muted-foreground',
           )}
         >

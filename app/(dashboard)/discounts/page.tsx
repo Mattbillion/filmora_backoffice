@@ -46,7 +46,12 @@ export default async function DiscountsPage(props: {
       <Suspense fallback="Loading">
         <DataTable columns={discountsColumns} data={data?.data}>
           <div className="flex items-center gap-2">
-            <StatusFilter />
+            <StatusFilter
+              options={[
+                { value: 'false', label: 'InActive' },
+                { value: 'true', label: 'Active' },
+              ]}
+            />
             <TypeFilter />
             <DateRangeFilter />
           </div>

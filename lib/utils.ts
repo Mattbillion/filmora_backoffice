@@ -64,6 +64,12 @@ export function qsToObj(queryString: string = '') {
       const arrayKey = decodedKey.slice(0, -2);
       if (!acc[arrayKey]) acc[arrayKey] = [];
       acc[arrayKey].push(decodedValue);
+    } else if (decodedKey === 'filters') {
+      decodedValue.split(',').forEach((p) => {
+        const [k, v] = p.split('=');
+        if (!acc.filters) acc.filters = {};
+        if (k && v) acc.filters[k] = v;
+      });
     } else {
       acc[decodedKey] = decodedValue;
     }

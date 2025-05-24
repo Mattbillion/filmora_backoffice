@@ -1,7 +1,9 @@
 import { Suspense } from 'react';
 
 import { auth } from '@/app/(auth)/auth';
+import { DateRangeFilter } from '@/components/custom/date-range-filter';
 import { Heading } from '@/components/custom/heading';
+import StatusFilter from '@/components/custom/table/status-filter';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
@@ -38,7 +40,24 @@ export default async function OrdersPage(props: {
             canModify: checkPermission(session, ['get_order_detail']),
           }))}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <div className="flex items-center gap-2">
+            <StatusFilter
+              name={'order_status'}
+              options={[
+                {
+                  value: 'cancelled',
+                  label: 'Cancelled',
+                },
+                {
+                  value: 'completed',
+                  label: 'Completed',
+                },
+              ]}
+            />
+            <DateRangeFilter fieldNames={['start_date', 'end_date']} />
+          </div>
+        </DataTable>
       </Suspense>
     </>
   );
