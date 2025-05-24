@@ -3,8 +3,8 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
-import { SearchInput } from '@/components/custom/table/search-input';
-import { SelectFilter } from '@/components/custom/table/status-filter';
+import InputFilter from '@/components/custom/input-filter';
+import StatusFilter from '@/components/custom/table/status-filter';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -48,13 +48,15 @@ export default async function BannersPage(props: {
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
         >
-          <div className="flex items-center">
-            <SearchInput
-              filterField="title"
-              paramKey="filters"
-              placeholder="Нэрээр хайх"
+          <div className="flex items-center gap-2">
+            <InputFilter name={'filters.title'} placeholder={'Нэрээр хайх'} />
+            <StatusFilter
+              name={'filters.status'}
+              options={[
+                { value: 'false', label: 'InActive' },
+                { value: 'true', label: 'Active' },
+              ]}
             />
-            <SelectFilter />
           </div>
         </DataTable>
       </Suspense>

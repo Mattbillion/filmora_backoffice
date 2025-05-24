@@ -84,7 +84,7 @@ export default async function EventsPage(props: {
           <div className="flex items-center gap-2">
             <InputFilter
               name={'filters.event_name'}
-              placeholder={'Search Event Name'}
+              placeholder={'Нэрээр хайх'}
             />
             <DateRangeFilter fieldNames={['start_date', 'end_date']} />
           </div>
