@@ -105,6 +105,7 @@ export const svgToKonva = (
       hitStrokeWidth={0}
       listening={false}
       shadowForStrokeEnabled={false}
+      perfectDrawEnabled={false}
       {...konvaProps}
     />
   );

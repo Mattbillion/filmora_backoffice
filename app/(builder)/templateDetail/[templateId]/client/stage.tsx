@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  JSX,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from 'react';
+import { JSX, ReactNode, useEffect, useRef, useState } from 'react';
 import { Layer, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
 import { Edit } from 'lucide-react';
@@ -63,7 +56,6 @@ export default function Stage({
 }) {
   const stageRef = useRef<Konva.Stage>(null);
   const [_, forceUpdate] = useState(0);
-  const [, startFocusNodeTransition] = useTransition();
 
   useEffect(() => {
     forceUpdate(1);
@@ -130,18 +122,19 @@ export default function Stage({
     []) as unknown as KonvaNode[];
 
   const focusNode = (n: KonvaNode) => {
-    startFocusNodeTransition(() => {
-      n.getParent()!.children!.map((c: KonvaNode) => {
-        const isSelected = c._id === n._id;
-        c.to({
-          opacity: isSelected ? 1 : 0.15,
-          duration: 0.1,
-        });
-        if (!isSelected) c.children?.map((cc) => cc.setAttr('opacity', 1));
-
-        if (isSelected) c.clearCache?.();
-        else c.cache();
+    n.getParent()!.children!.map((c: KonvaNode) => {
+      const isSelected = c._id === n._id;
+      c.clearCache?.();
+      c.to({
+        opacity: isSelected ? 1 : 0.15,
+        duration: 0.1,
       });
+      c.children?.map((cc) => {
+        cc.clearCache?.();
+        cc.setAttr('opacity', 1);
+      });
+
+      if (!isSelected) c.cache();
     });
   };
 
@@ -359,6 +352,7 @@ function LayerChildCollapse({
   const nodeTypeValue = childNode.attrs?.[`data-${dataNodeType}`] || 'N/A';
 
   const handleFocusNode = () => focusNode(childNode);
+  const { isSeatGroup } = analyzeSeatGroup(children);
   return (
     <Collapsible
       className="w-full has-[&>.collapsible-child[data-state=open]]:bg-transparent [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
@@ -394,19 +388,53 @@ function LayerChildCollapse({
             />
           )}
         </div>
-        {!!nodeType &&
-          !!nodeTypeValue &&
-          children.map((child, index) => (
-            <LayerChildCollapse
-              key={child._id || index}
-              focusNode={focusNode}
-              forceUpdate={forceUpdate}
-              childNode={child}
-            />
-          ))}
+        {!!nodeType && !!nodeTypeValue && isSeatGroup
+          ? 'seats'
+          : children.map((child, index) => (
+              <LayerChildCollapse
+                key={child._id || index}
+                focusNode={focusNode}
+                forceUpdate={forceUpdate}
+                childNode={child}
+              />
+            ))}
       </CollapsibleContent>
     </Collapsible>
   );
+}
+
+function analyzeSeatGroup(children: KonvaNode[]): {
+  isSeatGroup: boolean;
+  seatCount: number;
+} {
+  let seatLikeChildren = 0;
+
+  for (const child of children) {
+    // Recursive check (seat can be grouped)
+    if (child.children && child.children.length > 0) {
+      const inner = analyzeSeatGroup(child.children);
+      seatLikeChildren += inner.seatCount;
+    } else if (isLikelySeatNode(child)) {
+      seatLikeChildren += 1;
+    }
+  }
+
+  const isSeatGroup = seatLikeChildren >= 2; // Path /seat shape/ Path /seat component/ Text /number or label/
+
+  return { isSeatGroup, seatCount: seatLikeChildren };
+}
+
+function isLikelySeatNode(node: KonvaNode): boolean {
+  if (!node) return false;
+
+  const type = node.className || '';
+
+  const isPathOrShape = ['Path', 'Shape', 'Line', 'Rect', 'Circle'].includes(
+    type,
+  );
+  const isTextWithNumber = type === 'Text' && /\d/.test(node.attrs.text || '');
+
+  return isPathOrShape || isTextWithNumber;
 }
 
 function LayerTypeSelect({
@@ -445,7 +473,7 @@ function LayerTypeSelect({
   );
 }
 
-const getFieldInfo = (node: Konva.Node & { children?: Konva.Node[] }) => {
+const getFieldInfo = (node: KonvaNode) => {
   const field = `data-${node.attrs['data-type']}`;
   let label = translationMap[field.replace('data-', '')] + ': ';
   let placeholder = node.attrs[field] || '';
