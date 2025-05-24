@@ -185,14 +185,11 @@ export const discountsColumns: ColumnDef<DiscountsItemType>[] = [
     id: 'status',
     accessorKey: 'status',
     header: 'Төлөв',
-    cell: ({ row }) => {
-      const badgeStatus = row.original.status ? 'Active' : 'Inactive';
-      return (
-        <Badge variant={badgeStatus === 'Active' ? 'outline' : 'destructive'}>
-          {row.original.status ? 'Active' : 'Inactive'}
-        </Badge>
-      );
-    },
+    cell: ({ row }) => (
+      <Badge variant={row.original.status ? 'outline' : 'destructive'}>
+        {row.original.status ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
     enableSorting: false,
     enableColumnFilter: true,
   },
