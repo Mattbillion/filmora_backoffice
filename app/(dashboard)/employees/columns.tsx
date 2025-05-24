@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -35,6 +36,7 @@ const Action = ({
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
+  const router = useRouter();
   const canDelete = checkPermission(data, ['delete_company_employee']) || true;
   const canEdit =
     checkPermission(data, [
@@ -57,7 +59,12 @@ const Action = ({
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {canEdit && (
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+              <DropdownMenuItem
+                onSelect={(e) => {
+                  e.preventDefault();
+                  router.push(`/employees/${row.original.id}`);
+                }}
+              >
                 <Edit className="h-4 w-4" /> Edit
               </DropdownMenuItem>
             )}
