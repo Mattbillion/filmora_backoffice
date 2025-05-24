@@ -12,6 +12,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -154,7 +155,11 @@ export const bannersColumns: ColumnDef<BannersItemType>[] = [
     id: 'status',
     accessorKey: 'status',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+    cell: ({ row }) => (
+      <Badge variant={row.original.status ? 'outline' : 'destructive'}>
+        {row.original.status ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
     enableSorting: false,
     enableColumnFilter: false,
   },
