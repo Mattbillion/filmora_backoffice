@@ -1,16 +1,17 @@
 import {
-  Building2,
+  BadgePercent,
   CircleDollarSign,
-  Combine,
-  Flag,
-  List,
+  GalleryVertical,
+  LayoutGrid,
   type LucideIcon,
   MapPin,
-  Percent,
+  MonitorCog,
+  PackageIcon,
   Shield,
   ShoppingCart,
+  Store,
   UserCog,
-  UserIcon,
+  UsersRoundIcon,
 } from 'lucide-react';
 
 export type SubMenuItemType = {
@@ -22,24 +23,12 @@ export type SubMenuItemType = {
   children?: Omit<SubMenuItemType, 'children'>[];
 };
 
-const managementRoutes: SubMenuItemType[] = [
-  {
-    title: 'Age Restrictions',
-    url: '/age-restrictions',
-    icon: Shield,
-    permissions: [
-      'get_age_restriction_list',
-      'get_age_restriction',
-      'create_age_restriction',
-      'update_age_restriction',
-      'delete_age_restriction',
-    ],
-  },
+const productManagerRoutes: SubMenuItemType[] = [
   {
     title: 'Merch',
     url: '/merchandises',
     subRoutes: true,
-    icon: Shield,
+    icon: PackageIcon,
     permissions: [
       'company_merchandise_list',
       'get_company_merchandise_list',
@@ -61,6 +50,31 @@ const managementRoutes: SubMenuItemType[] = [
       'delete_company_merchandise_attribute_option_value',
     ],
   },
+  {
+    title: 'Эвент & Тоглолт',
+    url: '/events',
+    icon: MapPin,
+    permissions: [
+      'get_event_list',
+      'get_event',
+      'create_event',
+      'update_event',
+      'delete_event',
+      'create_event_schedule',
+    ],
+  },
+  {
+    title: 'Хямдралууд',
+    url: '/discounts',
+    icon: BadgePercent,
+    permissions: [
+      'get_discount_list',
+      'get_discount',
+      'create_discount',
+      'update_discount',
+      'delete_discount',
+    ],
+  },
   // {
   //   title: 'Merch attributes',
   //   url: '/merchandises/attributes',
@@ -78,43 +92,13 @@ const managementRoutes: SubMenuItemType[] = [
   //     'delete_company_merchandise_attribute_value',
   //   ],
   // },
-  {
-    title: 'Banners',
-    url: '/banners',
-    icon: Flag,
-    permissions: [
-      'get_banner_list',
-      'get_banner',
-      'create_banner',
-      'update_banner',
-      'delete_banner',
-    ],
-  },
-  {
-    title: 'Categories',
-    url: '/categories',
-    icon: List,
-    subRoutes: true,
-    permissions: [
-      'get_category_list',
-      'get_category',
-      'create_category',
-      'update_category',
-      'delete_category',
-      'get_category_attribute_value_list',
-      'get_category_attribute_value',
-      'create_category_attribute_value',
-      'update_category_attribute_value',
-      'delete_category_attribute_value',
-    ],
-  },
 ];
 
 const companyRoutes: SubMenuItemType[] = [
   {
     title: 'Компани',
     url: '/companies',
-    icon: Building2,
+    icon: Store,
     permissions: [
       'get_company_list',
       'get_company',
@@ -126,7 +110,7 @@ const companyRoutes: SubMenuItemType[] = [
   {
     title: 'Ажилчид',
     url: '/employees',
-    icon: UserIcon,
+    icon: UsersRoundIcon,
     permissions: [
       'get_all_company_employees',
       'get_company_employee_info',
@@ -138,33 +122,9 @@ const companyRoutes: SubMenuItemType[] = [
       'set_company_employee_role',
     ],
   },
-  {
-    title: 'Company Categories',
-    url: '/company-categories',
-    icon: Combine,
-    permissions: [
-      'get_company_category_list',
-      'get_company_category',
-      'create_company_category',
-      'update_company_category',
-      'delete_company_category',
-    ],
-  },
 ];
 
 const operationsRoutes: SubMenuItemType[] = [
-  {
-    title: 'Хямдралууд',
-    url: '/discounts',
-    icon: Percent,
-    permissions: [
-      'get_discount_list',
-      'get_discount',
-      'create_discount',
-      'update_discount',
-      'delete_discount',
-    ],
-  },
   {
     title: 'Захиалгууд',
     url: '/orders',
@@ -183,7 +143,65 @@ const operationsRoutes: SubMenuItemType[] = [
 
 const settingsRoutes: SubMenuItemType[] = [
   {
-    title: 'Roles',
+    title: 'Venues',
+    url: '/venues',
+    icon: MapPin,
+    subRoutes: true,
+    permissions: [
+      'get_venues_list',
+      'get_venue',
+      'create_venue',
+      'update_venue',
+      'delete_venue',
+    ],
+  },
+];
+
+const systemAdminRoutes: SubMenuItemType[] = [
+  {
+    title: 'Үндсэн категори',
+    url: '/categories',
+    icon: LayoutGrid,
+    subRoutes: true,
+    permissions: [
+      'get_category_list',
+      'get_category',
+      'create_category',
+      'update_category',
+      'delete_category',
+      'get_category_attribute_value_list',
+      'get_category_attribute_value',
+      'create_category_attribute_value',
+      'update_category_attribute_value',
+      'delete_category_attribute_value',
+    ],
+  },
+  {
+    title: 'Компани категори сонгох',
+    url: '/company-categories',
+    icon: MonitorCog,
+    permissions: [
+      'get_company_category_list',
+      'get_company_category',
+      'create_company_category',
+      'update_company_category',
+      'delete_company_category',
+    ],
+  },
+  {
+    title: 'Баннер оруулах',
+    url: '/banners',
+    icon: GalleryVertical,
+    permissions: [
+      'get_banner_list',
+      'get_banner',
+      'create_banner',
+      'update_banner',
+      'delete_banner',
+    ],
+  },
+  {
+    title: 'Role',
     url: '/role',
     icon: UserCog,
     permissions: [
@@ -197,38 +215,25 @@ const settingsRoutes: SubMenuItemType[] = [
     ],
   },
   {
-    title: 'Venues',
-    url: '/venues',
-    icon: MapPin,
-    subRoutes: true,
+    title: 'Age Restrictions',
+    url: '/age-restrictions',
+    icon: Shield,
     permissions: [
-      'get_venues_list',
-      'get_venue',
-      'create_venue',
-      'update_venue',
-      'delete_venue',
-    ],
-  },
-  {
-    title: 'Events',
-    url: '/events',
-    icon: MapPin,
-    permissions: [
-      'get_event_list',
-      'get_event',
-      'create_event',
-      'update_event',
-      'delete_event',
-      'create_event_schedule',
+      'get_age_restriction_list',
+      'get_age_restriction',
+      'create_age_restriction',
+      'update_age_restriction',
+      'delete_age_restriction',
     ],
   },
 ];
 
 export const menuData: Record<string, SubMenuItemType[]> = {
-  management: managementRoutes,
-  company: companyRoutes,
-  operations: operationsRoutes,
+  order_manager: operationsRoutes,
+  product_manager: productManagerRoutes,
+  organization_manager: companyRoutes,
   settings: settingsRoutes,
+  system_settings: systemAdminRoutes,
 };
 
 export const permissionsByRoute: Record<string, string[]> = flattenDeep(
