@@ -106,6 +106,11 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
     id: 'email_verified',
     accessorKey: 'email_verified',
     header: 'Email verified',
+    cell: ({ row }) => (
+      <Badge variant={row.original.email_verified ? 'outline' : 'destructive'}>
+        {row.original.email_verified ? 'Verified' : 'Not Verified'}
+      </Badge>
+    ),
   },
   {
     id: 'company_id',
@@ -116,6 +121,11 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
     id: 'status',
     accessorKey: 'status',
     header: 'Status',
+    cell: ({ row }) => (
+      <Badge variant={row.original.status ? 'outline' : 'destructive'}>
+        {row.original.status ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
   },
   {
     id: 'last_logged_at',

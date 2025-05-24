@@ -53,7 +53,7 @@ export function TeamSwitcher() {
         })
         .finally(() => setLoading(false));
     }
-  }, [pathname]);
+  }, [pathname, session?.user?.company_id]);
 
   const debouncedSearch = debounce((val) => {
     setLoading(true);
