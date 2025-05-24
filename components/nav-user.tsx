@@ -1,4 +1,6 @@
-import { ChevronsUpDown, LogOut, Moon, Sun } from 'lucide-react';
+'use client';
+import { ChevronsUpDown, LogOut, Moon, Settings, Sun } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
@@ -24,6 +26,7 @@ import { imageResize } from '@/lib/utils';
 export function NavUser({ session }: { session: Session }) {
   const { isMobile } = useSidebar();
   const { setTheme, theme } = useTheme();
+  const router = useRouter();
 
   return (
     <SidebarMenu>
@@ -87,6 +90,13 @@ export function NavUser({ session }: { session: Session }) {
 
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={() => router.push('/')}
+              >
+                <Settings />
+                Систем тохиргоо
+              </DropdownMenuItem>
               <DropdownMenuItem
                 className="cursor-pointer"
                 onClick={() => {

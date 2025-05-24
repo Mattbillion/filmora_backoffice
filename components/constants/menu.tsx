@@ -25,7 +25,7 @@ export type SubMenuItemType = {
 
 const productManagerRoutes: SubMenuItemType[] = [
   {
-    title: 'Merch',
+    title: 'Мерчиндайз бараа',
     url: '/merchandises',
     subRoutes: true,
     icon: PackageIcon,
@@ -96,7 +96,7 @@ const productManagerRoutes: SubMenuItemType[] = [
 
 const companyRoutes: SubMenuItemType[] = [
   {
-    title: 'Компани',
+    title: 'Merchants',
     url: '/companies',
     icon: Store,
     permissions: [
@@ -105,21 +105,6 @@ const companyRoutes: SubMenuItemType[] = [
       'create_company',
       'update_company',
       'delete_company',
-    ],
-  },
-  {
-    title: 'Ажилчид',
-    url: '/employees',
-    icon: UsersRoundIcon,
-    permissions: [
-      'get_all_company_employees',
-      'get_company_employee_info',
-      'create_company_employee',
-      'update_company_employee',
-      'update_company_employee_email',
-      'update_company_employee_password',
-      'delete_company_employee',
-      'set_company_employee_role',
     ],
   },
 ];
@@ -138,6 +123,25 @@ const operationsRoutes: SubMenuItemType[] = [
     icon: CircleDollarSign,
     subRoutes: true,
     permissions: ['get_transaction_list', 'get_transaction_detail'],
+  },
+];
+
+const organizationRoutes: SubMenuItemType[] = [
+  {
+    title: 'Ажилчид',
+    url: '/employees',
+    icon: UsersRoundIcon,
+    permissions: [
+      'get_employees_list',
+      'get_all_company_employees',
+      'get_company_employee_info',
+      'create_company_employee',
+      'update_company_employee',
+      'update_company_employee_email',
+      'update_company_employee_password',
+      'delete_company_employee',
+      'set_company_employee_role',
+    ],
   },
 ];
 
@@ -231,7 +235,8 @@ const systemAdminRoutes: SubMenuItemType[] = [
 export const menuData: Record<string, SubMenuItemType[]> = {
   order_manager: operationsRoutes,
   product_manager: productManagerRoutes,
-  organization_manager: companyRoutes,
+  organization: organizationRoutes,
+  vendor_manager: companyRoutes,
   settings: settingsRoutes,
   system_settings: systemAdminRoutes,
 };

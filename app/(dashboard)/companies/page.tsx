@@ -51,15 +51,15 @@ export default async function CompanyPage(props: {
               name={'filters.company_name'}
               placeholder={'Нэрээр хайх'}
             />
-            <InputFilter
-              name={'filters.company_register'}
-              placeholder={'Регистерээр хайх'}
-            />
+            {/*<InputFilter*/}
+            {/*  name={'filters.company_register'}*/}
+            {/*  placeholder={'Регистерээр хайх'}*/}
+            {/*/>*/}
             <StatusFilter
               name={'filters.status'}
               options={[
-                { value: 'false', label: 'InActive' },
-                { value: 'true', label: 'Active' },
+                { value: 'true', label: 'Идэвхтэй' },
+                { value: 'false', label: 'Идэвхгүй' },
               ]}
             />
           </div>

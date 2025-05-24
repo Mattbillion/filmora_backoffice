@@ -12,7 +12,6 @@ import {
   DeleteDialog,
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
-import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -104,13 +103,13 @@ const Action = ({ row }: CellContext<CompanyItemType, unknown>) => {
 export const companyColumns: ColumnDef<CompanyItemType>[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Company ID',
     enableColumnFilter: false,
   },
   {
     id: 'company_logo',
     accessorKey: 'company_logo',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Logo',
     cell: ({ row }) => (
       <Image
         src={row.original.company_logo}
@@ -120,60 +119,38 @@ export const companyColumns: ColumnDef<CompanyItemType>[] = [
         className="rounded-md"
       />
     ),
-    enableSorting: false,
-    enableColumnFilter: false,
   },
   {
     id: 'company_name',
     accessorKey: 'company_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-  },
-  {
-    id: 'company_desc',
-    accessorKey: 'company_desc',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'company_register',
-    accessorKey: 'company_register',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
+    header: 'Компани нэр',
   },
   {
     id: 'company_email',
     accessorKey: 'company_email',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableSorting: false,
+    header: 'Компани цахим хаяг',
   },
   {
     id: 'company_phone',
     accessorKey: 'company_phone',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'company_phone2',
-    accessorKey: 'company_phone2',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'company_location',
-    accessorKey: 'company_location',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableSorting: false,
-    enableColumnFilter: false,
+    header: 'Утасны дугаар',
   },
   {
     id: 'status',
     accessorKey: 'status',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Төлөв',
     cell: ({ row }) => (
       <Badge variant={row.original.status ? 'outline' : 'destructive'}>
         {row.original.status ? 'Active' : 'Inactive'}
       </Badge>
+    ),
+  },
+  {
+    id: 'company_desc',
+    accessorKey: 'company_desc',
+    header: 'Дэлгэрэнгүй',
+    cell: ({ row }) => (
+      <p className="line-clamp-2">{row.original.company_desc}</p>
     ),
   },
   {

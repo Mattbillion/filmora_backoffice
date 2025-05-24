@@ -2,7 +2,6 @@ import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
-import { DateRangeFilter } from '@/components/custom/date-range-filter';
 import { Heading } from '@/components/custom/heading';
 import InputFilter from '@/components/custom/input-filter';
 import StatusFilter from '@/components/custom/table/status-filter';
@@ -45,7 +44,7 @@ export default async function MerchandisesPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Merchandises list (${data?.total_count ?? data?.data?.length})`}
+          title={`Мерчиндайз бараанууд (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_company_merchandise']) && (
           <CreateDialog>
@@ -79,15 +78,14 @@ export default async function MerchandisesPage(props: {
         >
           <div className="flex items-center gap-2">
             <InputFilter
-              name={'filters.mer_name'}
+              name={'filters.merch_name'}
               placeholder={'Нэрээр хайх'}
             />
-            <DateRangeFilter fieldNames={['start_date', 'end_date']} />
             <StatusFilter
               name={'filters.status'}
               options={[
-                { value: 'false', label: 'InActive' },
-                { value: 'true', label: 'Active' },
+                { value: 'false', label: 'Идэвхтэй' },
+                { value: 'true', label: 'Идэвхгүй' },
               ]}
             />
           </div>

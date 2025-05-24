@@ -2,7 +2,6 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import dayjs from 'dayjs';
 import { Trash } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -68,6 +67,7 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
       );
     },
   },
+
   {
     id: 'profile',
     accessorKey: 'profile',
@@ -93,9 +93,17 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
     header: 'Lastname',
   },
   {
+    id: 'company_name',
+    accessorKey: 'company_name',
+    header: 'company_name',
+    cell: ({ row }) => (
+      <p className="font-medium">{row.original.company_name}</p>
+    ),
+  },
+  {
     id: 'phone',
     accessorKey: 'phone',
-    header: 'Phone',
+    header: 'Утасны дугаар',
   },
   {
     id: 'email',
@@ -112,30 +120,18 @@ export const employeeColumns: ColumnDef<EmployeeItemType>[] = [
       </Badge>
     ),
   },
-  {
-    id: 'company_id',
-    accessorKey: 'company_id',
-    header: 'Company id',
-  },
+  // {
+  //   id: 'company_id',
+  //   accessorKey: 'company_id',
+  //   header: 'Company id',
+  // },
   {
     id: 'status',
     accessorKey: 'status',
     header: 'Status',
     cell: ({ row }) => (
       <Badge variant={row.original.status ? 'outline' : 'destructive'}>
-        {row.original.status ? 'Active' : 'Inactive'}
-      </Badge>
-    ),
-  },
-  {
-    id: 'last_logged_at',
-    accessorKey: 'last_logged_at',
-    header: 'Last logged at',
-    cell: ({ row }) => (
-      <Badge variant="secondary">
-        {row.original.last_logged_at
-          ? dayjs(row.original.last_logged_at).format('YYYY-MM-DD hh:mm')
-          : undefined}
+        {row.original.status ? 'Идэвхтэй' : 'Идэвхгүй'}
       </Badge>
     ),
   },

@@ -26,6 +26,7 @@ export default async function EmployeePage(props: {
     ...searchParams,
     company_id: companyId,
   });
+
   const { data: EmployeeCompany } = await getCompany(companyId);
   const company_name = EmployeeCompany?.data.company_name ?? '';
   const employeesWithCompany = data?.data.map((employee) => ({
@@ -55,8 +56,8 @@ export default async function EmployeePage(props: {
         >
           <StatusFilter
             options={[
-              { value: 'true', label: 'Active' },
-              { value: 'false', label: 'InActive' },
+              { value: 'true', label: 'Идэвхтэй' },
+              { value: 'false', label: 'Идэвхгүй' },
             ]}
           />
         </DataTable>

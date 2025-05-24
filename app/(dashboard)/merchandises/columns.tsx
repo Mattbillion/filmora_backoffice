@@ -112,64 +112,59 @@ export const merchandisesColumns: ColumnDef<
 >[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'ID',
     cell: ({ row }) => row.original.id,
   },
   {
-    id: 'company',
-    accessorKey: 'company',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.company,
-    enableSorting: false,
+    id: 'mer_name',
+    accessorKey: 'mer_name',
+    header: 'Барааны нэр',
+    cell: ({ row }) => (
+      <p className="w-[200px] text-nowrap">{row.original.mer_name}</p>
+    ),
+    enableSorting: true,
     enableColumnFilter: true,
   },
   {
     id: 'category',
     accessorKey: 'cat_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.category,
+    header: 'Категори',
+    cell: ({ row }) => <p className="text-nowrap">{row.original.category}</p>,
     enableSorting: false,
     enableColumnFilter: true,
   },
   {
-    id: 'mer_name',
-    accessorKey: 'mer_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.mer_name?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'mer_desc',
-    accessorKey: 'mer_desc',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    id: 'company',
+    accessorKey: 'company',
+    header: 'Компани',
     cell: ({ row }) => (
-      <p>
-        html:{' '}
-        <span className="opacity-70">
-          {removeHTML(row.original.mer_desc?.slice(0, 300))}
-        </span>
-      </p>
+      <p className="w-max text-nowrap">{row.original.company}</p>
     ),
     enableSorting: false,
-    enableColumnFilter: false,
+    enableColumnFilter: true,
   },
+
   {
     id: 'price',
     accessorKey: 'price',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => currencyFormat(row.original.price),
+    header: 'Үнэ',
+    cell: ({ row }) => (
+      <span className="font-medium">{currencyFormat(row.original.price)}</span>
+    ),
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
-    id: 'discount_id',
-    accessorKey: 'discount_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.discount || row.original.discount_id,
+    id: 'discount',
+    accessorKey: 'discount',
+    header: 'Хямдрал',
+    cell: ({ row }) => (
+      <p className="max-w-[254px] truncate">{row.original.discount_id}</p>
+    ),
     enableSorting: true,
     enableColumnFilter: true,
   },
+
   {
     id: 'medias',
     accessorKey: 'medias',
@@ -213,5 +208,21 @@ export const merchandisesColumns: ColumnDef<
     enableSorting: false,
     enableColumnFilter: true,
   },
-  { id: 'action', cell: Action },
+
+  {
+    id: 'mer_desc',
+    accessorKey: 'mer_desc',
+    header: 'Дэлгэрэнгүй',
+    cell: ({ row }) => (
+      <p className="max-w-[256px] truncate">
+        html:{' '}
+        <span className="opacity-70">
+          {removeHTML(row.original.mer_desc?.slice(0, 300))}
+        </span>
+      </p>
+    ),
+    enableSorting: false,
+    enableColumnFilter: false,
+  },
+  { id: 'action', header: 'Action', cell: Action },
 ];
