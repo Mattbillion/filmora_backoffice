@@ -45,7 +45,6 @@ export function UpdateDialog({
   useEffect(() => {
     if (session?.user?.company_id) {
       form.setValue('company_id', session.user.company_id);
-      console.log('here');
     }
   }, [session?.user?.company_id]);
 
@@ -76,8 +75,8 @@ export function UpdateDialog({
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Update Discounts"
-      submitText="Update"
+      title="Хямдрал шинэчлэх"
+      submitText="Хадгалах"
       trigger={children}
     >
       <FormField
@@ -85,19 +84,13 @@ export function UpdateDialog({
         name="discount_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Discount name</FormLabel>
+            <FormLabel>Хямдралын нэр</FormLabel>
             <FormControl>
               <Input placeholder="Enter Discount name" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
         )}
-      />
-
-      <FormField
-        control={form.control}
-        name="discount_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
 
       <FormField
@@ -112,12 +105,12 @@ export function UpdateDialog({
             >
               <FormControl>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="Хямдралын төрөл сонгох" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="AMOUNT">AMOUNT</SelectItem>
-                <SelectItem value="PERCENT">PERCENT</SelectItem>
+                <SelectItem value="AMOUNT">Үнийн дүнгээр</SelectItem>
+                <SelectItem value="PERCENT">Хувиар</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
@@ -130,7 +123,7 @@ export function UpdateDialog({
         name="discount"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Discount</FormLabel>
+            <FormLabel>Хямдрал</FormLabel>
             <FormControl>
               <Input
                 placeholder="Enter Discount"
@@ -143,36 +136,38 @@ export function UpdateDialog({
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="start_at"
-        render={({ field }) => (
-          <DatePickerItem
-            field={field}
-            label="Discount start at"
-            disableBy="none"
-          />
-        )}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="start_at"
+          render={({ field }) => (
+            <DatePickerItem
+              field={field}
+              label="Эхлэх огноо"
+              disableBy="none"
+            />
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="end_at"
-        render={({ field }) => (
-          <DatePickerItem
-            field={field}
-            label="Discount end at"
-            disableBy="past"
-          />
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="end_at"
+          render={({ field }) => (
+            <DatePickerItem
+              field={field}
+              label="Дуусах огноо"
+              disableBy="past"
+            />
+          )}
+        />
+      </div>
 
       <FormField
         control={form.control}
         name="status"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Status</FormLabel>
+            <FormLabel>Хямдралын төлөв сонгох</FormLabel>
             <Select
               onValueChange={(value) => field.onChange(value === 'true')}
               value={field.value?.toString()}
@@ -183,12 +178,20 @@ export function UpdateDialog({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value="true">Active</SelectItem>
-                <SelectItem value="false">Inactive</SelectItem>
+                <SelectItem value="true">Идэвхтэй</SelectItem>
+                <SelectItem value="false">Идэвхгүй</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
           </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="discount_desc"
+        render={({ field }) => (
+          <HtmlTipTapItem field={field} label="Хямдралын дэлгэрэнгүй" />
         )}
       />
     </FormDialog>

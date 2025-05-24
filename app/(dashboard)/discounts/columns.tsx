@@ -61,6 +61,9 @@ const Action = ({ row }: CellContext<DiscountsItemType, unknown>) => {
           )}
           {canDelete && (
             <DeleteDialog
+              title="Та энэхүү үйлдэлийг хийхдээ итгэлтэй байна уу?"
+              confirmText="Үргэлжлүүлэх"
+              cancelText="Шаасиймаа"
               ref={deleteDialogRef}
               loading={loading}
               action={() => {
@@ -195,6 +198,7 @@ export const discountsColumns: ColumnDef<DiscountsItemType>[] = [
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: Action,
   },
 ];

@@ -45,7 +45,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const form = useForm<MerchandisesBodyType>({
     resolver: zodResolver(merchandisesSchema),
     defaultValues: {
-      com_id: session?.user?.company_id || 0,
+      com_id: session?.user?.company_id!,
     },
   });
 

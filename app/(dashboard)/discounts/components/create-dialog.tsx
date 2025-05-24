@@ -124,7 +124,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         name="discount"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Discount</FormLabel>
+            <FormLabel>Хямдрал</FormLabel>
             <FormControl>
               <Input
                 placeholder="Enter Discount"
@@ -144,7 +144,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           render={({ field }) => (
             <DatePickerItem
               field={field}
-              label="Эхлэх огноо сонгох"
+              label="Эхлэх огноо"
               disableBy="none"
             />
           )}
@@ -155,8 +155,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           name="end_at"
           render={({ field }) => (
             <DatePickerItem
-              field={field}
               label="Дуусах огноо"
+              field={field}
               disableBy="past"
             />
           )}

@@ -47,7 +47,7 @@ export default async function MerchandisesPage(props: {
         {checkPermission(session, ['create_company_merchandise']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
-              <Plus className="h-4 w-4" /> Add New
+              <Plus className="h-4 w-4" /> Мерчиндайз нэмэх
             </Button>
           </CreateDialog>
         )}

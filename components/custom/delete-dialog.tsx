@@ -48,7 +48,7 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
       <AlertDialog open={open} onOpenChange={setOpen}>
         <AlertDialogTrigger asChild>{children}</AlertDialogTrigger>
         <AlertDialogContent>
-          <AlertDialogHeader>
+          <AlertDialogHeader className="mb-4">
             <AlertDialogTitle>
               {title || 'Are you absolutely sure?'}
             </AlertDialogTitle>
@@ -58,12 +58,17 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="outline" disabled={loading}>
+              <Button variant="outline" disabled={loading} size="cxs">
                 {cancelText || 'Cancel'}
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
-              <Button onClick={action} disabled={loading} variant="destructive">
+              <Button
+                onClick={action}
+                disabled={loading}
+                variant="destructive"
+                size="cxs"
+              >
                 {loading && <Loader2 size={10} className="animate-spin" />}
                 {confirmText || 'Continue'}
               </Button>
