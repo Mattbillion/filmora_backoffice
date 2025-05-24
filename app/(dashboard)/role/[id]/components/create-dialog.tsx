@@ -31,8 +31,15 @@ import {
   RoleByPermissionBodyType,
   roleByPermissionSchema,
 } from '@/features/permission/schema';
+import { ID } from '@/lib/fetch/types';
 
-export function CreateDialog({ children }: { children: ReactNode }) {
+export function CreateDialog({
+  children,
+  currentPermissions,
+}: {
+  children: ReactNode;
+  currentPermissions: ID[];
+}) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [permissions, setPermissions] = useState<PermissionItemType[]>([]);
   const [isPending, startTransition] = useTransition();
@@ -42,7 +49,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const form = useForm<RoleByPermissionBodyType>({
     resolver: zodResolver(roleByPermissionSchema),
     defaultValues: {
-      role_id: id,
+      role_id: Number(id),
     },
   });
 
@@ -97,7 +104,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         render={({ field }) => (
           <FormItem>
             <FormLabel>Permission</FormLabel>
-            <Select onValueChange={(value) => field.onChange(value)}>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder="Select a permission" />
@@ -105,11 +112,13 @@ export function CreateDialog({ children }: { children: ReactNode }) {
               </FormControl>
               <SelectContent>
                 {loading && 'Loading...'}
-                {permissions.map((c, idx) => (
-                  <SelectItem value={c.id.toString()} key={idx}>
-                    {c.permission_name}
-                  </SelectItem>
-                ))}
+                {permissions
+                  .filter((c) => !currentPermissions.includes(c.id))
+                  .map((c, idx) => (
+                    <SelectItem value={c.id.toString()} key={idx}>
+                      {c.permission_name}
+                    </SelectItem>
+                  ))}
               </SelectContent>
             </Select>
             <FormMessage />

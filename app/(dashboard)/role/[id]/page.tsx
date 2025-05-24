@@ -51,7 +51,9 @@ export default async function RoleDetailPage(props: {
           title={`${currentRole?.role_name + ' '}Permission list (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_role_permission']) && (
-          <CreateDialog>
+          <CreateDialog
+            currentPermissions={(data?.data || []).map((c) => c.permission_id)}
+          >
             <Button className="text-xs md:text-sm">
               <Plus className="h-4 w-4" /> Add New
             </Button>
