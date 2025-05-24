@@ -53,7 +53,12 @@ export default async function EmployeePage(props: {
           data={employeesWithCompany}
           rowCount={employeesWithCompany.length}
         >
-          <StatusFilter />
+          <StatusFilter
+            options={[
+              { value: 'true', label: 'Active' },
+              { value: 'false', label: 'InActive' },
+            ]}
+          />
         </DataTable>
       </Suspense>
     </>

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { DateRange } from 'react-day-picker';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
-import { result, set as lodashSet } from 'lodash';
+import { result, set as lodashSet, unset } from 'lodash';
 import { CalendarIcon } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
@@ -40,15 +40,7 @@ export function DateRangeFilter({
     to: initialTo,
   });
 
-  const handleSelect = (range: DateRange | undefined) => {
-    setDate(range);
-    if (!range?.from || !range?.to) return;
-
-    let paramsObj = { ...queryParams };
-
-    lodashSet(paramsObj, start, dayjs(range.from).format('YYYY-MM-DD'));
-    lodashSet(paramsObj, end, dayjs(range.to).format('YYYY-MM-DD'));
-
+  const handleNavigate = (paramsObj: Record<string, any>) => {
     if (paramsObj.filters) {
       paramsObj.filters = Object.entries(paramsObj.filters)
         .map(([k, v]) => `${k}=${v}`)
@@ -56,6 +48,23 @@ export function DateRangeFilter({
     }
 
     router.replace(`?${objToQs(paramsObj)}`);
+  };
+
+  const handleSelect = (range: DateRange | undefined) => {
+    setDate(range);
+    let paramsObj = { ...queryParams };
+    if (!range?.from && !range?.to) {
+      unset(paramsObj, start);
+      unset(paramsObj, end);
+      handleNavigate(paramsObj);
+      return;
+    }
+    if (!range?.from || !range?.to) return;
+
+    lodashSet(paramsObj, start, dayjs(range.from).format('YYYY-MM-DD'));
+    lodashSet(paramsObj, end, dayjs(range.to).format('YYYY-MM-DD'));
+
+    handleNavigate(paramsObj);
   };
 
   return (
