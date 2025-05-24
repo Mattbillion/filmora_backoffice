@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 // import { DropdownMenu } from '@radix-ui/react-dropdown-menu';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -106,6 +107,22 @@ export const companyColumns: ColumnDef<CompanyItemType>[] = [
     enableColumnFilter: false,
   },
   {
+    id: 'company_logo',
+    accessorKey: 'company_logo',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <Image
+        src={row.original.company_logo}
+        alt=""
+        width={48}
+        height={48}
+        className="rounded-md"
+      />
+    ),
+    enableSorting: false,
+    enableColumnFilter: false,
+  },
+  {
     id: 'company_name',
     accessorKey: 'company_name',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
@@ -121,13 +138,6 @@ export const companyColumns: ColumnDef<CompanyItemType>[] = [
     id: 'company_register',
     accessorKey: 'company_register',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'company_logo',
-    accessorKey: 'company_logo',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    enableSorting: false,
     enableColumnFilter: false,
   },
   {
