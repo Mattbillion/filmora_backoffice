@@ -37,14 +37,13 @@ const Action = ({
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
   const router = useRouter();
-  const canDelete = checkPermission(data, ['delete_company_employee']) || true;
-  const canEdit =
-    checkPermission(data, [
-      'get_company_employee_info',
-      'update_company_employee',
-      'update_company_employee_email',
-      'update_company_employee_password',
-    ]) || true;
+  const canDelete = checkPermission(data, ['delete_company_employee']);
+  const canEdit = checkPermission(data, [
+    'get_company_employee_info',
+    'update_company_employee',
+    'update_company_employee_email',
+    'update_company_employee_password',
+  ]);
   return (
     <div className="me-2 flex justify-end gap-4">
       <div className="me-2 flex justify-end gap-4">

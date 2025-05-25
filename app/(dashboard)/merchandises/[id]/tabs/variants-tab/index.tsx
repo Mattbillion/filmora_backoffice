@@ -1,17 +1,19 @@
 'use client';
 
 import { useEffect, useRef, useState, useTransition } from 'react';
-import dayjs from 'dayjs';
-import { Edit, Trash } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Trash } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { toast } from 'sonner';
 
-import { VariantCreateSheet } from '@/app/(dashboard)/merchandises/[id]/tabs/variants-tab/variant-create-sheet';
-import { VariantEditSheet } from '@/app/(dashboard)/merchandises/[id]/tabs/variants-tab/variant-update-sheet';
+import CurrencyItem from '@/components/custom/currency-item';
 import {
   DeleteDialog,
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,6 +23,14 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -33,26 +43,46 @@ import {
 import { TabsContent } from '@/components/ui/tabs';
 import { checkPermission } from '@/lib/permission';
 
-import { deleteVariant, getVariantList } from './actions';
-import { VariantItemType } from './schema';
+import { deleteVariant, getVariantList, patchVariants } from './actions';
+import { OptionTypesSheet } from './option-values/option-types-sheet';
+import { VariantItemType, variantsBulkSchema } from './schema';
 
-export function VariantsTab({ cat_id }: { cat_id: number }) {
+export function VariantsTab() {
   const { data: session } = useSession();
   const params = useParams();
   const [loading, startLoadingTransition] = useTransition();
+  const [saving, startLoadingSaving] = useTransition();
   const [variants, setVariants] = useState<VariantItemType[]>([]);
 
-  const fetchVariants = () => {
-    startLoadingTransition(() =>
-      getVariantList({ filters: `merch_id=${params.id}` }).then((c) =>
-        setVariants(c.data.data || []),
-      ),
-    );
-  };
+  const form = useForm<{ updates: VariantItemType[] }>({
+    resolver: zodResolver(variantsBulkSchema),
+    defaultValues: {
+      updates: variants.map((v) => ({ ...v, variant_id: v.id })),
+    },
+  });
 
   useEffect(() => {
-    fetchVariants();
+    startLoadingTransition(() =>
+      getVariantList((params?.id || '') as string, {
+        filters: `merch_id=${params.id}`,
+      }).then((c) => {
+        setVariants(c.data.data || []);
+        form.setValue(
+          'updates',
+          (c.data.data || []).map((v) => ({ ...v, variant_id: v.id })),
+        );
+      }),
+    );
   }, []);
+
+  const onSubmit = (values: { updates: VariantItemType[] }) => {
+    startLoadingSaving(() => {
+      // @ts-ignore
+      patchVariants({ updates: values.updates }).then(() => {
+        toast.success('Updated successfully');
+      });
+    });
+  };
 
   return (
     <TabsContent value="variants" className="space-y-4">
@@ -63,68 +93,189 @@ export function VariantsTab({ cat_id }: { cat_id: number }) {
             <CardDescription>Manage product variants and stock</CardDescription>
           </div>
           {checkPermission(session, [
-            'create_company_merchandise_attribute_value',
+            'get_company_merchandise_attribute_option_value_list',
+            'get_company_merchandise_attribute_option_value',
+            'create_company_merchandise_attribute_option_value',
+            'update_company_merchandise_attribute_option_value',
+            'delete_company_merchandise_attribute_option_value',
           ]) && (
-            <VariantCreateSheet onSave={fetchVariants} cat_id={cat_id}>
-              <Button>Add Variant</Button>
-            </VariantCreateSheet>
+            <OptionTypesSheet
+              canAddType={!variants?.length}
+              onSave={(v) => {
+                setVariants((prev) => {
+                  const tmp = [...prev, ...v];
+                  form.setValue(
+                    'updates',
+                    tmp.map((t) => ({ ...t, variant_id: t.id })),
+                  );
+                  return tmp;
+                });
+              }}
+            >
+              <Button>Option values</Button>
+            </OptionTypesSheet>
           )}
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>ID</TableHead>
-                <TableHead>SKU</TableHead>
-                <TableHead>Stock</TableHead>
-                <TableHead>Master</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead className="text-right">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {loading
-                ? Array.from({ length: 3 }).map((_, idx) => (
-                    <RowSkeleton key={idx} />
-                  ))
-                : variants.map((variant, idx) => (
-                    <TableRow key={idx}>
-                      <TableCell className="font-medium">
-                        {variant.id}
-                      </TableCell>
-                      <TableCell>{variant.sku}</TableCell>
-                      <TableCell>{variant.stock}</TableCell>
-                      <TableCell>
-                        {variant.is_master ? (
-                          <Badge>Master</Badge>
-                        ) : (
-                          <Badge variant="outline">No</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {variant.status ? (
-                          <Badge variant="default">Active</Badge>
-                        ) : (
-                          <Badge variant="destructive">Inactive</Badge>
-                        )}
-                      </TableCell>
-                      <TableCell>
-                        {dayjs(variant.created_at).format('YYYY-MM-DD hh:mm')}
-                      </TableCell>
-                      <TableAction
-                        variant={variant}
-                        onSave={fetchVariants}
-                        onRemove={() =>
-                          setVariants((oldVariants) =>
-                            oldVariants.filter((c) => c.id !== variant.id),
-                          )
-                        }
-                      />
-                    </TableRow>
-                  ))}
-            </TableBody>
-          </Table>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit, console.error)}>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID</TableHead>
+                    <TableHead>SKU</TableHead>
+                    <TableHead>Option values</TableHead>
+                    <TableHead>Image</TableHead>
+                    <TableHead>Price</TableHead>
+                    <TableHead>Stock</TableHead>
+                    <TableHead>Master</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="text-right">Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {loading
+                    ? Array.from({ length: 3 }).map((_, idx) => (
+                        <RowSkeleton key={idx} />
+                      ))
+                    : variants.map((variant, idx) => (
+                        <TableRow key={idx}>
+                          <TableCell className="font-medium">
+                            {variant.id}
+                          </TableCell>
+                          <TableCell>{variant.sku}</TableCell>
+                          <TableCell>
+                            <div className={'flex flex-wrap gap-2'}>
+                              {variant?.attributes?.map((c) => (
+                                <Badge
+                                  key={`${c.option_type_id}_${c.attribute_value_id}`}
+                                  variant="outline"
+                                >
+                                  {c.option_type_name}:{' '}
+                                  <span className={'font-medium'}>
+                                    {c.value}
+                                  </span>
+                                </Badge>
+                              ))}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <FormField
+                              name={`updates.${idx}.merch_id`}
+                              control={form.control}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Com id"
+                                      {...field}
+                                      type={'hidden'}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              // @ts-ignore
+                              name={`updates.${idx}.variant_id`}
+                              control={form.control}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    {/*@ts-ignore*/}
+                                    <Input
+                                      placeholder="Com id"
+                                      {...field}
+                                      type={'hidden'}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={form.control}
+                              name={`updates.${idx}.image`}
+                              render={({ field }) => (
+                                <UploadImageItem
+                                  field={field}
+                                  imagePrefix={field.name}
+                                />
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <FormField
+                              control={form.control}
+                              name={`updates.${idx}.price`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <CurrencyItem
+                                      field={field}
+                                      placeholder={'0'}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <FormField
+                              control={form.control}
+                              name={`updates.${idx}.stock`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="number"
+                                      {...field}
+                                      onChange={(e) =>
+                                        field.onChange(Number(e.target.value))
+                                      }
+                                      placeholder="0"
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            {variant.is_master ? (
+                              <Badge>Master</Badge>
+                            ) : (
+                              <Badge variant="outline">No</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell>
+                            {variant.status ? (
+                              <Badge variant="default">Active</Badge>
+                            ) : (
+                              <Badge variant="destructive">Inactive</Badge>
+                            )}
+                          </TableCell>
+                          <TableAction
+                            variant={variant}
+                            onRemove={() =>
+                              setVariants((oldVariants) =>
+                                oldVariants.filter((c) => c.id !== variant.id),
+                              )
+                            }
+                          />
+                        </TableRow>
+                      ))}
+                </TableBody>
+              </Table>
+              <div className={'mt-5 flex justify-end'}>
+                <Button type="submit" className={'min-w-[200px]'}>
+                  Save
+                </Button>
+              </div>
+            </form>
+          </Form>
         </CardContent>
       </Card>
     </TabsContent>
@@ -134,11 +285,9 @@ export function VariantsTab({ cat_id }: { cat_id: number }) {
 function TableAction({
   variant,
   onRemove,
-  onSave,
 }: {
   variant: VariantItemType;
   onRemove: () => void;
-  onSave: () => void;
 }) {
   const { data } = useSession();
   const [removing, startRemoveTransition] = useTransition();
@@ -146,28 +295,18 @@ function TableAction({
   const canDelete = checkPermission(data, [
     'delete_company_merchandise_attribute_value',
   ]);
-  const canEdit = checkPermission(data, [
-    'update_company_merchandise_attribute_value',
-  ]);
 
-  if (!canEdit && !canDelete) return null;
+  if (!canDelete) return null;
   return (
     <TableCell className="text-right">
-      <div className="flex justify-end gap-2">
-        {canEdit && (
-          <VariantEditSheet variant={variant} onSave={onSave}>
-            <Button size="icon" variant="ghost" type="button">
-              <Edit className="h-4 w-4" />
-            </Button>
-          </VariantEditSheet>
-        )}
+      <div className="flex justify-end">
         {canDelete && (
           <DeleteDialog
             ref={deleteDialogRef}
             loading={removing}
             action={() => {
               startRemoveTransition(() => {
-                deleteVariant(variant.id).then(() => onRemove());
+                deleteVariant(variant.id, {}).then(() => onRemove());
               });
             }}
             confirmText="Delete"
@@ -212,13 +351,7 @@ function RowSkeleton() {
         <Skeleton className="h-6 w-16 rounded-full" />
       </TableCell>
       <TableCell>
-        <Skeleton className="h-5 w-32" />
-      </TableCell>
-      <TableCell>
-        <div className="flex space-x-2">
-          <Skeleton className="h-8 w-8 rounded-md" />
-          <Skeleton className="h-8 w-8 rounded-md" />
-        </div>
+        <Skeleton className="h-8 w-8 rounded-md" />
       </TableCell>
     </TableRow>
   );
