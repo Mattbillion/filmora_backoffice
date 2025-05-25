@@ -43,7 +43,10 @@ const StatusFilter = ({
 
   return (
     <div className="flex items-center gap-2">
-      <Select value={result(queryParams, name)} onValueChange={handleSelect}>
+      <Select
+        onValueChange={handleSelect}
+        value={result(queryParams, name) || 'all'}
+      >
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Төлөв сонгох" />
         </SelectTrigger>

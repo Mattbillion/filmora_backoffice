@@ -40,18 +40,6 @@ export const patchCompany = async ({
   return { data: body, error: null };
 };
 
-export const deleteCompany = async (id: ID) => {
-  const { body, error } = await xooxFetch(`/companies/${id}`, {
-    method: 'DELETE',
-    cache: 'no-store',
-  });
-
-  if (error) throw new Error(error);
-
-  executeRevalidate([RVK_COMPANY, `${RVK_COMPANY}_${id}`]);
-  return { data: body, error: null };
-};
-
 export const getCompanyList = async (searchParams?: QueryParams) => {
   try {
     const { body, error } = await xooxFetch<
@@ -70,7 +58,19 @@ export const getCompanyList = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getCompany = async (id: string) => {
+export const deleteCompany = async (id: ID) => {
+  const { body, error } = await xooxFetch(`/companies/${id}`, {
+    method: 'DELETE',
+    cache: 'no-store',
+  });
+
+  if (error) throw new Error(error);
+
+  executeRevalidate([RVK_COMPANY, `${RVK_COMPANY}_${id}`]);
+  return { data: body, error: null };
+};
+
+export const getCompany = async (id: ID) => {
   try {
     const { body, error } = await xooxFetch<{ data: CompanyItemType }>(
       `/companies/${id}`,

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { debounce } from 'lodash';
 import { Check, ChevronsUpDown, Command as CommandIcon } from 'lucide-react';
 import Image from 'next/image';
+import { usePathname } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import {
@@ -25,31 +26,34 @@ import { CompanyItemType } from '@/features/companies/schema';
 import { cn, isUri } from '@/lib/utils';
 
 export function TeamSwitcher() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [companies, setCompanies] = useState<CompanyItemType[]>([]);
   const [loading, setLoading] = useState(false);
   const { data: session, update: updateSession } = useSession();
 
   useEffect(() => {
-    setLoading(true);
-    getCompanyList()
-      .then((c) => {
-        const companyList = c.data.data || [];
-        if (!(session?.user || {}).company_id)
-          updateSession({
-            ...session,
-            user: {
-              ...(session?.user || {}),
-              company_id: companyList[0]?.id,
-              company_name: companyList[0]?.company_name,
-              company_register: companyList[0]?.company_register,
-              company_logo: companyList[0]?.company_logo,
-            },
-          }).finally(() => setCompanies(companyList));
-        else setCompanies(companyList);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+    if (!companies?.length) {
+      setLoading(true);
+      getCompanyList()
+        .then((c) => {
+          const companyList = c.data.data || [];
+          if (!(session?.user || {}).company_id)
+            updateSession({
+              ...session,
+              user: {
+                ...(session?.user || {}),
+                company_id: companyList[0]?.id,
+                company_name: companyList[0]?.company_name,
+                company_register: companyList[0]?.company_register,
+                company_logo: companyList[0]?.company_logo,
+              },
+            }).finally(() => setCompanies(companyList));
+          else setCompanies(companyList);
+        })
+        .finally(() => setLoading(false));
+    }
+  }, [pathname, session?.user?.company_id]);
 
   const debouncedSearch = debounce((val) => {
     setLoading(true);

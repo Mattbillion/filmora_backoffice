@@ -66,13 +66,14 @@ export const getCompanyListHash = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getCompany = async (id: string) => {
+export const getCompany = async (id: ID, headers?: Record<string, string>) => {
   try {
     if (!id) throw new Error(`Company with id ${id} not found`);
     const { body, error } = await xooxFetch<{ data: CompanyItemType }>(
       `/companies/${id}`,
       {
         method: 'GET',
+        headers,
         next: { tags: [`${RVK_COMPANY}_${id}`] },
       },
     );

@@ -3,10 +3,13 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import StatusFilter from '@/components/custom/table/status-filter';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
+import { getCompany } from '@/features/companies/actions';
 import { SearchParams } from '@/lib/fetch/types';
+import { checkPermission } from '@/lib/permission';
 
 import { getEmployeeList } from './actions';
 import { employeeColumns } from './columns';
@@ -19,10 +22,28 @@ export default async function EmployeePage(props: {
 }) {
   const searchParams = await props.searchParams;
   const session = await auth();
+  const companyId = session?.user.company_id ?? 0;
   const { data } = await getEmployeeList({
     ...searchParams,
-    company_id: session?.user?.company_id,
+    company_id: companyId,
   });
+
+  const { data: EmployeeCompany } = await getCompany(companyId);
+  const company_name = EmployeeCompany?.data.company_name ?? '';
+  const employeesWithCompany = data?.data.map((employee) => ({
+    ...employee,
+    company_name,
+    canModify: checkPermission(session, [
+      'get_all_company_employees',
+      'get_company_employee_info',
+      'create_company_employee',
+      'update_company_employee',
+      'update_company_employee_email',
+      'update_company_employee_password',
+      'delete_company_employee',
+      'set_company_employee_role',
+    ]),
+  }));
 
   return (
     <>
@@ -41,9 +62,16 @@ export default async function EmployeePage(props: {
       <Suspense fallback="Loading">
         <DataTable
           columns={employeeColumns}
-          data={data.data}
-          rowCount={data?.total_count ?? data?.data?.length}
-        />
+          data={employeesWithCompany}
+          rowCount={employeesWithCompany.length}
+        >
+          <StatusFilter
+            options={[
+              { value: 'true', label: 'Идэвхтэй' },
+              { value: 'false', label: 'Идэвхгүй' },
+            ]}
+          />
+        </DataTable>
       </Suspense>
     </>
   );

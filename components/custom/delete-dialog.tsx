@@ -58,12 +58,18 @@ export const DeleteDialog = forwardRef<DeleteDialogRef, DeleteDialogProps>(
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel asChild>
-              <Button variant="outline" disabled={loading} size="cxs">
+              <Button
+                type={'button'}
+                variant="outline"
+                disabled={loading}
+                size="cxs"
+              >
                 {cancelText || 'Cancel'}
               </Button>
             </AlertDialogCancel>
             <AlertDialogAction asChild>
               <Button
+                type={'button'}
                 onClick={action}
                 disabled={loading}
                 variant="destructive"

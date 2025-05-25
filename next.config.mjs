@@ -1,16 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['xoox.mn.s3.us-west-1.amazonaws.com'],
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 's3.ap-southeast-1.amazonaws.com',
-        pathname: '/xoox.mn/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 's3.us-west-1.amazonaws.com',
         pathname: '/xoox.mn/**',
       },
 
@@ -29,6 +23,18 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'example.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 's3.us-west-1.amazonaws.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'xoox.mn.s3.us-west-1.amazonaws.com',
         port: '',
         pathname: '/**',
       },

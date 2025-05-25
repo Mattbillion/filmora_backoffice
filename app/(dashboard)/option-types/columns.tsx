@@ -2,8 +2,8 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -22,18 +22,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { deleteOptionTypes } from '@/features/option-types/actions';
+import { OptionTypesItemType } from '@/features/option-types/schema';
 import { checkPermission } from '@/lib/permission';
 
-import { deleteBannersDetail } from './actions';
 import { UpdateDialog } from './components';
-import { BannersItemType } from './schema';
 
-const Action = ({ row }: CellContext<BannersItemType, unknown>) => {
+const Action = ({ row }: CellContext<OptionTypesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, ['delete_banner']);
-  const canEdit = checkPermission(data, ['update_banner']);
+  const canDelete = checkPermission(data, [
+    'delete_company_merchandise_attribute_option_value',
+  ]);
+  const canEdit = checkPermission(data, [
+    'update_company_merchandise_attribute_option_value',
+  ]);
 
   if (!canEdit && !canDelete) return null;
 
@@ -66,7 +70,7 @@ const Action = ({ row }: CellContext<BannersItemType, unknown>) => {
               action={() => {
                 setLoading(true);
                 // TODO: Please check after generate
-                deleteBannersDetail(row.original.id)
+                deleteOptionTypes(row.original.id)
                   .then((c) => toast.success(c.data.message))
                   .catch((c) => toast.error(c.message))
                   .finally(() => {
@@ -77,7 +81,7 @@ const Action = ({ row }: CellContext<BannersItemType, unknown>) => {
               description={
                 <>
                   Are you sure you want to delete this{' '}
-                  <b className="text-foreground">{row.original.title}</b>?
+                  <b className="text-foreground">{row.original.option_name}</b>?
                 </>
               }
             >
@@ -93,62 +97,34 @@ const Action = ({ row }: CellContext<BannersItemType, unknown>) => {
   );
 };
 
-export const bannersColumns: ColumnDef<BannersItemType>[] = [
+export const optionTypesColumns: ColumnDef<OptionTypesItemType>[] = [
   {
+    id: 'id',
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    id: 'title',
-    accessorKey: 'title',
+    id: 'option_name',
+    accessorKey: 'option_name',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <p className="line-clamp-2 w-full min-w-40 overflow-hidden">
-        {row.original.title?.slice(0, 300)}
-      </p>
-    ),
-    enableSorting: false,
+
+    enableSorting: true,
     enableColumnFilter: false,
   },
   {
-    id: 'picture',
-    accessorKey: 'picture',
+    id: 'option_name_mn',
+    accessorKey: 'option_name_mn',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <div className="relative aspect-square size-14 overflow-hidden rounded-lg">
-        <Image
-          src={row.original.picture}
-          alt=""
-          fill
-          className="object-cover"
-        />
-      </div>
-    ),
-    enableSorting: false,
+    enableSorting: true,
     enableColumnFilter: false,
   },
   {
-    id: 'link',
-    accessorKey: 'link',
+    id: 'option_desc',
+    accessorKey: 'option_desc',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.link?.slice(0, 300),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'location',
-    accessorKey: 'location',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.location?.slice(0, 300),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'special_cat_id',
-    accessorKey: 'special_cat_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.special_cat_id,
-    enableSorting: false,
+    enableSorting: true,
     enableColumnFilter: false,
   },
   {
@@ -161,7 +137,35 @@ export const bannersColumns: ColumnDef<BannersItemType>[] = [
       </Badge>
     ),
     enableSorting: false,
-    enableColumnFilter: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'created_at',
+    accessorKey: 'created_at',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <Badge variant="secondary">
+        {row.original.created_at
+          ? dayjs(row.original.created_at).format('YYYY-MM-DD hh:mm')
+          : undefined}
+      </Badge>
+    ),
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'updated_at',
+    accessorKey: 'updated_at',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <Badge variant="secondary">
+        {row.original.updated_at
+          ? dayjs(row.original.updated_at).format('YYYY-MM-DD hh:mm')
+          : undefined}
+      </Badge>
+    ),
+    enableSorting: false,
+    enableColumnFilter: true,
   },
   {
     id: 'actions',

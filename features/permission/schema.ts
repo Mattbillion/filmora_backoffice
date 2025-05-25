@@ -9,8 +9,8 @@ export const permissionSchema = z.object({
 });
 
 export const roleByPermissionSchema = z.object({
-  permission_id: z.string(),
-  role_id: z.string(),
+  permission_id: z.number(),
+  role_id: z.number(),
   status: z.boolean(),
 });
 

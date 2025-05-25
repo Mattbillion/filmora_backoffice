@@ -12,6 +12,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -159,7 +160,11 @@ export const categoryColumns: ColumnDef<
     id: 'special',
     accessorKey: 'special',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.special ? 'Active' : 'Inactive'),
+    cell: ({ row }) => (
+      <Badge variant={row.original.special ? 'outline' : 'destructive'}>
+        {row.original.special ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
     enableSorting: false,
     enableColumnFilter: true,
   },

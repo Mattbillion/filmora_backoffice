@@ -68,7 +68,7 @@ export const getAssignedPermission = async (
 ) => {
   try {
     const { body, error } = await xooxFetch<
-      PaginatedResType<PermissionByRoleItemType[]>
+      PaginatedResType<PermissionByRoleItemType & { permission_name: string }[]>
     >('/permissions_list', {
       method: 'GET',
       searchParams: { page_size: 1000 },

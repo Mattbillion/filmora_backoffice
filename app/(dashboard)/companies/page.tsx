@@ -3,6 +3,8 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import InputFilter from '@/components/custom/input-filter';
+import StatusFilter from '@/components/custom/table/status-filter';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -20,6 +22,7 @@ export default async function CompanyPage(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
+
   const { data } = await getCompanyList(searchParams);
 
   return (
@@ -42,7 +45,25 @@ export default async function CompanyPage(props: {
           columns={companyColumns}
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <div className="flex items-center gap-2">
+            <InputFilter
+              name={'filters.company_name'}
+              placeholder={'Нэрээр хайх'}
+            />
+            {/*<InputFilter*/}
+            {/*  name={'filters.company_register'}*/}
+            {/*  placeholder={'Регистерээр хайх'}*/}
+            {/*/>*/}
+            <StatusFilter
+              name={'filters.status'}
+              options={[
+                { value: 'true', label: 'Идэвхтэй' },
+                { value: 'false', label: 'Идэвхгүй' },
+              ]}
+            />
+          </div>
+        </DataTable>
       </Suspense>
     </>
   );

@@ -11,6 +11,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -95,28 +96,28 @@ const Action = ({ row }: CellContext<AgeRestrictionsItemType, unknown>) => {
 export const ageRestrictionsColumns: ColumnDef<AgeRestrictionsItemType>[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'ID',
   },
   {
     id: 'age_name',
     accessorKey: 'age_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.age_name?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
+    header: 'Age name',
+    cell: ({ row }) => (
+      <p className="w-full max-w-[180px] truncate text-nowrap">
+        {row.original.age_name}
+      </p>
+    ),
   },
   {
     id: 'age_limit',
     accessorKey: 'age_limit',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Насны хязгаар',
     cell: ({ row }) => row.original.age_limit?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
   },
   {
     id: 'age_desc',
     accessorKey: 'age_desc',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Дэлгэрэнгүй',
     cell: ({ row }) => (
       <p>
         html:{' '}
@@ -139,7 +140,7 @@ export const ageRestrictionsColumns: ColumnDef<AgeRestrictionsItemType>[] = [
   {
     id: 'min_age',
     accessorKey: 'min_age',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Min age',
     cell: ({ row }) => row.original.min_age,
     enableSorting: true,
     enableColumnFilter: true,
@@ -147,7 +148,7 @@ export const ageRestrictionsColumns: ColumnDef<AgeRestrictionsItemType>[] = [
   {
     id: 'max_age',
     accessorKey: 'max_age',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Max age',
     cell: ({ row }) => row.original.max_age,
     enableSorting: true,
     enableColumnFilter: true,
@@ -155,13 +156,21 @@ export const ageRestrictionsColumns: ColumnDef<AgeRestrictionsItemType>[] = [
   {
     id: 'status',
     accessorKey: 'status',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+    header: 'Төлөв',
+    cell: ({ row }) => {
+      const badgeStatus = row.original.status ? 'Active' : 'Inactive';
+      return (
+        <Badge variant={badgeStatus === 'Active' ? 'outline' : 'destructive'}>
+          {row.original.status ? 'Active' : 'Inactive'}
+        </Badge>
+      );
+    },
     enableSorting: false,
     enableColumnFilter: true,
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: Action,
   },
 ];

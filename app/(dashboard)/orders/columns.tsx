@@ -5,6 +5,7 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 
 import { OrdersItemType } from './schema';
 
@@ -60,18 +61,13 @@ export const ordersColumns: ColumnDef<
     id: 'order_date',
     accessorKey: 'order_date',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) =>
-      row.original.order_date
-        ? dayjs(row.original.order_date).format('YYYY/MM/DD hh:mm:ss')
-        : undefined,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'order_time',
-    accessorKey: 'order_time',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.order_time,
+    cell: ({ row }) => (
+      <Badge variant="secondary">
+        {dayjs(`${row.original.order_date}T${row.original.order_time}`).format(
+          'YYYY/MM/DD hh:mm:ss',
+        )}
+      </Badge>
+    ),
     enableSorting: true,
     enableColumnFilter: true,
   },

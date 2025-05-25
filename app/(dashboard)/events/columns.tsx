@@ -15,6 +15,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -325,7 +326,11 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     id: 'status',
     accessorKey: 'status',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+    cell: ({ row }) => (
+      <Badge variant={row.original.status ? 'outline' : 'destructive'}>
+        {row.original.status ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
     enableSorting: false,
     enableColumnFilter: true,
   },
@@ -333,7 +338,13 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     id: 'created_at',
     accessorKey: 'created_at',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => new Date(row.original.created_at).toLocaleString(),
+    cell: ({ row }) => (
+      <Badge variant="secondary">
+        {row.original.created_at
+          ? dayjs(row.original.created_at).format('YYYY-MM-DD hh:mm')
+          : undefined}
+      </Badge>
+    ),
     enableSorting: false,
     enableColumnFilter: true,
   },
@@ -341,10 +352,13 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     id: 'updated_at',
     accessorKey: 'updated_at',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) =>
-      row.original.updated_at
-        ? new Date(row.original.updated_at).toLocaleString()
-        : 'N/A',
+    cell: ({ row }) => (
+      <Badge variant="secondary">
+        {row.original.updated_at
+          ? dayjs(row.original.updated_at).format('YYYY-MM-DD hh:mm')
+          : undefined}
+      </Badge>
+    ),
     enableSorting: false,
     enableColumnFilter: true,
   },
