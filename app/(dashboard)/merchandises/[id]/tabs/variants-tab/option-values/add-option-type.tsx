@@ -55,6 +55,13 @@ export default function AddOptionType({ onSelect }: ServerAutocompleteProps) {
     [],
   );
 
+  useEffect(() => {
+    getOptionTypesList({
+      page: 1,
+      page_size: 10,
+    }).then((c) => setResults(c.data.data || []));
+  }, []);
+
   // Handle input change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -115,6 +122,7 @@ export default function AddOptionType({ onSelect }: ServerAutocompleteProps) {
               ref={inputRef}
               type="text"
               value={query}
+              onFocus={() => setIsOpen(true)}
               onChange={handleInputChange}
               className="pl-10 pr-10"
               placeholder="Search option type"
