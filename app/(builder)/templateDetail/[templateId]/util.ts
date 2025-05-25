@@ -21,29 +21,48 @@ export const svgStrToJSON = (svgStr: string) => {
   };
 };
 
+const isGroupElement = (el: SVGJsonType) =>
+  typeof el === 'object' && el.tagName === 'g' && el.type === 'element';
+const INITIAL_GROUP_COUNT = 2;
+
+const sda = (arr: any = [], depth = 0) => {
+  for (let j = 0; j < arr?.length || 0; j++) {
+    const child = arr[j];
+    if (depth > 10) break;
+    if (isGroupElement(child)) {
+      depth += 1;
+      sda(child.children, depth);
+    }
+  }
+  return depth;
+};
+
 export function validateSVG(arr: SVGJsonType[]): TemplateValidationResult {
   let ticketsChildrenGrouped = false;
-  let svgGrouped = true;
+  const slicedArr = arr.slice(0, 10);
+  const depth1Groups = slicedArr.filter((c) => isGroupElement(c)).length;
+  const svgGrouped = depth1Groups >= INITIAL_GROUP_COUNT;
 
-  if (!arr.length || arr.length > 100) svgGrouped = false;
   if (svgGrouped) {
-    for (let i = 0; i < arr.length; i++) {
-      const node = arr[i];
-      const id = node.properties?.id;
-      if (id === 'tickets') {
-        ticketsChildrenGrouped =
-          Array.isArray(node.children) &&
-          node.children.every(
-            (child) =>
-              typeof child === 'object' &&
-              child.tagName === 'g' &&
-              child.type === 'element',
-          );
-      }
+    for (let i = 0; i < slicedArr.length; i++) {
+      const node = slicedArr[i];
+      const groupCountAccepted =
+        Array.isArray(node.children) &&
+        node.children.reduce(
+          (acc, cur) => (acc += isGroupElement(cur) ? 1 : 0),
+          0,
+        ) >= 2;
+      let depthGroup = sda(node.children, 0) >= 2;
+
+      ticketsChildrenGrouped = groupCountAccepted && depthGroup;
+      if (ticketsChildrenGrouped) break;
     }
   }
 
-  return { ticketsChildrenGrouped, svgGrouped };
+  return {
+    ticketsChildrenGrouped,
+    svgGrouped,
+  };
 }
 
 export const parseCSS = (
@@ -104,3 +123,15 @@ export const getStyleStr = (json: SVGJsonType[]): string => {
 
   return '';
 };
+
+export function formatFileSize(bytes: number, decimals = 2): string {
+  if (bytes === 0) return '0 Bytes';
+
+  const k = 1000;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}

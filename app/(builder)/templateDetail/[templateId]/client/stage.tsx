@@ -405,7 +405,33 @@ function LayerChildCollapse({
       return Math.abs(aspectRatio - 1) <= 0.5;
     });
 
-    return nearSeatShapes;
+    const parent = childNode;
+    const baseStage = childNode.getStage()?.getLayers()[0];
+
+    return nearSeatShapes.map((shape) => {
+      const selectedBox = shape.getClientRect({
+        relativeTo: baseStage,
+      });
+
+      //@ts-ignore
+      const candidates = parent?.find('Text') as Konva.Text[];
+
+      for (const textNode of candidates) {
+        const textBox = textNode.getClientRect({
+          relativeTo: baseStage,
+        });
+
+        const intersects =
+          selectedBox.x < textBox.x + textBox.width &&
+          selectedBox.x + selectedBox.width > textBox.x &&
+          selectedBox.y < textBox.y + textBox.height &&
+          selectedBox.y + selectedBox.height > textBox.y;
+
+        if (intersects) shape.setAttr('data-seat', textNode.attrs.text);
+      }
+
+      return shape;
+    });
   };
 
   return (
@@ -443,34 +469,52 @@ function LayerChildCollapse({
             />
           )}
         </div>
-        {!!nodeType && !!nodeTypeValue
-          ? isSeatGroup
-            ? filterSeatLikeShapes().map((child, idx) => {
+        {!!nodeType && !!nodeTypeValue ? (
+          isSeatGroup ? (
+            <>
+              <p className="mb-2 border-b pb-2 pt-4 font-bold">Tickets</p>
+              {filterSeatLikeShapes().map((child, idx) => {
                 return (
-                  <div key={idx} onMouseEnter={() => focusNode(child)}>
+                  <div
+                    key={idx}
+                    onMouseEnter={() => focusNode(child)}
+                    className="flex items-center justify-between gap-4"
+                  >
                     <LayerTypeSelect
                       node={child}
                       onChange={forceUpdate}
                       options={Object.values(dataMap)
-                        .filter((c) => ['table', 'seat', 'room'].includes(c))
+                        .filter((c) =>
+                          ['table', 'seat', 'room', 'door'].includes(c),
+                        )
                         .map((c) => ({
                           label: translationMap[c],
                           value: c,
                         }))}
                       className="flex-1"
+                      hideLabel
+                    />
+                    <LayerNameInput
+                      node={child}
+                      onChange={forceUpdate}
+                      className="flex-1"
+                      hideLabel
                     />
                   </div>
                 );
-              })
-            : children.map((child, index) => (
-                <LayerChildCollapse
-                  key={child._id || index}
-                  focusNode={focusNode}
-                  forceUpdate={forceUpdate}
-                  childNode={child}
-                />
-              ))
-          : null}
+              })}
+            </>
+          ) : (
+            children.map((child, index) => (
+              <LayerChildCollapse
+                key={child._id || index}
+                focusNode={focusNode}
+                forceUpdate={forceUpdate}
+                childNode={child}
+              />
+            ))
+          )
+        ) : null}
       </CollapsibleContent>
     </Collapsible>
   );
@@ -511,15 +555,17 @@ function LayerTypeSelect({
   onChange,
   options,
   className,
+  hideLabel,
 }: {
   node: Konva.Node & { children?: Konva.Node[] };
   onChange: (val: string) => void;
   options: { value: string; label: string }[];
   className?: string;
+  hideLabel?: boolean;
 }) {
   return (
     <div className={cn('space-y-2', className)}>
-      <Label>Layer Type:</Label>
+      {!hideLabel && <Label>Layer Type:</Label>}
       <Select
         defaultValue={node.attrs['data-type'] || node.id()}
         onValueChange={(val) => {
@@ -559,11 +605,13 @@ function LayerNameInput({
   onFocus,
   onChange,
   className,
+  hideLabel,
 }: {
   node: Konva.Node & { children?: Konva.Node[] };
   onFocus?: () => void;
   onChange?: (val: string) => void;
   className?: string;
+  hideLabel?: boolean;
 }) {
   const { field, label, placeholder } = getFieldInfo(node);
   const [value, setValue] = useState(node.attrs[field]?.replace('_', ' '));
@@ -571,7 +619,7 @@ function LayerNameInput({
 
   return (
     <div className={cn('space-y-2', className)} onMouseEnter={onFocus}>
-      <Label htmlFor={nodeId + field}>{label}</Label>
+      {!hideLabel && <Label htmlFor={nodeId + field}>{label}</Label>}
       <Input
         id={nodeId + field}
         value={value}
@@ -582,6 +630,7 @@ function LayerNameInput({
           manipulateAttrs(node, field, val.replace(/\s/g, '_'));
         }}
         onFocus={onFocus}
+        autoFocus={!!onFocus}
         placeholder={`Current: ${placeholder || 'N/A'}`}
         className="!h-9 flex-1 rounded-sm border-neutral-400 dark:border-neutral-600 dark:bg-neutral-600"
       />
