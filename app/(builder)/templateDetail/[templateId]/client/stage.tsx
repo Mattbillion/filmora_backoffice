@@ -6,6 +6,7 @@ import Konva from 'konva';
 import { flatten, partition } from 'lodash';
 import { Edit } from 'lucide-react';
 
+import { AdditionalInformation } from '@/app/(builder)/templateDetail/[templateId]/client/additional-information';
 import {
   Accordion,
   AccordionContent,
@@ -18,21 +19,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { cn } from '@/lib/utils';
 
-import { dataMap, dataMapReverse, translationMap } from './constants';
-
-type KonvaNode = Konva.Node & { children?: KonvaNode[] };
+import { KonvaNode } from '../schema';
+import { dataMap, translationMap } from './constants';
+import { LayerTypeSelect, LayerValueInput } from './layer-form-inputs';
 
 const scaleBy = 1.05;
 const maxScale = 10;
@@ -272,11 +263,12 @@ export default function Stage({
                                   className="flex-1"
                                 />
                                 {!!nodeType && (
-                                  <LayerNameInput
+                                  <LayerValueInput
                                     node={childNode}
                                     onChange={() => forceUpdate((c) => c + 1)}
                                     onFocus={() => focusNode(childNode)}
                                     className="flex-1"
+                                    debounce={100}
                                   />
                                 )}
                               </div>
@@ -436,7 +428,7 @@ function LayerChildCollapse({
 
   return (
     <Collapsible
-      className="w-full has-[&>.collapsible-child[data-state=open]]:bg-transparent [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
+      className="w-full has-[&>.collapsible-child[data-state=open]]:border has-[&>.collapsible-child[data-state=open]]:bg-transparent [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
       onMouseEnter={handleFocusNode}
     >
       <CollapsibleTrigger asChild>
@@ -461,10 +453,11 @@ function LayerChildCollapse({
             className="flex-1"
           />
           {!!nodeType && (
-            <LayerNameInput
+            <LayerValueInput
               node={childNode}
               onChange={forceUpdate}
               onFocus={handleFocusNode}
+              debounce={100}
               className="flex-1"
             />
           )}
@@ -472,6 +465,11 @@ function LayerChildCollapse({
         {!!nodeType && !!nodeTypeValue ? (
           isSeatGroup ? (
             <>
+              <AdditionalInformation
+                node={childNode}
+                onChange={forceUpdate}
+                onFocus={handleFocusNode}
+              />
               <p className="mb-2 border-b pb-2 pt-4 font-bold">Tickets</p>
               {filterSeatLikeShapes().map((child, idx) => {
                 return (
@@ -494,7 +492,7 @@ function LayerChildCollapse({
                       className="flex-1"
                       hideLabel
                     />
-                    <LayerNameInput
+                    <LayerValueInput
                       node={child}
                       onChange={forceUpdate}
                       className="flex-1"
@@ -549,125 +547,3 @@ function isLikelySeatNode(node: KonvaNode): boolean {
 
   return isPathOrShape || isTextWithNumber;
 }
-
-function LayerTypeSelect({
-  node,
-  onChange,
-  options,
-  className,
-  hideLabel,
-}: {
-  node: Konva.Node & { children?: Konva.Node[] };
-  onChange: (val: string) => void;
-  options: { value: string; label: string }[];
-  className?: string;
-  hideLabel?: boolean;
-}) {
-  return (
-    <div className={cn('space-y-2', className)}>
-      {!hideLabel && <Label>Layer Type:</Label>}
-      <Select
-        defaultValue={node.attrs['data-type'] || node.id()}
-        onValueChange={(val) => {
-          node.setAttr('data-type', val);
-          onChange(val);
-        }}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select layer type" />
-        </SelectTrigger>
-        <SelectContent>
-          {options.map((o, idx) => (
-            <SelectItem value={o.value} key={idx}>
-              {o.label}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  );
-}
-
-const getFieldInfo = (node: KonvaNode) => {
-  const field = `data-${node.attrs['data-type']}`;
-  let label = translationMap[field.replace('data-', '')] + ': ';
-  let placeholder = node.attrs[field] || '';
-
-  return {
-    field,
-    label,
-    placeholder,
-  };
-};
-
-function LayerNameInput({
-  node,
-  onFocus,
-  onChange,
-  className,
-  hideLabel,
-}: {
-  node: Konva.Node & { children?: Konva.Node[] };
-  onFocus?: () => void;
-  onChange?: (val: string) => void;
-  className?: string;
-  hideLabel?: boolean;
-}) {
-  const { field, label, placeholder } = getFieldInfo(node);
-  const [value, setValue] = useState(node.attrs[field]?.replace('_', ' '));
-  const nodeId = node.id() || node.attrs['data-testid'];
-
-  return (
-    <div className={cn('space-y-2', className)} onMouseEnter={onFocus}>
-      {!hideLabel && <Label htmlFor={nodeId + field}>{label}</Label>}
-      <Input
-        id={nodeId + field}
-        value={value}
-        onChange={(e) => {
-          const val = e.target.value;
-          setValue(val);
-          onChange?.(val);
-          manipulateAttrs(node, field, val.replace(/\s/g, '_'));
-        }}
-        onFocus={onFocus}
-        autoFocus={!!onFocus}
-        placeholder={`Current: ${placeholder || 'N/A'}`}
-        className="!h-9 flex-1 rounded-sm border-neutral-400 dark:border-neutral-600 dark:bg-neutral-600"
-      />
-    </div>
-  );
-}
-
-const modifyId = (id: string = '', field: string = '', val: string) => {
-  let newId;
-  const reversedK = dataMapReverse[field.replace('data-', '')];
-  const reg = new RegExp(`(?<=-|^)(${reversedK}[^-]*)(?=-|$)`);
-
-  if (reg.test(id)) {
-    newId = id.replace(reg, `${reversedK}${val}`);
-  } else {
-    const parts = id.split('-');
-    parts.splice(parts.length - 1, 0, `${reversedK}${val}`);
-    newId = parts.join('-');
-  }
-
-  return newId;
-};
-
-const manipulateAttrs = (n: KonvaNode, field: string, value: string) => {
-  if (n.hasChildren()) {
-    const nodeChildren = n.children!;
-    for (let i = 0; i < nodeChildren.length; i++) {
-      const child = nodeChildren[i];
-      const childId = child.id() || '';
-
-      if (child.hasChildren()) manipulateAttrs(child, field, value);
-      if (child.getType() !== 'Text') {
-        child.setAttr('id', modifyId(childId, field, value));
-        child.setAttr(field, value);
-      }
-    }
-  }
-  n.setAttr('id', modifyId(n.id(), field, value));
-  n.setAttr(field, value);
-};
