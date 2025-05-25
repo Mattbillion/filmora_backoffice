@@ -29,7 +29,7 @@ export function TeamSwitcher() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [companies, setCompanies] = useState<CompanyItemType[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const { data: session, update: updateSession } = useSession();
 
   useEffect(() => {
@@ -63,15 +63,14 @@ export function TeamSwitcher() {
   }, 200);
 
   if (!session?.user) return null;
-  if (loading && !companies.length)
+
+  if (loading)
     return (
-      <div className="flex animate-pulse items-center gap-2 p-2">
-        <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-          <CommandIcon className="size-4" />
-        </div>
+      <div className="flex animate-pulse items-center gap-2 rounded-lg border border-border p-2">
+        <div className="size flex aspect-square size-8 items-center justify-center rounded-lg bg-slate-200" />
         <div className="flex-1 text-left text-sm leading-tight">
-          <div className="mb-1 h-4 w-2/3 rounded-sm bg-slate-700" />
-          <div className="h-3 w-1/3 rounded-sm bg-slate-700" />
+          <div className="w-3/3 mb-1 h-3 rounded-sm bg-slate-200" />
+          <div className="h-3 w-2/3 rounded-sm bg-slate-200" />
         </div>
       </div>
     );
@@ -84,13 +83,14 @@ export function TeamSwitcher() {
             <button className="flex w-full items-center gap-3 rounded-lg p-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 {isUri(session?.user?.company_logo || '') ? (
-                  <Image
-                    src={session?.user?.company_logo!}
-                    width={16}
-                    height={16}
-                    alt={`${session?.user?.company_name} logo`}
-                    className="overflow-hidden object-cover"
-                  />
+                  <div className="relative aspect-square size-8 overflow-hidden rounded-lg">
+                    <Image
+                      src={session?.user?.company_logo!}
+                      fill
+                      alt={`${session?.user?.company_name} logo`}
+                      className="object-cover"
+                    />
+                  </div>
                 ) : (
                   <CommandIcon className="size-4" />
                 )}
@@ -141,13 +141,14 @@ export function TeamSwitcher() {
                     >
                       <div className="flex aspect-square size-6 items-center justify-center rounded-lg bg-accent">
                         {isUri(c?.company_logo) ? (
-                          <Image
-                            src={c?.company_logo}
-                            width={14}
-                            height={14}
-                            alt={`${c?.company_name} logo`}
-                            className="overflow-hidden object-cover"
-                          />
+                          <div className="relative aspect-square size-8 shrink-0 overflow-hidden rounded-lg">
+                            <Image
+                              src={c?.company_logo}
+                              fill
+                              alt={`${c?.company_name} logo`}
+                              className="overflow-hidden object-cover"
+                            />
+                          </div>
                         ) : (
                           <Command className="size-3.5" />
                         )}

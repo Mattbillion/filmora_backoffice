@@ -79,11 +79,12 @@ export function NavUser({ session }: { session: Session }) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {session?.user?.name ?? ''}
+                    {session.user.firstname.concat(
+                      ' ',
+                      session.user.lastname,
+                    ) ?? ''}
                   </span>
-                  <span className="truncate text-xs">
-                    {session?.user?.email ?? ''}
-                  </span>
+                  <span className="truncate">{session?.user?.email ?? ''}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

@@ -1,6 +1,6 @@
 'use client';
 
-import { ReactNode, useRef, useState, useTransition } from 'react';
+import { ReactNode, useEffect, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
@@ -40,8 +40,16 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     cat_id?: HierarchicalCategory[];
     discount_id?: DiscountsItemType[];
   }>({});
+
   const [loading, startLoadingTransition] = useTransition();
   const { data: session } = useSession();
+
+  useEffect(() => {
+    if (session?.user?.company_id) {
+      form.setValue('com_id', session.user.company_id);
+    }
+  }, [session?.user?.company_id]);
+
   const form = useForm<MerchandisesBodyType>({
     resolver: zodResolver(merchandisesSchema),
     defaultValues: {

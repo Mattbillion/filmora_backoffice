@@ -29,12 +29,12 @@ export default async function VenuesPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Venues list (${data?.total_count ?? data?.data?.length})`}
+          title={`Байршлуудын жагсаалт (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_venue']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
-              <Plus className="h-4 w-4" /> Add New
+              <Plus className="h-4 w-4" /> Байршил нэмэх
             </Button>
           </CreateDialog>
         )}

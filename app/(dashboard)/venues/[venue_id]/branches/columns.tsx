@@ -14,6 +14,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -122,22 +123,109 @@ const Navigation = ({ row }: CellContext<BranchesItemType, unknown>) => {
 export const branchesColumns: ColumnDef<BranchesItemType>[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Branch ID',
+  },
+  {
+    id: 'branch_images',
+    accessorKey: 'branch_images',
+    header: 'Branch Image',
+    cell: ({ row }) => (
+      <div className="relative aspect-square size-8 overflow-hidden rounded-lg">
+        <Image
+          src={row.original.branch_images}
+          alt={row.original.branch_name}
+          fill
+          className="object-cover"
+        />
+      </div>
+    ),
+    enableSorting: false,
+    enableColumnFilter: false,
   },
   {
     id: 'branch_name',
     accessorKey: 'branch_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_name?.slice(0, 300),
+    header: 'Branch name',
+    cell: ({ row }) => (
+      <p className="line-clamp-2 w-[256px]">{row.original.branch_name}</p>
+    ),
     enableSorting: true,
     enableColumnFilter: true,
+  },
+  {
+    id: 'branch_phone',
+    accessorKey: 'branch_phone',
+    header: 'Утасны дугаар',
+    cell: ({ row }) => <p className="w-max">{row.original.branch_phone}</p>,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'branch_location',
+    accessorKey: 'branch_location',
+    header: 'Байршил',
+    cell: ({ row }) => (
+      <p className="w-[256px] truncate">{row.original.branch_location}</p>
+    ),
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  // {
+  //   id: 'branch_long',
+  //   accessorKey: 'branch_long',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.branch_long?.slice(0, 300),
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'branch_lat',
+  //   accessorKey: 'branch_lat',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.branch_lat?.slice(0, 300),
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'branch_email',
+  //   accessorKey: 'branch_email',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.branch_email?.slice(0, 300),
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'branch_order',
+  //   accessorKey: 'branch_order',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.branch_order,
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  {
+    id: 'status',
+    accessorKey: 'status',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <Badge variant={row.original.status ? 'outline' : 'destructive'}>
+        {row.original.status ? 'Идэвхтэй' : 'Идэвхгүй'}
+      </Badge>
+    ),
+  },
+  {
+    id: 'branch_schedule',
+    accessorKey: 'branch_schedule',
+    header: 'Цагийн хуваарь',
+    cell: ({ row }) => (
+      <p className="w-[256px] truncate">{row.original.branch_schedule}</p>
+    ),
   },
   {
     id: 'branch_desc',
     accessorKey: 'branch_desc',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
-      <p>
+      <p className="line-clamp-2 w-[220px]">
         html:{' '}
         <span className="opacity-70">
           {removeHTML(row.original.branch_desc?.slice(0, 300))}
@@ -147,108 +235,15 @@ export const branchesColumns: ColumnDef<BranchesItemType>[] = [
     enableSorting: false,
     enableColumnFilter: false,
   },
-  {
-    id: 'branch_logo',
-    accessorKey: 'branch_logo',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <Image
-        src={row.original.branch_logo}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'branch_phone',
-    accessorKey: 'branch_phone',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_phone?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_location',
-    accessorKey: 'branch_location',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_location?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_long',
-    accessorKey: 'branch_long',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_long?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_lat',
-    accessorKey: 'branch_lat',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_lat?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_email',
-    accessorKey: 'branch_email',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_email?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_order',
-    accessorKey: 'branch_order',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_order,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'status',
-    accessorKey: 'status',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_schedule',
-    accessorKey: 'branch_schedule',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_schedule?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_images',
-    accessorKey: 'branch_images',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <Image
-        src={row.original.branch_images}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
+
   {
     id: 'navigation',
+    header: 'Navigation',
     cell: Navigation,
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: Action,
   },
 ];

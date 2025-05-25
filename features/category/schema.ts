@@ -9,8 +9,7 @@ export const categorySchema = z.object({
   order: z.number(),
   special: z.boolean(),
   description: z.string(),
-  image: z.string(),
-  ancestors: z.array(z.number().optional()),
+  ancestors: z.array(z.number()).optional(),
 });
 
 export type CategoryBodyType = z.infer<typeof categorySchema>;

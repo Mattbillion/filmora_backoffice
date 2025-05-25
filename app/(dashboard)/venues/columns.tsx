@@ -13,6 +13,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import { Badge } from '@/components/ui/badge';
 import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -120,60 +121,30 @@ const Navigation = ({ row }: CellContext<VenuesItemType, unknown>) => {
 export const venuesColumns: ColumnDef<VenuesItemType>[] = [
   {
     accessorKey: 'id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-  },
-  {
-    id: 'venue_name',
-    accessorKey: 'venue_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue_name?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'venue_desc',
-    accessorKey: 'venue_desc',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <p>
-        html:{' '}
-        <span className="opacity-70">
-          {removeHTML(row.original.venue_desc?.slice(0, 300))}
-        </span>
-      </p>
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
+    header: 'Venue ID',
   },
   {
     id: 'venue_logo',
     accessorKey: 'venue_logo',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Image',
     cell: ({ row }) => (
-      <Image
-        src={row.original.venue_logo}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
+      <div className="relative aspect-square size-8 overflow-hidden rounded-lg">
+        <Image
+          src={row.original.venue_logo}
+          alt=""
+          fill
+          className="object-cover"
+        />
+      </div>
     ),
     enableSorting: false,
     enableColumnFilter: false,
   },
   {
-    id: 'venue_email',
-    accessorKey: 'venue_email',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue_email?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'venue_phone',
-    accessorKey: 'venue_phone',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue_phone?.slice(0, 300),
+    id: 'venue_name',
+    accessorKey: 'venue_name',
+    header: 'Venue name',
+    cell: ({ row }) => <p className="truncate">{row.original.venue_name}</p>,
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -188,17 +159,37 @@ export const venuesColumns: ColumnDef<VenuesItemType>[] = [
   {
     id: 'status',
     accessorKey: 'status',
+    header: 'Төлөв',
+
+    cell: ({ row }) => (
+      <Badge variant={row.original.status ? 'outline' : 'destructive'}>
+        {row.original.status ? 'Active' : 'Inactive'}
+      </Badge>
+    ),
+  },
+  {
+    id: 'venue_desc',
+    accessorKey: 'venue_desc',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
+    cell: ({ row }) => (
+      <p className="line-clamp-2 w-[256px]">
+        html:{' '}
+        <span className="opacity-70">
+          {removeHTML(row.original.venue_desc?.slice(0, 300))}
+        </span>
+      </p>
+    ),
     enableSorting: false,
-    enableColumnFilter: true,
+    enableColumnFilter: false,
   },
   {
     id: 'navigation',
+    header: 'Childrens',
     cell: Navigation,
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: Action,
   },
 ];
