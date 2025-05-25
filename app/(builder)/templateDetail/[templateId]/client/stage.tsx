@@ -6,7 +6,6 @@ import Konva from 'konva';
 import { flatten, partition } from 'lodash';
 import { Edit } from 'lucide-react';
 
-import { AdditionalInformation } from '@/app/(builder)/templateDetail/[templateId]/client/additional-information';
 import {
   Accordion,
   AccordionContent,
@@ -23,6 +22,7 @@ import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { KonvaNode } from '../schema';
+import { AdditionalInformation } from './additional-information';
 import { dataMap, locationMap, translationMap } from './constants';
 import { LayerTypeSelect, LayerValueInput } from './layer-form-inputs';
 
