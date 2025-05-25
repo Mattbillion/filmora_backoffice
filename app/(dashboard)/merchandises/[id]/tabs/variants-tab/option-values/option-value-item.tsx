@@ -40,17 +40,19 @@ function OptionValueItem({
   const [deleting, setStartDeleting] = useTransition();
 
   const handleAdd = () => {
-    setStartLoading(() => {
-      createVariantOptionValue({
-        value,
-        com_id: com_id,
-        merch_id: merch_id,
-        option_type_id: optionType.id,
-      }).then((c) => {
-        setOptionValues((prev) => c?.data?.data || prev);
-        setValue('');
+    if (!!(value || '')?.trim()) {
+      setStartLoading(() => {
+        createVariantOptionValue({
+          value,
+          com_id: com_id,
+          merch_id: merch_id,
+          option_type_id: optionType.id,
+        }).then((c) => {
+          setOptionValues((prev) => c?.data?.data || prev);
+          setValue('');
+        });
       });
-    });
+    }
   };
 
   const handleDelete = (valueId: ID) => {
