@@ -3,6 +3,7 @@
 import { JSX, ReactNode, useEffect, useRef, useState } from 'react';
 import { Layer, Stage as KonvaStage } from 'react-konva';
 import Konva from 'konva';
+import { flatten, partition } from 'lodash';
 import { Edit } from 'lucide-react';
 
 import {
@@ -116,26 +117,45 @@ export default function Stage({
     return zoomInfo;
   };
 
-  const stageChilds = (stageRef.current
-    ?.getLayers()[0]
-    ?.children?.filter((c) => c.getType() === 'Group') ||
-    []) as unknown as KonvaNode[];
+  const [baseLayer, selectedShapesLayer] = stageRef.current?.getLayers() || [];
+
+  const stageChilds = (baseLayer?.children?.filter(
+    (c) => c.getType() === 'Group',
+  ) || []) as unknown as KonvaNode[];
 
   const focusNode = (n: KonvaNode) => {
-    n.getParent()!.children!.map((c: KonvaNode) => {
-      const isSelected = c._id === n._id;
-      c.clearCache?.();
-      c.to({
-        opacity: isSelected ? 1 : 0.15,
-        duration: 0.1,
-      });
-      c.children?.map((cc) => {
-        cc.clearCache?.();
-        cc.setAttr('opacity', 1);
-      });
+    const selectedNodes = [
+      baseLayer.findOne((c: KonvaNode) => c._id === n._id),
+    ];
+    const emptyLayer = selectedShapesLayer.destroyChildren();
+    if (n.attrs['data-type'] === 'seat') {
+      const parent = n.getParent();
+      const selectedBox = n.getClientRect({ relativeTo: baseLayer });
 
-      if (!isSelected) c.cache();
-    });
+      const candidates = parent?.find('Text') as Konva.Text[];
+
+      for (const textNode of candidates) {
+        const textBox = textNode.getClientRect({ relativeTo: baseLayer });
+
+        const intersects =
+          selectedBox.x < textBox.x + textBox.width &&
+          selectedBox.x + selectedBox.width > textBox.x &&
+          selectedBox.y < textBox.y + textBox.height &&
+          selectedBox.y + selectedBox.height > textBox.y;
+
+        if (intersects) {
+          selectedNodes.push(textNode);
+        }
+      }
+    }
+
+    for (let i = 0; i < selectedNodes.length; i++) {
+      const clonedNode = selectedNodes[i]?.clone();
+      clonedNode.setAttr('opacity', 1);
+      emptyLayer.add(clonedNode);
+    }
+
+    emptyLayer.batchDraw();
   };
 
   return (
@@ -162,7 +182,22 @@ export default function Stage({
         }}
         className="flex-1"
       >
-        <Layer>{shapes}</Layer>
+        <Layer
+          name="base"
+          imageSmoothingEnabled={false}
+          listening={false}
+          shadowForStrokeEnabled={false}
+          perfectDrawEnabled={false}
+        >
+          {shapes}
+        </Layer>
+        <Layer
+          name="selected-shapes"
+          imageSmoothingEnabled={false}
+          listening={false}
+          shadowForStrokeEnabled={false}
+          perfectDrawEnabled={false}
+        />
       </KonvaStage>
       <div className="flex h-[calc(100dvh-64px)] flex-[462px] flex-col border-l border-border">
         <h1 className="border-b p-4">Seatmap builder</h1>
@@ -177,19 +212,11 @@ export default function Stage({
                   value={node._id.toString()}
                   key={idx}
                   className="flex-1"
-                  onClick={() =>
-                    stageChilds.map((c) => {
-                      const isSelected = c._id === node._id;
-
-                      if (isSelected) c.clearCache();
-                      else c.cache();
-
-                      c.to({
-                        opacity: isSelected ? 1 : 0.15,
-                        duration: 0.2,
-                      });
-                    })
-                  }
+                  onClick={() => {
+                    baseLayer?.cache();
+                    baseLayer?.setAttr('opacity', 0.15);
+                    focusNode(node);
+                  }}
                 >
                   {node.attrs['data-name'] || node.id() || 'N/A (Edit!)'}
                 </TabsTrigger>
@@ -349,10 +376,38 @@ function LayerChildCollapse({
   const nodeType = translationMap[dataNodeType]
     ? translationMap[dataNodeType] + ': '
     : '';
-  const nodeTypeValue = childNode.attrs?.[`data-${dataNodeType}`] || 'N/A';
+  const nodeTypeValue = childNode.attrs?.[`data-${dataNodeType}`];
 
   const handleFocusNode = () => focusNode(childNode);
   const { isSeatGroup } = analyzeSeatGroup(children);
+
+  const filterSeatLikeShapes = () => {
+    const groups: KonvaNode[][] = [];
+    let currentGroup: KonvaNode[] = [];
+
+    children.forEach((child) => {
+      if (child.className === 'Text') {
+        if (currentGroup.length > 0) {
+          groups.push(currentGroup);
+          currentGroup = [];
+        }
+      } else {
+        currentGroup.push(child);
+      }
+    });
+
+    if (currentGroup.length > 0) groups.push(currentGroup);
+
+    const [nearSeatShapes] = partition(flatten(groups), (shape) => {
+      shape.setAttr('data-type', 'seat');
+      const { width, height } = shape.getClientRect();
+      const aspectRatio = width / height;
+      return Math.abs(aspectRatio - 1) <= 0.5;
+    });
+
+    return nearSeatShapes;
+  };
+
   return (
     <Collapsible
       className="w-full has-[&>.collapsible-child[data-state=open]]:bg-transparent [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
@@ -364,7 +419,7 @@ function LayerChildCollapse({
           className="flex w-full items-center justify-between p-2"
           onMouseEnter={handleFocusNode}
         >
-          {nodeType + nodeTypeValue}
+          {nodeType + (nodeTypeValue || 'N/A')}
           <Edit />
         </Button>
       </CollapsibleTrigger>
@@ -388,16 +443,34 @@ function LayerChildCollapse({
             />
           )}
         </div>
-        {!!nodeType && !!nodeTypeValue && isSeatGroup
-          ? 'seats'
-          : children.map((child, index) => (
-              <LayerChildCollapse
-                key={child._id || index}
-                focusNode={focusNode}
-                forceUpdate={forceUpdate}
-                childNode={child}
-              />
-            ))}
+        {!!nodeType && !!nodeTypeValue
+          ? isSeatGroup
+            ? filterSeatLikeShapes().map((child, idx) => {
+                return (
+                  <div key={idx} onMouseEnter={() => focusNode(child)}>
+                    <LayerTypeSelect
+                      node={child}
+                      onChange={forceUpdate}
+                      options={Object.values(dataMap)
+                        .filter((c) => ['table', 'seat', 'room'].includes(c))
+                        .map((c) => ({
+                          label: translationMap[c],
+                          value: c,
+                        }))}
+                      className="flex-1"
+                    />
+                  </div>
+                );
+              })
+            : children.map((child, index) => (
+                <LayerChildCollapse
+                  key={child._id || index}
+                  focusNode={focusNode}
+                  forceUpdate={forceUpdate}
+                  childNode={child}
+                />
+              ))
+          : null}
       </CollapsibleContent>
     </Collapsible>
   );
@@ -410,11 +483,7 @@ function analyzeSeatGroup(children: KonvaNode[]): {
   let seatLikeChildren = 0;
 
   for (const child of children) {
-    // Recursive check (seat can be grouped)
-    if (child.children && child.children.length > 0) {
-      const inner = analyzeSeatGroup(child.children);
-      seatLikeChildren += inner.seatCount;
-    } else if (isLikelySeatNode(child)) {
+    if (isLikelySeatNode(child)) {
       seatLikeChildren += 1;
     }
   }

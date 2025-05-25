@@ -22,9 +22,6 @@ export const svgStrToJSON = (svgStr: string) => {
 };
 
 export function validateSVG(arr: SVGJsonType[]): TemplateValidationResult {
-  let hasBg = false;
-  let hasMask = false;
-  let hasTickets = false;
   let ticketsChildrenGrouped = false;
   let svgGrouped = true;
 
@@ -33,10 +30,7 @@ export function validateSVG(arr: SVGJsonType[]): TemplateValidationResult {
     for (let i = 0; i < arr.length; i++) {
       const node = arr[i];
       const id = node.properties?.id;
-      if (id === 'bg') hasBg = true;
-      if (id === 'mask') hasMask = true;
       if (id === 'tickets') {
-        hasTickets = true;
         ticketsChildrenGrouped =
           Array.isArray(node.children) &&
           node.children.every(
@@ -49,7 +43,7 @@ export function validateSVG(arr: SVGJsonType[]): TemplateValidationResult {
     }
   }
 
-  return { hasBg, hasTickets, ticketsChildrenGrouped, hasMask, svgGrouped };
+  return { ticketsChildrenGrouped, svgGrouped };
 }
 
 export const parseCSS = (

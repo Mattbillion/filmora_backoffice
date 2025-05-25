@@ -31,10 +31,7 @@ export function UploadView({
                 const json = svgStrToJSON(svgString);
                 const validationResult = validateSVG(json.templateJSON);
 
-                // if (
-                //   !validationResult.svgGrouped ||
-                //   !validationResult.ticketsChildrenGrouped
-                // )
+                // if (Object.values(validationResult).some((v) => !v))
                 //   return setErrors(validationResult);
                 onChange(json, validationResult);
                 setErrors(undefined);
@@ -45,11 +42,13 @@ export function UploadView({
           }
         }}
       />
-      {Object.entries(errors ?? {}).map(([key, value]) => (
-        <span key={key} className="text-red-500">
-          {key}, {value}
-        </span>
-      ))}
+      {Object.entries(errors ?? {})
+        .filter(([k, v]) => !v)
+        .map(([key, value]) => (
+          <span key={key} className="text-red-500">
+            {key}, {value}
+          </span>
+        ))}
     </div>
   );
 }
