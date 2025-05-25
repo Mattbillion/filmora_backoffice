@@ -120,7 +120,7 @@ export default function Stage({
       baseLayer.findOne((c: KonvaNode) => c._id === n._id),
     ];
     const emptyLayer = selectedShapesLayer.destroyChildren();
-    if (n.attrs['data-type'] === 'seat') {
+    if (['room', 'table', 'seat'].includes(n.attrs['data-type'])) {
       const parent = n.getParent();
       const selectedBox = n.getClientRect({ relativeTo: baseLayer });
 
@@ -320,7 +320,7 @@ export default function Stage({
               return true;
             });
             setTimeout(
-              () => console.log(clonedStage?.getLayers()[0]?.toObject()),
+              () => console.log(clonedStage?.getLayers()[0]?.toJSON()),
               500,
             );
           }}
@@ -396,7 +396,6 @@ function LayerChildCollapse({
     if (currentGroup.length > 0) groups.push(currentGroup);
 
     const [nearSeatShapes] = partition(flatten(groups), (shape) => {
-      shape.setAttr('data-type', 'seat');
       const { width, height } = shape.getClientRect();
       const aspectRatio = width / height;
       return Math.abs(aspectRatio - 1) <= 0.5;
@@ -424,7 +423,11 @@ function LayerChildCollapse({
           selectedBox.y < textBox.y + textBox.height &&
           selectedBox.y + selectedBox.height > textBox.y;
 
-        if (intersects) shape.setAttr('data-seat', textNode.attrs.text);
+        if (intersects)
+          shape.setAttr(
+            `data-${shape.attrs['data-type']}`,
+            textNode.attrs.text,
+          );
       }
 
       if (typeof shape.attrs['data-purchasable'] === 'undefined')
@@ -490,9 +493,7 @@ function LayerChildCollapse({
                       node={child}
                       onChange={forceUpdate}
                       options={Object.values(dataMap)
-                        .filter((c) =>
-                          ['table', 'seat', 'room', 'door'].includes(c),
-                        )
+                        .filter((c) => ['table', 'seat', 'room'].includes(c))
                         .map((c) => ({
                           label: translationMap[c],
                           value: c,
