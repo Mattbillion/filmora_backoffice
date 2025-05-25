@@ -15,9 +15,6 @@ export type TemplateType = {
 };
 
 export type TemplateValidationResult = {
-  hasBg: boolean;
-  hasTickets: boolean;
-  hasMask: boolean;
   ticketsChildrenGrouped: boolean;
   svgGrouped: boolean;
 };
