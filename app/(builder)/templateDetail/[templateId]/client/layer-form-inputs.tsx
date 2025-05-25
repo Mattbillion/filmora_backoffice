@@ -22,12 +22,14 @@ export function LayerTypeSelect({
   options,
   className,
   hideLabel,
+  disabled,
 }: {
   node: Konva.Node & { children?: Konva.Node[] };
   onChange: (val: string) => void;
   options: { value: string; label: string }[];
   className?: string;
   hideLabel?: boolean;
+  disabled?: boolean;
 }) {
   return (
     <div className={cn('space-y-2', className)}>
@@ -39,7 +41,7 @@ export function LayerTypeSelect({
           onChange(val);
         }}
       >
-        <SelectTrigger>
+        <SelectTrigger disabled={disabled}>
           <SelectValue placeholder="Select layer type" />
         </SelectTrigger>
         <SelectContent>
@@ -72,6 +74,7 @@ export type LayerValueInputProps = {
   onChange?: (val: string) => void;
   className?: string;
   hideLabel?: boolean;
+  disabled?: boolean;
   debounce?: number;
   fixedField?: {
     [K in keyof typeof dataMap]: (typeof dataMap)[K];
@@ -86,6 +89,7 @@ export function LayerValueInput({
   hideLabel,
   fixedField,
   debounce = 200,
+  disabled,
 }: LayerValueInputProps) {
   const { field, label, placeholder } = getFieldInfo(
     node,
@@ -101,6 +105,7 @@ export function LayerValueInput({
       <Input
         id={nodeId + field}
         value={value}
+        disabled={disabled}
         onChange={(e) => {
           const val = e.target.value;
           setValue(val);

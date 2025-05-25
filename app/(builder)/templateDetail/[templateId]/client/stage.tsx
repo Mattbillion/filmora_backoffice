@@ -19,10 +19,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { KonvaNode } from '../schema';
-import { dataMap, translationMap } from './constants';
+import { dataMap, locationMap, translationMap } from './constants';
 import { LayerTypeSelect, LayerValueInput } from './layer-form-inputs';
 
 const scaleBy = 1.05;
@@ -256,10 +257,12 @@ export default function Stage({
                                 <LayerTypeSelect
                                   node={childNode}
                                   onChange={() => forceUpdate((c) => c + 1)}
-                                  options={Object.values(dataMap).map((c) => ({
-                                    label: translationMap[c],
-                                    value: c,
-                                  }))}
+                                  options={Object.values(locationMap).map(
+                                    (c) => ({
+                                      label: translationMap[c],
+                                      value: c,
+                                    }),
+                                  )}
                                   className="flex-1"
                                 />
                                 {!!nodeType && (
@@ -306,18 +309,20 @@ export default function Stage({
         </div>
         <Button
           className="m-4"
-          onClickCapture={() =>
-            stageRef.current?.find((c: KonvaNode) => {
+          onClick={() => {
+            const clonedStage = stageRef.current?.clone();
+            clonedStage?.find((c: KonvaNode) => {
               c.to({
                 opacity: 1,
                 duration: 0,
               });
               c.clearCache?.();
               return true;
-            })
-          }
-          onClick={() => {
-            setTimeout(() => console.log(stageRef.current?.toObject()), 500);
+            });
+            setTimeout(
+              () => console.log(clonedStage?.getLayers()[0]?.toObject()),
+              500,
+            );
           }}
         >
           Build
@@ -422,6 +427,8 @@ function LayerChildCollapse({
         if (intersects) shape.setAttr('data-seat', textNode.attrs.text);
       }
 
+      if (typeof shape.attrs['data-purchasable'] === 'undefined')
+        shape.setAttr('data-purchasable', true);
       return shape;
     });
   };
@@ -446,7 +453,7 @@ function LayerChildCollapse({
           <LayerTypeSelect
             node={childNode}
             onChange={forceUpdate}
-            options={Object.values(dataMap).map((c) => ({
+            options={Object.values(locationMap).map((c) => ({
               label: translationMap[c],
               value: c,
             }))}
@@ -472,6 +479,7 @@ function LayerChildCollapse({
               />
               <p className="mb-2 border-b pb-2 pt-4 font-bold">Tickets</p>
               {filterSeatLikeShapes().map((child, idx) => {
+                const canPurchase = child.getAttr('data-purchasable');
                 return (
                   <div
                     key={idx}
@@ -491,12 +499,21 @@ function LayerChildCollapse({
                         }))}
                       className="flex-1"
                       hideLabel
+                      disabled={!canPurchase}
                     />
                     <LayerValueInput
                       node={child}
                       onChange={forceUpdate}
                       className="flex-1"
                       hideLabel
+                      disabled={!canPurchase}
+                    />
+                    <Switch
+                      checked={canPurchase}
+                      onCheckedChange={(checked) => {
+                        child.setAttr('data-purchasable', checked);
+                        forceUpdate();
+                      }}
                     />
                   </div>
                 );
