@@ -269,11 +269,13 @@ export function VariantsTab() {
                       ))}
                 </TableBody>
               </Table>
-              <div className={'mt-5 flex justify-end'}>
-                <Button type="submit" className={'min-w-[200px]'}>
-                  Save
-                </Button>
-              </div>
+              {!!variants?.length && (
+                <div className={'mt-5 flex justify-end'}>
+                  <Button type="submit" className={'min-w-[200px]'}>
+                    Save
+                  </Button>
+                </div>
+              )}
             </form>
           </Form>
         </CardContent>
