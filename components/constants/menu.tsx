@@ -51,6 +51,20 @@ const productManagerRoutes: SubMenuItemType[] = [
     ],
   },
   {
+    title: 'Option types',
+    url: '/option-types',
+    subRoutes: true,
+    icon: PackageIcon,
+    permissions: [
+      // variant attributes
+      'get_company_merchandise_attribute_option_value_list',
+      'get_company_merchandise_attribute_option_value',
+      'create_company_merchandise_attribute_option_value',
+      'update_company_merchandise_attribute_option_value',
+      'delete_company_merchandise_attribute_option_value',
+    ],
+  },
+  {
     title: 'Эвент & Тоглолт',
     url: '/events',
     icon: MapPin,

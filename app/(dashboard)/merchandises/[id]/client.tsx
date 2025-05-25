@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useState, useTransition } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { ArrowLeft, Save, Trash } from 'lucide-react';
@@ -79,12 +79,11 @@ export default function MerchDetailClient({
     defaultValues: initialData,
   });
 
-  function onSubmit({ status, ...values }: MerchandisesBodyType) {
+  function onSubmit(values: MerchandisesBodyType) {
     startTransition(() => {
       patchMerchandises({
         ...values,
         id: initialData.id,
-        status: (status as unknown as string) === 'true',
       })
         .then(() => {
           toast.success('Updated successfully');
@@ -93,7 +92,6 @@ export default function MerchDetailClient({
         .catch((e) => toast.error(e.message));
     });
   }
-  const cat_id = useWatch({ name: 'cat_id', control: form.control });
 
   return (
     <div className="container mx-auto space-y-6 py-6">
@@ -190,7 +188,7 @@ export default function MerchDetailClient({
             )}
           </form>
         </Form>
-        {canAccessVariants && <VariantsTab cat_id={cat_id} />}
+        {canAccessVariants && <VariantsTab />}
       </Tabs>
     </div>
   );

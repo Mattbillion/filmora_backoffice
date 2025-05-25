@@ -2,7 +2,6 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
-import { getCompany } from '@/features/companies/actions';
 import { getAssignedPermission } from '@/features/permission/actions';
 import { xooxFetch } from '@/lib/fetch';
 
@@ -81,23 +80,11 @@ export const {
           });
           const userData = userInfo.data || {};
 
-          const [{ data: assignedPermissionData }, { data: companyRes }] =
-            await Promise.all([
-              getAssignedPermission({
-                Authorization: `Bearer ${body.access_token}`,
-              }),
-              userData.company_id
-                ? getCompany(userData.company_id, {
-                    Authorization: `Bearer ${body.access_token}`,
-                  })
-                : Promise.resolve({ data: null, error: null }),
-            ]);
-          const companyInfo = companyRes?.data;
+          const { data: assignedPermissionData } = await getAssignedPermission({
+            Authorization: `Bearer ${body.access_token}`,
+          });
 
           return {
-            company_name: companyInfo?.company_name,
-            company_register: companyInfo?.company_register,
-            company_logo: companyInfo?.company_logo,
             ...userData,
             permissions: assignedPermissionData.data.map(
               (c) => c?.permission_name,
