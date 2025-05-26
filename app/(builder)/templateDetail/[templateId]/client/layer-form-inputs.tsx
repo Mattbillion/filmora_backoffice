@@ -123,23 +123,23 @@ export const modifyId = (
   field: string = '',
   val: string = '',
 ) => {
-  let newId;
   const reversedK = dataMapReverse[field.replace('data-', '')];
-  const reg = new RegExp(`(?<=-|^)(${reversedK}[^-]*)(?=-|$)`);
-
   if (!reversedK) return id;
 
+  const reg = new RegExp(`(?<=-|^)(${reversedK}[^-]*)(?=-|$)`);
+  let newId = id.trim().replace(/^-+|-+$/g, ''); // remove leading/trailing dashes
+  const parts = newId.split('-').filter(Boolean); // remove empty segments
+
   if (val) {
-    if (reg.test(id)) {
-      newId = id.replace(reg, `${reversedK}${val}`);
+    if (reg.test(newId)) {
+      newId = newId.replace(reg, `${reversedK}${val}`);
     } else {
-      const parts = id.split('-');
       parts.splice(parts.length - 1, 0, `${reversedK}${val}`);
       newId = parts.join('-');
     }
   } else {
-    // Remove segment from ID
-    newId = id.replace(reg, '').replace(/--+/g, '-').replace(/^-|-$/g, '');
+    // Remove the matching segment
+    newId = parts.filter((part) => !reg.test(part)).join('-');
   }
 
   return newId;
