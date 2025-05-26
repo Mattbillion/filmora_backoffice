@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 
 import { Heading } from '@/components/custom/heading';
+import StatusFilter from '@/components/custom/table/status-filter';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
@@ -29,7 +30,16 @@ export default async function TransactionsPage(props: {
           columns={transactionsColumns}
           data={data?.data}
           rowCount={data?.total_count ?? data?.data?.length}
-        />
+        >
+          <StatusFilter
+            name="transaction_status"
+            options={[
+              { value: 'completed', label: 'Баталгаажсан' },
+              { value: 'pending', label: 'Хүлээгдэж буй' },
+              { value: 'cancelled', label: 'Цуцалсан' },
+            ]}
+          />
+        </DataTable>
       </Suspense>
     </>
   );
