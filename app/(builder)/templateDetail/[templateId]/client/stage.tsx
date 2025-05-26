@@ -225,11 +225,11 @@ export default function Stage({
                 className="flex-1 p-4 pt-0"
               >
                 <LayerTypeSelect
+                  skipManipulate
                   node={node}
                   onChange={(v) => {
                     forceUpdate((c) => c + 1);
                     node.id(v);
-                    if (v === 'tickets') node.setZIndex(1);
                   }}
                   options={[
                     { label: 'Background', value: 'bg' },

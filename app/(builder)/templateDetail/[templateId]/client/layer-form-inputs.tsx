@@ -22,6 +22,7 @@ export function LayerTypeSelect({
   className,
   hideLabel,
   disabled,
+  skipManipulate = false,
 }: {
   node: KonvaNode;
   onChange: (val: string) => void;
@@ -29,6 +30,7 @@ export function LayerTypeSelect({
   className?: string;
   hideLabel?: boolean;
   disabled?: boolean;
+  skipManipulate?: boolean;
 }) {
   const oldValue = useRef<string | undefined>(node.attrs['data-type']);
 
@@ -38,11 +40,13 @@ export function LayerTypeSelect({
       <Select
         defaultValue={node.attrs['data-type']}
         onValueChange={(val) => {
-          node.setAttr('data-type', val);
           onChange(val);
-          if (!!oldValue.current && oldValue.current !== val)
-            manipulateAttrs(node, `data-${oldValue.current}`, '', 'remove');
-          oldValue.current = val;
+          if (!skipManipulate) {
+            node.setAttr('data-type', val);
+            if (!!oldValue.current && oldValue.current !== val)
+              manipulateAttrs(node, `data-${oldValue.current}`, '', 'remove');
+            oldValue.current = val;
+          }
         }}
       >
         <SelectTrigger disabled={disabled}>
@@ -88,7 +92,7 @@ export function LayerValueInput({
     : `data-${node.getAttr('data-type')}`;
 
   const [value, setValue] = useState(node.getAttr(field)?.replace('_', ' '));
-  const nodeId = node.id() || node.attrs['data-testid'];
+  const nodeId = node.id() || node._id.toString();
   useDebounce(onChange, debounce, value);
 
   return (
