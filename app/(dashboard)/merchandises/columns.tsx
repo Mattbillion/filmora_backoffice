@@ -177,14 +177,14 @@ export const merchandisesColumns: ColumnDef<
             {cellData.slice(0, 3).map((c, idx) => {
               return (
                 <div
-                  className="relative -mr-4 size-10 overflow-hidden rounded-full border-border object-cover"
+                  className="relative -mr-2 size-10 overflow-hidden rounded-full border-border object-cover"
                   key={idx}
                 >
                   <Image
                     src={c.media_url}
                     alt=""
                     fill
-                    className="object-center"
+                    className="object-cover"
                   />
                 </div>
               );
@@ -202,7 +202,7 @@ export const merchandisesColumns: ColumnDef<
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
       <Badge variant={row.original.status ? 'outline' : 'destructive'}>
-        {row.original.status ? 'Active' : 'Inactive'}
+        {row.original.status ? 'Идэвхтэй' : 'Идэвхгүй'}
       </Badge>
     ),
     enableSorting: false,

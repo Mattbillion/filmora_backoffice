@@ -43,11 +43,15 @@ export default async function OrdersPage(props: {
         >
           <div className="flex items-center gap-2">
             <StatusFilter
-              name={'order_status'}
+              name={'status'}
               options={[
                 {
                   value: 'cancelled',
                   label: 'Cancelled',
+                },
+                {
+                  value: 'pending',
+                  label: 'Pending',
                 },
                 {
                   value: 'completed',
