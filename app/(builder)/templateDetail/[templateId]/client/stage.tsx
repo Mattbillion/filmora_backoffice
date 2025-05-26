@@ -325,8 +325,7 @@ export default function Stage({
               return true;
             });
             setTimeout(() => {
-              // console.log(clonedStage?.getLayers()[0]?.toJSON());
-              const seatLikeObjects =
+              const purchasableItems =
                 clonedStage
                   ?.getLayers()[0]
                   ?.find(
@@ -349,8 +348,8 @@ export default function Stage({
                     );
                   }) || [];
               const layerObject = clonedStage?.getLayers()[0]?.toObject();
-              console.log(layerObject);
-              console.log(seatLikeObjects);
+              console.log('layerObject', layerObject);
+              console.log('purchasableItems', purchasableItems);
             }, 500);
           }}
         >
