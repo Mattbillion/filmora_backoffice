@@ -396,6 +396,8 @@ function LayerChildCollapse({
     if (currentGroup.length > 0) groups.push(currentGroup);
 
     const [nearSeatShapes] = partition(flatten(groups), (shape) => {
+      if (shape.className === 'Text') return false;
+      if (!shape.attrs['data-type']) shape.setAttr('data-type', 'seat');
       const { width, height } = shape.getClientRect();
       const aspectRatio = width / height;
       return Math.abs(aspectRatio - 1) <= 0.5;
