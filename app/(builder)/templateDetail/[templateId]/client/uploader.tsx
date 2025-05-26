@@ -86,7 +86,7 @@ export function UploadView({
   return (
     <div className="flex flex-1 flex-col items-center justify-center">
       <div
-        className={`w-3/4 rounded-lg border-2 border-dashed px-6 py-9 text-center ${
+        className={`w-3/4 max-w-2xl rounded-lg border-2 border-dashed px-6 py-9 text-center ${
           isDragging
             ? 'border-primary bg-primary/5'
             : 'border-muted-foreground/20'

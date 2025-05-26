@@ -272,6 +272,7 @@ export default function Stage({
                                 />
                                 {!!nodeType && (
                                   <LayerValueInput
+                                    key={nodeType}
                                     node={childNode}
                                     onChange={() => forceUpdate((c) => c + 1)}
                                     onFocus={() => focusNode(childNode)}
@@ -406,67 +407,6 @@ function LayerChildCollapse({
   const handleFocusNode = () => focusNode(childNode);
   const { isSeatGroup } = analyzeSeatGroup(children);
 
-  const filterSeatLikeShapes = () => {
-    const groups: KonvaNode[][] = [];
-    let currentGroup: KonvaNode[] = [];
-
-    children.forEach((child) => {
-      if (child.className === 'Text') {
-        if (currentGroup.length > 0) {
-          groups.push(currentGroup);
-          currentGroup = [];
-        }
-      } else {
-        currentGroup.push(child);
-      }
-    });
-
-    if (currentGroup.length > 0) groups.push(currentGroup);
-
-    const [nearSeatShapes] = partition(flatten(groups), (shape) => {
-      if (shape.className === 'Text') return false;
-      if (!shape.attrs['data-type']) shape.setAttr('data-type', 'seat');
-      const { width, height } = shape.getClientRect();
-      const aspectRatio = width / height;
-      return Math.abs(aspectRatio - 1) <= 0.5;
-    });
-
-    const parent = childNode;
-    const baseStage = childNode.getStage()?.getLayers()[0];
-
-    return nearSeatShapes.map((shape) => {
-      const selectedBox = shape.getClientRect({
-        relativeTo: baseStage,
-      });
-
-      //@ts-ignore
-      const candidates = parent?.find('Text') as Konva.Text[];
-
-      for (const textNode of candidates) {
-        const textBox = textNode.getClientRect({
-          relativeTo: baseStage,
-        });
-
-        const intersects =
-          selectedBox.x < textBox.x + textBox.width &&
-          selectedBox.x + selectedBox.width > textBox.x &&
-          selectedBox.y < textBox.y + textBox.height &&
-          selectedBox.y + selectedBox.height > textBox.y;
-
-        if (intersects) {
-          const shapeType = shape.attrs['data-type'];
-          const seatText = textNode.attrs.text;
-          shape.id(modifyId(shape.id(), shapeType, seatText));
-          shape.setAttr(`data-${shapeType}`, seatText);
-        }
-      }
-
-      if (typeof shape.attrs['data-purchasable'] === 'undefined')
-        shape.setAttr('data-purchasable', true);
-      return shape;
-    });
-  };
-
   return (
     <Collapsible
       className="w-full has-[&>.collapsible-child[data-state=open]]:border has-[&>.collapsible-child[data-state=open]]:bg-transparent [&[data-state=open]]:rounded-lg [&[data-state=open]]:bg-secondary"
@@ -495,6 +435,7 @@ function LayerChildCollapse({
           />
           {!!nodeType && (
             <LayerValueInput
+              key={nodeType}
               node={childNode}
               onChange={forceUpdate}
               onFocus={handleFocusNode}
@@ -511,49 +452,12 @@ function LayerChildCollapse({
                 onChange={forceUpdate}
                 onFocus={handleFocusNode}
               />
-              <p className="mb-2 border-b pb-2 pt-4 font-bold">Tickets</p>
-              {filterSeatLikeShapes().map((child, idx) => {
-                const canPurchase = child.getAttr('data-purchasable');
-                return (
-                  <div
-                    key={idx}
-                    onMouseEnter={() => focusNode(child)}
-                    className="flex items-center justify-between gap-4"
-                  >
-                    <LayerTypeSelect
-                      node={child}
-                      onChange={forceUpdate}
-                      options={Object.values(dataMap)
-                        .filter((c) =>
-                          (
-                            [dataMap.t, dataMap.s, dataMap.r] as string[]
-                          ).includes(c),
-                        )
-                        .map((c) => ({
-                          label: translationMap[c],
-                          value: c,
-                        }))}
-                      className="flex-1"
-                      hideLabel
-                      disabled={!canPurchase}
-                    />
-                    <LayerValueInput
-                      node={child}
-                      onChange={forceUpdate}
-                      className="flex-1"
-                      hideLabel
-                      disabled={!canPurchase}
-                    />
-                    <Switch
-                      checked={canPurchase}
-                      onCheckedChange={(checked) => {
-                        child.setAttr('data-purchasable', checked);
-                        forceUpdate();
-                      }}
-                    />
-                  </div>
-                );
-              })}
+              <TicketsGroup
+                childNode={childNode}
+                focusNode={focusNode}
+                forceUpdate={forceUpdate}
+                childrenList={children}
+              />
             </>
           ) : (
             children.map((child, index) => (
@@ -568,6 +472,125 @@ function LayerChildCollapse({
         ) : null}
       </CollapsibleContent>
     </Collapsible>
+  );
+}
+
+function TicketsGroup({
+  childrenList,
+  childNode,
+  focusNode,
+  forceUpdate,
+}: {
+  childrenList: KonvaNode[];
+  childNode: KonvaNode;
+  focusNode: (node: KonvaNode) => void;
+  forceUpdate: () => void;
+}) {
+  const groups: KonvaNode[][] = [];
+  let currentGroup: KonvaNode[] = [];
+
+  childrenList.forEach((child) => {
+    if (child.className === 'Text') {
+      if (currentGroup.length > 0) {
+        groups.push(currentGroup);
+        currentGroup = [];
+      }
+    } else {
+      currentGroup.push(child);
+    }
+  });
+
+  if (currentGroup.length > 0) groups.push(currentGroup);
+
+  const [nearSeatShapes] = partition(flatten(groups), (shape) => {
+    if (shape.className === 'Text') return false;
+    if (!shape.attrs['data-type']) shape.setAttr('data-type', 'seat');
+    const { width, height } = shape.getClientRect();
+    const aspectRatio = width / height;
+    return Math.abs(aspectRatio - 1) <= 0.5;
+  });
+
+  const parent = childNode;
+  const baseStage = childNode.getStage()?.getLayers()[0];
+
+  const seatShapes = nearSeatShapes.map((shape) => {
+    const selectedBox = shape.getClientRect({
+      relativeTo: baseStage,
+    });
+
+    //@ts-ignore
+    const candidates = parent?.find('Text') as Konva.Text[];
+
+    for (const textNode of candidates) {
+      const textBox = textNode.getClientRect({
+        relativeTo: baseStage,
+      });
+
+      const intersects =
+        selectedBox.x < textBox.x + textBox.width &&
+        selectedBox.x + selectedBox.width > textBox.x &&
+        selectedBox.y < textBox.y + textBox.height &&
+        selectedBox.y + selectedBox.height > textBox.y;
+
+      if (intersects) {
+        const shapeType = shape.attrs['data-type'];
+        const seatText = textNode.attrs.text;
+        shape.id(modifyId(shape.id(), shapeType, seatText));
+        shape.setAttr(`data-${shapeType}`, seatText);
+      }
+    }
+
+    if (typeof shape.attrs['data-purchasable'] === 'undefined')
+      shape.setAttr('data-purchasable', true);
+    return shape;
+  });
+
+  return (
+    <>
+      <p className="mb-2 border-b pb-2 pt-4 font-bold">
+        Tickets ({seatShapes.length || 0})
+      </p>
+      {seatShapes.map((child, idx) => {
+        const canPurchase = child.getAttr('data-purchasable');
+        return (
+          <div
+            key={idx}
+            onMouseEnter={() => focusNode(child)}
+            className="flex items-center justify-between gap-4"
+          >
+            <LayerTypeSelect
+              node={child}
+              onChange={forceUpdate}
+              options={Object.values(dataMap)
+                .filter((c) =>
+                  ([dataMap.t, dataMap.s, dataMap.r] as string[]).includes(c),
+                )
+                .map((c) => ({
+                  label: translationMap[c],
+                  value: c,
+                }))}
+              className="flex-1"
+              hideLabel
+              disabled={!canPurchase}
+            />
+            <LayerValueInput
+              node={child}
+              onChange={forceUpdate}
+              className="flex-1"
+              hideLabel
+              disabled={!canPurchase}
+            />
+            <Switch
+              checked={canPurchase}
+              onCheckedChange={(checked) => {
+                child.setAttr('data-purchasable', checked);
+                forceUpdate();
+              }}
+            />
+          </div>
+        );
+      })}
+    </>
   );
 }
 

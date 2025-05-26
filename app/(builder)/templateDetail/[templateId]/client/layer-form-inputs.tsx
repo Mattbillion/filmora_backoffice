@@ -1,5 +1,4 @@
 import { useRef, useState } from 'react';
-import Konva from 'konva';
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -24,7 +23,7 @@ export function LayerTypeSelect({
   hideLabel,
   disabled,
 }: {
-  node: Konva.Node & { children?: Konva.Node[] };
+  node: KonvaNode;
   onChange: (val: string) => void;
   options: { value: string; label: string }[];
   className?: string;
@@ -40,9 +39,10 @@ export function LayerTypeSelect({
         defaultValue={node.attrs['data-type']}
         onValueChange={(val) => {
           node.setAttr('data-type', val);
-          if (!!oldValue.current && oldValue.current !== val)
-            manipulateAttrs(node, `data-${val}`, '', 'remove');
           onChange(val);
+          if (!!oldValue.current && oldValue.current !== val)
+            manipulateAttrs(node, `data-${oldValue.current}`, '', 'remove');
+          oldValue.current = val;
         }}
       >
         <SelectTrigger disabled={disabled}>
@@ -60,20 +60,8 @@ export function LayerTypeSelect({
   );
 }
 
-const getFieldInfo = (node: KonvaNode, fixedField?: string) => {
-  const field = fixedField || `data-${node.attrs['data-type']}`;
-  let label = translationMap[field.replace('data-', '')] + ': ';
-  let placeholder = node.attrs[field] || '';
-
-  return {
-    field,
-    label,
-    placeholder,
-  };
-};
-
 export type LayerValueInputProps = {
-  node: KonvaNode & { children?: KonvaNode[] };
+  node: KonvaNode;
   onFocus?: () => void;
   onChange?: (val: string) => void;
   className?: string;
@@ -95,17 +83,21 @@ export function LayerValueInput({
   debounce = 200,
   disabled,
 }: LayerValueInputProps) {
-  const { field, label, placeholder } = getFieldInfo(
-    node,
-    fixedField ? `data-${fixedField}` : undefined,
-  );
-  const [value, setValue] = useState(node.attrs[field]?.replace('_', ' '));
+  const field = fixedField
+    ? `data-${fixedField}`
+    : `data-${node.getAttr('data-type')}`;
+
+  const [value, setValue] = useState(node.getAttr(field)?.replace('_', ' '));
   const nodeId = node.id() || node.attrs['data-testid'];
   useDebounce(onChange, debounce, value);
 
   return (
     <div className={cn('space-y-2', className)} onMouseEnter={onFocus}>
-      {!hideLabel && <Label htmlFor={nodeId + field}>{label}</Label>}
+      {!hideLabel && (
+        <Label htmlFor={nodeId + field}>
+          {translationMap[field.replace('data-', '')] + ': '}
+        </Label>
+      )}
       <Input
         id={nodeId + field}
         value={value}
@@ -116,7 +108,7 @@ export function LayerValueInput({
           manipulateAttrs(node, field, val.replace(/\s/g, '_'));
         }}
         onFocus={onFocus}
-        placeholder={`Current: ${placeholder || 'N/A'}`}
+        placeholder={`Current: ${node.attrs[field] || '' || 'N/A'}`}
         className="!h-9 flex-1 rounded-sm border-neutral-400 dark:border-neutral-600 dark:bg-neutral-600"
       />
     </div>
@@ -175,15 +167,8 @@ const updateAttrs = (
   value: string,
   mode: 'add' | 'remove',
 ) => {
-  const oldId = node.id() || '';
-  const newId = modifyId(oldId, field, mode === 'add' ? value : '');
-  node.setAttr('id', newId);
-
-  const attrs = node.getAttrs();
-  if (mode === 'add') {
-    node.setAttr(field, value);
-  } else {
-    const { [field]: _, ...rest } = attrs;
-    node.setAttrs(rest);
-  }
+  node.setAttrs({
+    id: modifyId(node.id(), field, mode === 'add' ? value : ''),
+    [field]: mode === 'add' ? value : undefined,
+  });
 };
