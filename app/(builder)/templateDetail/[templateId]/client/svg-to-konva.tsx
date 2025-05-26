@@ -47,12 +47,6 @@ export const svgToKonva = (
     return (
       <Text
         key={compKey}
-        data-testid={compKey}
-        ref={(ref) => {
-          if (ref) {
-            ref.cache();
-          }
-        }}
         text={textVal || ''}
         x={parseFloat(properties?.x || '0')}
         y={parseFloat(properties?.y || '0')}
@@ -79,13 +73,7 @@ export const svgToKonva = (
 
   const konvaProps: Record<string, any> = propertyToProp(
     tagName,
-    Object.assign(
-      {
-        'data-testid': compKey,
-      },
-      properties,
-      classStyle,
-    ),
+    Object.assign(properties, classStyle),
     children,
   );
 
