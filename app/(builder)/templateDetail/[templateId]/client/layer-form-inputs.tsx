@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Konva from 'konva';
 
 import { Input } from '@/components/ui/input';
@@ -31,13 +31,17 @@ export function LayerTypeSelect({
   hideLabel?: boolean;
   disabled?: boolean;
 }) {
+  const oldValue = useRef<string | undefined>(node.attrs['data-type']);
+
   return (
     <div className={cn('space-y-2', className)}>
       {!hideLabel && <Label>Layer Type:</Label>}
       <Select
-        defaultValue={node.attrs['data-type'] || node.id()}
+        defaultValue={node.attrs['data-type']}
         onValueChange={(val) => {
           node.setAttr('data-type', val);
+          if (!!oldValue.current && oldValue.current !== val)
+            manipulateAttrs(node, `data-${val}`, '', 'remove');
           onChange(val);
         }}
       >
@@ -118,7 +122,11 @@ export function LayerValueInput({
     </div>
   );
 }
-const modifyId = (id: string = '', field: string = '', val: string = '') => {
+export const modifyId = (
+  id: string = '',
+  field: string = '',
+  val: string = '',
+) => {
   let newId;
   const reversedK = dataMapReverse[field.replace('data-', '')];
   const reg = new RegExp(`(?<=-|^)(${reversedK}[^-]*)(?=-|$)`);

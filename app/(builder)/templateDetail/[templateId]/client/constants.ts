@@ -106,9 +106,9 @@ export const translationMap: Record<string, string> = {
   unit: 'Хүний тоо',
   price: 'Үнэ',
   additionalPrice: 'Нэмэлт үнэ',
-  entrance: 'Орц / Хаалга',
-  section: 'Хэсэг',
-  name: 'Хэсэг',
+  entrance: 'Орц',
+  section: 'Section',
+  name: 'Хэсэг (Нэрлэсэн)',
   block: 'Блок',
 };
 

@@ -24,7 +24,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { KonvaNode } from '../schema';
 import { AdditionalInformation } from './additional-information';
 import { dataMap, locationMap, translationMap } from './constants';
-import { LayerTypeSelect, LayerValueInput } from './layer-form-inputs';
+import {
+  LayerTypeSelect,
+  LayerValueInput,
+  modifyId,
+} from './layer-form-inputs';
 
 const scaleBy = 1.05;
 const maxScale = 10;
@@ -120,7 +124,7 @@ export default function Stage({
       baseLayer.findOne((c: KonvaNode) => c._id === n._id),
     ];
     const emptyLayer = selectedShapesLayer.destroyChildren();
-    if (['room', 'table', 'seat'].includes(n.attrs['data-type'])) {
+    if ([dataMap.r, dataMap.t, dataMap.s].includes(n.attrs['data-type'])) {
       const parent = n.getParent();
       const selectedBox = n.getClientRect({ relativeTo: baseLayer });
 
@@ -225,6 +229,7 @@ export default function Stage({
                   onChange={(v) => {
                     forceUpdate((c) => c + 1);
                     node.id(v);
+                    if (v === 'tickets') node.setZIndex(1);
                   }}
                   options={[
                     { label: 'Background', value: 'bg' },
@@ -319,10 +324,34 @@ export default function Stage({
               c.clearCache?.();
               return true;
             });
-            setTimeout(
-              () => console.log(clonedStage?.getLayers()[0]?.toJSON()),
-              500,
-            );
+            setTimeout(() => {
+              // console.log(clonedStage?.getLayers()[0]?.toJSON());
+              const seatLikeObjects =
+                clonedStage
+                  ?.getLayers()[0]
+                  ?.find(
+                    (c: KonvaNode) =>
+                      [dataMap.r, dataMap.t, dataMap.s].includes(
+                        c.attrs['data-type'],
+                      ) && c.attrs['data-purchasable'],
+                  )
+                  .map((c) => {
+                    const json = c.toObject();
+                    return Object.fromEntries(
+                      Object.entries({
+                        ...json.attrs,
+                        className: json.className,
+                      }).filter(
+                        ([k]) =>
+                          json.className !== 'Text' &&
+                          (k === 'id' || k.startsWith('data-')),
+                      ),
+                    );
+                  }) || [];
+              const layerObject = clonedStage?.getLayers()[0]?.toObject();
+              console.log(layerObject);
+              console.log(seatLikeObjects);
+            }, 500);
           }}
         >
           Build
@@ -425,11 +454,12 @@ function LayerChildCollapse({
           selectedBox.y < textBox.y + textBox.height &&
           selectedBox.y + selectedBox.height > textBox.y;
 
-        if (intersects)
-          shape.setAttr(
-            `data-${shape.attrs['data-type']}`,
-            textNode.attrs.text,
-          );
+        if (intersects) {
+          const shapeType = shape.attrs['data-type'];
+          const seatText = textNode.attrs.text;
+          shape.id(modifyId(shape.id(), shapeType, seatText));
+          shape.setAttr(`data-${shapeType}`, seatText);
+        }
       }
 
       if (typeof shape.attrs['data-purchasable'] === 'undefined')
@@ -495,7 +525,11 @@ function LayerChildCollapse({
                       node={child}
                       onChange={forceUpdate}
                       options={Object.values(dataMap)
-                        .filter((c) => ['table', 'seat', 'room'].includes(c))
+                        .filter((c) =>
+                          (
+                            [dataMap.t, dataMap.s, dataMap.r] as string[]
+                          ).includes(c),
+                        )
                         .map((c) => ({
                           label: translationMap[c],
                           value: c,
