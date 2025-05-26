@@ -1,3 +1,5 @@
+import Konva from 'konva';
+
 export type SVGJsonType = {
   type: string;
   tagName: string;
@@ -15,9 +17,8 @@ export type TemplateType = {
 };
 
 export type TemplateValidationResult = {
-  hasBg: boolean;
-  hasTickets: boolean;
-  hasMask: boolean;
   ticketsChildrenGrouped: boolean;
   svgGrouped: boolean;
 };
+
+export type KonvaNode = Konva.Node & { children?: KonvaNode[] };
