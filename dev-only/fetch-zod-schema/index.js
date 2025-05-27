@@ -10,18 +10,20 @@ const cache = new NodeCache({ stdTTL: 10 }); // by seconds
 
 module.exports = {
   fetchZodSchema: (path, name) => {
-    const [endpointPrefix, endpointList] = Object.entries(endpoints).find(
-      ([baseEndpoint]) => baseEndpoint === changeCase.snakeCase(path),
-    );
-
     try {
+      const [endpointPrefix, endpointList] = Object.entries(endpoints).find(
+        ([baseEndpoint]) => baseEndpoint === changeCase.snakeCase(path) || baseEndpoint === changeCase.kebabCase(path),
+      );
+
+      console.log('sda')
+
       if (!endpointList?.length) throw Error(`${endpointPrefix} doesn't exist, check endpoint`);
 
       const cacheKey = endpointList[0].endpoint;
       const cachedData = cache.get(cacheKey);
       if (cachedData) {
         console.log(`Serving from cache: ${cacheKey}`);
-        return cachedData;
+        // return cachedData;
       }
 
       const response = execSync(curlCommand(endpointList[0].endpoint)).toString();
@@ -30,6 +32,7 @@ module.exports = {
       if (!jsonResponse.data?.length)
         throw Error(`${endpointList[0].endpoint || path} endpoint returns nothing :(`);
 
+      console.log(JSON.stringify(jsonResponse.data, null, 2));
       const { id, created_at, updated_at, created_employee, ...itemData } =
         jsonResponse.data[0];
 

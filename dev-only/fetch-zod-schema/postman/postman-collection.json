@@ -16,7 +16,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/category?company_id=9",
+              "raw": "{{base_url}}/category?company_id=8",
               "host": [
                 "{{base_url}}"
               ],
@@ -24,16 +24,6 @@
                 "category"
               ],
               "query": [
-                {
-                  "key": "page",
-                  "value": "1",
-                  "disabled": true
-                },
-                {
-                  "key": "page_size",
-                  "value": "10",
-                  "disabled": true
-                },
                 {
                   "key": "filters",
                   "value": "",
@@ -61,7 +51,7 @@
                 },
                 {
                   "key": "company_id",
-                  "value": "9"
+                  "value": "8"
                 }
               ]
             }
@@ -74,13 +64,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/category/24",
+              "raw": "{{base_url}}/category/23",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "category",
-                "24"
+                "23"
               ]
             }
           },
@@ -189,7 +179,7 @@
                         "method": "GET",
                         "header": [],
                         "url": {
-                          "raw": "{{base_url}}/halls?page=1&page_size=10",
+                          "raw": "{{base_url}}/halls?page=1&page_size=10&filters=venue_id=68,branch_id=18",
                           "host": [
                             "{{base_url}}"
                           ],
@@ -207,8 +197,7 @@
                             },
                             {
                               "key": "filters",
-                              "value": "",
-                              "disabled": true
+                              "value": "venue_id=68,branch_id=18"
                             },
                             {
                               "key": "start_date",
@@ -322,7 +311,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{base_url}}/branches?page=1&page_size=10",
+                      "raw": "{{base_url}}/branches?page=1&page_size=10&filters=venue_id=68",
                       "host": [
                         "{{base_url}}"
                       ],
@@ -340,8 +329,7 @@
                         },
                         {
                           "key": "filters",
-                          "value": "status=true",
-                          "disabled": true
+                          "value": "venue_id=68"
                         },
                         {
                           "key": "start_date",
@@ -361,6 +349,11 @@
                         {
                           "key": "return_columns",
                           "value": "id",
+                          "disabled": true
+                        },
+                        {
+                          "key": "venue_id",
+                          "value": "68",
                           "disabled": true
                         }
                       ]
@@ -633,7 +626,7 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/employees?company_id=11&page=1&page_size=10",
+                  "raw": "{{base_url}}/employees?company_id=15&filters=status=true",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -643,15 +636,21 @@
                   "query": [
                     {
                       "key": "company_id",
-                      "value": "11"
+                      "value": "15"
                     },
                     {
                       "key": "page",
-                      "value": "1"
+                      "value": "1",
+                      "disabled": true
                     },
                     {
                       "key": "page_size",
-                      "value": "10"
+                      "value": "10",
+                      "disabled": true
+                    },
+                    {
+                      "key": "filters",
+                      "value": "status=true"
                     }
                   ]
                 }
@@ -816,7 +815,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"employee_id\": \"82d72729-21d9-490f-8b67-9c61a7bfc615\",\n  \"role_id\": 1\n}",
+                  "raw": "{\n  \"employee_id\": \"50d000c9-6a9e-49ef-ad8e-0835b18c57d1\",\n  \"role_id\": 3\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -849,7 +848,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{base_url}}/templates?page=1&page_size=10&event_id=1",
+                      "raw": "{{base_url}}/templates",
                       "host": [
                         "{{base_url}}"
                       ],
@@ -859,11 +858,13 @@
                       "query": [
                         {
                           "key": "page",
-                          "value": "1"
+                          "value": "1",
+                          "disabled": true
                         },
                         {
                           "key": "page_size",
-                          "value": "10"
+                          "value": "10",
+                          "disabled": true
                         },
                         {
                           "key": "filters",
@@ -892,7 +893,8 @@
                         },
                         {
                           "key": "event_id",
-                          "value": "1"
+                          "value": "1",
+                          "disabled": true
                         }
                       ]
                     }
@@ -908,14 +910,14 @@
                       "mode": "formdata",
                       "formdata": [
                         {
-                          "key": "svg_file",
+                          "key": "json_file",
                           "type": "file",
-                          "src": "postman-cloud:///1efbf71b-254b-4440-b316-f9f82b590f07"
+                          "src": "/Users/misu/Desktop/Konva.json"
                         }
                       ]
                     },
                     "url": {
-                      "raw": "{{base_url}}/templates?event_id=41&template_name=test template&template_desc=test template&template_order=1&status=true&template_type=svg",
+                      "raw": "{{base_url}}/templates?event_id=28&template_name=test 2 template&template_desc=test 2 template&template_order=2&status=true&template_type=json",
                       "host": [
                         "{{base_url}}"
                       ],
@@ -925,19 +927,19 @@
                       "query": [
                         {
                           "key": "event_id",
-                          "value": "41"
+                          "value": "28"
                         },
                         {
                           "key": "template_name",
-                          "value": "test template"
+                          "value": "test 2 template"
                         },
                         {
                           "key": "template_desc",
-                          "value": "test template"
+                          "value": "test 2 template"
                         },
                         {
                           "key": "template_order",
-                          "value": "1"
+                          "value": "2"
                         },
                         {
                           "key": "status",
@@ -945,7 +947,7 @@
                         },
                         {
                           "key": "template_type",
-                          "value": "svg"
+                          "value": "json"
                         }
                       ]
                     }
@@ -978,7 +980,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/events",
+                  "raw": "{{base_url}}/events?company_id=9",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -998,7 +1000,7 @@
                     },
                     {
                       "key": "filters",
-                      "value": "",
+                      "value": "company_id=9",
                       "disabled": true
                     },
                     {
@@ -1020,6 +1022,10 @@
                       "key": "return_columns",
                       "value": "id",
                       "disabled": true
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "9"
                     }
                   ]
                 }
@@ -1032,13 +1038,13 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/events/9",
+                  "raw": "{{base_url}}/events/25",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "events",
-                    "9"
+                    "25"
                   ]
                 }
               },
@@ -1077,7 +1083,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n    \"category_id\": 25,\n    \"hall_id\": 132,\n    \"company_id\": 9,\n    \"event_name\": \"AI Expo 2024 zzzz\",\n    \"event_desc\": \"Discover the latest advancements in Artificial Intelligence through workshops, discussions, and live demos.\",\n    \"event_capacity\": 1000,\n    \"age_id\": 4,\n    \"event_type\": \"Exhibition\",\n    \"event_image\": \"https://example.com/images/ai-expo-2024.jpg\",\n    \"event_order\": 2,\n    \"event_genre\": \"Artificial Intelligence\",\n    \"duration\": 10,\n    \"openning_at\": \"2024-12-15T10:00:00+00:00\",\n    \"language\": \"English\",\n    \"sponsor_name\": \"AI Innovators\",\n    \"contact_info\": \"info@aiexpo.com\",\n    \"fb_link\": \"https://facebook.com/aiexpo2024\",\n    \"ig_link\": \"https://instagram.com/aiexpo2024\",\n    \"web_link\": \"https://www.aiexpo.com\",\n    \"status\": true\n}",
+                  "raw": "{\n    \"venue_id\": 69,\n    \"branch_id\": 20,\n    \"hall_id\": 42,\n    \"category_id\": 25,\n    \"company_id\": 9,\n    \"event_name\": \"Tech Conference 2024\",\n    \"event_desc\": \"Join us for a day of insightful talks and workshops on the latest tech trends.\",\n    \"event_capacity\": 500,\n    \"age_id\": 5,\n    \"event_type\": \"Conference\",\n    \"event_image\": \"https://example.com/images/tech-conference-2024.jpg\",\n    \"event_order\": 1,\n    \"event_genre\": \"Technology\",\n    \"duration\": 8,\n    \"openning_at\": \"2024-11-27T09:00:00+00:00\",\n    \"language\": \"English\",\n    \"sponsor_name\": \"TechCorp Solutions\",\n    \"contact_info\": \"contact@techconference.com\",\n    \"fb_link\": \"https://facebook.com/techconference2024\",\n    \"ig_link\": \"https://instagram.com/techconference2024\",\n    \"web_link\": \"https://www.techconference.com\",\n    \"status\": false\n  }",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -1085,13 +1091,13 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/events/23",
+                  "raw": "{{base_url}}/events/25",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "events",
-                    "23"
+                    "25"
                   ]
                 }
               },
@@ -1154,7 +1160,7 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/orders?page=1&page_size=10&com_id=9",
+                  "raw": "{{base_url}}/orders?page=1&page_size=10&company_id=9&status=completed",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1181,8 +1187,12 @@
                       "disabled": true
                     },
                     {
-                      "key": "com_id",
+                      "key": "company_id",
                       "value": "9"
+                    },
+                    {
+                      "key": "status",
+                      "value": "completed"
                     }
                   ]
                 }
@@ -1202,13 +1212,13 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/orders/90?com_id=9",
+                  "raw": "{{base_url}}/orders/94?com_id=9",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "orders",
-                    "90"
+                    "94"
                   ],
                   "query": [
                     {
@@ -1226,302 +1236,12 @@
           "name": "company categories",
           "item": [
             {
-              "name": "category attributes",
-              "item": [
-                {
-                  "name": "category attribute values",
-                  "item": [
-                    {
-                      "name": "list attribute values",
-                      "protocolProfileBehavior": {
-                        "disableBodyPruning": true
-                      },
-                      "request": {
-                        "method": "GET",
-                        "header": [],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{base_url}}/attribute_values",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "attribute_values"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "get attribute value",
-                      "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                          "raw": "{{base_url}}/attribute_values/1",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "attribute_values",
-                            "1"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "create attribute values",
-                      "request": {
-                        "method": "POST",
-                        "header": [],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "{\n  \"attr_id\": 9,\n  \"value\": \"wtff\",\n  \"display_order\": 0,\n  \"status\": true\n}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{base_url}}/attribute_values",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "attribute_values"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "update attribute values",
-                      "request": {
-                        "method": "PUT",
-                        "header": [],
-                        "body": {
-                          "mode": "raw",
-                          "raw": "{\n  \"attr_id\": 14,\n  \"value\": \"test\",\n  \"display_order\": 0,\n  \"status\": true\n}",
-                          "options": {
-                            "raw": {
-                              "language": "json"
-                            }
-                          }
-                        },
-                        "url": {
-                          "raw": "{{base_url}}/attribute_values/7",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "attribute_values",
-                            "7"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "delete attribute values",
-                      "request": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                          "raw": "{{base_url}}/attribute_values/7",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "attribute_values",
-                            "7"
-                          ]
-                        }
-                      },
-                      "response": []
-                    }
-                  ]
-                },
-                {
-                  "name": "category attributes list",
-                  "protocolProfileBehavior": {
-                    "disableBodyPruning": true
-                  },
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{base_url}}/category_attributes?page=1&page_size=10",
-                      "host": [
-                        "{{base_url}}"
-                      ],
-                      "path": [
-                        "category_attributes"
-                      ],
-                      "query": [
-                        {
-                          "key": "page",
-                          "value": "1"
-                        },
-                        {
-                          "key": "page_size",
-                          "value": "10"
-                        },
-                        {
-                          "key": "filters",
-                          "value": "",
-                          "disabled": true
-                        },
-                        {
-                          "key": "start_date",
-                          "value": "2024-11-01",
-                          "disabled": true
-                        },
-                        {
-                          "key": "end_date",
-                          "value": "2024-12-13",
-                          "disabled": true
-                        },
-                        {
-                          "key": "date_column",
-                          "value": "updated_at",
-                          "disabled": true
-                        },
-                        {
-                          "key": "return_columns",
-                          "value": "id",
-                          "disabled": true
-                        }
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "get category attributes",
-                  "request": {
-                    "method": "GET",
-                    "header": [],
-                    "url": {
-                      "raw": "{{base_url}}/category_attributes/16",
-                      "host": [
-                        "{{base_url}}"
-                      ],
-                      "path": [
-                        "category_attributes",
-                        "16"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "create category attributes",
-                  "request": {
-                    "method": "POST",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 4,\n  \"attr_name\": \"wut\",\n  \"attr_desc\": \"descripption test\",\n  \"attr_type\": \"SELECT\",\n  \"display_order\": 12,\n  \"status\": true\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{base_url}}/category_attributes",
-                      "host": [
-                        "{{base_url}}"
-                      ],
-                      "path": [
-                        "category_attributes"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "update category attributes",
-                  "request": {
-                    "method": "PUT",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"attr_name\": \"test\",\n  \"attr_desc\": \"test\",\n  \"attr_type\": \"TEXT\",\n  \"display_order\": 1,\n  \"status\": true\n}",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{base_url}}/category_attributes/5",
-                      "host": [
-                        "{{base_url}}"
-                      ],
-                      "path": [
-                        "category_attributes",
-                        "5"
-                      ]
-                    }
-                  },
-                  "response": []
-                },
-                {
-                  "name": "delete category attributes",
-                  "request": {
-                    "method": "DELETE",
-                    "header": [],
-                    "body": {
-                      "mode": "raw",
-                      "raw": "",
-                      "options": {
-                        "raw": {
-                          "language": "json"
-                        }
-                      }
-                    },
-                    "url": {
-                      "raw": "{{base_url}}/category_attributes/17",
-                      "host": [
-                        "{{base_url}}"
-                      ],
-                      "path": [
-                        "category_attributes",
-                        "17"
-                      ]
-                    }
-                  },
-                  "response": []
-                }
-              ]
-            },
-            {
               "name": "company categories list",
               "request": {
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/company_categories?page=1&page_size=10&filters=&start_date=2024-11-01&end_date=2024-12-13",
+                  "raw": "{{base_url}}/company_categories?page=1&page_size=10&company_id=9",
                   "host": [
                     "{{base_url}}"
                   ],
@@ -1539,15 +1259,18 @@
                     },
                     {
                       "key": "filters",
-                      "value": ""
+                      "value": "",
+                      "disabled": true
                     },
                     {
                       "key": "start_date",
-                      "value": "2024-11-01"
+                      "value": "2024-11-01",
+                      "disabled": true
                     },
                     {
                       "key": "end_date",
-                      "value": "2024-12-13"
+                      "value": "2024-12-13",
+                      "disabled": true
                     },
                     {
                       "key": "date_column",
@@ -1558,6 +1281,10 @@
                       "key": "return_columns",
                       "value": "id",
                       "disabled": true
+                    },
+                    {
+                      "key": "company_id",
+                      "value": "9"
                     }
                   ]
                 }
@@ -1570,13 +1297,13 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/company_categories/1",
+                  "raw": "{{base_url}}/company_categories/7",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "company_categories",
-                    "1"
+                    "7"
                   ]
                 }
               },
@@ -1659,41 +1386,182 @@
           "name": "merchandises",
           "item": [
             {
-              "name": "merchandise attribute values",
+              "name": "variants",
               "item": [
                 {
-                  "name": "merchandise_attribute_option_values",
+                  "name": "variant list",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values?filters=merch_id=45&company_id=9",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values"
+                      ],
+                      "query": [
+                        {
+                          "key": "start_date",
+                          "value": "2024-11-01",
+                          "disabled": true
+                        },
+                        {
+                          "key": "end_date",
+                          "value": "2024-12-13",
+                          "disabled": true
+                        },
+                        {
+                          "key": "date_column",
+                          "value": "updated_at",
+                          "disabled": true
+                        },
+                        {
+                          "key": "return_columns",
+                          "value": "id",
+                          "disabled": true
+                        },
+                        {
+                          "key": "filters",
+                          "value": "merch_id=45"
+                        },
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get variant",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values/426?company_id=9",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values",
+                        "426"
+                      ],
+                      "query": [
+                        {
+                          "key": "filters",
+                          "value": "merch_id=46,cat_id=34",
+                          "disabled": true
+                        },
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "delete variant",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/merchandise_attribute_values/42?company_id=9",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "merchandise_attribute_values",
+                        "42"
+                      ],
+                      "query": [
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "generate variants",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/generate_variants?merch_id=45&company_id=9",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "generate_variants"
+                      ],
+                      "query": [
+                        {
+                          "key": "merch_id",
+                          "value": "45"
+                        },
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "update variants",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"updates\": [\n    {\n      \"variant_id\": 205,\n      \"price\": 20000,\n      \"stock\": 1000,\n      \"merch_id\": 45,\n      \"image\": \"https://example.com/image1.jpg\"\n    },\n    {\n      \"variant_id\": 207,\n      \"price\": 20000,\n      \"stock\": 50,\n      \"merch_id\": 45,\n      \"image\": \"https://example.com/image2.jpg\"\n    },\n    {\n      \"variant_id\": 209,\n      \"price\": 10000,\n      \"stock\": 20,\n      \"merch_id\": 45,\n      \"image\": \"https://example.com/image3.jpg\"\n    }\n  ]\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/update_variants",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "update_variants"
+                      ]
+                    }
+                  },
+                  "response": []
+                }
+              ]
+            },
+            {
+              "name": "option_types",
+              "item": [
+                {
+                  "name": "option values",
                   "item": [
                     {
-                      "name": "list merchandise attribute option value",
+                      "name": "get option value",
                       "request": {
                         "method": "GET",
                         "header": [],
                         "url": {
-                          "raw": "{{base_url}}/merchandise_attribute_option_values",
+                          "raw": "{{base_url}}/option_values/45?company_id=9",
                           "host": [
                             "{{base_url}}"
                           ],
                           "path": [
-                            "merchandise_attribute_option_values"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "get merchandise attribute option value",
-                      "request": {
-                        "method": "GET",
-                        "header": [],
-                        "url": {
-                          "raw": "{{base_url}}/merchandise_attribute_option_values/6?company_id=9",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "merchandise_attribute_option_values",
-                            "6"
+                            "option_values",
+                            "45"
                           ],
                           "query": [
                             {
@@ -1706,13 +1574,61 @@
                       "response": []
                     },
                     {
-                      "name": "create merchandise attribute option value",
+                      "name": "option type delete",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/option_type/22?company_id=9",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "option_type",
+                            "22"
+                          ],
+                          "query": [
+                            {
+                              "key": "company_id",
+                              "value": "9"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "option value delete",
+                      "request": {
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/option_values/40?company_id=9",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "option_values",
+                            "40"
+                          ],
+                          "query": [
+                            {
+                              "key": "company_id",
+                              "value": "9"
+                            }
+                          ]
+                        }
+                      },
+                      "response": []
+                    },
+                    {
+                      "name": "add option values",
                       "request": {
                         "method": "POST",
                         "header": [],
                         "body": {
                           "mode": "raw",
-                          "raw": "{\n  \"m_attr_val_id\": 10,\n  \"attr_id\": 21,\n  \"attr_val_id\": 18\n}",
+                          "raw": "{\n  \"com_id\": 9,\n  \"option_type_id\": 22,\n  \"value\": \"S\",\n  \"merch_id\": 45\n}\n",
                           "options": {
                             "raw": {
                               "language": "json"
@@ -1720,48 +1636,12 @@
                           }
                         },
                         "url": {
-                          "raw": "{{base_url}}/merchandise_attribute_option_values",
+                          "raw": "{{base_url}}/option_values",
                           "host": [
                             "{{base_url}}"
                           ],
                           "path": [
-                            "merchandise_attribute_option_values"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "update merchandise attribute option value",
-                      "request": {
-                        "method": "PUT",
-                        "header": [],
-                        "url": {
-                          "raw": "{{base_url}}/merchandise_attribute_option_values/6",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "merchandise_attribute_option_values",
-                            "6"
-                          ]
-                        }
-                      },
-                      "response": []
-                    },
-                    {
-                      "name": "delete merchandise attribute option value",
-                      "request": {
-                        "method": "DELETE",
-                        "header": [],
-                        "url": {
-                          "raw": "{{base_url}}/merchandise_attribute_option_values/6",
-                          "host": [
-                            "{{base_url}}"
-                          ],
-                          "path": [
-                            "merchandise_attribute_option_values",
-                            "6"
+                            "option_values"
                           ]
                         }
                       },
@@ -1770,17 +1650,29 @@
                   ]
                 },
                 {
-                  "name": "list merchandise attribute values",
+                  "name": "option type list",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
                   "request": {
                     "method": "GET",
                     "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
                     "url": {
-                      "raw": "{{base_url}}/merchandise_attribute_values?page=1&page_size=100",
+                      "raw": "{{base_url}}/option_types?page=1&page_size=10",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
-                        "merchandise_attribute_values"
+                        "option_types"
                       ],
                       "query": [
                         {
@@ -1788,9 +1680,8 @@
                           "value": "1"
                         },
                         {
-                          "key": "filters",
-                          "value": "",
-                          "disabled": true
+                          "key": "page_size",
+                          "value": "10"
                         },
                         {
                           "key": "start_date",
@@ -1813,8 +1704,14 @@
                           "disabled": true
                         },
                         {
-                          "key": "page_size",
-                          "value": "100"
+                          "key": "com_id",
+                          "value": "8",
+                          "disabled": true
+                        },
+                        {
+                          "key": "filters",
+                          "value": "com_id=9,cat_id=22",
+                          "disabled": true
                         }
                       ]
                     }
@@ -1822,31 +1719,31 @@
                   "response": []
                 },
                 {
-                  "name": "get merchandise attribute values",
+                  "name": "get option type",
                   "request": {
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{base_url}}/merchandise_attribute_values/28",
+                      "raw": "{{base_url}}/option_types/16",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
-                        "merchandise_attribute_values",
-                        "28"
+                        "option_types",
+                        "16"
                       ]
                     }
                   },
                   "response": []
                 },
                 {
-                  "name": "create merchandise attribute values",
+                  "name": "create option type",
                   "request": {
                     "method": "POST",
                     "header": [],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"value\": \"test\",\n  \"sku\": \"test1234\",\n  \"is_master\": true,\n  \"price\": 1000\n}",
+                      "raw": "{\n  \"option_name\": \"wut\",\n  \"option_name_mn\": \"test\",\n  \"option_desc\": \"descripption test\",\n  \"option_type\": \"SELECT\",\n  \"display_order\": 12,\n  \"status\": true\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -1854,25 +1751,25 @@
                       }
                     },
                     "url": {
-                      "raw": "{{base_url}}/merchandise_attribute_values",
+                      "raw": "{{base_url}}/option_types",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
-                        "merchandise_attribute_values"
+                        "option_types"
                       ]
                     }
                   },
                   "response": []
                 },
                 {
-                  "name": "update merchandise attribute values",
+                  "name": "update option type",
                   "request": {
                     "method": "PUT",
                     "header": [],
                     "body": {
                       "mode": "raw",
-                      "raw": "{\n  \"merch_id\": 50,\n  \"status\": true,\n  \"sku\": \"test1234\",\n  \"stock\": 19,\n  \"is_master\": true,\n  \"price\": null\n}",
+                      "raw": "{\n  \"com_id\": 2,\n  \"cat_id\": 6,\n  \"attr_name\": \"test\",\n  \"attr_desc\": \"test\",\n  \"attr_type\": \"TEXT\",\n  \"display_order\": 1,\n  \"status\": true\n}",
                       "options": {
                         "raw": {
                           "language": "json"
@@ -1880,37 +1777,40 @@
                       }
                     },
                     "url": {
-                      "raw": "{{base_url}}/merchandise_attribute_values/13",
+                      "raw": "{{base_url}}/option_types/5",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
-                        "merchandise_attribute_values",
-                        "13"
+                        "option_types",
+                        "5"
                       ]
                     }
                   },
                   "response": []
                 },
                 {
-                  "name": "delete merchandise attribute values",
+                  "name": "delete option type",
                   "request": {
                     "method": "DELETE",
                     "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
                     "url": {
-                      "raw": "{{base_url}}/merchandise_attribute_values/13?company_id=9",
+                      "raw": "{{base_url}}/option_types/17",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
-                        "merchandise_attribute_values",
-                        "13"
-                      ],
-                      "query": [
-                        {
-                          "key": "company_id",
-                          "value": "9"
-                        }
+                        "option_types",
+                        "17"
                       ]
                     }
                   },
@@ -1975,6 +1875,11 @@
                     {
                       "key": "company_id",
                       "value": "9"
+                    },
+                    {
+                      "key": "filters",
+                      "value": "mer_name=Iphone",
+                      "disabled": true
                     }
                   ]
                 }
@@ -1987,13 +1892,19 @@
                 "method": "GET",
                 "header": [],
                 "url": {
-                  "raw": "{{base_url}}/merchandises/14",
+                  "raw": "{{base_url}}/merchandises/48?company_id=9",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "merchandises",
-                    "14"
+                    "48"
+                  ],
+                  "query": [
+                    {
+                      "key": "company_id",
+                      "value": "9"
+                    }
                   ]
                 }
               },
@@ -2016,7 +1927,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
+                  "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2042,7 +1953,7 @@
                 "header": [],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"com_id\": 9,\n  \"cat_id\": 34,\n  \"mer_name\": \"PUNCHING KNIT POLO test\",\n  \"mer_desc\": \"40 хэмээс доош хэмийн бүлээн усанд гараар угаахыг зөвлөж байна. Өндөр хэмээр индүүдэж болохгүй, цайруулагч бодис хэрэглэж болохгүй.100% Нийлэг\",\n  \"price\": 209000,\n  \"discount_id\": 7,\n  \"medias\": [\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/157c741c-916b-4d58-b39d-d1aa1ee67599-open-uri20250120-2645037-147sq2t.jpeg\",\n      \"media_desc\": \"main\",\n      \"media_type\": \"image\",\n      \"media_label\": \"main\"\n    },\n    {\n      \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/54443c5a-f63a-4aed-8d5a-fc0dc89e9cf4-open-uri20250120-2645037-4c7ww5.jpeg\",\n      \"media_desc\": \"side\",\n      \"media_type\": \"image\",\n      \"media_label\": \"side\"\n    }\n  ],\n  \"status\": true\n}\n",
+                  "raw": "{\n    \"com_id\": 8,\n    \"cat_id\": 34,\n    \"mer_name\": \"Gereg лого футболка\",\n    \"mer_desc\": \"Gereg лого футболка\",\n    \"price\": 80000,\n    \"discount_id\": 7,\n    \"medias\": [\n        {\n            \"media_url\": \"https://s3.us-west-1.amazonaws.com/xoox.mn/public/9b676951-19d9-4ce1-a493-095083bcda99-open-uri20250120-2645076-ghfh16.jpeg\",\n            \"media_desc\": \"main\",\n            \"media_type\": \"image\",\n            \"media_label\": \"main\"\n        },\n        {\n            \"media_url\": \"https://xoox.mn.s3.us-west-1.amazonaws.com/public/47c861c5-3804-43ae-87a0-ccfdeae1ba78.jpg\",\n            \"media_desc\": \"\",\n            \"media_type\": \"image\",\n            \"media_label\": \"\"\n        },\n        {\n            \"media_url\": \"https://xoox.mn.s3.us-west-1.amazonaws.com/public/2d151584-1c7a-4c6b-8323-96c4dae8eea4.png\",\n            \"media_desc\": \"\",\n            \"media_type\": \"image\",\n            \"media_label\": \"\"\n        },\n        {\n            \"media_url\": \"https://xoox.mn.s3.us-west-1.amazonaws.com/public/b03ede3d-f5f7-46f4-bfe2-cbf08e823c68.jpg\",\n            \"media_desc\": \"\",\n            \"media_type\": \"image\",\n            \"media_label\": \"\"\n        }\n    ],\n    \"status\": false\n}",
                   "options": {
                     "raw": {
                       "language": "json"
@@ -2050,13 +1961,13 @@
                   }
                 },
                 "url": {
-                  "raw": "{{base_url}}/merchandises/49",
+                  "raw": "{{base_url}}/merchandises/51",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "merchandises",
-                    "49"
+                    "51"
                   ]
                 }
               },
@@ -2088,7 +1999,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/companies?page=1&page_size=10&filters=company_name=test&sort_by=company_name&sort_order=asc",
+              "raw": "{{base_url}}/companies?page=1&page_size=10",
               "host": [
                 "{{base_url}}"
               ],
@@ -2106,7 +2017,8 @@
                 },
                 {
                   "key": "filters",
-                  "value": "company_name=test"
+                  "value": "company_name=test",
+                  "disabled": true
                 },
                 {
                   "key": "start_date",
@@ -2130,11 +2042,13 @@
                 },
                 {
                   "key": "sort_by",
-                  "value": "company_name"
+                  "value": "company_name",
+                  "disabled": true
                 },
                 {
                   "key": "sort_order",
-                  "value": "asc"
+                  "value": "asc",
+                  "disabled": true
                 }
               ]
             }
@@ -2192,7 +2106,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"company_name\": \"test company\",\n  \"company_desc\": \"string\",\n  \"company_register\": \"string\",\n  \"company_logo\": \"string\",\n  \"company_email\": \"user@example.com\",\n  \"company_phone\": \"string\",\n  \"company_phone2\": \"string\",\n  \"company_location\": \"string\",\n  \"status\": true\n}",
+              "raw": "{\n  \"company_name\": \"Portal mn\",\n  \"company_desc\": \"Царайлаг Очроо ажилдаг компани\",\n  \"company_register\": \"string\",\n  \"company_logo\": \"https://xoox-project.s3.ap-southeast-1.amazonaws.com/public/small/651353bf-ac30-4bbf-9f4d-43bdb9758f5f.jpg\",\n  \"company_email\": \"user@example.com\",\n  \"company_phone\": \"string\",\n  \"company_phone2\": \"string\",\n  \"company_location\": \"string\",\n  \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2200,13 +2114,13 @@
               }
             },
             "url": {
-              "raw": "{{base_url}}/companies/6",
+              "raw": "{{base_url}}/companies/9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "companies",
-                "6"
+                "9"
               ]
             }
           },
@@ -2218,13 +2132,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/companies/7",
+              "raw": "{{base_url}}/companies/11",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "companies",
-                "7"
+                "11"
               ]
             }
           },
@@ -2241,7 +2155,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/transactions?page=1&page_size=10",
+              "raw": "{{base_url}}/transactions?page=1&page_size=10&company_id=9&status=completed",
               "host": [
                 "{{base_url}}"
               ],
@@ -2258,11 +2172,6 @@
                   "value": "10"
                 },
                 {
-                  "key": "filters",
-                  "value": "order_status=failed",
-                  "disabled": true
-                },
-                {
                   "key": "start_date",
                   "value": "2024-12-01",
                   "disabled": true
@@ -2273,14 +2182,12 @@
                   "disabled": true
                 },
                 {
-                  "key": "date_column",
-                  "value": "updated_at",
-                  "disabled": true
+                  "key": "company_id",
+                  "value": "9"
                 },
                 {
-                  "key": "return_columns",
-                  "value": "id",
-                  "disabled": true
+                  "key": "status",
+                  "value": "completed"
                 }
               ]
             }
@@ -2293,13 +2200,19 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/transactions/47",
+              "raw": "{{base_url}}/transactions/13?company_id=9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "transactions",
-                "47"
+                "13"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
               ]
             }
           },
@@ -2315,6 +2228,79 @@
           "request": {
             "method": "GET",
             "header": [],
+            "url": {
+              "raw": "{{base_url}}/discounts?start_date=2025-05-22&end_date=2025-05-23&company_id=15&date_column=end_at",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "discounts"
+              ],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2025-05-22"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-05-23"
+                },
+                {
+                  "key": "filters",
+                  "value": "start_at=2025-12-31T00:00:00, end_at=2025-12-31T00:00:00",
+                  "disabled": true
+                },
+                {
+                  "key": "company_id",
+                  "value": "15"
+                },
+                {
+                  "key": "date_column",
+                  "value": "end_at"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get discount",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/discounts/5?company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "discounts",
+                "5"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create discount",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"discount_name\": \"Black Friday Discount test\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday test.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
               "raw": "{{base_url}}/discounts?company_id=9",
               "host": [
@@ -2334,57 +2320,13 @@
           "response": []
         },
         {
-          "name": "get discount",
-          "request": {
-            "method": "GET",
-            "header": [],
-            "url": {
-              "raw": "{{base_url}}/discounts/6",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "discounts",
-                "6"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
-          "name": "create discount",
-          "request": {
-            "method": "POST",
-            "header": [],
-            "body": {
-              "mode": "raw",
-              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount test\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday test.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            },
-            "url": {
-              "raw": "{{base_url}}/discounts",
-              "host": [
-                "{{base_url}}"
-              ],
-              "path": [
-                "discounts"
-              ]
-            }
-          },
-          "response": []
-        },
-        {
           "name": "update discount",
           "request": {
             "method": "PUT",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n    \"com_id\": 9,\n    \"discount_name\": \"Black Friday Discount\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
+              "raw": "{\n    \"discount_name\": \"Black Friday Discount\",\n    \"discount_desc\": \"Save $20 on every order above $100 on Black Friday.\",\n    \"discount_type\": \"AMOUNT\",\n    \"discount\": 20,\n    \"start_at\": \"2024-11-29T00:00:00\",\n    \"end_at\": \"2025-11-29T00:00:00\",\n    \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2410,13 +2352,19 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/discounts/3",
+              "raw": "{{base_url}}/discounts/31?company_id=9",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "discounts",
-                "3"
+                "31"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
               ]
             }
           },
@@ -2433,7 +2381,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10",
+              "raw": "{{base_url}}/age_restrictions?page=1&page_size=10&filters=status=true,max_age=100",
               "host": [
                 "{{base_url}}"
               ],
@@ -2451,8 +2399,7 @@
                 },
                 {
                   "key": "filters",
-                  "value": "status=true,max_age=100",
-                  "disabled": true
+                  "value": "status=true,max_age=100"
                 },
                 {
                   "key": "start_date",
@@ -2770,7 +2717,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/permissions_list",
+              "raw": "{{base_url}}/permissions_list?filters=status=true,role_id=1",
               "host": [
                 "{{base_url}}"
               ],
@@ -2785,8 +2732,7 @@
                 },
                 {
                   "key": "filters",
-                  "value": "status=true",
-                  "disabled": true
+                  "value": "status=true,role_id=1"
                 },
                 {
                   "key": "start_date",
@@ -2847,13 +2793,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base_url}}/role_permissions/3",
+              "raw": "{{base_url}}/role_permissions/1",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
                 "role_permissions",
-                "3"
+                "1"
               ],
               "query": [
                 {
@@ -2878,7 +2824,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"role_id\": 3,\n  \"permission_id\": 24,\n  \"status\": true\n}",
+              "raw": "{\n    \"permission_id\": \"91\",\n    \"role_id\": \"1\",\n    \"status\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -2944,6 +2890,165 @@
                 {
                   "key": "page_size",
                   "value": "1000"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "reports",
+      "item": [
+        {
+          "name": "EventSeatSalesReport",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "username",
+                  "value": "user2@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password1234",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/event-seat-sales/28?company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "event-seat-sales",
+                "28"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "EventMerchandiseSalesReport",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "username",
+                  "value": "user2@example.com",
+                  "type": "text"
+                },
+                {
+                  "key": "password",
+                  "value": "password1234",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/event-merchandise-sales/28?company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "event-merchandise-sales",
+                "28"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "CompanySalesReport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/company-sales?company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "company-sales"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "MerchandiseDiscountSalesReport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/merchandise-discount-sales?company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "merchandise-discount-sales"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "EventDiscountSalesReport",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/event-discount-sales/28?company_id=9",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "event-discount-sales",
+                "28"
+              ],
+              "query": [
+                {
+                  "key": "company_id",
+                  "value": "9"
                 }
               ]
             }
@@ -3061,7 +3166,7 @@
         "header": [],
         "body": {
           "mode": "raw",
-          "raw": "{\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWVfcmVmcmVzaCIsImV4cCI6MTc0MTc2ODAxOH0.s4jnsfGsncupCHYjK1b_xnZlbO2Xow7jLAf7Q2VevOg\"\n}",
+          "raw": "{\n    \"refresh_token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWVfcmVmcmVzaCIsImV4cCI6MTc0ODE2MDkyMX0.O9veeCKliv_omhmy68BwVZ-8s2vZB-0UnUZzTbgrFps\"\n}",
           "options": {
             "raw": {
               "language": "json"
@@ -3167,19 +3272,18 @@
   ],
   "variable": [
     {
-      "key": "base_url2",
-      "value": "http://127.0.0.1:8000/api/v1/dashboard",
-      "type": "string"
-    },
-    {
       "key": "base_url",
       "value": "http://47.128.225.144:3000/api/v1/dashboard",
       "type": "string"
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDc4MjgwNDN9.Ic-MCPXVY9RJY28-SrdItVJREinYEBFPU0h2oZIhTt0",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDg0MTkxMTJ9.usUm1_8Z9UoWjco8UPu3TXXjaZ70oxMEnyKi3xLL6fg",
       "type": "string"
+    },
+    {
+      "key": "base_url2",
+      "value": ""
     }
   ]
 }
