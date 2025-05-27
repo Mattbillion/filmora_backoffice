@@ -53,7 +53,7 @@ const productManagerRoutes: SubMenuItemType[] = [
   },
   {
     title: 'Тайлан',
-    url: '/reports',
+    url: '/reports/company-sales',
     icon: ChartPieIcon,
     subRoutes: true,
     permissions: [
