@@ -22,3 +22,5 @@ export type TemplateValidationResult = {
 };
 
 export type KonvaNode = Konva.Node & { children?: KonvaNode[] };
+
+export const RVK_TEMPLATE = 'template';

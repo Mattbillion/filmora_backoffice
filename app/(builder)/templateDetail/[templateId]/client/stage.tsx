@@ -317,25 +317,38 @@ export default function Stage({
           className="m-4"
           onClick={() => {
             const clonedStage = stageRef.current?.clone();
-            clonedStage?.find((c: KonvaNode) => {
-              c.to({
-                opacity: 1,
-                duration: 0,
-              });
-              c.clearCache?.();
-              return true;
-            });
+            const clonedBaseLayer = clonedStage?.getLayers()[0]!;
+
+            const masksSection: Konva.Node = clonedStage
+              ?.findOne('#masks')
+              ?.clone();
+            const ticketsSection: Konva.Node = clonedStage
+              ?.findOne('#tickets')
+              ?.clone();
+            if (!masksSection || !ticketsSection)
+              return alert(
+                'Please describe "Tickets / Seats" and "Mask" layer',
+              );
+
+            // Destroying useless nodes
+            clonedStage?.findOne('.selected-shapes')?.remove();
+            clonedStage?.findOne('#masks')?.remove();
+            clonedStage?.findOne('#tickets')?.remove();
+
+            clonedBaseLayer?.clearCache();
+            clonedBaseLayer?.setAttr('opacity', 1);
+
             setTimeout(() => {
               const purchasableItems =
-                clonedStage
-                  ?.getLayers()[0]
+                ticketsSection
+                  //@ts-ignore
                   ?.find(
                     (c: KonvaNode) =>
                       [dataMap.r, dataMap.t, dataMap.s].includes(
                         c.attrs['data-type'],
                       ) && c.attrs['data-purchasable'],
                   )
-                  .map((c) => {
+                  .map((c: KonvaNode) => {
                     const json = c.toObject();
                     return Object.fromEntries(
                       Object.entries({
@@ -348,8 +361,11 @@ export default function Stage({
                       ),
                     );
                   }) || [];
-              const layerObject = clonedStage?.getLayers()[0]?.toObject();
-              console.log('layerObject', layerObject);
+              const ticketsSectionJSON = ticketsSection.toObject();
+              const masksSectionJSON = masksSection.toObject();
+              const othersJSON = clonedStage?.toObject();
+
+              console.log({ othersJSON, ticketsSectionJSON, masksSectionJSON });
               console.log('purchasableItems', purchasableItems);
             }, 500);
           }}
