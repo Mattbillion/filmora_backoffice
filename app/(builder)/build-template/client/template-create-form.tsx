@@ -116,12 +116,8 @@ export function CreateTemplateDialog() {
         };
         n.setAttrs(newAttrs);
 
-        if (ticketLike) {
-          const oldFill = n.getAttr('fill');
-          if (oldFill !== '#ccc') {
-            n.setAttr('fill', '#ccc');
-            n.setAttr('conf-fill-old', oldFill);
-          }
+        if (ticketLike && !n.getAttr('data-purchasable')) {
+          n.setAttr('fill', '#ccc');
         }
         return true;
       });
