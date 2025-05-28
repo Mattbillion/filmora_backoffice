@@ -1,8 +1,8 @@
 'use client';
 
-import { JSX, useEffect, useMemo, useState } from 'react';
-import { ArrowLeft, Loader2, LogOut } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { JSX, useMemo, useState } from 'react';
+import { ArrowLeft, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -16,9 +16,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { imageResize } from '@/lib/utils';
 
-import { getTemplateDetail } from '../actions';
 import { TemplateType } from '../schema';
-import { getStyleStr, svgStrToJSON } from '../util';
+import { getStyleStr } from '../util';
 import { INITIAL_SCALE } from './constants';
 import XooxStage from './stage';
 import { cssToKonvaStyle, svgToKonva } from './svg-to-konva';
@@ -26,21 +25,11 @@ import { UploadView } from './uploader';
 
 export default function Client() {
   const router = useRouter();
-  const { templateId } = useParams();
   const { data: session } = useSession();
   const [{ templateJSON = [], viewBox }, setTemplateData] =
     useState<TemplateType>({ templateJSON: [], viewBox: [1024, 960] });
-  const [view, setView] = useState<'loading' | 'stage' | 'upload'>('loading');
+  const [view, setView] = useState<'upload' | 'stage'>('upload');
   const styleJson = cssToKonvaStyle(getStyleStr(templateJSON));
-
-  useEffect(() => {
-    setView('loading');
-    if (!isNaN(Number(templateId as unknown as string)))
-      getTemplateDetail(Number(templateId))
-        .then((c) => setTemplateData(svgStrToJSON(c)))
-        .then(() => setView('stage'));
-    else setView('upload');
-  }, [templateId]);
 
   const shapes = useMemo(
     () => templateJSON.map((c) => svgToKonva(c, styleJson)),
@@ -114,13 +103,7 @@ export default function Client() {
           </DropdownMenuContent>
         </DropdownMenu>
       </header>
-      {view === 'loading' ? (
-        <div className="relative w-full flex-1">
-          <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center">
-            <Loader2 size={32} className="animate-spin" />
-          </div>
-        </div>
-      ) : view === 'stage' ? (
+      {view === 'stage' ? (
         <StageView shapes={shapes} viewBox={viewBox} />
       ) : (
         <UploadView
