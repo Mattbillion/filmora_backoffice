@@ -347,7 +347,6 @@ export default function Stage({
                 shadowForStrokeEnabled: undefined,
                 perfectDrawEnabled: undefined,
               };
-              // if (n.attrs.d === n.attrs.data) newAttrs.d = undefined;
               n.setAttrs(newAttrs);
 
               if (ticketLike) {
@@ -360,7 +359,7 @@ export default function Stage({
               return true;
             });
 
-            // Destroying useless nodes
+            // Removing useless nodes (cached on ram /accessible/)
             clonedStage?.findOne('.selected-shapes')?.remove();
             clonedStage?.findOne('#masks')?.remove();
             clonedStage?.findOne('#tickets')?.remove();
@@ -380,7 +379,6 @@ export default function Stage({
               document.body.appendChild(a);
               a.click();
 
-              // Cleanup
               document.body.removeChild(a);
               URL.revokeObjectURL(url);
 
