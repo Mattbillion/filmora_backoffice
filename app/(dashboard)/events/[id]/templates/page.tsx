@@ -32,7 +32,7 @@ export default async function TemplatesPage(props: {
         <Heading
           title={`Templates list (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, []) && (
+        {checkPermission(session, ['create_template']) && (
           <Link href="/build-template" className="text-xs md:text-sm">
             <Plus className="h-4 w-4" /> Add New
           </Link>

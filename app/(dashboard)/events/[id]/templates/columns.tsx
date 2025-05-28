@@ -22,7 +22,7 @@ const Action = ({ row }: CellContext<TemplatesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
+  const canDelete = checkPermission(data, ['delete_template']);
 
   if (!canDelete) return null;
 
