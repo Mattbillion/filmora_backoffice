@@ -6,7 +6,8 @@ import { checkPermission } from '@/lib/permission';
 
 export default async function Layout({ children }: { children: ReactNode }) {
   const session = await auth();
+  const canAccess = checkPermission(session, ['create_template']) || true;
 
-  if (checkPermission(session, ['create_template'])) return children;
+  if (canAccess) return children;
   return notFound();
 }

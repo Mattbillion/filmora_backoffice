@@ -1,4 +1,16 @@
 import Konva from 'konva';
+import { z } from 'zod';
+
+export const templateSchema = z.object({
+  event_id: z.number(),
+  template_name: z.string(),
+  template_desc: z.string(),
+  template_order: z.number().optional().default(0),
+  status: z.boolean().optional().default(true),
+  template_type: z.string().optional().default('json'),
+});
+
+export type TemplateBodyType = z.infer<typeof templateSchema>;
 
 export type SVGJsonType = {
   type: string;
@@ -22,5 +34,3 @@ export type TemplateValidationResult = {
 };
 
 export type KonvaNode = Konva.Node & { children?: KonvaNode[] };
-
-export const RVK_TEMPLATE = 'template';

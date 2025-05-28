@@ -1,8 +1,7 @@
+import { RVK_TEMPLATES } from '@/app/(dashboard)/events/[id]/templates/schema';
 import { xooxFetch } from '@/lib/fetch';
 import { ID } from '@/lib/fetch/types';
 import { executeRevalidate } from '@/lib/xoox';
-
-import { RVK_TEMPLATE } from './schema';
 
 type TemplateDetail = {
   id: number;
@@ -25,8 +24,8 @@ export async function getTemplateDetail(templateId: ID) {
   return body.data[0]?.layout_svg;
 }
 
-export const createTemplate = async (bodyData: any) => {
-  const { body, error } = await xooxFetch(`/templates`, {
+export const createTemplate = async (bodyData: FormData) => {
+  const { body, error } = await xooxFetch<{ data: number }>(`/templates`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -34,6 +33,19 @@ export const createTemplate = async (bodyData: any) => {
 
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_TEMPLATE]);
+  executeRevalidate([RVK_TEMPLATES]);
+  return { data: body, error: null };
+};
+
+export const uploadTemplateJSON = async (bodyData: FormData) => {
+  const { body, error } = await xooxFetch(`/upload-template-files`, {
+    method: 'POST',
+    body: bodyData,
+    cache: 'no-store',
+  });
+
+  if (error) throw new Error(error);
+
+  executeRevalidate([RVK_TEMPLATES]);
   return { data: body, error: null };
 };

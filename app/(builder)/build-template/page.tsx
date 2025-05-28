@@ -1,5 +1,5 @@
-import Client from './client';
+import TicketBuilderClient from './client';
 
 export default async function TemplateDetailPage() {
-  return <Client />;
+  return <TicketBuilderClient />;
 }

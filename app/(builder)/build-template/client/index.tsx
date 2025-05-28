@@ -14,16 +14,18 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { imageResize } from '@/lib/utils';
 
 import { TemplateType } from '../schema';
 import { getStyleStr } from '../util';
 import { INITIAL_SCALE } from './constants';
-import XooxStage from './stage';
+import { KonvaStageProvider } from './context';
+import TicketEditor from './stage';
 import { cssToKonvaStyle, svgToKonva } from './svg-to-konva';
 import { UploadView } from './uploader';
 
-export default function Client() {
+export default function TicketBuilderClient() {
   const router = useRouter();
   const { data: session } = useSession();
   const [{ templateJSON = [], viewBox }, setTemplateData] =
@@ -133,7 +135,7 @@ function StageView({
   const stageHeight = height - 64;
 
   return (
-    <XooxStage
+    <KonvaStageProvider
       shapes={shapes}
       height={stageHeight}
       width={stageWidth}
@@ -144,6 +146,10 @@ function StageView({
         x: (stageWidth - vbw * INITIAL_SCALE.x) / 2,
         y: (stageHeight - vbh * INITIAL_SCALE.y) / 2,
       }}
-    />
+    >
+      <TooltipProvider delayDuration={0}>
+        <TicketEditor />
+      </TooltipProvider>
+    </KonvaStageProvider>
   );
 }

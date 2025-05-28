@@ -1,7 +1,6 @@
 'use client';
 
-import { JSX, ReactNode, useEffect, useRef, useState } from 'react';
-import { Layer, Stage as KonvaStage } from 'react-konva';
+import { Fragment, ReactNode } from 'react';
 import Konva from 'konva';
 import { flatten, partition } from 'lodash';
 import { Edit } from 'lucide-react';
@@ -24,418 +23,136 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { KonvaNode } from '../schema';
 import { AdditionalInformation } from './additional-information';
 import { dataMap, locationMap, translationMap } from './constants';
+import { useKonvaStage } from './context';
 import {
   LayerTypeSelect,
   LayerValueInput,
   modifyId,
 } from './layer-form-inputs';
+import { CreateTemplateDialog } from './template-create-form';
 
-const scaleBy = 1.05;
-const maxScale = 10;
-const minScale = 0.5;
-
-export default function Stage({
-  height,
-  width,
-  limitX,
-  limitY,
-  shapes,
-  centerCoord,
-  scale,
-}: {
-  height: number;
-  width: number;
-  limitX: number;
-  limitY: number;
-  shapes: JSX.Element[];
-  centerCoord: { x: number; y: number };
-  scale: { x: number; y: number };
-}) {
-  const stageRef = useRef<Konva.Stage>(null);
-  const [_, forceUpdate] = useState(0);
-
-  useEffect(() => {
-    forceUpdate(1);
-  }, [shapes]);
-
-  const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
-    const stage = stageRef.current;
-    if (!stage) return;
-    e.evt.preventDefault();
-
-    const pointer = stage.getPointerPosition();
-    const { scale: newScale, position: newPosition } = getZoomInfo({
-      deltaY: e.evt.deltaY,
-      stage,
-      pointer,
-    });
-
-    stage.scale(newScale);
-    stage.setPosition(newPosition);
-  };
-
-  const getZoomInfo = ({
-    deltaY,
-    stage,
-    pointer,
-  }: {
-    deltaY: number;
-    stage: Konva.Stage;
-    pointer?: Konva.Vector2d | null;
-  }): {
-    scale: Konva.Vector2d;
-    position: Konva.Vector2d;
-    miniMapSize?: { scale: Konva.Vector2d; position: Konva.Vector2d };
-  } => {
-    const oldScale = stage.scaleX();
-    const newScale = deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    const clampedScale = Math.max(minScale, Math.min(maxScale, newScale));
-    const zoomInfo = {
-      scale: { x: clampedScale, y: clampedScale },
-      position: {
-        x: stage.x(),
-        y: stage.y(),
-      },
-    };
-
-    if (pointer) {
-      const pointTo = {
-        x: (pointer.x - stage.x()) / oldScale,
-        y: (pointer.y - stage.y()) / oldScale,
-      };
-
-      zoomInfo.position = {
-        x: pointer.x - pointTo.x * clampedScale,
-        y: pointer.y - pointTo.y * clampedScale,
-      };
-    }
-
-    return zoomInfo;
-  };
-
-  const [baseLayer, selectedShapesLayer] = stageRef.current?.getLayers() || [];
-
-  const stageChilds = (baseLayer?.children?.filter(
-    (c) => c.getType() === 'Group',
-  ) || []) as unknown as KonvaNode[];
-
-  const focusNode = (n: KonvaNode) => {
-    const selectedNodes = [
-      baseLayer.findOne((c: KonvaNode) => c._id === n._id),
-    ];
-    const emptyLayer = selectedShapesLayer.destroyChildren();
-    if ([dataMap.r, dataMap.t, dataMap.s].includes(n.attrs['data-type'])) {
-      const parent = n.getParent();
-      const selectedBox = n.getClientRect({ relativeTo: baseLayer });
-
-      const candidates = parent?.find('Text') as Konva.Text[];
-
-      for (const textNode of candidates) {
-        const textBox = textNode.getClientRect({ relativeTo: baseLayer });
-
-        const intersects =
-          selectedBox.x < textBox.x + textBox.width &&
-          selectedBox.x + selectedBox.width > textBox.x &&
-          selectedBox.y < textBox.y + textBox.height &&
-          selectedBox.y + selectedBox.height > textBox.y;
-
-        if (intersects) {
-          selectedNodes.push(textNode);
-        }
-      }
-    }
-
-    for (let i = 0; i < selectedNodes.length; i++) {
-      const clonedNode = selectedNodes[i]?.clone();
-      clonedNode.setAttr('opacity', 1);
-      emptyLayer.add(clonedNode);
-    }
-
-    emptyLayer.batchDraw();
-  };
+export default function TicketEditor() {
+  const { stageChilds, baseLayer, focusNode, forceUpdate } = useKonvaStage();
 
   return (
-    <div className="flex">
-      <KonvaStage
-        ref={stageRef}
-        width={width}
-        height={height}
-        draggable
-        scale={scale}
-        x={centerCoord.x}
-        y={centerCoord.y}
-        onWheel={handleWheel}
-        dragBoundFunc={(pos) => {
-          const currentScale = stageRef.current?.scaleX() || scale.x;
-          const scaledLimit = {
-            x: limitX * currentScale,
-            y: limitY * currentScale,
-          };
-          const newX = Math.max(-scaledLimit.x, Math.min(pos.x, scaledLimit.x));
-          const newY = Math.max(-scaledLimit.y, Math.min(pos.y, scaledLimit.y));
-
-          return { x: newX, y: newY };
-        }}
-        className="flex-1"
-      >
-        <Layer
-          name="base"
-          imageSmoothingEnabled={false}
-          listening={false}
-          shadowForStrokeEnabled={false}
-          perfectDrawEnabled={false}
+    <Fragment>
+      <h1 className="border-b p-4">Seatmap builder</h1>
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <Tabs
+          className="flex min-h-full w-full flex-col"
+          defaultValue={'empty'}
         >
-          {shapes}
-        </Layer>
-        <Layer
-          name="selected-shapes"
-          imageSmoothingEnabled={false}
-          listening={false}
-          shadowForStrokeEnabled={false}
-          perfectDrawEnabled={false}
-        />
-      </KonvaStage>
-      <div className="flex h-[calc(100dvh-64px)] flex-[462px] flex-col border-l border-border">
-        <h1 className="border-b p-4">Seatmap builder</h1>
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          <Tabs
-            className="flex min-h-full w-full flex-col"
-            defaultValue={'empty'}
-          >
-            <TabsList className="w-full rounded-none border-b border-border">
-              {stageChilds?.map((node, idx) => (
-                <TabsTrigger
-                  value={node._id.toString()}
-                  key={idx}
-                  className="flex-1"
-                  onClick={() => {
-                    baseLayer?.cache();
-                    baseLayer?.setAttr('opacity', 0.15);
-                    focusNode(node);
-                  }}
-                >
-                  {node.attrs['data-name'] || node.id() || 'N/A (Edit!)'}
-                </TabsTrigger>
-              ))}
-            </TabsList>
+          <TabsList className="w-full rounded-none border-b border-border">
             {stageChilds?.map((node, idx) => (
-              <TabsContent
+              <TabsTrigger
                 value={node._id.toString()}
                 key={idx}
-                className="flex-1 p-4 pt-0"
+                className="flex-1"
+                onClick={() => {
+                  baseLayer?.cache();
+                  baseLayer?.setAttr('opacity', 0.15);
+                  focusNode(node);
+                }}
               >
-                <LayerTypeSelect
-                  skipManipulate
-                  node={node}
-                  onChange={(v) => {
-                    forceUpdate((c) => c + 1);
-                    node.id(v);
-                  }}
-                  options={[
-                    { label: 'Background', value: 'bg' },
-                    { label: 'Tickets / Seats', value: 'tickets' },
-                    { label: 'Mask', value: 'masks' },
-                  ]}
-                  className="mb-4"
-                />
-                {node.id() === 'tickets' && (
-                  <>
-                    {node.hasChildren() ? (
-                      <Accordion type="single" className="w-full">
-                        {node.children?.map((childNode, idx1) => {
-                          const nodeType = childNode.attrs['data-type'];
-                          const nodeTypeValue =
-                            childNode.attrs?.[`data-${nodeType}`];
-
-                          return (
-                            <LayerAccordion
-                              onMouseEnter={() => focusNode(childNode)}
-                              key={idx1}
-                              label={
-                                (translationMap[nodeType]
-                                  ? translationMap[nodeType] + ': '
-                                  : '') + (nodeTypeValue || 'N/A')
-                              }
-                              value={childNode._id.toString()}
-                            >
-                              <div className="flex items-center justify-between gap-4 px-0.5">
-                                <LayerTypeSelect
-                                  node={childNode}
-                                  onChange={() => forceUpdate((c) => c + 1)}
-                                  options={Object.values(locationMap).map(
-                                    (c) => ({
-                                      label: translationMap[c],
-                                      value: c,
-                                    }),
-                                  )}
-                                  className="flex-1"
-                                />
-                                {!!nodeType && (
-                                  <LayerValueInput
-                                    key={nodeType}
-                                    node={childNode}
-                                    onChange={() => forceUpdate((c) => c + 1)}
-                                    onFocus={() => focusNode(childNode)}
-                                    className="flex-1"
-                                    debounce={100}
-                                  />
-                                )}
-                              </div>
-                              {!!nodeType &&
-                                !!nodeTypeValue &&
-                                !!childNode.children?.length &&
-                                childNode.children.map((child, idx2) => (
-                                  <LayerChildCollapse
-                                    key={idx2}
-                                    focusNode={focusNode}
-                                    forceUpdate={() =>
-                                      forceUpdate((c) => c + 1)
-                                    }
-                                    childNode={child}
-                                  />
-                                ))}
-                            </LayerAccordion>
-                          );
-                        })}
-                      </Accordion>
-                    ) : (
-                      <div>No child layer</div>
-                    )}
-                  </>
-                )}
-              </TabsContent>
+                {node.attrs['data-name'] || node.id() || 'N/A (Edit!)'}
+              </TabsTrigger>
             ))}
+          </TabsList>
+          {stageChilds?.map((node, idx) => (
             <TabsContent
-              value="empty"
-              className="flex flex-1 flex-col items-center justify-center"
+              value={node._id.toString()}
+              key={idx}
+              className="flex-1 p-4 pt-0"
             >
-              Select stage layer to edit
+              <LayerTypeSelect
+                skipManipulate
+                node={node}
+                onChange={(v) => {
+                  forceUpdate();
+                  node.id(v);
+                }}
+                options={[
+                  { label: 'Background', value: 'bg' },
+                  { label: 'Tickets / Seats', value: 'tickets' },
+                  { label: 'Mask', value: 'masks' },
+                ]}
+                className="mb-4"
+              />
+              {node.id() === 'tickets' && (
+                <>
+                  {node.hasChildren() ? (
+                    <Accordion type="single" className="w-full">
+                      {node.children?.map((childNode, idx1) => {
+                        const nodeType = childNode.attrs['data-type'];
+                        const nodeTypeValue =
+                          childNode.attrs?.[`data-${nodeType}`];
+
+                        return (
+                          <LayerAccordion
+                            onMouseEnter={() => focusNode(childNode)}
+                            key={idx1}
+                            label={
+                              (translationMap[nodeType]
+                                ? translationMap[nodeType] + ': '
+                                : '') + (nodeTypeValue || 'N/A')
+                            }
+                            value={childNode._id.toString()}
+                          >
+                            <div className="flex items-center justify-between gap-4 px-0.5">
+                              <LayerTypeSelect
+                                node={childNode}
+                                onChange={() => forceUpdate()}
+                                options={Object.values(locationMap).map(
+                                  (c) => ({
+                                    label: translationMap[c],
+                                    value: c,
+                                  }),
+                                )}
+                                className="flex-1"
+                              />
+                              {!!nodeType && (
+                                <LayerValueInput
+                                  key={nodeType}
+                                  node={childNode}
+                                  onChange={() => forceUpdate()}
+                                  onFocus={() => focusNode(childNode)}
+                                  className="flex-1"
+                                  debounce={100}
+                                />
+                              )}
+                            </div>
+                            {!!nodeType &&
+                              !!nodeTypeValue &&
+                              !!childNode.children?.length &&
+                              childNode.children.map((child, idx2) => (
+                                <LayerChildCollapse
+                                  key={idx2}
+                                  focusNode={focusNode}
+                                  forceUpdate={() => forceUpdate()}
+                                  childNode={child}
+                                />
+                              ))}
+                          </LayerAccordion>
+                        );
+                      })}
+                    </Accordion>
+                  ) : (
+                    <div>No child layer</div>
+                  )}
+                </>
+              )}
             </TabsContent>
-          </Tabs>
-        </div>
-        <Button
-          className="m-4"
-          onClick={() => {
-            const clonedStage = stageRef.current?.clone()!;
-            const clonedBaseLayer = clonedStage?.getLayers()[0]!;
-
-            const masksSection: Konva.Node = clonedStage
-              ?.findOne('#masks')
-              ?.clone();
-            const ticketsSection: Konva.Node = clonedStage
-              ?.findOne('#tickets')
-              ?.clone();
-            if (!masksSection || !ticketsSection)
-              return alert(
-                'Please describe "Tickets / Seats" and "Mask" layer',
-              );
-            // define all ticket like nodes as not purchasable
-            //@ts-ignore
-            ticketsSection.find((n) => {
-              const ticketLike = [
-                'Path',
-                'Shape',
-                'Line',
-                'Rect',
-                'Circle',
-              ].includes(n.className);
-              const newAttrs = {
-                ...n.getAttrs(),
-                class: undefined,
-                hitStrokeWidth: undefined,
-                listening: undefined,
-                shadowForStrokeEnabled: undefined,
-                perfectDrawEnabled: undefined,
-              };
-              n.setAttrs(newAttrs);
-
-              if (ticketLike) {
-                const oldFill = n.getAttr('fill');
-                if (oldFill !== '#ccc') {
-                  n.setAttr('fill', '#ccc');
-                  n.setAttr('conf-fill-old', oldFill);
-                }
-              }
-              return true;
-            });
-
-            // Removing useless nodes (cached on ram /accessible/)
-            clonedStage?.findOne('.selected-shapes')?.remove();
-            clonedStage?.findOne('#masks')?.remove();
-            clonedStage?.findOne('#tickets')?.remove();
-
-            clonedBaseLayer?.clearCache();
-            clonedBaseLayer?.setAttr('opacity', 1);
-
-            function jsonToFile(jsonString: any, name = 'stage.json') {
-              const blob = new Blob([jsonString], { type: 'application/json' });
-
-              const url = URL.createObjectURL(blob);
-
-              const a = document.createElement('a');
-              a.href = url;
-              a.download = name;
-              a.style.display = 'none';
-              document.body.appendChild(a);
-              a.click();
-
-              document.body.removeChild(a);
-              URL.revokeObjectURL(url);
-
-              return new File([blob], name, { type: 'application/json' });
-            }
-
-            setTimeout(() => {
-              const purchasableItems =
-                ticketsSection
-                  //@ts-ignore
-                  ?.find(
-                    (c: KonvaNode) =>
-                      [dataMap.r, dataMap.t, dataMap.s].includes(
-                        c.attrs['data-type'],
-                      ) && c.attrs['data-purchasable'],
-                  )
-                  .map((c: KonvaNode) => {
-                    const json = c.toObject();
-                    return Object.fromEntries(
-                      Object.entries({
-                        ...json.attrs,
-                        className: json.className,
-                      }).filter(
-                        ([k]) =>
-                          json.className !== 'Text' &&
-                          (k === 'id' || k.startsWith('data-')),
-                      ),
-                    );
-                  }) || [];
-              const ticketsSectionJSON = jsonToFile(
-                ticketsSection.toJSON(),
-                'tickets.json',
-              );
-              const masksSectionJSON = jsonToFile(
-                masksSection.toJSON(),
-                'masks.json',
-              );
-              const othersJSON = jsonToFile(
-                clonedStage.toJSON(),
-                'others.json',
-              );
-
-              console.log({ othersJSON, ticketsSectionJSON, masksSectionJSON });
-              console.log(
-                'purchasableItems',
-                jsonToFile(
-                  JSON.stringify(purchasableItems, null, 2),
-                  'seats.json',
-                ),
-              );
-            }, 500);
-          }}
-        >
-          Build
-        </Button>
+          ))}
+          <TabsContent
+            value="empty"
+            className="flex flex-1 flex-col items-center justify-center"
+          >
+            Select stage layer to edit
+          </TabsContent>
+        </Tabs>
       </div>
-    </div>
+      <CreateTemplateDialog />
+    </Fragment>
   );
 }
 
