@@ -316,7 +316,7 @@ export default function Stage({
         <Button
           className="m-4"
           onClick={() => {
-            const clonedStage = stageRef.current?.clone();
+            const clonedStage = stageRef.current?.clone()!;
             const clonedBaseLayer = clonedStage?.getLayers()[0]!;
 
             const masksSection: Konva.Node = clonedStage
@@ -329,6 +329,36 @@ export default function Stage({
               return alert(
                 'Please describe "Tickets / Seats" and "Mask" layer',
               );
+            // define all ticket like nodes as not purchasable
+            //@ts-ignore
+            ticketsSection.find((n) => {
+              const ticketLike = [
+                'Path',
+                'Shape',
+                'Line',
+                'Rect',
+                'Circle',
+              ].includes(n.className);
+              const newAttrs = {
+                ...n.getAttrs(),
+                class: undefined,
+                hitStrokeWidth: undefined,
+                listening: undefined,
+                shadowForStrokeEnabled: undefined,
+                perfectDrawEnabled: undefined,
+              };
+              // if (n.attrs.d === n.attrs.data) newAttrs.d = undefined;
+              n.setAttrs(newAttrs);
+
+              if (ticketLike) {
+                const oldFill = n.getAttr('fill');
+                if (oldFill !== '#ccc') {
+                  n.setAttr('fill', '#ccc');
+                  n.setAttr('conf-fill-old', oldFill);
+                }
+              }
+              return true;
+            });
 
             // Destroying useless nodes
             clonedStage?.findOne('.selected-shapes')?.remove();
@@ -337,6 +367,25 @@ export default function Stage({
 
             clonedBaseLayer?.clearCache();
             clonedBaseLayer?.setAttr('opacity', 1);
+
+            function jsonToFile(jsonString: any, name = 'stage.json') {
+              const blob = new Blob([jsonString], { type: 'application/json' });
+
+              const url = URL.createObjectURL(blob);
+
+              const a = document.createElement('a');
+              a.href = url;
+              a.download = name;
+              a.style.display = 'none';
+              document.body.appendChild(a);
+              a.click();
+
+              // Cleanup
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+
+              return new File([blob], name, { type: 'application/json' });
+            }
 
             setTimeout(() => {
               const purchasableItems =
@@ -361,12 +410,27 @@ export default function Stage({
                       ),
                     );
                   }) || [];
-              const ticketsSectionJSON = ticketsSection.toObject();
-              const masksSectionJSON = masksSection.toObject();
-              const othersJSON = clonedStage?.toObject();
+              const ticketsSectionJSON = jsonToFile(
+                ticketsSection.toJSON(),
+                'tickets.json',
+              );
+              const masksSectionJSON = jsonToFile(
+                masksSection.toJSON(),
+                'masks.json',
+              );
+              const othersJSON = jsonToFile(
+                clonedStage.toJSON(),
+                'others.json',
+              );
 
               console.log({ othersJSON, ticketsSectionJSON, masksSectionJSON });
-              console.log('purchasableItems', purchasableItems);
+              console.log(
+                'purchasableItems',
+                jsonToFile(
+                  JSON.stringify(purchasableItems, null, 2),
+                  'seats.json',
+                ),
+              );
             }, 500);
           }}
         >
