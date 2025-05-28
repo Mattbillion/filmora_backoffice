@@ -95,6 +95,7 @@ export function CreateTemplateDialog() {
       const clonedStage = getStage().clone()!;
       clonedStage?._clearCaches();
       const clonedBaseLayer = clonedStage?.getLayers()[0]!;
+      clonedBaseLayer?.setAttr('opacity', 1);
 
       const masksSection: Konva.Node = clonedStage?.findOne('#masks')?.clone();
       const ticketsSection: Konva.Node = clonedStage
@@ -126,8 +127,6 @@ export function CreateTemplateDialog() {
       clonedStage?.findOne('.selected-shapes')?.remove();
       clonedStage?.findOne('#masks')?.remove();
       clonedStage?.findOne('#tickets')?.remove();
-
-      clonedBaseLayer?.setAttr('opacity', 1);
 
       const purchasableItems =
         ticketsSection
