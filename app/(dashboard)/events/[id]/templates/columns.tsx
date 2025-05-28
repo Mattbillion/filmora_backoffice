@@ -11,7 +11,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { Button } from '@/components/ui/button';
 import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
 
@@ -48,10 +48,9 @@ const Action = ({ row }: CellContext<TemplatesItemType, unknown>) => {
         </>
       }
     >
-      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+      <Button variant="destructive" size="icon">
         <Trash className="h-4 w-4" />
-        Delete
-      </DropdownMenuItem>
+      </Button>
     </DeleteDialog>
   );
 };
@@ -62,35 +61,11 @@ export const templatesColumns: ColumnDef<TemplatesItemType>[] = [
     header: ({ column }) => <TableHeaderWrapper column={column} />,
   },
   {
-    id: 'venue_id',
-    accessorKey: 'venue_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue_id,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_id',
-    accessorKey: 'branch_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch_id,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'hall_id',
-    accessorKey: 'hall_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.hall_id,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
     id: 'template_name',
     accessorKey: 'template_name',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => row.original.template_name?.slice(0, 300),
-    enableSorting: true,
+    enableSorting: false,
     enableColumnFilter: true,
   },
   {
@@ -121,8 +96,6 @@ export const templatesColumns: ColumnDef<TemplatesItemType>[] = [
     accessorKey: 'template_json_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => row.original.template_json_url,
-    enableSorting: true,
-    enableColumnFilter: true,
   },
   {
     id: 'status',
@@ -130,14 +103,6 @@ export const templatesColumns: ColumnDef<TemplatesItemType>[] = [
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
     enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'event_id',
-    accessorKey: 'event_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.event_id,
-    enableSorting: true,
     enableColumnFilter: true,
   },
   {
