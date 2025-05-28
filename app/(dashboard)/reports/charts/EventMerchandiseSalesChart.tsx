@@ -1,13 +1,17 @@
 'use client';
 
-import { TrendingUp } from 'lucide-react';
-import { CartesianGrid, Line, LineChart, XAxis } from 'recharts';
+import { useEffect } from 'react';
+import * as React from 'react';
+import { useRouter } from 'next/navigation';
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis } from 'recharts';
 
+import { getEventsHash } from '@/app/(dashboard)/events/actions';
+import { CustomTooltip } from '@/app/(dashboard)/reports/charts/CustomToolTip';
+import { SelectEvent } from '@/app/(dashboard)/reports/event-merchandise-sales/components/SelectEvent';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -20,50 +24,59 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart';
 
-// {
-//   "event_id": 28,
-//     "seat_id": 26875,
-//     "seat_no": "R2-s152-P5000-JS",
-//     "section_type": "seat",
-//     "order_date": "2025-05-27",
-//     "total_quantity": 1,
-//     "total_revenue": 10
-// }
-//
-// const chartConfig = {
-//   seats_sales_amount: {
-//     label: 'Тасалбар',
-//     color: 'hsl(var(--chart-1))',
-//   },
-//   merch_sales_amount: {
-//     label: 'Мерчидайз бараа',
-//     color: 'hsl(var(--chart-2))',
-//   },
-//   total_sales_amount: {
-//     label: 'Нийт борлуулалтын дүн',
-//     color: 'hsl(var(--chart-3))',
-//   },
-// } satisfies ChartConfig;
-
-export const MultipleLineChart = ({
+export const EventMerchandiseSalesChart = ({
   data,
+  cConfig,
   xAxisKey,
-  chartConfig,
+  showLegends = false,
 }: {
   data: any;
+  cConfig: any;
   xAxisKey: string;
-  chartConfig: ChartConfig;
+  showLegends?: boolean;
 }) => {
+  const chartConfig: ChartConfig = cConfig;
+  const router = useRouter();
+
+  const [eventList, setEventList] = React.useState<Record<number, string>>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await getEventsHash();
+        if (res?.data) {
+          setEventList(res.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch event hash:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   if (data.length < 0) return null;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Line Chart - Multiple</CardTitle>
-        <CardDescription>January - June 2024</CardDescription>
+        <div className="flex w-full">
+          <div className="w-full space-y-1">
+            <CardTitle>Эвентын мерчиндайз борлуулалт</CardTitle>
+            <CardDescription>January - June 2024</CardDescription>
+          </div>
+          <div>
+            <SelectEvent
+              eventList={eventList}
+              selectedValue={(c) => router.replace(`?eventId=${c}`)}
+              defaultValue={''}
+            />
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig} className="h-[256px] w-full">
-          <LineChart
+          <BarChart
             accessibilityLayer
             data={data}
             margin={{
@@ -72,6 +85,7 @@ export const MultipleLineChart = ({
             }}
           >
             <CartesianGrid vertical={false} />
+            <Tooltip content={<CustomTooltip />} />
             <XAxis
               tickSize={6}
               dataKey={xAxisKey}
@@ -81,33 +95,21 @@ export const MultipleLineChart = ({
               tickFormatter={(value) => value}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-            <ChartLegend content={<ChartLegendContent />} />
-            {Object.entries(chartConfig).map(([key, { color, label }]: any) => {
+            {showLegends && <ChartLegend content={<ChartLegendContent />} />}
+            {Object.entries(cConfig).map(([key, { color, label }]: any) => {
               return (
-                <Line
+                <Bar
                   key={key}
                   dataKey={key}
-                  stroke={color}
-                  dot={false}
+                  fill={color}
+                  stackId="a"
                   label={label}
                 />
               );
             })}
-          </LineChart>
+          </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-full items-start gap-2 text-sm">
-          <div className="grid gap-2">
-            <div className="flex items-center gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
-            <div className="flex items-center gap-2 leading-none text-muted-foreground">
-              Showing total visitors for the last 6 months
-            </div>
-          </div>
-        </div>
-      </CardFooter>
     </Card>
   );
 };

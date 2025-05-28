@@ -87,6 +87,11 @@ const productManagerRoutes: SubMenuItemType[] = [
         url: '/reports/event-seat-sales',
         permissions: [''],
       },
+      {
+        title: 'Эвент мерчиндайз',
+        url: '/reports/event-merchandise-sales',
+        permissions: [''],
+      },
     ],
   },
   {

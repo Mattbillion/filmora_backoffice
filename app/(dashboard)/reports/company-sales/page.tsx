@@ -18,8 +18,6 @@ export default async function CompanySalesPage(props: {
     company_id: session?.user?.company_id,
   });
 
-  console.log(data, 'dadada');
-
   return (
     <>
       <div className="flex items-start justify-between">
