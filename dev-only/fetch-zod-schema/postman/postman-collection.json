@@ -848,7 +848,7 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{base_url}}/templates",
+                      "raw": "{{base_url}}/templates?event_id=28",
                       "host": [
                         "{{base_url}}"
                       ],
@@ -893,8 +893,7 @@
                         },
                         {
                           "key": "event_id",
-                          "value": "1",
-                          "disabled": true
+                          "value": "28"
                         }
                       ]
                     }
@@ -912,7 +911,7 @@
                         {
                           "key": "json_file",
                           "type": "file",
-                          "src": "/Users/misu/Desktop/Konva.json"
+                          "src": "/Users/misu/Downloads/26 Seats.json"
                         }
                       ]
                     },
@@ -967,6 +966,49 @@
                       "path": [
                         "templates",
                         "86"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "upload template files",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "key": "mask_file",
+                          "type": "file",
+                          "src": []
+                        },
+                        {
+                          "key": "tickets_file",
+                          "type": "file",
+                          "src": []
+                        },
+                        {
+                          "key": "other_file",
+                          "type": "file",
+                          "src": []
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/upload-template-files?template_id=110",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "upload-template-files"
+                      ],
+                      "query": [
+                        {
+                          "key": "template_id",
+                          "value": "110"
+                        }
                       ]
                     }
                   },
@@ -3280,10 +3322,6 @@
       "key": "token",
       "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDg0MzY3MTV9.tHUDRwnfaaNUD8fkoZPX31P5PlThj2WBfz2F4xU-Fig",
       "type": "string"
-    },
-    {
-      "key": "base_url2",
-      "value": ""
     }
   ]
 }

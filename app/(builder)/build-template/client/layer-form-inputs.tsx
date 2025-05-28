@@ -41,8 +41,8 @@ export function LayerTypeSelect({
         defaultValue={node.attrs['data-type']}
         onValueChange={(val) => {
           onChange(val);
+          node.setAttr('data-type', val);
           if (!skipManipulate) {
-            node.setAttr('data-type', val);
             if (!!oldValue.current && oldValue.current !== val)
               manipulateAttrs(node, `data-${oldValue.current}`, '', 'remove');
             oldValue.current = val;

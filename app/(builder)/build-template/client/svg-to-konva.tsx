@@ -117,19 +117,23 @@ const propertyToProp = (
 
     case 'circle':
       konvaProps.radius = parseFloat(properties.r || '0');
+      delete konvaProps.r;
       break;
 
     case 'path':
       konvaProps.data = properties.d;
+      delete konvaProps.d;
       break;
 
     case 'image':
       konvaProps.image = new window.Image();
       konvaProps.image.src = properties.href || '';
+      delete konvaProps.href;
       break;
 
     case 'polygon':
       konvaProps.points = properties.points?.split(/[\s,]+/).map(parseFloat);
+      delete konvaProps.points;
       konvaProps.sceneFunc = (context: any, shape: any) => {
         context.beginPath();
         const points = properties.points?.split(/[\s,]+/).map(parseFloat);
@@ -157,6 +161,7 @@ const propertyToProp = (
 
   if (properties.transform) {
     const transforms: string[] = properties.transform.split(/\)\s+/);
+    delete konvaProps.transform;
 
     for (let i = 0; i < transforms.length; i++) {
       const transform = transforms[i];
@@ -191,7 +196,7 @@ const propertyToProp = (
           break;
 
         case 'skewY':
-          konvaProps.skewY = nums[0];
+          konvaProps.skewY = nums[1] || nums[0];
           break;
       }
     }

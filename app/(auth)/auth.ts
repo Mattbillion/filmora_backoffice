@@ -54,7 +54,7 @@ export const {
         formData.append('password', password);
 
         const response = await fetch(
-          `${process.env.XOOX_DOMAIN || 'http://3.95.231.68:3000/api/v1'}/dashboard/auth/employee-login`,
+          `${process.env.XOOX_DOMAIN || 'http://47.128.225.144:3000/api/v1'}/dashboard/auth/employee-login`,
           {
             method: 'POST',
             body: formData,
@@ -113,7 +113,7 @@ export const {
           if (refreshAttempts > 3) return null;
 
           const response = await fetch(
-            `${process.env.XOOX_DOMAIN || 'http://3.95.231.68:3000/api/v1'}/dashboard/auth/employee-refresh-token`,
+            `${process.env.XOOX_DOMAIN || 'http://47.128.225.144:3000/api/v1'}/dashboard/auth/employee-refresh-token`,
             {
               method: 'POST',
               headers: {
