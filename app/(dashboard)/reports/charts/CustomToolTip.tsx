@@ -26,12 +26,6 @@ export const CustomTooltip = ({
       item.value as number;
   });
 
-  const mnt = new Intl.NumberFormat('mn-MN', {
-    style: 'currency',
-    currency: 'MNT',
-    minimumFractionDigits: 0,
-  });
-
   return (
     <div className="rounded border bg-white p-2 shadow-sm">
       <div className="mb-1 font-bold">{label}</div>

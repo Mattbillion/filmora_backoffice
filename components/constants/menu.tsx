@@ -92,6 +92,11 @@ const productManagerRoutes: SubMenuItemType[] = [
         url: '/reports/event-merchandise-sales',
         permissions: [''],
       },
+      {
+        title: 'Хямдралтай борлуулалт',
+        url: '/reports/merchandise-discount-sales',
+        permissions: [''],
+      },
     ],
   },
   {
