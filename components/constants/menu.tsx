@@ -1,5 +1,6 @@
 import {
   BadgePercent,
+  ChartPieIcon,
   CircleDollarSign,
   GalleryVertical,
   LayoutGrid,
@@ -17,7 +18,7 @@ import {
 export type SubMenuItemType = {
   title: string;
   url: string;
-  icon: LucideIcon;
+  icon?: LucideIcon;
   subRoutes?: boolean;
   permissions: string[];
   children?: Omit<SubMenuItemType, 'children'>[];
@@ -51,10 +52,59 @@ const productManagerRoutes: SubMenuItemType[] = [
     ],
   },
   {
+    title: 'Тайлан',
+    url: '/reports/company-sales',
+    icon: ChartPieIcon,
+    subRoutes: true,
+    permissions: [
+      'company_merchandise_list',
+      'get_company_merchandise_list',
+      'get_company_merchandise',
+      'create_company_merchandise',
+      'update_company_merchandise',
+      'delete_company_merchandise',
+      // variants
+      'get_company_merchandise_attribute_value_list',
+      'get_company_merchandise_attribute_value',
+      'create_company_merchandise_attribute_value',
+      'update_company_merchandise_attribute_value',
+      'delete_company_merchandise_attribute_value',
+      // variant attributes
+      'get_company_merchandise_attribute_option_value_list',
+      'get_company_merchandise_attribute_option_value',
+      'create_company_merchandise_attribute_option_value',
+      'update_company_merchandise_attribute_option_value',
+      'delete_company_merchandise_attribute_option_value',
+    ],
+    children: [
+      {
+        title: 'Борлуулалтын тайлан',
+        url: '/reports/company-sales',
+        permissions: [''],
+      },
+      {
+        title: 'Эвент борлуулалт',
+        url: '/reports/event-seat-sales',
+        permissions: [''],
+      },
+      {
+        title: 'Эвент мерчиндайз',
+        url: '/reports/event-merchandise-sales',
+        permissions: [''],
+      },
+      {
+        title: 'Хямдралтай борлуулалт',
+        url: '/reports/merchandise-discount-sales',
+        permissions: [''],
+      },
+    ],
+  },
+  {
     title: 'Option types',
     url: '/option-types',
     subRoutes: true,
     icon: PackageIcon,
+
     permissions: [
       // variant attributes
       'get_company_merchandise_attribute_option_value_list',
