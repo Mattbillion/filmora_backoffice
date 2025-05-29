@@ -67,7 +67,7 @@ const SheetItem = forwardRef<FormDialogRef, SheetItemProps>(
           className={cn('w-[650px] !max-w-[90%]', dialogContentClassName)}
         >
           {(title || description) && (
-            <SheetHeader>
+            <SheetHeader className="mb-6">
               <SheetTitle>{title}</SheetTitle>
               <SheetDescription>{description}</SheetDescription>
             </SheetHeader>

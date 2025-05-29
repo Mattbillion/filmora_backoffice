@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useTransition } from 'react';
-import { Plus, Trash2, X } from 'lucide-react';
+import { PlusCircle, Trash2, X } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -67,63 +67,42 @@ function OptionValueItem({
   };
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="p-3">
         <CardTitle>
-          <div className="flex items-center justify-between">
-            <div>
-              <Label className="text-base font-medium">{optionType.name}</Label>
-            </div>
-            {!optionValues?.length && (
-              <Button
-                size="sm"
-                variant="ghost"
-                disabled={loading}
-                className="text-destructive hover:text-destructive"
-                onClick={() => {
-                  setOptionTypes((prev) =>
-                    prev.filter((op) => op.id !== optionType.id),
-                  );
-                }}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
+          <div className="flex items-center gap-2">
+            <Label className="w-full text-base font-medium">
+              {optionType.name}
+            </Label>
+            <Button
+              size="sm"
+              variant="ghost"
+              disabled={loading || optionValues.length > 0}
+              className="size-10 rounded-full text-destructive hover:text-destructive"
+              onClick={() => {
+                setOptionTypes((prev) =>
+                  prev.filter((op) => op.id !== optionType.id),
+                );
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
+      <CardContent className="space-y-2 p-3 pt-0">
         {/* Add Values */}
-        <div className="flex gap-2">
-          <Input
-            value={value}
-            className={'h-9'}
-            disabled={loading}
-            onChange={(e) => setValue(e.target.value)}
-          />
-          {canAdd && (
-            <Button
-              size={'icon'}
-              disabled={loading}
-              onClick={handleAdd}
-              className={'flex-basis-9 h-9 w-9 flex-shrink-0 flex-grow-0'}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-          )}
-        </div>
         {optionValues.length > 0 && (
           <div className="flex flex-wrap gap-2">
             {optionValues.map((op) => (
               <Badge
                 key={op.id}
                 variant="secondary"
-                className="flex items-center gap-1"
+                className="flex items-center gap-1 rounded-full px-3 py-1.5"
               >
                 {op.value}
                 {canDelete && (
                   <button
                     disabled={deleting}
-                    className="ml-1 hover:text-destructive"
                     onClick={() => handleDelete(op.id)}
                   >
                     <X className="h-3 w-3" />
@@ -133,6 +112,26 @@ function OptionValueItem({
             ))}
           </div>
         )}
+        <div className="flex flex-col gap-2">
+          <Input
+            value={value}
+            className={'h-9'}
+            disabled={loading}
+            placeholder="Add option value"
+            onChange={(e) => setValue(e.target.value)}
+          />
+          {canAdd && (
+            <Button
+              size="default"
+              variant="outline"
+              disabled={loading || !value}
+              onClick={handleAdd}
+            >
+              <span>Add more option</span>
+              <PlusCircle size={16} />
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   );

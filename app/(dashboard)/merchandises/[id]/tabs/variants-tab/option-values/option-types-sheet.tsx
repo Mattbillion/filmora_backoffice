@@ -1,6 +1,7 @@
 'use client';
 
 import { ReactNode, useRef, useState, useTransition } from 'react';
+import { DatabaseZap } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -57,10 +58,12 @@ export function OptionTypesSheet({
       ref={dialogRef}
       title="Option types"
       trigger={children}
+      footerClassName="px-0 pt-3"
       footerActions={
         canIGenerate ? (
           <Button
-            className="h-12 w-full"
+            variant="outline"
+            className="h-12 w-full rounded-xl"
             disabled={generating || loading}
             onClick={() => {
               startLoadingGenerate(() => {
@@ -76,6 +79,7 @@ export function OptionTypesSheet({
             }}
           >
             Generate Variants
+            <DatabaseZap size={16} />
           </Button>
         ) : undefined
       }
@@ -102,7 +106,7 @@ export function OptionTypesSheet({
         }
       }}
     >
-      <div className={'flex flex-wrap gap-4'}>
+      <div className={'flex w-full flex-col-reverse gap-4'}>
         {optionTypes.map((ot) => (
           <OptionValueItem
             key={ot.id}
