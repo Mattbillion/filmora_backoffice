@@ -107,15 +107,37 @@ const Action = ({ row }: CellContext<EventColumnType, unknown>) => {
 
 const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
   const { data } = useSession();
+  const canAccessTemplate = checkPermission(data, [
+    'get_template_list',
+    'create_template',
+    'delete_template',
+  ]);
+  const canAccessBosoo = checkPermission(data, [
+    'create_bosoo_seat',
+    'update_bosoo_seat',
+    'delete_bosoo_seat',
+    'get_bosoo_seats',
+  ]);
 
-  if (!checkPermission(data, ['get_event'])) return null;
   return (
-    <Link
-      href={`/events/${row.original.id}/templates`}
-      className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
-    >
-      <ListTree className="h-4 w-4" /> Templates
-    </Link>
+    <div className="flex items-center justify-center gap-2">
+      {canAccessTemplate && (
+        <Link
+          href={`/events/${row.original.id}/templates`}
+          className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+        >
+          <ListTree className="h-4 w-4" /> Templates
+        </Link>
+      )}
+      {canAccessBosoo && (
+        <Link
+          href={`/events/${row.original.id}/bosoo-seats`}
+          className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+        >
+          <ListTree className="h-4 w-4" /> Variants
+        </Link>
+      )}
+    </div>
   );
 };
 

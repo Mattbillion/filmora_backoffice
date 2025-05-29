@@ -24,7 +24,7 @@ module.exports = {
         return cachedData;
       }
 
-      const response = execSync(curlCommand(endpointList[0].endpoint)).toString();
+      const response = execSync(curlCommand(endpointList.find(cc => cc.method === 'GET').endpoint)).toString();
 
       const jsonResponse = JSON.parse(response);
       if (!jsonResponse.data?.length)

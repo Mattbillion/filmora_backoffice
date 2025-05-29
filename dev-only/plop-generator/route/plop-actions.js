@@ -3,10 +3,29 @@ const { execSync } = require('child_process');
 const dashboardSrc = '../../app/(dashboard)';
 const changeCase = require('change-case-all');
 
+function kebabWithPreservedBrackets(input) {
+  return input.replace(/(\[.*?\]|\(.*?\)|[^\/]+)/g, (match) => {
+    // If it's a bracketed part, preserve brackets and kebab inner content
+    if (match.startsWith('[') && match.endsWith(']')) {
+      const inner = match.slice(1, -1);
+      return `[${changeCase.kebabCase(inner)}]`;
+    }
+    if (match.startsWith('(') && match.endsWith(')')) {
+      const inner = match.slice(1, -1);
+      return `(${changeCase.kebabCase(inner)})`;
+    }
+    // Else, kebab-case normally
+    return changeCase.kebabCase(match);
+  });
+}
+
 const routeActions = (routeName, endpoint, path) => {
   // const zodSchema = fetchZodSchema(endpoint, routeName);
   const templateData = { 'route-name': routeName, endpoint, path };
-  const dirPath = path.split("/").map(p => changeCase.kebabCase(p)).join("/");
+  const dirPath = path
+    .split('/')
+    .map(p => kebabWithPreservedBrackets(p))
+    .join('/');
   const directory = `${dashboardSrc}/${dirPath}`;
 
   return [
