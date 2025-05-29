@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { Plus } from 'lucide-react';
+import { Ticket } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { DateRangeFilter } from '@/components/custom/date-range-filter';
@@ -51,12 +51,13 @@ export default async function EventsPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading
-          title={`Events list (${data?.total_count ?? data?.data?.length})`}
+          title={`Эвент & Тоглолт (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_event']) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
-              <Plus className="h-4 w-4" /> Add New
+              <Ticket size={16} />
+              Эвент үүсгэх
             </Button>
           </CreateDialog>
         )}
