@@ -30,11 +30,14 @@ interface KonvaPreviewProps {
   };
 }
 
+const scaleBy = 1.05;
+const maxScale = 10;
+const minScale = 0.1;
+
 export default function KonvaStagePreview({ json }: KonvaPreviewProps) {
   const stageContainerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<any>(null);
   const [size, setSize] = useState({ width: 800, height: 600 });
-  const [scale, setScale] = useState(1);
 
   // Resize container
   useEffect(() => {
@@ -76,50 +79,66 @@ export default function KonvaStagePreview({ json }: KonvaPreviewProps) {
     }
   }, [json.tickets]);
 
-  // Mouse wheel zoom
-  useEffect(() => {
-    const stage = stageRef.current;
-    if (!stage) return;
-
-    const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-
-      const scaleBy = 1.05;
-      const oldScale = stage.scaleX();
-      const pointer = stage.getPointerPosition();
-      if (!pointer) return;
-
-      const mousePointTo = {
-        x: (pointer.x - stage.x()) / oldScale,
-        y: (pointer.y - stage.y()) / oldScale,
-      };
-
-      const direction = e.deltaY > 0 ? -1 : 1;
-      const newScale = direction > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-
-      stage.scale({ x: newScale, y: newScale });
-
-      const newPos = {
-        x: pointer.x - mousePointTo.x * newScale,
-        y: pointer.y - mousePointTo.y * newScale,
-      };
-
-      stage.position(newPos);
-      stage.batchDraw();
-      setScale(newScale);
-    };
-
-    stage.container().addEventListener('wheel', handleWheel);
-    return () => {
-      stage.container().removeEventListener('wheel', handleWheel);
-    };
-  }, []);
-
   const konvaOptimization = {
     imageSmoothingEnabled: false,
     listening: false,
     shadowForStrokeEnabled: false,
     perfectDrawEnabled: false,
+  };
+
+  const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+    e.evt.preventDefault();
+
+    const pointer = stage.getPointerPosition();
+    const { scale: newScale, position: newPosition } = getZoomInfo({
+      deltaY: e.evt.deltaY,
+      stage,
+      pointer,
+    });
+
+    stage.scale(newScale);
+    stage.setPosition(newPosition);
+  };
+
+  const getZoomInfo = ({
+    deltaY,
+    stage,
+    pointer,
+  }: {
+    deltaY: number;
+    stage: Konva.Stage;
+    pointer?: Konva.Vector2d | null;
+  }): {
+    scale: Konva.Vector2d;
+    position: Konva.Vector2d;
+    miniMapSize?: { scale: Konva.Vector2d; position: Konva.Vector2d };
+  } => {
+    const oldScale = stage.scaleX();
+    const newScale = deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+    const clampedScale = Math.max(minScale, Math.min(maxScale, newScale));
+    const zoomInfo = {
+      scale: { x: clampedScale, y: clampedScale },
+      position: {
+        x: stage.x(),
+        y: stage.y(),
+      },
+    };
+
+    if (pointer) {
+      const pointTo = {
+        x: (pointer.x - stage.x()) / oldScale,
+        y: (pointer.y - stage.y()) / oldScale,
+      };
+
+      zoomInfo.position = {
+        x: pointer.x - pointTo.x * clampedScale,
+        y: pointer.y - pointTo.y * clampedScale,
+      };
+    }
+
+    return zoomInfo;
   };
 
   const renderNode = (node: any): ReactNode | null => {
@@ -135,7 +154,7 @@ export default function KonvaStagePreview({ json }: KonvaPreviewProps) {
             ref={stageRef}
             width={size.width}
             height={size.height}
-            scale={{ x: scale, y: scale }}
+            onWheel={handleWheel}
             className="bg-white"
           >
             {(children || []).map(renderNode)}
@@ -182,6 +201,34 @@ export default function KonvaStagePreview({ json }: KonvaPreviewProps) {
     }
   };
 
+  function zoomStage(sclB: number) {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const oldScale = stage.scaleX();
+    const pointer = {
+      x: stage.width() / 2,
+      y: stage.height() / 2,
+    };
+
+    const stagePos = stage.position();
+    const mousePointTo = {
+      x: (pointer.x - stagePos.x) / oldScale,
+      y: (pointer.y - stagePos.y) / oldScale,
+    };
+
+    const newScale = oldScale * sclB;
+
+    stage.scale({ x: newScale, y: newScale });
+
+    const newPos = {
+      x: pointer.x - mousePointTo.x * newScale,
+      y: pointer.y - mousePointTo.y * newScale,
+    };
+
+    stage.position(newPos);
+  }
+
   return (
     <div className="flex flex-col gap-2">
       <div
@@ -192,16 +239,11 @@ export default function KonvaStagePreview({ json }: KonvaPreviewProps) {
         {renderNode(json.stage)}
 
         <div className="absolute right-2 top-2 z-10 flex flex-col items-center justify-center gap-2">
-          <Button
-            onClick={() => setScale((s) => Math.min(5, s * 1.1))}
-            size="icon"
-          >
+          <Button onClick={() => zoomStage(1.2)} size="icon">
             <ZoomIn />
           </Button>
-          <Button
-            onClick={() => setScale((s) => Math.max(0.2, s / 1.1))}
-            size="icon"
-          >
+
+          <Button onClick={() => zoomStage(1 / 1.2)} size="icon">
             <ZoomOut />
           </Button>
         </div>
