@@ -30,10 +30,7 @@ async function getDataFromGzip(url: string): Promise<any> {
 }
 
 async function getTemplateData(id: string) {
-  const res = await fetch(
-    `${process.env.XOOX_DOMAIN}/client/seat_files/${id}`,
-    { cache: 'force-cache' },
-  );
+  const res = await fetch(`${process.env.XOOX_DOMAIN}/client/seat_files/${id}`);
   const resJson = await res.json();
   const { gzip_tickets_url, gzip_other_url, gzip_mask_url } =
     resJson?.data || {};
@@ -56,28 +53,27 @@ export default async function TemplatesPage(props: {
   const session = await auth();
   const { id } = await props.params;
   const searchParams = await props.searchParams;
+  const { data: eventData } = await getEventDetail(id);
   const { data } = await getTemplates({
     ...searchParams,
-    event_id: id,
+    filters: `event_id=${id}`,
   });
   const [template] = data?.data ?? [];
 
-  const [eventData, venueData, branchData, hallData, templateJsonData] =
-    await Promise.all([
-      template?.event_id
-        ? getEventDetail(template.event_id)
+  const [venueData, branchData, hallData, templateJsonData] = await Promise.all(
+    [
+      eventData?.data?.venue_id
+        ? getVenuesDetail(eventData?.data?.venue_id)
         : Promise.resolve(null),
-      template?.venue_id
-        ? getVenuesDetail(template.venue_id)
+      eventData?.data?.branch_id
+        ? getBranchesDetail(eventData?.data?.branch_id)
         : Promise.resolve(null),
-      template?.branch_id
-        ? getBranchesDetail(template.branch_id)
-        : Promise.resolve(null),
-      template?.hall_id
-        ? getHallDetail(template.hall_id)
+      eventData?.data?.hall_id
+        ? getHallDetail(eventData?.data?.hall_id)
         : Promise.resolve(null),
       template ? getTemplateData(id) : Promise.resolve(null),
-    ]);
+    ],
+  );
 
   return (
     <div className="space-y-6">
@@ -91,27 +87,27 @@ export default async function TemplatesPage(props: {
             <div>
               <Label>Template Name</Label>
               <p className="text-muted-foreground">
-                {template.template_name ?? '-'}
+                {template?.template_name ?? '-'}
               </p>
             </div>
             <div>
               <Label>Description</Label>
               <p className="text-muted-foreground">
-                {removeHTML(template.template_desc).slice(0, 300) || '-'}
+                {removeHTML(template?.template_desc).slice(0, 300) || '-'}
               </p>
             </div>
             <div>
               <Label>Order</Label>
               <p className="text-muted-foreground">
-                {template.template_order || '-'}
+                {template?.template_order || '-'}
               </p>
             </div>
             <div>
               <Label>Status</Label>
               <p className="text-muted-foreground">
-                {typeof template.status === 'undefined'
+                {typeof template?.status === 'undefined'
                   ? '-'
-                  : template.status
+                  : template?.status
                     ? 'Active'
                     : 'Inactive'}
               </p>
@@ -127,7 +123,7 @@ export default async function TemplatesPage(props: {
             <div>
               <Label>Event</Label>
               <p className="text-muted-foreground">
-                {eventData?.data?.data?.event_name}
+                {eventData?.data?.event_name}
               </p>
             </div>
             <div>

@@ -3,7 +3,10 @@ import { xooxFetch } from '@/lib/fetch';
 import { executeRevalidate } from '@/lib/xoox';
 
 export const createTemplate = async (bodyData: FormData) => {
-  const { body, error } = await xooxFetch<{ data: number }>(`/templates`, {
+  const { body, error } = await xooxFetch<{
+    seats: { seat_no: string; id: number }[];
+    template_id: number;
+  }>(`/templates`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',

@@ -163,9 +163,24 @@ export function CreateTemplateDialog() {
             ),
           }),
         );
+        if (!data) return;
+        const seatIdObj: Record<string, number> = data.seats.reduce(
+          (acc, cur) => ({ ...acc, [cur.seat_no]: cur.id }),
+          {},
+        );
+
+        // define all ticket like nodes as not purchasable
+        //@ts-ignore
+        ticketsSection.find((n) => {
+          const seatId = seatIdObj[n.id()];
+          if (seatId) {
+            n.setAttr('data-seat-id', seatId);
+          }
+        });
+
         const { data: uploadedData } = await uploadTemplateJSON(
           toFormData({
-            template_id: data.data,
+            template_id: data.template_id,
             company_id: session?.user?.company_id,
             tickets_file: createJsonFile(
               ticketsSection.toJSON(),
