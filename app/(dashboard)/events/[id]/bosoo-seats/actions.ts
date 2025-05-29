@@ -13,6 +13,7 @@ export const createBosooSeats = async (bodyData: BosooSeatsBodyType) => {
   const { body, error } = await xooxFetch(`/bosoo_seats`, {
     method: 'POST',
     body: bodyData,
+    searchParams: { company_id: bodyData.company_id },
     cache: 'no-store',
   });
 

@@ -90,7 +90,7 @@ export function UpdateDialog({
         name="seat_no"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Seat no</FormLabel>
+            <FormLabel>Seat Type</FormLabel>
             <FormControl>
               <Input placeholder="Enter Seat no" {...field} />
             </FormControl>
@@ -125,34 +125,6 @@ export function UpdateDialog({
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="is_reserved"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Is reserved</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Is reserved" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="section_type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Section type</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Section type" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -221,56 +193,6 @@ export function UpdateDialog({
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="selled_stock"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Selled stock</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Selled stock"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="current_stock"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Current stock</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Current stock"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="sell_type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Sell type</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Sell type" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>
