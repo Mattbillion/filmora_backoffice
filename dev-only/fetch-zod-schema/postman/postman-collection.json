@@ -228,7 +228,17 @@
                       "name": "get hall",
                       "request": {
                         "method": "GET",
-                        "header": []
+                        "header": [],
+                        "url": {
+                          "raw": "{{base_url}}/halls/43",
+                          "host": [
+                            "{{base_url}}"
+                          ],
+                          "path": [
+                            "halls",
+                            "43"
+                          ]
+                        }
                       },
                       "response": []
                     },
@@ -367,13 +377,13 @@
                     "method": "GET",
                     "header": [],
                     "url": {
-                      "raw": "{{base_url}}/branches/12",
+                      "raw": "{{base_url}}/branches/18",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
                         "branches",
-                        "12"
+                        "18"
                       ]
                     }
                   },
@@ -909,45 +919,54 @@
                       "mode": "formdata",
                       "formdata": [
                         {
+                          "key": "event_id",
+                          "value": "28",
+                          "type": "text"
+                        },
+                        {
+                          "key": "template_name",
+                          "value": "test 2 template",
+                          "type": "text"
+                        },
+                        {
+                          "key": "template_desc",
+                          "value": "test 2 template",
+                          "type": "text"
+                        },
+                        {
+                          "key": "template_order",
+                          "value": "2",
+                          "type": "text"
+                        },
+                        {
+                          "key": "status",
+                          "value": "true",
+                          "type": "text"
+                        },
+                        {
+                          "key": "template_type",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "key": "company_id",
+                          "value": "9",
+                          "type": "text"
+                        },
+                        {
                           "key": "json_file",
                           "type": "file",
-                          "src": "/Users/misu/Downloads/26 Seats.json"
+                          "src": "/Users/misu/Downloads/XOOX Dashboard Seats.json"
                         }
                       ]
                     },
                     "url": {
-                      "raw": "{{base_url}}/templates?event_id=28&template_name=test 2 template&template_desc=test 2 template&template_order=2&status=true&template_type=json",
+                      "raw": "{{base_url}}/templates",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
                         "templates"
-                      ],
-                      "query": [
-                        {
-                          "key": "event_id",
-                          "value": "28"
-                        },
-                        {
-                          "key": "template_name",
-                          "value": "test 2 template"
-                        },
-                        {
-                          "key": "template_desc",
-                          "value": "test 2 template"
-                        },
-                        {
-                          "key": "template_order",
-                          "value": "2"
-                        },
-                        {
-                          "key": "status",
-                          "value": "true"
-                        },
-                        {
-                          "key": "template_type",
-                          "value": "json"
-                        }
                       ]
                     }
                   },
@@ -982,32 +1001,158 @@
                         {
                           "key": "mask_file",
                           "type": "file",
-                          "src": []
+                          "src": "/Users/misu/Downloads/XOOX Masks.json"
                         },
                         {
                           "key": "tickets_file",
                           "type": "file",
-                          "src": []
+                          "src": "/Users/misu/Downloads/XOOX Dashboard Tickets.json"
                         },
                         {
                           "key": "other_file",
                           "type": "file",
-                          "src": []
+                          "src": "/Users/misu/Downloads/XOOX Dashboard Data.json"
+                        },
+                        {
+                          "key": "template_id",
+                          "value": "163",
+                          "type": "text"
+                        },
+                        {
+                          "key": "company_id",
+                          "value": "9",
+                          "type": "text"
                         }
                       ]
                     },
                     "url": {
-                      "raw": "{{base_url}}/upload-template-files?template_id=110",
+                      "raw": "{{base_url}}/upload-template-files",
                       "host": [
                         "{{base_url}}"
                       ],
                       "path": [
                         "upload-template-files"
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "create bosoo seats",
+                  "request": {
+                    "method": "POST",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"event_id\": 0,\n  \"name\": \"string\",\n  \"price\": 0,\n  \"status\": true,\n  \"seat_stock\": 0,\n  \"sell_type\": \"string\",\n  \"discount_id\": null\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/bosoo_seats?company_id=9",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "bosoo_seats"
                       ],
                       "query": [
                         {
-                          "key": "template_id",
-                          "value": "110"
+                          "key": "company_id",
+                          "value": "9"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "update bosoo seats",
+                  "request": {
+                    "method": "PUT",
+                    "header": [],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"name\": \"string\",\n  \"price\": 0,\n  \"status\": true,\n  \"seat_stock\": 0,\n  \"sell_type\": \"string\",\n  \"discount_id\": null\n}",
+                      "options": {
+                        "raw": {
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{base_url}}/bosoo_seats?company_id=9&seat_id=26902",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "bosoo_seats"
+                      ],
+                      "query": [
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        },
+                        {
+                          "key": "seat_id",
+                          "value": "26902"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "delete bosoo seats",
+                  "request": {
+                    "method": "DELETE",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/bosoo_seats?company_id=9&seat_id=26902",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "bosoo_seats"
+                      ],
+                      "query": [
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        },
+                        {
+                          "key": "seat_id",
+                          "value": "26902"
+                        }
+                      ]
+                    }
+                  },
+                  "response": []
+                },
+                {
+                  "name": "get bosoo seats list",
+                  "request": {
+                    "method": "GET",
+                    "header": [],
+                    "url": {
+                      "raw": "{{base_url}}/bosoo_seats?company_id=9&event_id=28",
+                      "host": [
+                        "{{base_url}}"
+                      ],
+                      "path": [
+                        "bosoo_seats"
+                      ],
+                      "query": [
+                        {
+                          "key": "company_id",
+                          "value": "9"
+                        },
+                        {
+                          "key": "event_id",
+                          "value": "28"
                         }
                       ]
                     }
@@ -1254,17 +1399,17 @@
                   }
                 ],
                 "url": {
-                  "raw": "{{base_url}}/orders/94?com_id=9",
+                  "raw": "{{base_url}}/orders/100?company_id=9",
                   "host": [
                     "{{base_url}}"
                   ],
                   "path": [
                     "orders",
-                    "94"
+                    "100"
                   ],
                   "query": [
                     {
-                      "key": "com_id",
+                      "key": "company_id",
                       "value": "9"
                     }
                   ]
@@ -2967,18 +3112,21 @@
               ]
             },
             "url": {
-              "raw": "{{base_url}}/event-seat-sales/28?company_id=9",
+              "raw": "{{base_url}}/event-seat-sales?company_id=9&event_id=28",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "event-seat-sales",
-                "28"
+                "event-seat-sales"
               ],
               "query": [
                 {
                   "key": "company_id",
                   "value": "9"
+                },
+                {
+                  "key": "event_id",
+                  "value": "28"
                 }
               ]
             }
@@ -3320,7 +3468,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDg2MDIxMjB9.Ovtt6d6GXVJh3shDfsfnk_tn2rJbOPN8-NrJTl_rPfQ",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4NjZiYTAwZi05NmZiLTQwMTMtOThkZi0wM2I3ZjNhYTA0MDEiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NDg2MDQyODN9.wtuLvagfsK9fr2wvaqfkBwQbeAa0MdynJE0fJ3Q0piY",
       "type": "string"
     }
   ]
