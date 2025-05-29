@@ -79,7 +79,6 @@ export default async function TemplatesPage(props: {
       template ? getTemplateData(id) : Promise.resolve(null),
     ]);
 
-  console.log(templateJsonData);
   return (
     <div className="space-y-6">
       <Heading title="Template" />
