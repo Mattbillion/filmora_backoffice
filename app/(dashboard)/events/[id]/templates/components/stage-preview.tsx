@@ -21,7 +21,15 @@ import {
 import Konva from 'konva';
 import { ZoomIn, ZoomOut } from 'lucide-react';
 
+import { KonvaNode } from '@/app/(builder)/build-template/schema';
 import { Button } from '@/components/ui/button';
+
+const konvaOptimization = {
+  imageSmoothingEnabled: false,
+  listening: false,
+  shadowForStrokeEnabled: false,
+  perfectDrawEnabled: false,
+};
 
 interface KonvaPreviewProps {
   json: {
@@ -75,16 +83,15 @@ export default function KonvaStagePreview({ json }: KonvaPreviewProps) {
       });
 
       firstLayer.add(group);
+      firstLayer.find((c: KonvaNode) => {
+        c.setAttrs({
+          ...c.getAttrs(),
+          ...konvaOptimization,
+        });
+      });
       firstLayer.draw();
     }
   }, [json.tickets]);
-
-  const konvaOptimization = {
-    imageSmoothingEnabled: false,
-    listening: false,
-    shadowForStrokeEnabled: false,
-    perfectDrawEnabled: false,
-  };
 
   const handleWheel = (e: Konva.KonvaEventObject<WheelEvent>) => {
     const stage = stageRef.current;
@@ -141,9 +148,13 @@ export default function KonvaStagePreview({ json }: KonvaPreviewProps) {
     return zoomInfo;
   };
 
+  // render stage with background svg;
   const renderNode = (node: any): ReactNode | null => {
     const { className, children, _id } = node;
-    const attrs = { ...node.attrs, ...konvaOptimization };
+    const attrs = {
+      ...node.attrs,
+      ...konvaOptimization,
+    };
 
     switch (className) {
       case 'Stage':

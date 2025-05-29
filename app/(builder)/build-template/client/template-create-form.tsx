@@ -119,7 +119,7 @@ export function CreateTemplateDialog() {
         n.setAttrs(newAttrs);
 
         if (ticketLike && !n.getAttr('data-purchasable')) {
-          n.setAttr('fill', '#ccc');
+          n.setAttr('fill', '#E0E0E0');
         }
         return true;
       });
