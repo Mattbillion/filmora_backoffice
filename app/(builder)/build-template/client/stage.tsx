@@ -37,7 +37,7 @@ export default function TicketEditor() {
   return (
     <Fragment>
       <h1 className="border-b p-4">Seatmap builder</h1>
-      <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="min-h-0 w-full flex-1 overflow-y-auto">
         <Tabs
           className="flex min-h-full w-full flex-col"
           defaultValue={'empty'}
