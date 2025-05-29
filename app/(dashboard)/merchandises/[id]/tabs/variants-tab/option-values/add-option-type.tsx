@@ -107,24 +107,23 @@ export default function AddOptionType({ onSelect }: ServerAutocompleteProps) {
   }, []);
 
   return (
-    <Card>
-      <CardHeader>
+    <Card className="w-full">
+      <CardHeader className="px-4 py-5">
         <CardTitle className="flex items-center gap-2">
-          <Search className="h-6 w-6" />
           Add Option Type
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-3 pt-0">
         <div className={'relative'} ref={dropdownRef}>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               ref={inputRef}
               type="text"
               value={query}
               onFocus={() => setIsOpen(true)}
               onChange={handleInputChange}
-              className="pl-10 pr-10"
+              className="rounded-full pl-10 pr-10"
               placeholder="Search option type"
             />
             {isLoading && (
