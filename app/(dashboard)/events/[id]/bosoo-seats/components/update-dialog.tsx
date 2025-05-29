@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
+import CurrencyItem from '@/components/custom/currency-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import {
   FormControl,
@@ -90,7 +91,7 @@ export function UpdateDialog({
         name="seat_no"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Seat no</FormLabel>
+            <FormLabel>Суудлын дугаар</FormLabel>
             <FormControl>
               <Input placeholder="Enter Seat no" {...field} />
             </FormControl>
@@ -104,7 +105,7 @@ export function UpdateDialog({
         name="seat_name"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Seat name</FormLabel>
+            <FormLabel>Суудлын нэр</FormLabel>
             <FormControl>
               <Input placeholder="Enter Seat name" {...field} />
             </FormControl>
@@ -118,41 +119,9 @@ export function UpdateDialog({
         name="price"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Price</FormLabel>
+            <FormLabel>Үнэ</FormLabel>
             <FormControl>
-              <Input
-                placeholder="Enter Price"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="is_reserved"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Is reserved</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Is reserved" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="section_type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Section type</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Section type" {...field} />
+              <CurrencyItem field={field} placeholder={'Enter Price'} />
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -164,7 +133,7 @@ export function UpdateDialog({
         name="discount_id"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Discount</FormLabel>
+            <FormLabel>Хямдрал</FormLabel>
             <Select onValueChange={(value) => field.onChange(Number(value))}>
               <FormControl>
                 <SelectTrigger disabled={loading}>
@@ -214,63 +183,13 @@ export function UpdateDialog({
         name="seat_stock"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Seat stock</FormLabel>
+            <FormLabel>Үлдэгдэл</FormLabel>
             <FormControl>
               <Input
                 placeholder="Enter Seat stock"
                 {...field}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="selled_stock"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Selled stock</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Selled stock"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="current_stock"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Current stock</FormLabel>
-            <FormControl>
-              <Input
-                placeholder="Enter Current stock"
-                {...field}
-                onChange={(e) => field.onChange(Number(e.target.value))}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="sell_type"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Sell type</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Sell type" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

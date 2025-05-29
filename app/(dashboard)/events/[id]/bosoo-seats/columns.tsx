@@ -102,7 +102,7 @@ export const bosooSeatsColumns: ColumnDef<
   {
     id: 'seat_no',
     accessorKey: 'seat_no',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Суудлын дугаар',
     cell: ({ row }) => row.original.seat_no?.slice(0, 300),
     enableSorting: true,
     enableColumnFilter: true,
@@ -110,7 +110,7 @@ export const bosooSeatsColumns: ColumnDef<
   {
     id: 'seat_name',
     accessorKey: 'seat_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Суудлын нэр',
     cell: ({ row }) => row.original.seat_name?.slice(0, 300),
     enableSorting: true,
     enableColumnFilter: true,
@@ -118,7 +118,7 @@ export const bosooSeatsColumns: ColumnDef<
   {
     id: 'price',
     accessorKey: 'price',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Үнэ',
     cell: ({ row }) => currencyFormat(row.original.price),
     enableSorting: true,
     enableColumnFilter: true,
@@ -134,7 +134,7 @@ export const bosooSeatsColumns: ColumnDef<
   {
     id: 'section_type',
     accessorKey: 'section_type',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Суудлын төрөл',
     cell: ({ row }) => row.original.section_type?.slice(0, 300),
     enableSorting: true,
     enableColumnFilter: true,
@@ -150,7 +150,7 @@ export const bosooSeatsColumns: ColumnDef<
   {
     id: 'seat_stock',
     accessorKey: 'seat_stock',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Суудлын тоо',
     cell: ({ row }) => row.original.seat_stock,
     enableSorting: true,
     enableColumnFilter: true,
@@ -158,7 +158,7 @@ export const bosooSeatsColumns: ColumnDef<
   {
     id: 'selled_stock',
     accessorKey: 'selled_stock',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Зарагдсан тоо',
     cell: ({ row }) => row.original.selled_stock,
     enableSorting: true,
     enableColumnFilter: true,
@@ -174,7 +174,7 @@ export const bosooSeatsColumns: ColumnDef<
   {
     id: 'current_stock',
     accessorKey: 'current_stock',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'Үлдэгдэл',
     cell: ({ row }) => row.original.current_stock,
     enableSorting: true,
     enableColumnFilter: true,
