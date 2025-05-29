@@ -42,7 +42,7 @@ import { useKonvaStage } from './context';
 
 export function CreateTemplateDialog() {
   const [isPending, startTransition] = useTransition();
-  const { getStage } = useKonvaStage();
+  const { getStage, initialValues: STAGE_INITIALS } = useKonvaStage();
   const [open, setOpen] = useState(false);
   const params = useSearchParams();
   const { data: session } = useSession();
@@ -93,6 +93,7 @@ export function CreateTemplateDialog() {
   function onSubmit(values: TemplateBodyType) {
     startTransition(async () => {
       const clonedStage = getStage().clone()!;
+      clonedStage.setAttrs({ ...clonedStage.getAttrs(), ...STAGE_INITIALS });
       clonedStage?._clearCaches();
       const clonedBaseLayer = clonedStage?.getLayers()[0]!;
       clonedBaseLayer?.setAttr('opacity', 1);

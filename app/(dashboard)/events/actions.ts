@@ -94,7 +94,7 @@ export const getEventsHash = async () => {
   }
 };
 
-export const getMerchandiseDetail = async (id: string) => {
+export const getEventDetail = async (id: ID | string) => {
   try {
     const { body, error } = await xooxFetch<{ data: EventsItemType }>(
       `/events/${id}`,
