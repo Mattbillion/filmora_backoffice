@@ -21,6 +21,16 @@ type KonvaStageContextType = {
   focusNode: (node: KonvaNode) => void;
   baseLayer: Konva.Layer;
   forceUpdate: () => void;
+  initialValues: {
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+    scale: {
+      x: number;
+      y: number;
+    };
+  };
 };
 
 const scaleBy = 1.05;
@@ -161,6 +171,13 @@ export const KonvaStageProvider = ({
         focusNode,
         baseLayer,
         forceUpdate: () => forceUpdate((c) => c + 1),
+        initialValues: {
+          width,
+          height,
+          x: centerCoord.x,
+          y: centerCoord.y,
+          scale,
+        },
       }}
     >
       <div className="flex">

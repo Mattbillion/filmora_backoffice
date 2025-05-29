@@ -5,6 +5,25 @@ import { executeRevalidate } from '@/lib/xoox';
 
 import { HallsBodyType, HallsItemType, RVK_HALLS } from './schema';
 
+export const getHallDetail = async (hallId: ID | string) => {
+  try {
+    const { body, error } = await xooxFetch<{ data: HallsItemType }>(
+      `/halls/${hallId}`,
+      {
+        method: 'GET',
+        next: { tags: [`${RVK_HALLS}_${hallId}`] },
+      },
+    );
+
+    if (error) throw new Error(error);
+
+    return { data: body };
+  } catch (error) {
+    console.error(`Error fetching hallDetail:`, error);
+    return { data: null, error };
+  }
+};
+
 export const getHalls = async (
   searchParams: QueryParams = {},
   cacheKeys: string[] = [],

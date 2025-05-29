@@ -78,6 +78,7 @@
     "react-lottie-player": "^2.1.0",
     "react-medium-image-zoom": "^5.2.13",
     "react-number-format": "^5.4.3",
+    "recharts": "^2.15.3",
     "sonner": "^1.7.2",
     "svg-parser": "^2.0.4",
     "tailwind-merge": "^2.6.0",

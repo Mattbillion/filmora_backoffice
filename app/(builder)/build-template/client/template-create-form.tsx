@@ -42,7 +42,7 @@ import { useKonvaStage } from './context';
 
 export function CreateTemplateDialog() {
   const [isPending, startTransition] = useTransition();
-  const { getStage } = useKonvaStage();
+  const { getStage, initialValues: STAGE_INITIALS } = useKonvaStage();
   const [open, setOpen] = useState(false);
   const params = useSearchParams();
   const { data: session } = useSession();
@@ -93,6 +93,7 @@ export function CreateTemplateDialog() {
   function onSubmit(values: TemplateBodyType) {
     startTransition(async () => {
       const clonedStage = getStage().clone()!;
+      clonedStage.setAttrs({ ...clonedStage.getAttrs(), ...STAGE_INITIALS });
       clonedStage?._clearCaches();
       const clonedBaseLayer = clonedStage?.getLayers()[0]!;
       clonedBaseLayer?.setAttr('opacity', 1);
@@ -118,7 +119,7 @@ export function CreateTemplateDialog() {
         n.setAttrs(newAttrs);
 
         if (ticketLike && !n.getAttr('data-purchasable')) {
-          n.setAttr('fill', '#ccc');
+          n.setAttr('fill', '#E0E0E0');
         }
         return true;
       });
@@ -162,9 +163,24 @@ export function CreateTemplateDialog() {
             ),
           }),
         );
+        if (!data) return;
+        const seatIdObj: Record<string, number> = data.seats.reduce(
+          (acc, cur) => ({ ...acc, [cur.seat_no]: cur.id }),
+          {},
+        );
+
+        // define all ticket like nodes as not purchasable
+        //@ts-ignore
+        ticketsSection.find((n) => {
+          const seatId = seatIdObj[n.id()];
+          if (seatId) {
+            n.setAttr('data-seat-id', seatId);
+          }
+        });
+
         const { data: uploadedData } = await uploadTemplateJSON(
           toFormData({
-            template_id: data.data,
+            template_id: data.template_id,
             company_id: session?.user?.company_id,
             tickets_file: createJsonFile(
               ticketsSection.toJSON(),
