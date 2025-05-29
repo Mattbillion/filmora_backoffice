@@ -360,8 +360,6 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
         </span>
       </p>
     ),
-    enableSorting: false,
-    enableColumnFilter: true,
   },
 
   {
@@ -389,17 +387,15 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
           : undefined}
       </Badge>
     ),
-    enableSorting: false,
-    enableColumnFilter: true,
   },
   {
     id: 'navigation',
+    header: 'Navigation',
     cell: Navigation,
-    enableSorting: false,
-    enableColumnFilter: false,
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: Action,
   },
 ];

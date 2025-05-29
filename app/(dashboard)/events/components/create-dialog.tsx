@@ -2,12 +2,13 @@
 import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Link2 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
+import { BannerUpload } from '@/components/custom/banner-upload';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormDescription,
@@ -82,7 +83,8 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create Events"
+      dialogContentClassName="min-w-[80%]"
+      title="Шинэ эвент үүсгэх"
       submitText="Create"
       trigger={children}
       onOpenChange={(c) => {
@@ -120,38 +122,91 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           </FormItem>
         )}
       />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="event_name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Эвент нэр</FormLabel>
+              <FormControl>
+                <Input placeholder="Enter event name" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="event_type"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Эвент төрөл</FormLabel>
+              <FormControl>
+                <Select
+                  disabled={loadingBranches}
+                  onValueChange={(value) => form.setValue('event_type', value)}
+                  value={field.value?.toString()}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Эвэнт төрөл сонгох" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="mixed">Босоо, Суудал хамт</SelectItem>
+                    <SelectItem value="seat">Дан суудлаар</SelectItem>
+                    <SelectItem value="bosoo">Босоо</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+
+      {/*<FormField
+        control={form.control}
+        name="event_image"
+        render={({ field }) => (
+          <UploadImageItem
+            field={field}
+            imagePrefix="event_image"
+            label="Event Image"
+          />
+        )}
+      />*/}
+
       <FormField
         control={form.control}
-        name="event_name"
+        name="event_image"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Event Name</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter event name" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <BannerUpload
+            field={field}
+            imagePrefix="event_image"
+            label="Event banner"
+          />
         )}
       />
 
       <FormField
         control={form.control}
-        name="event_type"
+        name="status"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Event Type</FormLabel>
+          <FormItem className="flex items-center rounded-lg border border-border px-4 py-3">
+            <div className="w-full space-y-0.5">
+              <FormLabel className="text-base">Active</FormLabel>
+              <FormDescription>
+                Event will be visible to the public.
+              </FormDescription>
+            </div>
             <FormControl>
-              <Input placeholder="Conference, Workshop, etc." {...field} />
+              <Switch checked={field.value} onCheckedChange={field.onChange} />
             </FormControl>
-            <FormMessage />
           </FormItem>
         )}
-      />
-
-      <FormField
-        control={form.control}
-        name="event_desc"
-        render={({ field }) => <HtmlTipTapItem field={field} />}
       />
 
       <FormField
@@ -163,30 +218,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             <FormControl>
               <Input placeholder="Technology, Music, etc." {...field} />
             </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="language"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Language</FormLabel>
-            <Select
-              value={field.value?.toString()}
-              onValueChange={(value) => field.onChange(value)}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Language" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                <SelectItem value={'Mongolia'}>Mongolia</SelectItem>
-              </SelectContent>
-            </Select>
             <FormMessage />
           </FormItem>
         )}
@@ -247,180 +278,204 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           </FormItem>
         )}
       />
+      <div className="grid grid-cols-2 gap-4">
+        <FormField
+          control={form.control}
+          name="venue_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Venue ID</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  startLoadingBranches(() => {
+                    getBranchesHash({
+                      page_size: 10000,
+                      filters: `venue_id=${value}`,
+                    }).then((c) =>
+                      setDropdownData((prev) => ({
+                        ...prev,
+                        branch_id: c.data || {},
+                      })),
+                    );
+                  });
+                  // @ts-ignore
+                  form.setValue('branch_id', undefined);
+                  // @ts-ignore
+                  form.setValue('hall_id', undefined);
+                  field.onChange(Number(value));
+                }}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select venue id" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(dropdownData.venue_id || {}).map(
+                    ([key, val]) => (
+                      <SelectItem value={key} key={key}>
+                        {val}
+                      </SelectItem>
+                    ),
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="venue_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Venue ID</FormLabel>
-            <Select
-              onValueChange={(value) => {
-                startLoadingBranches(() => {
-                  getBranchesHash({
-                    page_size: 10000,
-                    filters: `venue_id=${value}`,
-                  }).then((c) =>
-                    setDropdownData((prev) => ({
-                      ...prev,
-                      branch_id: c.data || {},
-                    })),
-                  );
-                });
-                // @ts-ignore
-                form.setValue('branch_id', undefined);
-                // @ts-ignore
-                form.setValue('hall_id', undefined);
-                field.onChange(Number(value));
-              }}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select venue id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Object.entries(dropdownData.venue_id || {}).map(
-                  ([key, val]) => (
-                    <SelectItem value={key} key={key}>
-                      {val}
-                    </SelectItem>
-                  ),
-                )}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="branch_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Branch ID</FormLabel>
+              <Select
+                disabled={loadingBranches}
+                onValueChange={(value) => {
+                  startLoadingHalls(() => {
+                    getHallsHash({
+                      page_size: 10000,
+                      filters: `branch_id=${value}`,
+                    }).then((c) =>
+                      setDropdownData((prev) => ({
+                        ...prev,
+                        hall_id: c.data || {},
+                      })),
+                    );
+                  });
+                  // @ts-ignore
+                  form.setValue('hall_id', undefined);
+                  field.onChange(Number(value));
+                }}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select branch id" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(dropdownData.branch_id || {}).map(
+                    ([key, val]) => (
+                      <SelectItem value={key} key={key}>
+                        {val}
+                      </SelectItem>
+                    ),
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="branch_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Branch ID</FormLabel>
-            <Select
-              disabled={loadingBranches}
-              onValueChange={(value) => {
-                startLoadingHalls(() => {
-                  getHallsHash({
-                    page_size: 10000,
-                    filters: `branch_id=${value}`,
-                  }).then((c) =>
-                    setDropdownData((prev) => ({
-                      ...prev,
-                      hall_id: c.data || {},
-                    })),
-                  );
-                });
-                // @ts-ignore
-                form.setValue('hall_id', undefined);
-                field.onChange(Number(value));
-              }}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select branch id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Object.entries(dropdownData.branch_id || {}).map(
-                  ([key, val]) => (
-                    <SelectItem value={key} key={key}>
-                      {val}
-                    </SelectItem>
-                  ),
-                )}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="hall_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Hall ID</FormLabel>
+              <Select
+                disabled={loadingHalls}
+                onValueChange={(value) => field.onChange(Number(value))}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select hall id" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(dropdownData?.hall_id || {}).map(
+                    ([key, val]) => (
+                      <SelectItem value={key} key={key}>
+                        {val}
+                      </SelectItem>
+                    ),
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="hall_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Hall ID</FormLabel>
-            <Select
-              disabled={loadingHalls}
-              onValueChange={(value) => field.onChange(Number(value))}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select hall id" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Object.entries(dropdownData?.hall_id || {}).map(
-                  ([key, val]) => (
-                    <SelectItem value={key} key={key}>
-                      {val}
-                    </SelectItem>
-                  ),
-                )}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="category_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Category</FormLabel>
+              {loading ? (
+                'Loading'
+              ) : (
+                <HierarchicalSelect
+                  categories={dropdownData.cat_id || []}
+                  onChange={field.onChange}
+                  value={field.value}
+                />
+              )}
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="language"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Language</FormLabel>
+              <Select
+                value={field.value?.toString()}
+                onValueChange={(value) => field.onChange(value)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Language" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value={'Mongolia'}>Mongolia</SelectItem>
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-      <FormField
-        control={form.control}
-        name="category_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Category</FormLabel>
-            {loading ? (
-              'Loading'
-            ) : (
-              <HierarchicalSelect
-                categories={dropdownData.cat_id || []}
-                onChange={field.onChange}
-                value={field.value}
-              />
-            )}
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="age_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Age ID</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(Number(value))}
-              value={field.value?.toString()}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select age" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent>
-                {Object.entries(dropdownData?.age_id || {}).map(
-                  ([key, val]) => (
-                    <SelectItem value={key} key={key}>
-                      {val}
-                    </SelectItem>
-                  ),
-                )}
-              </SelectContent>
-            </Select>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+        <FormField
+          control={form.control}
+          name="age_id"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Age ID</FormLabel>
+              <Select
+                onValueChange={(value) => field.onChange(Number(value))}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select age" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {Object.entries(dropdownData?.age_id || {}).map(
+                    ([key, val]) => (
+                      <SelectItem value={key} key={key}>
+                        {val}
+                      </SelectItem>
+                    ),
+                  )}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
 
       <FormField
         control={form.control}
@@ -475,75 +530,68 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="web_link"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Website</FormLabel>
-            <FormControl>
-              <Input placeholder="https://www.example.com" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      <div className="space-y-4">
+        <div className="flex items-center gap-2">
+          <Link2 size={16} />
+          <h4 className="font-medium text-foreground">Сошиал холбоосууд</h4>
+        </div>
 
-      <FormField
-        control={form.control}
-        name="fb_link"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Facebook</FormLabel>
-            <FormControl>
-              <Input placeholder="https://facebook.com/example" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="ig_link"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Instagram</FormLabel>
-            <FormControl>
-              <Input placeholder="https://instagram.com/example" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="event_image"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="event_image"
-            label="Event Image"
+        <div className="flex flex-col gap-2">
+          <FormField
+            control={form.control}
+            name="web_link"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Website</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://www.example.com" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
           />
-        )}
-      />
+
+          <FormField
+            control={form.control}
+            name="fb_link"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Facebook</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="https://facebook.com/example"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="ig_link"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Instagram</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="https://instagram.com/example"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+      </div>
 
       <FormField
         control={form.control}
-        name="status"
+        name="event_desc"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 md:col-span-2">
-            <div className="space-y-0.5">
-              <FormLabel className="text-base">Active</FormLabel>
-              <FormDescription>
-                Event will be visible to the public.
-              </FormDescription>
-            </div>
-            <FormControl>
-              <Switch checked={field.value} onCheckedChange={field.onChange} />
-            </FormControl>
-          </FormItem>
+          <HtmlTipTapItem field={field} label="Дэлгэрэнгүй" />
         )}
       />
     </FormDialog>
