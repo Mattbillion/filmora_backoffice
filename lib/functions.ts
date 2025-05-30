@@ -6,7 +6,7 @@ import { z } from 'zod';
 
 import { auth } from '@/app/(auth)/auth';
 
-import { clearObj, objToQs, stringifyError, validateSchema } from './utils';
+import { stringifyError, validateSchema } from './utils';
 
 export async function revalidate(tagName: string) {
   revalidateTag(tagName);
@@ -17,11 +17,11 @@ export async function revalidateAll() {
 }
 
 export async function revalidateXOOX(
-  {
-    tag,
-    type,
-    path,
-  }: { path?: string; type?: 'page' | 'layout'; tag?: string },
+  // {
+  //   tag,
+  //   type,
+  //   path,
+  // }: { path?: string; type?: 'page' | 'layout'; tag?: string },
   origin: 'vercel' | 'xoox',
 ) {
   const url = {
@@ -29,10 +29,10 @@ export async function revalidateXOOX(
     xoox: 'https://xoox.mn',
   }[origin];
 
-  let endpoint = `${url}/api/revalidate?secret=ps_ez&`;
+  let endpoint = `${url}/api/revalidate?secret=ps_ez&path=/`;
   try {
-    if (!tag && !type && !path) endpoint += 'path=/';
-    else endpoint += objToQs(clearObj({ tag, type, path }));
+    // if (!tag && !type && !path) endpoint += 'path=/';
+    // else endpoint += objToQs(clearObj({ tag, type, path }));
 
     const res = await fetch(endpoint, { method: 'POST', cache: 'no-store' });
     const result = await res.json();

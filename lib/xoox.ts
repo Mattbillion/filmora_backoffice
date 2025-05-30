@@ -21,10 +21,9 @@ export function executeRevalidate(
   try {
     const xooxOrigin = getOrigin();
     Promise.any(
-      revalidations.map((c) =>
-        typeof c === 'string' ? revalidate(c) : revalidateXOOX(c, xooxOrigin),
-      ),
+      revalidations.map((c) => (typeof c === 'string' ? revalidate(c) : false)),
     );
+    revalidateXOOX(xooxOrigin);
   } catch (revalidateError) {
     console.error('Revalidation failed:', revalidateError);
   }
