@@ -57,7 +57,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     resolver: zodResolver(eventsSchema),
     defaultValues: {
       language: 'Mongolia',
-      company_id: Number(session?.user?.company_id),
       status: false,
     },
   });
@@ -66,7 +65,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     startTransition(() => {
       createEvents({
         ...values,
-        company_id: Number(session?.user?.company_id),
       })
         .then(() => {
           toast.success('Created successfully');
@@ -88,6 +86,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       submitText="Create"
       trigger={children}
       onOpenChange={(c) => {
+        form.setValue('company_id', Number(session?.user?.company_id));
         if (c) {
           startLoadingTransition(() => {
             Promise.all([
@@ -150,7 +149,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                   value={field.value?.toString()}
                 >
                   <FormControl>
-                    <SelectTrigger>
+                    <SelectTrigger className="py-2">
                       <SelectValue placeholder="Эвэнт төрөл сонгох" />
                     </SelectTrigger>
                   </FormControl>
@@ -166,18 +165,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           )}
         />
       </div>
-
-      {/*<FormField
-        control={form.control}
-        name="event_image"
-        render={({ field }) => (
-          <UploadImageItem
-            field={field}
-            imagePrefix="event_image"
-            label="Event Image"
-          />
-        )}
-      />*/}
 
       <FormField
         control={form.control}

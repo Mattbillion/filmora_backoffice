@@ -8,6 +8,7 @@ import { Loader2, X } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
+import { Button } from '@/components/ui/button';
 import {
   FormControl,
   FormItem,
@@ -39,11 +40,18 @@ export function BannerUpload({
   const { setError } = useFormContext();
   const [image, setImage] = useState<UploadedImage | null>(null);
   const [showCrop, setShowCrop] = useState(false);
-  const [tempImageUrl, setTempImageUrl] = useState<string | null>(null);
+  const [rawImageUrl, setRawImageUrl] = useState<string | null>(null);
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<any>(null);
   const isMounted = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      if (rawImageUrl) URL.revokeObjectURL(rawImageUrl);
+      if (image?.previewUrl) URL.revokeObjectURL(image.previewUrl);
+    };
+  }, [rawImageUrl, image]);
 
   useEffect(() => {
     if (isMounted.current && image?.uploadedUrl) {
@@ -57,7 +65,8 @@ export function BannerUpload({
         media_desc: '',
       };
 
-      field.onChange(value);
+      // Update form field but avoid triggering submission
+      field.onChange(value.url);
     } else {
       isMounted.current = true;
     }
@@ -73,7 +82,7 @@ export function BannerUpload({
     }
 
     const previewUrl = URL.createObjectURL(file);
-    setTempImageUrl(previewUrl);
+    setRawImageUrl(previewUrl);
     setShowCrop(true);
   }, []);
 
@@ -82,10 +91,10 @@ export function BannerUpload({
   }, []);
 
   const cropAndUpload = async () => {
-    if (!tempImageUrl || !croppedAreaPixels) return;
+    if (!rawImageUrl || !croppedAreaPixels) return;
 
     try {
-      const croppedBlob = await getCroppedImg(tempImageUrl, croppedAreaPixels);
+      const croppedBlob = await getCroppedImg(rawImageUrl, croppedAreaPixels);
       const file = new File([croppedBlob], 'cropped.jpeg', {
         type: 'image/jpeg',
       });
@@ -102,13 +111,14 @@ export function BannerUpload({
 
       setImage(newImage);
       setShowCrop(false);
-      setTempImageUrl(null);
+      setRawImageUrl(null);
 
       const formData = new FormData();
       formData.append('file', file);
       formData.append('prefix', imagePrefix);
 
       const res = await uploadImage(formData);
+
       setImage((prev) =>
         prev ? { ...prev, uploading: false, uploadedUrl: res?.data } : prev,
       );
@@ -119,13 +129,14 @@ export function BannerUpload({
 
   const removeImage = () => {
     setImage(null);
+    field.onChange(undefined); // clear field without triggering submit
   };
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: { 'image/*': [] },
     multiple: false,
-    disabled,
+    disabled: disabled || image?.uploading,
   });
 
   return (
@@ -134,7 +145,7 @@ export function BannerUpload({
       <FormControl>
         <div
           {...getRootProps()}
-          className="relative flex h-64 cursor-pointer items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-gray-400 bg-gray-50 p-6 text-center"
+          className="relative flex h-64 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-border bg-gray-50 p-6 text-center"
         >
           <input {...getInputProps()} />
           {image ? (
@@ -151,13 +162,16 @@ export function BannerUpload({
                 </div>
               )}
               {!image.uploading && (
-                <button
+                <Button
+                  variant="secondary"
                   type="button"
+                  size="icon"
                   onClick={removeImage}
                   className="absolute right-2 top-2 z-10 rounded-full bg-white p-1 shadow"
+                  aria-label="Remove image"
                 >
                   <X size={16} />
-                </button>
+                </Button>
               )}
             </>
           ) : (
@@ -169,36 +183,40 @@ export function BannerUpload({
       </FormControl>
       <FormMessage />
 
-      {showCrop && tempImageUrl && (
+      {showCrop && rawImageUrl && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
           <div className="w-[90vw] max-w-xl rounded-lg bg-white p-4">
             <div className="relative h-80 w-full bg-black">
               <Cropper
-                image={tempImageUrl}
+                image={rawImageUrl}
                 crop={crop}
                 zoom={zoom}
-                aspect={3 / 1}
+                aspect={5 / 2}
                 onCropChange={setCrop}
                 onZoomChange={setZoom}
                 onCropComplete={cropComplete}
               />
             </div>
             <div className="mt-4 flex justify-end gap-2">
-              <button
+              <Button
+                variant="outline"
+                type="button"
                 onClick={() => {
                   setShowCrop(false);
-                  setTempImageUrl(null);
+                  setRawImageUrl(null);
                 }}
-                className="rounded bg-gray-200 px-4 py-2"
+                aria-label="Cancel cropping"
               >
                 Цуцлах
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="default"
+                type="button"
                 onClick={cropAndUpload}
-                className="rounded bg-blue-600 px-4 py-2 text-white"
+                aria-label="Save cropped image"
               >
                 Хадгалах
-              </button>
+              </Button>
             </div>
           </div>
         </div>
