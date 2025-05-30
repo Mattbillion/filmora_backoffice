@@ -148,203 +148,9 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
   {
     id: 'id',
     accessorKey: 'id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: 'ID',
     cell: ({ row }) => row.original.id,
     enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'venue_id',
-    accessorKey: 'venue_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_id',
-    accessorKey: 'branch_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'hall_id',
-    accessorKey: 'hall_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.hall,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'category_id',
-    accessorKey: 'category_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.category,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'event_name',
-    accessorKey: 'event_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.event_name,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'event_desc',
-    accessorKey: 'event_desc',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <p>
-        html:{' '}
-        <span className="opacity-70">
-          {removeHTML(row.original.event_desc?.slice(0, 300))}
-        </span>
-      </p>
-    ),
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'event_capacity',
-    accessorKey: 'event_capacity',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.event_capacity,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'age_id',
-    accessorKey: 'age_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.age_id,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'event_type',
-    accessorKey: 'event_type',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.event_type,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'event_image',
-    accessorKey: 'event_image',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <Image
-        src={row.original.event_image}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'event_order',
-    accessorKey: 'event_order',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.event_order,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'event_genre',
-    accessorKey: 'event_genre',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.event_genre,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'duration',
-    accessorKey: 'duration',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => `${row.original.duration} hrs`,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'openning_at',
-    accessorKey: 'openning_at',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) =>
-      row.original.openning_at
-        ? dayjs(row.original.openning_at).format('YYYY-MM-DD hh:mm')
-        : undefined,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'language',
-    accessorKey: 'language',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.language,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'sponsor_name',
-    accessorKey: 'sponsor_name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.sponsor_name,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'contact_info',
-    accessorKey: 'contact_info',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <a href={`mailto:${row.original.contact_info}`}>
-        {row.original.contact_info}
-      </a>
-    ),
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'fb_link',
-    accessorKey: 'fb_link',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <a href={row.original.fb_link} target="_blank" rel="noopener noreferrer">
-        Facebook
-      </a>
-    ),
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'ig_link',
-    accessorKey: 'ig_link',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <a href={row.original.ig_link} target="_blank" rel="noopener noreferrer">
-        Instagram
-      </a>
-    ),
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'web_link',
-    accessorKey: 'web_link',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <a href={row.original.web_link} target="_blank" rel="noopener noreferrer">
-        Website
-      </a>
-    ),
-    enableSorting: false,
     enableColumnFilter: true,
   },
   {
@@ -360,11 +166,211 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     enableColumnFilter: true,
   },
   {
+    id: 'event_image',
+    accessorKey: 'event_image',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <Image
+        src={row.original.event_image}
+        alt=""
+        width={352}
+        height={72}
+        className="rounded-s"
+      />
+    ),
+    enableSorting: false,
+    enableColumnFilter: false,
+  },
+  // {
+  //   id: 'venue_id',
+  //   accessorKey: 'venue_id',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.venue,
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'branch_id',
+  //   accessorKey: 'branch_id',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.branch,
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'hall_id',
+  //   accessorKey: 'hall_id',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.hall,
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  {
+    id: 'category_id',
+    accessorKey: 'category_id',
+    header: 'Категори',
+    cell: ({ row }) => row.original.category,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+
+  {
+    id: 'event_name',
+    accessorKey: 'event_name',
+    header: 'Эвент',
+    cell: ({ row }) => <p className="text-nowrap">{row.original.event_name}</p>,
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+
+  // {
+  //   id: 'event_capacity',
+  //   accessorKey: 'event_capacity',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.event_capacity,
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'age_id',
+  //   accessorKey: 'age_id',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.age_id,
+  //   enableSorting: true,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'event_type',
+  //   accessorKey: 'event_type',
+  //   header: 'Эвент төрөл',
+  //   cell: ({ row }) => row.original.event_type,
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+
+  // {
+  //   id: 'event_order',
+  //   accessorKey: 'event_order',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.event_order,
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'event_genre',
+  //   accessorKey: 'event_genre',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.event_genre,
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+  {
+    id: 'duration',
+    accessorKey: 'duration',
+    header: 'Үргэлжлэх хугацаа',
+    cell: ({ row }) => `${row.original.duration} hrs`,
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'openning_at',
+    accessorKey: 'openning_at',
+    header: 'Эхлэх огноо',
+    cell: ({ row }) => (
+      <span className="text-nowrap">
+        {row.original.openning_at
+          ? dayjs(row.original.openning_at).format('YYYY-MM-DD hh:mm')
+          : undefined}
+      </span>
+    ),
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  // {
+  //   id: 'language',
+  //   accessorKey: 'language',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.language,
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'sponsor_name',
+  //   accessorKey: 'sponsor_name',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => row.original.sponsor_name,
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+  {
+    id: 'contact_info',
+    accessorKey: 'contact_info',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <a href={`mailto:${row.original.contact_info}`}>
+        {row.original.contact_info}
+      </a>
+    ),
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  // {
+  //   id: 'fb_link',
+  //   accessorKey: 'fb_link',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => (
+  //     <a href={row.original.fb_link} target="_blank" rel="noopener noreferrer">
+  //       Facebook
+  //     </a>
+  //   ),
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'ig_link',
+  //   accessorKey: 'ig_link',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => (
+  //     <a href={row.original.ig_link} target="_blank" rel="noopener noreferrer">
+  //       Instagram
+  //     </a>
+  //   ),
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+  // {
+  //   id: 'web_link',
+  //   accessorKey: 'web_link',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => (
+  //     <a href={row.original.web_link} target="_blank" rel="noopener noreferrer">
+  //       Website
+  //     </a>
+  //   ),
+  //   enableSorting: false,
+  //   enableColumnFilter: true,
+  // },
+
+  {
+    id: 'event_desc',
+    accessorKey: 'event_desc',
+    header: 'Дэлгэрэнгүй',
+    cell: ({ row }) => (
+      <p className="line-clamp-2 w-[256px] truncate">
+        html:{' '}
+        <span className="opacity-70">
+          {removeHTML(row.original.event_desc?.slice(0, 300))}
+        </span>
+      </p>
+    ),
+  },
+
+  {
     id: 'created_at',
     accessorKey: 'created_at',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
-      <Badge variant="secondary">
+      <Badge variant="secondary" className="text-nowrap">
         {row.original.created_at
           ? dayjs(row.original.created_at).format('YYYY-MM-DD hh:mm')
           : undefined}
@@ -378,23 +384,21 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     accessorKey: 'updated_at',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
-      <Badge variant="secondary">
+      <Badge variant="secondary" className="text-nowrap">
         {row.original.updated_at
           ? dayjs(row.original.updated_at).format('YYYY-MM-DD hh:mm')
           : undefined}
       </Badge>
     ),
-    enableSorting: false,
-    enableColumnFilter: true,
   },
   {
     id: 'navigation',
+    header: 'Navigation',
     cell: Navigation,
-    enableSorting: false,
-    enableColumnFilter: false,
   },
   {
     id: 'actions',
+    header: 'Actions',
     cell: Action,
   },
 ];

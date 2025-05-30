@@ -72,6 +72,7 @@
     "react-day-picker": "8.10.1",
     "react-dom": "19.1.0",
     "react-dropzone": "^14.3.8",
+    "react-easy-crop": "^5.4.2",
     "react-hook-form": "^7.54.2",
     "react-konva": "^19.0.2",
     "react-konva-to-svg": "^1.0.2",
