@@ -44,9 +44,18 @@ export function EventSeatSalesChart({
     return { event_id: d.event_id, event_name: d.event_name };
   });
 
-  const cData = chartData.reduce(
-    (acc: any, cur: any) => {
-      const found = acc?.find((d: any) => d.order_date === cur.order_date);
+  const cData = chartData?.reduce(
+    (
+      acc: { order_date: string; total_sold: number; total_revenue: number }[],
+      cur: EventSeatSalesItemType,
+    ) => {
+      const found = acc?.find(
+        (d: {
+          order_date: string;
+          total_sold: number;
+          total_revenue: number;
+        }) => d.order_date === cur.order_date,
+      );
 
       if (found) {
         found.total_sold += cur.total_quantity;
