@@ -68,6 +68,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       trigger={children}
       onOpenChange={(c) => {
         if (c) {
+          form.setValue('company_id', Number(data?.user?.company_id));
           startLoadingTransition(() => {
             getDiscounts().then((res) =>
               setDropdownData((prevData) => ({
@@ -104,15 +105,12 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       />
       <FormField
         control={form.control}
-        name="seat_no"
+        name="sell_type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Суудлын дугаар</FormLabel>
+            <FormLabel>Борлуулах төрөл</FormLabel>
             <FormControl>
-              <Input
-                placeholder="Enter Seat type (VIP, Fan zone etc)"
-                {...field}
-              />
+              <Input placeholder="Enter sell type" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

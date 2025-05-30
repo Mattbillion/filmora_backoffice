@@ -88,12 +88,12 @@ export function UpdateDialog({
     >
       <FormField
         control={form.control}
-        name="seat_no"
+        name="sell_type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Суудлын дугаар</FormLabel>
+            <FormLabel>Борлуулах төрөл</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Seat no" {...field} />
+              <Input placeholder="Enter sell type" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

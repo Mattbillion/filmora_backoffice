@@ -105,8 +105,7 @@ const FormSheet = forwardRef<FormDialogRef, FormSheetProps>(
                   className={submitClassName}
                   disabled={loading || disabled}
                 >
-                  <SaveIcon size="sm" />
-                  {loading && <LoaderIcon />}
+                  {loading ? <LoaderIcon /> : <SaveIcon size="sm" />}
                   {submitText}
                 </Button>
               </SheetFooter>

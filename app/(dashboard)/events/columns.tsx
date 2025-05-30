@@ -107,11 +107,14 @@ const Action = ({ row }: CellContext<EventColumnType, unknown>) => {
 
 const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
   const { data } = useSession();
-  const canAccessTemplate = checkPermission(data, [
-    'get_template_list',
-    'create_template',
-    'delete_template',
-  ]);
+  const canAccessTemplate =
+    (row.original.event_type === 'mixed' ||
+      row.original.event_type === 'seat') &&
+    checkPermission(data, [
+      'get_template_list',
+      'create_template',
+      'delete_template',
+    ]);
   const canAccessBosoo = checkPermission(data, [
     'create_bosoo_seat',
     'update_bosoo_seat',

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import type { BaseType, PrettyType } from '@/lib/fetch/types';
 
 export const bosooSeatsSchema = z.object({
-  seat_no: z.string(),
+  sell_type: z.string(),
   seat_name: z.string(),
   price: z.number(),
   status: z.boolean(),
@@ -19,7 +19,6 @@ export type BosooSeatsItemType = PrettyType<
   BaseType<
     BosooSeatsBodyType & {
       section_type: string;
-      sell_type: string;
       is_reserved: string;
       current_stock: number;
       selled_stock: number;

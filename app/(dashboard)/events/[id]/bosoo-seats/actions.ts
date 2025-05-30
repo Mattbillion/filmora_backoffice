@@ -9,11 +9,13 @@ import {
   RVK_BOSOO_SEATS,
 } from './schema';
 
-export const createBosooSeats = async (bodyData: BosooSeatsBodyType) => {
+export const createBosooSeats = async ({
+  seat_name,
+  ...bodyData
+}: BosooSeatsBodyType) => {
   const { body, error } = await xooxFetch(`/bosoo_seats`, {
     method: 'POST',
-    body: bodyData,
-    searchParams: { company_id: bodyData.company_id },
+    body: { ...bodyData, name: seat_name },
     cache: 'no-store',
   });
 
@@ -28,7 +30,7 @@ export const patchBosooSeats = async ({
   ...bodyData
 }: BosooSeatsBodyType & { id: ID }) => {
   const { body, error } = await xooxFetch<{ data: BosooSeatsItemType }>(
-    `/bosoo_seats`,
+    `/bosoo_seats/${param1}`,
     {
       method: 'PUT',
       body: bodyData,
