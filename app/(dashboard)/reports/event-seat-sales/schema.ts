@@ -6,6 +6,7 @@ export const eventSeatSalesSchema = z.object({
   event_id: z.number(),
   seat_id: z.number(),
   seat_no: z.string(),
+  event_name: z.string(),
   section_type: z.string(),
   order_date: z.string(),
   total_quantity: z.number(),
