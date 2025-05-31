@@ -35,8 +35,10 @@ const chartConfig = {
 
 export function EventSeatSalesChart({
   chartData,
+  eventId,
 }: {
   chartData: EventSeatSalesItemType[];
+  eventId: string;
 }) {
   const router = useRouter();
 
@@ -87,7 +89,7 @@ export function EventSeatSalesChart({
           <SelectEvent
             eventList={eventList}
             selectedValue={(v) => router.replace(`?eventId=${v}`)}
-            defaultValue={eventList[0]?.event_id.toString()}
+            defaultValue={eventId || eventList[0]?.event_id.toString()}
           />
         </div>
       </CardHeader>
