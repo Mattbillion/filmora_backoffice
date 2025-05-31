@@ -10,6 +10,8 @@ export default async function EventSeatSalesPage(props: {
   searchParams?: SearchParams;
 }) {
   const searchParams = await props.searchParams;
+  const eventId = searchParams?.eventId;
+  if (searchParams?.eventId) searchParams.event_id = searchParams?.eventId;
 
   const { data } = await getEventSeatSalesDetail(searchParams);
   const chartData = data?.data;
@@ -17,7 +19,12 @@ export default async function EventSeatSalesPage(props: {
   return (
     <>
       <Separator />
-      {chartData && <EventSeatSalesChart chartData={chartData} />}
+      {chartData && (
+        <EventSeatSalesChart
+          chartData={chartData}
+          eventId={eventId as string}
+        />
+      )}
     </>
   );
 }

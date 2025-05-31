@@ -28,7 +28,7 @@ const productManagerRoutes: SubMenuItemType[] = [
   {
     title: 'Мерчиндайз бараа',
     url: '/merchandises',
-    subRoutes: true,
+    subRoutes: false,
     icon: PackageIcon,
     permissions: [
       'company_merchandise_list',
@@ -102,7 +102,7 @@ const productManagerRoutes: SubMenuItemType[] = [
   {
     title: 'Option types',
     url: '/option-types',
-    subRoutes: true,
+    subRoutes: false,
     icon: PackageIcon,
 
     permissions: [
