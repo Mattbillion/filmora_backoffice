@@ -8,6 +8,7 @@ import { SaveIcon } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
+import CurrencyItem from '@/components/custom/currency-item';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import { LoaderIcon } from '@/components/custom/icons';
 import { Button } from '@/components/ui/button';
@@ -21,6 +22,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -175,6 +177,10 @@ export function CreateTemplateDialog() {
           const seatId = seatIdObj[n.id()];
           if (seatId) {
             n.setAttr('data-seat-id', seatId);
+            n.setAttr(
+              'data-price',
+              values.current_price + (n.getAttr('data-price') || 0),
+            );
           }
         });
 
@@ -239,6 +245,23 @@ export function CreateTemplateDialog() {
                   <FormLabel>Template name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="current_price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Price</FormLabel>
+                  <FormDescription>
+                    Initial price for each tickets.
+                  </FormDescription>
+                  <FormControl>
+                    <CurrencyItem field={field} placeholder={'Enter Price'} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

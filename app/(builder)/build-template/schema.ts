@@ -3,6 +3,7 @@ import { z } from 'zod';
 
 export const templateSchema = z.object({
   event_id: z.number(),
+  current_price: z.number({ message: 'Нэгж суудлын үнэ оруулна уу' }),
   template_name: z.string(),
   template_desc: z.string(),
   template_order: z.number().optional().default(0),
