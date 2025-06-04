@@ -56,7 +56,7 @@ export default async function TemplatesPage(props: {
   const { data: eventData } = await getEventDetail(id);
   const { data } = await getTemplates({
     ...searchParams,
-    filters: `event_id=${id}`,
+    event_id: id,
   });
   const [template] = data?.data ?? [];
 
