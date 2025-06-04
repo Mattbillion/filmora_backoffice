@@ -71,7 +71,9 @@ export async function xooxFetch<
     const response = await fetch(endpoint, fetchOptions);
     const body: T = await response.json();
 
-    if (!response.ok || body?.status !== 'success')
+    if (!response.ok || body?.status !== 'success') {
+      console.warn(response);
+      console.warn(JSON.stringify(body, null, 2));
       throw new Error(
         body?.detail?.[0]?.msg ||
           body?.error ||
@@ -79,6 +81,7 @@ export async function xooxFetch<
           (typeof body?.detail === 'string' ? body?.detail : undefined) ||
           String(response.status),
       );
+    }
 
     return {
       body,

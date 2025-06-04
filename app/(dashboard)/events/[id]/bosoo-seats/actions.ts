@@ -9,13 +9,10 @@ import {
   RVK_BOSOO_SEATS,
 } from './schema';
 
-export const createBosooSeats = async ({
-  seat_name,
-  ...bodyData
-}: BosooSeatsBodyType) => {
+export const createBosooSeats = async (bodyData: BosooSeatsBodyType) => {
   const { body, error } = await xooxFetch(`/bosoo_seats`, {
     method: 'POST',
-    body: { ...bodyData, name: seat_name },
+    body: bodyData,
     cache: 'no-store',
   });
 

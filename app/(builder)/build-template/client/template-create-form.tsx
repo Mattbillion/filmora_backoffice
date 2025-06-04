@@ -77,18 +77,6 @@ export function CreateTemplateDialog() {
   function createJsonFile(jsonString: any, name = 'stage.json') {
     const blob = new Blob([jsonString], { type: 'application/json' });
 
-    const url = URL.createObjectURL(blob);
-
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = name;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
     return new File([blob], name, { type: 'application/json' });
   }
 
@@ -179,7 +167,9 @@ export function CreateTemplateDialog() {
             n.setAttr('data-seat-id', seatId);
             n.setAttr(
               'data-price',
-              values.current_price + (n.getAttr('data-price') || 0),
+              Number(values.current_price) +
+                Number(n.getAttr('data-price') || 0) +
+                Number(n.getAttr('data-additionalPrice') || 0),
             );
           }
         });
