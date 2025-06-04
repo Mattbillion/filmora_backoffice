@@ -86,19 +86,19 @@ export default async function TemplatesPage(props: {
           <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label>Template Name</Label>
-              <p className="text-muted-foreground">
+              <p className="truncate text-muted-foreground">
                 {template?.template_name ?? '-'}
               </p>
             </div>
             <div>
               <Label>Description</Label>
-              <p className="text-muted-foreground">
+              <p className="truncate text-muted-foreground">
                 {removeHTML(template?.template_desc).slice(0, 300) || '-'}
               </p>
             </div>
             <div>
               <Label>Order</Label>
-              <p className="text-muted-foreground">
+              <p className="truncate text-muted-foreground">
                 {template?.template_order || '-'}
               </p>
             </div>
@@ -122,25 +122,25 @@ export default async function TemplatesPage(props: {
           <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div>
               <Label>Event</Label>
-              <p className="text-muted-foreground">
+              <p className="truncate text-muted-foreground">
                 {eventData?.data?.event_name}
               </p>
             </div>
             <div>
               <Label>Hall</Label>
-              <p className="text-muted-foreground">
+              <p className="truncate text-muted-foreground">
                 {hallData?.data?.data?.hall_name}
               </p>
             </div>
             <div>
               <Label>Branch</Label>
-              <p className="text-muted-foreground">
+              <p className="truncate text-muted-foreground">
                 {branchData?.data?.data?.branch_name}
               </p>
             </div>
             <div>
               <Label>Venue</Label>
-              <p className="text-muted-foreground">
+              <p className="truncate text-muted-foreground">
                 {venueData?.data?.data?.venue_name}
               </p>
             </div>
