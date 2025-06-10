@@ -55,18 +55,7 @@ export function BannerUpload({
 
   useEffect(() => {
     if (isMounted.current && image?.uploadedUrl) {
-      const value = {
-        url: image.uploadedUrl,
-        size: image.file.size,
-        type: image.file.type,
-        media_url: image.uploadedUrl,
-        media_type: image.file.type,
-        media_label: image.file.name,
-        media_desc: '',
-      };
-
-      // Update form field but avoid triggering submission
-      field.onChange(value.url);
+      field.onChange(image.uploadedUrl);
     } else {
       isMounted.current = true;
     }
@@ -99,11 +88,10 @@ export function BannerUpload({
         type: 'image/jpeg',
       });
 
-      const id = crypto.randomUUID();
       const previewUrl = URL.createObjectURL(file);
 
       const newImage: UploadedImage = {
-        id,
+        id: Math.random().toString(36).slice(2, 16),
         file,
         previewUrl,
         uploading: true,

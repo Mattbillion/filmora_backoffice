@@ -535,6 +535,14 @@ export function UpdateDialog({
           </FormItem>
         )}
       />
+
+      <FormField
+        control={form.control}
+        name="event_memo"
+        render={({ field }) => (
+          <HtmlTipTapItem field={field} label="Тэмдэглэл / Анхааруулга" />
+        )}
+      />
     </FormDialog>
   );
 }

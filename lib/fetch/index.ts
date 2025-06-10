@@ -72,7 +72,6 @@ export async function xooxFetch<
     const body: T = await response.json();
 
     if (!response.ok || body?.status !== 'success') {
-      console.warn(response);
       console.warn(JSON.stringify(body, null, 2));
       throw new Error(
         body?.detail?.[0]?.msg ||

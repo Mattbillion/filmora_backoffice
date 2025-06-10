@@ -257,7 +257,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                 placeholder="8"
                 {...field}
                 onChange={(e) =>
-                  field.onChange(Number.parseInt(e.target.value) || 0)
+                  field.onChange(Number.parseInt(e.target.value))
                 }
               />
             </FormControl>
@@ -579,6 +579,14 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         name="event_desc"
         render={({ field }) => (
           <HtmlTipTapItem field={field} label="Дэлгэрэнгүй" />
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="event_memo"
+        render={({ field }) => (
+          <HtmlTipTapItem field={field} label="Тэмдэглэл / Анхааруулга" />
         )}
       />
     </FormDialog>

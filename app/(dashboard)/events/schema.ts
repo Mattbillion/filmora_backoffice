@@ -16,6 +16,7 @@ export const eventsSchema = z.object({
   event_image: z.string(),
   event_order: z.number(),
   event_genre: z.string(),
+  event_memo: z.string(),
   duration: z.number(),
   openning_at: z.string(),
   language: z.string(),
