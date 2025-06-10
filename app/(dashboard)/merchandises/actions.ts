@@ -16,6 +16,7 @@ export const createMerchandises = async (bodyData: MerchandisesBodyType) => {
       method: 'POST',
       body: bodyData,
       cache: 'no-store',
+      syncTable: 'merchandises',
     },
   );
 
@@ -35,6 +36,7 @@ export const patchMerchandises = async ({
       method: 'PUT',
       body: bodyData,
       cache: 'no-store',
+      syncTable: 'merchandises',
     },
   );
 
@@ -48,6 +50,7 @@ export const deleteMerchandises = async (id: ID) => {
   const { body, error } = await xooxFetch(`/merchandises/${id}`, {
     method: 'DELETE',
     cache: 'no-store',
+    syncTable: 'merchandises',
   });
 
   if (error) throw new Error(error);

@@ -25,6 +25,7 @@ type FetchResult<T> = {
 type FetchOptions = Omit<RequestInit, 'body'> & {
   body?: Record<string, unknown> | FormData;
   searchParams?: QueryParams;
+  syncTable?: string;
 };
 
 type ErrorType = {
@@ -70,6 +71,7 @@ export async function xooxFetch<
 
     const response = await fetch(endpoint, fetchOptions);
     const body: T = await response.json();
+    if (options.syncTable) esSync(options.syncTable);
 
     if (!response.ok || body?.status !== 'success') {
       console.warn(JSON.stringify(body, null, 2));
@@ -141,3 +143,13 @@ function genFetchParams(url: string, options: FetchOptions = {}) {
 
   return { endpoint, fetchOptions: fetchOptions as RequestInit };
 }
+
+const esSync = async (tableName: string) => {
+  try {
+    await fetch(
+      `${process.env.XOOX_DOMAIN || process.env.NEXT_PUBLIC_XOOX_DOMAIN}/client/dbsync?table_name=${tableName}`,
+    );
+  } catch (error) {
+    console.error('dbsync error', error);
+  }
+};

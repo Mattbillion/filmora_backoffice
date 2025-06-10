@@ -10,6 +10,7 @@ export const createEvents = async (bodyData: EventsBodyType) => {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
+    syncTable: 'events',
   });
 
   if (error) throw new Error(error);
@@ -28,6 +29,7 @@ export const patchEvents = async ({
       method: 'PUT',
       body: bodyData,
       cache: 'no-store',
+      syncTable: 'events',
     },
   );
 
@@ -41,10 +43,10 @@ export const deleteEvents = async (id: ID) => {
   const { body, error } = await xooxFetch(`/events/${id}`, {
     method: 'DELETE',
     cache: 'no-store',
+    syncTable: 'events',
   });
 
   if (error) throw new Error(error);
-
   executeRevalidate([RVK_EVENTS, `${RVK_EVENTS}_${id}`]);
   return { data: body, error: null };
 };
