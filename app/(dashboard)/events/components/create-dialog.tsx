@@ -584,7 +584,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="event_memo"
+        name="memo"
         render={({ field }) => (
           <HtmlTipTapItem field={field} label="Тэмдэглэл / Анхааруулга" />
         )}

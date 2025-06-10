@@ -538,7 +538,7 @@ export function UpdateDialog({
 
       <FormField
         control={form.control}
-        name="event_memo"
+        name="memo"
         render={({ field }) => (
           <HtmlTipTapItem field={field} label="Тэмдэглэл / Анхааруулга" />
         )}
