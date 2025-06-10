@@ -73,13 +73,19 @@ export async function xooxFetch<
 
     if (!response.ok || body?.status !== 'success') {
       console.warn(JSON.stringify(body, null, 2));
-      throw new Error(
-        body?.detail?.[0]?.msg ||
+      const propperError = body?.detail?.[0]?.msg;
+      let errorMsg = '';
+
+      if (propperError)
+        errorMsg = propperError + `: ${body?.detail?.[0]?.loc?.join('.')}`;
+      else
+        errorMsg =
           body?.error ||
           (body as any)?.message ||
           (typeof body?.detail === 'string' ? body?.detail : undefined) ||
-          String(response.status),
-      );
+          String(response.status);
+
+      throw new Error(errorMsg);
     }
 
     return {
