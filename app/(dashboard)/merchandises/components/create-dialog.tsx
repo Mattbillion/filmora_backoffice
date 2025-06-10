@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
+import { getEventsHash } from '@/app/(dashboard)/events/actions';
 import CurrencyItem from '@/components/custom/currency-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
@@ -39,6 +40,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const [dropdownData, setDropdownData] = useState<{
     cat_id?: HierarchicalCategory[];
     discount_id?: DiscountsItemType[];
+    event_id?: { id: number; name: string }[];
   }>({});
 
   const [loading, startLoadingTransition] = useTransition();
@@ -87,11 +89,19 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             Promise.all([
               getHierarchicalComCat().then((res) => res?.data || []),
               getDiscounts().then((res) => res?.data?.data || []),
-            ]).then(([cat_id, discount_id]) => {
+              getEventsHash().then(
+                (res) =>
+                  Object.entries(res?.data || {}).map(([i, n]) => ({
+                    id: i,
+                    name: n,
+                  })) as any,
+              ),
+            ]).then(([cat_id, discount_id, event_id]) => {
               setDropdownData((prevData) => ({
                 ...prevData,
                 cat_id,
                 discount_id,
+                event_id,
               }));
             });
           });
@@ -126,16 +136,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
               />
             )}
             <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="com_id"
-        render={({ field }) => (
-          <FormItem>
-            <Input {...field} type="hidden" />
           </FormItem>
         )}
       />
@@ -202,6 +202,31 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                 {dropdownData.discount_id?.map((c, idx) => (
                   <SelectItem key={idx} value={c.id.toString()}>
                     {c.discount_name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="event_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Event</FormLabel>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <FormControl>
+                <SelectTrigger disabled={loading}>
+                  <SelectValue placeholder="Select Event" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {dropdownData.event_id?.map((c, idx) => (
+                  <SelectItem key={idx} value={c.id.toString()}>
+                    {c.name}
                   </SelectItem>
                 ))}
               </SelectContent>

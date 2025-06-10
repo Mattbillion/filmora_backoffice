@@ -5,6 +5,7 @@ import type { BaseType, PrettyType } from '@/lib/fetch/types';
 export const merchandisesSchema = z.object({
   com_id: z.number(),
   cat_id: z.number(),
+  event_id: z.number().optional(),
   mer_name: z.string(),
   mer_desc: z.string(),
   price: z.number(),

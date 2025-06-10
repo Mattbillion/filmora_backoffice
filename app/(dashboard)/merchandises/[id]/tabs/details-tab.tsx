@@ -34,10 +34,12 @@ export function DetailsTab({
   control,
   discounts,
   categories,
+  events,
 }: {
   control: any;
   categories: HierarchicalCategory[];
   discounts: DiscountsItemType[];
+  events: { id: number; name: string }[];
 }) {
   return (
     <TabsContent value="details" className="space-y-4">
@@ -97,6 +99,7 @@ export function DetailsTab({
               </FormItem>
             )}
           />
+
           <FormField
             control={control}
             name="discount_id"
@@ -116,6 +119,34 @@ export function DetailsTab({
                     {discounts.map((c, idx) => (
                       <SelectItem key={idx} value={c.id.toString()}>
                         {c.discount_name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={control}
+            name="event_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Event</FormLabel>
+                <Select
+                  onValueChange={(value) => field.onChange(Number(value))}
+                  value={field.value?.toString()}
+                >
+                  <FormControl>
+                    <SelectTrigger disabled={!discounts.length}>
+                      <SelectValue placeholder="Select a Event" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {events.map((c, idx) => (
+                      <SelectItem key={idx} value={c.id.toString()}>
+                        {c.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

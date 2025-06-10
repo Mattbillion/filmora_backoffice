@@ -46,10 +46,12 @@ export default function MerchDetailClient({
   initialData,
   categories = [],
   discounts = [],
+  events = [],
 }: {
   initialData: MerchandisesItemType;
   categories: HierarchicalCategory[];
   discounts: DiscountsItemType[];
+  events: { id: number; name: string }[];
 }) {
   const [activeTab, setActiveTab] = useState('details');
   const dialogRef = useRef<FormDialogRef>(null);
@@ -140,6 +142,7 @@ export default function MerchDetailClient({
             <DetailsTab
               control={form.control}
               discounts={discounts}
+              events={events}
               categories={categories}
             />
 
