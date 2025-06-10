@@ -14,6 +14,7 @@ import { DeliveryItem } from '../schema';
 const Action = ({ row }: CellContext<DeliveryItem, unknown>) => {
   const [loading, setLoading] = useState(false);
 
+  if (row.original.delivery_status === 'delivered') return null;
   return (
     <Button
       variant="secondary"
@@ -22,7 +23,7 @@ const Action = ({ row }: CellContext<DeliveryItem, unknown>) => {
         setLoading(true);
         // TODO: Please check after generate
         markAsDelivered(row.original.delivery_id)
-          .then((c) => toast.success('Successfully marked as delivered.'))
+          .then(() => toast.success('Successfully marked as delivered.'))
           .catch((c) => toast.error(c.message))
           .finally(() => setLoading(false));
       }}
