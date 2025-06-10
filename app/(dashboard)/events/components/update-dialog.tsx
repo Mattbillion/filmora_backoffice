@@ -122,15 +122,29 @@ export function UpdateDialog({
           </FormItem>
         )}
       />
-
       <FormField
         control={form.control}
         name="event_type"
         render={({ field }) => (
           <FormItem>
-            <FormLabel>Event Type</FormLabel>
+            <FormLabel>Эвент төрөл</FormLabel>
             <FormControl>
-              <Input placeholder="Conference, Workshop, etc." {...field} />
+              <Select
+                disabled={loadingBranches}
+                onValueChange={(value) => form.setValue('event_type', value)}
+                value={field.value?.toString()}
+              >
+                <FormControl>
+                  <SelectTrigger className="py-2">
+                    <SelectValue placeholder="Эвэнт төрөл сонгох" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  <SelectItem value="mixed">Босоо, Суудал хамт</SelectItem>
+                  <SelectItem value="seat">Дан суудлаар</SelectItem>
+                  <SelectItem value="bosoo">Босоо</SelectItem>
+                </SelectContent>
+              </Select>
             </FormControl>
             <FormMessage />
           </FormItem>
