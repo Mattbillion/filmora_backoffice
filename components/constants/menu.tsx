@@ -11,6 +11,7 @@ import {
   Shield,
   ShoppingCart,
   Store,
+  Truck,
   UserCog,
   UsersRoundIcon,
 } from 'lucide-react';
@@ -179,6 +180,13 @@ const operationsRoutes: SubMenuItemType[] = [
     url: '/orders',
     subRoutes: true,
     icon: ShoppingCart,
+    permissions: ['get_order_list', 'get_order_detail'],
+  },
+  {
+    title: 'Хүргэлтүүд',
+    url: '/delivery',
+    subRoutes: true,
+    icon: Truck,
     permissions: ['get_order_list', 'get_order_detail'],
   },
   {
