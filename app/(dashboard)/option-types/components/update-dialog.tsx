@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode, useRef, useState, useTransition } from 'react';
+import { ReactNode, useRef, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -15,15 +15,12 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { HierarchicalCategory } from '@/features/category/schema';
-import { ID } from '@/lib/fetch/types';
-
-import { patchOptionTypes } from '../../../../features/option-types/actions';
+import { patchOptionTypes } from '@/features/option-types/actions';
 import {
   OptionTypesBodyType,
   OptionTypesItemType,
   optionTypesSchema,
-} from '../../../../features/option-types/schema';
+} from '@/features/option-types/schema';
 
 export function UpdateDialog({
   children,
@@ -34,16 +31,6 @@ export function UpdateDialog({
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-  const [dropdownData, setDropdownData] = useState<{
-    cat_id?: HierarchicalCategory[];
-    venue_id?: Record<ID, string>;
-    branch_id?: Record<ID, string>;
-    hall_id?: Record<ID, string>;
-    age_id?: Record<ID, string>;
-  }>({});
-  const [loading, startLoadingTransition] = useTransition();
-  const [loadingBranches, startLoadingBranches] = useTransition();
-  const [loadingHalls, startLoadingHalls] = useTransition();
 
   const form = useForm<OptionTypesBodyType>({
     resolver: zodResolver(optionTypesSchema),

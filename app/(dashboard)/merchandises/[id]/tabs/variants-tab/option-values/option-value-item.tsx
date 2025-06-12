@@ -59,10 +59,9 @@ function OptionValueItem({
     setStartDeleting(() => {
       deleteVariantOptionValue(valueId, {
         company_id: com_id,
-      }).then(() => {
-        console.log('deleted', valueId);
-        setOptionValues((prev) => prev.filter((op) => op.id !== valueId));
-      });
+      }).then(() =>
+        setOptionValues((prev) => prev.filter((op) => op.id !== valueId)),
+      );
     });
   };
   return (

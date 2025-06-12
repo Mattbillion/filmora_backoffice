@@ -62,9 +62,6 @@ export const EditForm = ({
           setEdit(false);
         }
       })
-      .catch((err) => {
-        console.log(err);
-      })
       .finally(() => {
         setLoading(false);
       });

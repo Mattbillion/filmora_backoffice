@@ -16,24 +16,14 @@ export async function revalidateAll() {
   revalidatePath('/', 'layout');
 }
 
-export async function revalidateXOOX(
-  // {
-  //   tag,
-  //   type,
-  //   path,
-  // }: { path?: string; type?: 'page' | 'layout'; tag?: string },
-  origin: 'vercel' | 'xoox',
-) {
+export async function revalidateXOOX(origin: 'vercel' | 'xoox') {
   const url = {
-    vercel: 'https://xoox-next-frontend.vercel.app',
-    xoox: 'https://xoox.mn',
+    vercel: process.env.FRONT_VERCEL_DOMAIN || 'https://xoox.vercel.app',
+    xoox: process.env.FRONT_DOMAIN || 'https://xoox.mn',
   }[origin];
 
   let endpoint = `${url}/api/revalidate?secret=ps_ez&path=/`;
   try {
-    // if (!tag && !type && !path) endpoint += 'path=/';
-    // else endpoint += objToQs(clearObj({ tag, type, path }));
-
     const res = await fetch(endpoint, { method: 'POST', cache: 'no-store' });
     const result = await res.json();
 

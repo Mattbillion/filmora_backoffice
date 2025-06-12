@@ -26,7 +26,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export function MerchandiseDiscountSalesChart({
-  chartData,
+  chartData = [],
 }: {
   chartData: any;
 }) {

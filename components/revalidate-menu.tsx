@@ -29,7 +29,7 @@ export default function RevalidateMenu() {
               disabled={loading}
               onClick={() => {
                 setLoading(true);
-                Promise.all([revalidateAll(), revalidateXOOX({}, getOrigin())])
+                Promise.all([revalidateAll(), revalidateXOOX(getOrigin())])
                   .then(() => toast.success('Revalidate successfully'))
                   .finally(() => setLoading(false));
               }}

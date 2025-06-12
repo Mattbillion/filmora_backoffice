@@ -271,7 +271,11 @@ export function VariantsTab() {
               </Table>
               {!!variants?.length && (
                 <div className={'mt-5 flex justify-end'}>
-                  <Button type="submit" className={'min-w-[200px]'}>
+                  <Button
+                    type="submit"
+                    className={'min-w-[200px]'}
+                    disabled={saving}
+                  >
                     Save
                   </Button>
                 </div>

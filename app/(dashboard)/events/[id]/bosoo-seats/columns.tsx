@@ -100,14 +100,6 @@ export const bosooSeatsColumns: ColumnDef<
     header: ({ column }) => <TableHeaderWrapper column={column} />,
   },
   {
-    id: 'seat_no',
-    accessorKey: 'seat_no',
-    header: 'Суудлын дугаар',
-    cell: ({ row }) => row.original.seat_no?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
     id: 'seat_name',
     accessorKey: 'seat_name',
     header: 'Суудлын нэр',

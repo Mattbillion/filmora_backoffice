@@ -178,14 +178,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         name="description"
         render={({ field }) => <HtmlTipTapItem field={field} />}
       />
-
-      {/*<FormField*/}
-      {/*  control={form.control}*/}
-      {/*  name="image"*/}
-      {/*  render={({ field }) => (*/}
-      {/*    <UploadImageItem field={field} imagePrefix="image" label="Image" />*/}
-      {/*  )}*/}
-      {/*/>*/}
     </FormDialog>
   );
 }

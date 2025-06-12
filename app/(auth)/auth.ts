@@ -7,11 +7,6 @@ import { xooxFetch } from '@/lib/fetch';
 
 import { authConfig } from './auth.config';
 
-type LoginResType = {
-  access_token: string;
-  refresh_token: string;
-};
-
 declare module 'next-auth' {
   interface Session {
     user: {
