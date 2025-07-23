@@ -144,7 +144,9 @@ const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
   );
 };
 
-export const eventsColumns: ColumnDef<EventColumnType>[] = [
+export const eventsColumns: ColumnDef<
+  EventColumnType & { venue?: string; branch?: string; hall?: string }
+>[] = [
   {
     id: 'id',
     accessorKey: 'id',
@@ -173,38 +175,14 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
       <Image
         src={row.original.event_image}
         alt=""
-        width={352}
-        height={72}
+        width={176}
+        height={36}
         className="rounded-s"
       />
     ),
     enableSorting: false,
     enableColumnFilter: false,
   },
-  // {
-  //   id: 'venue_id',
-  //   accessorKey: 'venue_id',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.venue,
-  //   enableSorting: true,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'branch_id',
-  //   accessorKey: 'branch_id',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.branch,
-  //   enableSorting: true,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'hall_id',
-  //   accessorKey: 'hall_id',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.hall,
-  //   enableSorting: true,
-  //   enableColumnFilter: true,
-  // },
   {
     id: 'category_id',
     accessorKey: 'category_id',
@@ -222,48 +200,6 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     enableSorting: false,
     enableColumnFilter: true,
   },
-
-  // {
-  //   id: 'event_capacity',
-  //   accessorKey: 'event_capacity',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.event_capacity,
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'age_id',
-  //   accessorKey: 'age_id',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.age_id,
-  //   enableSorting: true,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'event_type',
-  //   accessorKey: 'event_type',
-  //   header: 'Эвент төрөл',
-  //   cell: ({ row }) => row.original.event_type,
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
-
-  // {
-  //   id: 'event_order',
-  //   accessorKey: 'event_order',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.event_order,
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'event_genre',
-  //   accessorKey: 'event_genre',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.event_genre,
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
   {
     id: 'duration',
     accessorKey: 'duration',
@@ -277,31 +213,15 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     accessorKey: 'openning_at',
     header: 'Эхлэх огноо',
     cell: ({ row }) => (
-      <span className="text-nowrap">
+      <Badge variant="secondary" className="text-nowrap">
         {row.original.openning_at
           ? dayjs(row.original.openning_at).format('YYYY-MM-DD hh:mm')
           : undefined}
-      </span>
+      </Badge>
     ),
     enableSorting: false,
     enableColumnFilter: true,
   },
-  // {
-  //   id: 'language',
-  //   accessorKey: 'language',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.language,
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'sponsor_name',
-  //   accessorKey: 'sponsor_name',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => row.original.sponsor_name,
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
   {
     id: 'contact_info',
     accessorKey: 'contact_info',
@@ -314,43 +234,6 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
     enableSorting: false,
     enableColumnFilter: true,
   },
-  // {
-  //   id: 'fb_link',
-  //   accessorKey: 'fb_link',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => (
-  //     <a href={row.original.fb_link} target="_blank" rel="noopener noreferrer">
-  //       Facebook
-  //     </a>
-  //   ),
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'ig_link',
-  //   accessorKey: 'ig_link',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => (
-  //     <a href={row.original.ig_link} target="_blank" rel="noopener noreferrer">
-  //       Instagram
-  //     </a>
-  //   ),
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
-  // {
-  //   id: 'web_link',
-  //   accessorKey: 'web_link',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => (
-  //     <a href={row.original.web_link} target="_blank" rel="noopener noreferrer">
-  //       Website
-  //     </a>
-  //   ),
-  //   enableSorting: false,
-  //   enableColumnFilter: true,
-  // },
-
   {
     id: 'event_desc',
     accessorKey: 'event_desc',
@@ -363,6 +246,30 @@ export const eventsColumns: ColumnDef<EventColumnType>[] = [
         </span>
       </p>
     ),
+  },
+  {
+    id: 'hall_id',
+    accessorKey: 'hall_id',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.hall,
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'venue_id',
+    accessorKey: 'venue_id',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.venue,
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'branch_id',
+    accessorKey: 'branch_id',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.branch,
+    enableSorting: false,
+    enableColumnFilter: true,
   },
 
   {

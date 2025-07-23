@@ -59,7 +59,7 @@ export async function xooxFetch<
 
       if (opts.method === 'GET') {
         opts.searchParams.company_id = session?.user?.company_id;
-        opts.searchParams.com_id = session?.user?.company_id;
+        // opts.searchParams.com_id = session?.user?.company_id;
       }
     }
 

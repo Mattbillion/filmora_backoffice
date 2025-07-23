@@ -2,7 +2,8 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Trash } from 'lucide-react';
+import { ListTree, Trash } from 'lucide-react';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -11,9 +12,9 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { checkPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
+import { cn, removeHTML } from '@/lib/utils';
 
 import { deleteTemplatesDetail } from './actions';
 import { TemplatesItemType } from './schema';
@@ -55,7 +56,27 @@ const Action = ({ row }: CellContext<TemplatesItemType, unknown>) => {
   );
 };
 
-export const templatesColumns: ColumnDef<TemplatesItemType>[] = [
+const Navigation = ({ row }: CellContext<TemplatesItemType, unknown>) => {
+  const { data } = useSession();
+  const canAccess = checkPermission(data, ['create_event_schedule']);
+
+  return (
+    <div className="flex items-center justify-center gap-2">
+      {canAccess && (
+        <Link
+          href={`/events/${row.original.event_id}/templates/${row.original.id}/schedules`}
+          className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+        >
+          <ListTree className="h-4 w-4" /> Schedules
+        </Link>
+      )}
+    </div>
+  );
+};
+
+export const templatesColumns: ColumnDef<
+  TemplatesItemType & { venue?: string; branch?: string; hall?: string }
+>[] = [
   {
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
@@ -95,7 +116,35 @@ export const templatesColumns: ColumnDef<TemplatesItemType>[] = [
     id: 'template_json_url',
     accessorKey: 'template_json_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.template_json_url,
+    cell: ({ row }) => (
+      <a href={row.original.template_json_url} target="_blank">
+        Preview JSON
+      </a>
+    ),
+  },
+  {
+    id: 'hall_id',
+    accessorKey: 'hall_id',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.hall,
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'venue_id',
+    accessorKey: 'venue_id',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.venue,
+    enableSorting: false,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'branch_id',
+    accessorKey: 'branch_id',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => row.original.branch,
+    enableSorting: false,
+    enableColumnFilter: true,
   },
   {
     id: 'status',
@@ -104,6 +153,10 @@ export const templatesColumns: ColumnDef<TemplatesItemType>[] = [
     cell: ({ row }) => (row.original.status ? 'Active' : 'Inactive'),
     enableSorting: false,
     enableColumnFilter: true,
+  },
+  {
+    id: 'navigations',
+    cell: Navigation,
   },
   {
     id: 'actions',

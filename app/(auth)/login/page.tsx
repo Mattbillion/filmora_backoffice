@@ -1,7 +1,6 @@
 'use client';
 
 import { useActionState, useEffect } from 'react';
-import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 
@@ -44,16 +43,6 @@ export default function Page() {
         </div>
         <AuthForm action={handleSubmit} defaultEmail={''}>
           <SubmitButton>Sign in</SubmitButton>
-          <p className="mt-4 text-center text-sm text-gray-600 dark:text-zinc-400">
-            {"Don't have an account? "}
-            <Link
-              href="/register"
-              className="font-semibold text-gray-800 hover:underline dark:text-zinc-200"
-            >
-              Sign up
-            </Link>
-            {' for free.'}
-          </p>
         </AuthForm>
       </div>
     </div>

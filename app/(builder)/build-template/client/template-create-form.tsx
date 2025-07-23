@@ -37,9 +37,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createTemplate, uploadTemplateJSON } from '../actions';
-import { KonvaNode, TemplateBodyType, templateSchema } from '../schema';
-import { dataMap } from './constants';
+import { createTemplate /*uploadTemplateJSON*/ } from '../actions';
+import { /*KonvaNode,*/ TemplateBodyType, templateSchema } from '../schema';
+// import { dataMap } from './constants';
 import { useKonvaStage } from './context';
 
 export function CreateTemplateDialog() {
@@ -119,64 +119,33 @@ export function CreateTemplateDialog() {
       clonedStage?.findOne('#masks')?.remove();
       clonedStage?.findOne('#tickets')?.remove();
 
-      const purchasableItems =
-        ticketsSection
-          //@ts-ignore
-          ?.find(
-            (c: KonvaNode) =>
-              [dataMap.r, dataMap.t, dataMap.s].includes(
-                c.attrs['data-type'],
-              ) && c.attrs['data-purchasable'],
-          )
-          .map((c: KonvaNode) => {
-            const json = c.toObject();
-            return Object.fromEntries(
-              Object.entries({
-                ...json.attrs,
-                className: json.className,
-              }).filter(
-                ([k]) =>
-                  json.className !== 'Text' &&
-                  (k === 'id' || k.startsWith('data-')),
-              ),
-            );
-          }) || [];
+      // const purchasableItems =
+      //   ticketsSection
+      //     //@ts-ignore
+      //     ?.find(
+      //       (c: KonvaNode) =>
+      //         [dataMap.r, dataMap.t, dataMap.s].includes(
+      //           c.attrs['data-type'],
+      //         ) && c.attrs['data-purchasable'],
+      //     )
+      //     .map((c: KonvaNode) => {
+      //       const json = c.toObject();
+      //       return Object.fromEntries(
+      //         Object.entries({
+      //           ...json.attrs,
+      //           className: json.className,
+      //         }).filter(
+      //           ([k]) =>
+      //             json.className !== 'Text' &&
+      //             (k === 'id' || k.startsWith('data-')),
+      //         ),
+      //       );
+      //     }) || [];
 
       try {
         const { data } = await createTemplate(
           toFormData({
             ...values,
-            company_id: session?.user?.company_id,
-            json_file: createJsonFile(
-              JSON.stringify(purchasableItems, null, 2),
-              'seats.json',
-            ),
-          }),
-        );
-        if (!data) return;
-        const seatIdObj: Record<string, number> = data.seats.reduce(
-          (acc, cur) => ({ ...acc, [cur.seat_no]: cur.id }),
-          {},
-        );
-
-        // define all ticket like nodes as not purchasable
-        //@ts-ignore
-        ticketsSection.find((n) => {
-          const seatId = seatIdObj[n.id()];
-          if (seatId) {
-            n.setAttr('data-seat-id', seatId);
-            n.setAttr(
-              'data-price',
-              Number(values.current_price) +
-                Number(n.getAttr('data-price') || 0) +
-                Number(n.getAttr('data-additionalPrice') || 0),
-            );
-          }
-        });
-
-        const { data: uploadedData } = await uploadTemplateJSON(
-          toFormData({
-            template_id: data.template_id,
             company_id: session?.user?.company_id,
             tickets_file: createJsonFile(
               ticketsSection.toJSON(),
@@ -186,9 +155,42 @@ export function CreateTemplateDialog() {
             other_file: createJsonFile(clonedStage.toJSON(), 'others.json'),
           }),
         );
-
-        if (uploadedData)
-          router.replace(`/events/${values.event_id}/templates`);
+        if (!data) return;
+        // const seatIdObj: Record<string, number> = data.seats.reduce(
+        //   (acc, cur) => ({ ...acc, [cur.seat_no]: cur.id }),
+        //   {},
+        // );
+        //
+        // // define all ticket like nodes as not purchasable
+        // //@ts-ignore
+        // ticketsSection.find((n) => {
+        //   const seatId = seatIdObj[n.id()];
+        //   if (seatId) {
+        //     n.setAttr('data-seat-id', seatId);
+        //     n.setAttr(
+        //       'data-price',
+        //       Number(values.current_price) +
+        //         Number(n.getAttr('data-price') || 0) +
+        //         Number(n.getAttr('data-additionalPrice') || 0),
+        //     );
+        //   }
+        // });
+        //
+        // const { data: uploadedData } = await uploadTemplateJSON(
+        //   toFormData({
+        //     template_id: data.template_id,
+        //     company_id: session?.user?.company_id,
+        //     tickets_file: createJsonFile(
+        //       ticketsSection.toJSON(),
+        //       'tickets.json',
+        //     ),
+        //     mask_file: createJsonFile(masksSection.toJSON(), 'masks.json'),
+        //     other_file: createJsonFile(clonedStage.toJSON(), 'others.json'),
+        //   }),
+        // );
+        //
+        // if (uploadedData)
+        router.replace(`/events/${values.event_id}/templates`);
       } catch (e) {
         console.error(e);
         alert((e as Error).message);
