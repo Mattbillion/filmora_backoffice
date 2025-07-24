@@ -33,17 +33,20 @@ export function NavUser({ session }: { session: Session }) {
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
+            <SidebarMenuButton size="lg">
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={imageResize(session?.user?.profile ?? '', 'small')}
                   alt={session?.user?.lastname ?? ''}
                 />
                 <AvatarFallback className="rounded-lg">
-                  {session?.user?.email?.slice(0, 2)}
+                  {(
+                    (session?.user?.email ||
+                      (session.user.firstname || '')[0]?.concat(
+                        (session.user.lastname || '')[0],
+                      )) ??
+                    ''
+                  )?.slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
@@ -73,8 +76,13 @@ export function NavUser({ session }: { session: Session }) {
                     alt={session?.user?.name ?? ''}
                   />
                   <AvatarFallback className="rounded-lg">
-                    {' '}
-                    {session?.user?.email?.slice(0, 2)}
+                    {(
+                      (session?.user?.email ||
+                        (session.user.firstname || '')[0]?.concat(
+                          (session.user.lastname || '')[0],
+                        )) ??
+                      ''
+                    )?.slice(0, 2)}
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">

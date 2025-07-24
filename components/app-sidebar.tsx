@@ -47,8 +47,8 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
         {session?.user?.role === 'Super_Admin' ? (
           <TeamSwitcher />
         ) : (
-          <div className="flex items-center gap-2 p-2">
-            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+          <div className="flex items-center gap-2 p-2 group-data-[state=collapsed]:overflow-hidden group-data-[state=collapsed]:px-0">
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground group-data-[state=collapsed]:size-7">
               {isUri(session?.user?.company_logo || '') ? (
                 <Image
                   src={session?.user?.company_logo!}

@@ -80,17 +80,15 @@ export function TeamSwitcher() {
       <SidebarMenuItem>
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
-            <button className="flex w-full items-center gap-3 rounded-lg p-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
-              <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
+            <button className="flex w-full items-center gap-3 rounded-lg p-2 text-sm font-medium hover:bg-accent hover:text-accent-foreground group-data-[state=collapsed]:overflow-hidden group-data-[state=collapsed]:px-0">
+              <div className="relative flex aspect-square size-8 shrink-0 grow-0 basis-8 items-center justify-center overflow-hidden rounded-lg bg-sidebar-primary text-sidebar-primary-foreground group-data-[state=collapsed]:size-7 group-data-[state=collapsed]:basis-7">
                 {isUri(session?.user?.company_logo || '') ? (
-                  <div className="relative aspect-square size-8 overflow-hidden rounded-lg">
-                    <Image
-                      src={session?.user?.company_logo!}
-                      fill
-                      alt={`${session?.user?.company_name} logo`}
-                      className="object-cover"
-                    />
-                  </div>
+                  <Image
+                    src={session?.user?.company_logo!}
+                    fill
+                    alt={`${session?.user?.company_name} logo`}
+                    className="object-cover"
+                  />
                 ) : (
                   <CommandIcon className="size-4" />
                 )}
@@ -108,7 +106,7 @@ export function TeamSwitcher() {
               <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+          <PopoverContent className="w-60 p-0">
             <Command shouldFilter={false}>
               <CommandInput
                 placeholder="Search by name"
