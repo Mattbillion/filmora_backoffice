@@ -59,14 +59,14 @@ export default async function ScheduleListPage(props: {
 
   const [venueData, branchData, hallData, templateJsonData] = await Promise.all(
     [
-      eventData?.data?.venue_id
-        ? getVenuesDetail(eventData?.data?.venue_id)
+      template?.venue_id
+        ? getVenuesDetail(template?.venue_id)
         : Promise.resolve(null),
-      eventData?.data?.branch_id
-        ? getBranchesDetail(eventData?.data?.branch_id)
+      template?.branch_id
+        ? getBranchesDetail(template?.branch_id)
         : Promise.resolve(null),
-      eventData?.data?.hall_id
-        ? getHallDetail(eventData?.data?.hall_id)
+      template?.hall_id
+        ? getHallDetail(template?.hall_id)
         : Promise.resolve(null),
       // template ? getTemplateData(id) : Promise.resolve(null),
       Promise.resolve(null),

@@ -28,7 +28,7 @@ export function SortDropDownMenu<TData, TValue>({
           variant="ghost"
           size="cxs"
           disabled={!column.getCanSort()}
-          className="!opacity-100"
+          className="px-0 !opacity-100"
         >
           {isSorted ? (
             <ArrowUpIcon size={14} />
