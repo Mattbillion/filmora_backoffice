@@ -25,7 +25,7 @@ export default function BreadcrumbLastPage() {
                   ? `bc:${pageNames[idx - 1]}:${c}`
                   : `bc:${idx}`
               }
-              className="max-w-40 truncate capitalize"
+              className="capitalize"
             >
               {c}
             </BreadcrumbPage>
