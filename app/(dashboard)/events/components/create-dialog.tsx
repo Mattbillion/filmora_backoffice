@@ -27,12 +27,9 @@ import {
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { getAgeRestrictionsHash } from '@/features/age/actions';
-import { getBranchesHash } from '@/features/branches/actions';
 import { getHierarchicalCategories } from '@/features/category/actions';
 import { HierarchicalSelect } from '@/features/category/components/hierarichal-select';
 import { HierarchicalCategory } from '@/features/category/schema';
-import { getHallsHash } from '@/features/halls/actions';
-import { getVenuesHash } from '@/features/venues/actions';
 import { ID } from '@/lib/fetch/types';
 
 import { createEvents } from '../actions';
@@ -44,14 +41,9 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const [isPending, startTransition] = useTransition();
   const [dropdownData, setDropdownData] = useState<{
     cat_id?: HierarchicalCategory[];
-    venue_id?: Record<ID, string>;
-    branch_id?: Record<ID, string>;
-    hall_id?: Record<ID, string>;
     age_id?: Record<ID, string>;
   }>({});
   const [loading, startLoadingTransition] = useTransition();
-  const [loadingBranches, startLoadingBranches] = useTransition();
-  const [loadingHalls, startLoadingHalls] = useTransition();
 
   const form = useForm<EventsBodyType>({
     resolver: zodResolver(eventsSchema),
@@ -91,18 +83,12 @@ export function CreateDialog({ children }: { children: ReactNode }) {
           startLoadingTransition(() => {
             Promise.all([
               getHierarchicalCategories().then((res) => res?.data || []),
-              getVenuesHash().then((res) => res?.data || {}),
               getAgeRestrictionsHash().then((res) => res?.data || {}),
-              getBranchesHash().then((res) => res?.data || {}),
-              getHallsHash().then((res) => res?.data || {}),
-            ]).then(([cat_id, venue_id, age_id, branch_id, hall_id]) => {
+            ]).then(([cat_id, age_id]) => {
               setDropdownData((prevData) => ({
                 ...prevData,
                 cat_id,
-                venue_id,
                 age_id,
-                branch_id,
-                hall_id,
               }));
             });
           });
@@ -144,7 +130,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
               <FormLabel>Эвент төрөл</FormLabel>
               <FormControl>
                 <Select
-                  disabled={loadingBranches}
                   onValueChange={(value) => form.setValue('event_type', value)}
                   value={field.value?.toString()}
                 >
@@ -266,130 +251,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         )}
       />
       <div className="grid grid-cols-2 gap-4">
-        <FormField
-          control={form.control}
-          name="venue_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Venue ID</FormLabel>
-              <Select
-                onValueChange={(value) => {
-                  startLoadingBranches(() => {
-                    getBranchesHash({
-                      page_size: 10000,
-                      filters: `venue_id=${value}`,
-                    }).then((c) =>
-                      setDropdownData((prev) => ({
-                        ...prev,
-                        branch_id: c.data || {},
-                      })),
-                    );
-                  });
-                  // @ts-ignore
-                  form.setValue('branch_id', undefined);
-                  // @ts-ignore
-                  form.setValue('hall_id', undefined);
-                  field.onChange(Number(value));
-                }}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select venue id" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.entries(dropdownData.venue_id || {}).map(
-                    ([key, val]) => (
-                      <SelectItem value={key} key={key}>
-                        {val}
-                      </SelectItem>
-                    ),
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="branch_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Branch ID</FormLabel>
-              <Select
-                disabled={loadingBranches}
-                onValueChange={(value) => {
-                  startLoadingHalls(() => {
-                    getHallsHash({
-                      page_size: 10000,
-                      filters: `branch_id=${value}`,
-                    }).then((c) =>
-                      setDropdownData((prev) => ({
-                        ...prev,
-                        hall_id: c.data || {},
-                      })),
-                    );
-                  });
-                  // @ts-ignore
-                  form.setValue('hall_id', undefined);
-                  field.onChange(Number(value));
-                }}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select branch id" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.entries(dropdownData.branch_id || {}).map(
-                    ([key, val]) => (
-                      <SelectItem value={key} key={key}>
-                        {val}
-                      </SelectItem>
-                    ),
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="hall_id"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Hall ID</FormLabel>
-              <Select
-                disabled={loadingHalls}
-                onValueChange={(value) => field.onChange(Number(value))}
-                value={field.value?.toString()}
-              >
-                <FormControl>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select hall id" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {Object.entries(dropdownData?.hall_id || {}).map(
-                    ([key, val]) => (
-                      <SelectItem value={key} key={key}>
-                        {val}
-                      </SelectItem>
-                    ),
-                  )}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         <FormField
           control={form.control}
           name="category_id"

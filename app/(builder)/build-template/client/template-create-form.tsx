@@ -8,7 +8,6 @@ import { SaveIcon } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
-import CurrencyItem from '@/components/custom/currency-item';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import { LoaderIcon } from '@/components/custom/icons';
 import { Button } from '@/components/ui/button';
@@ -22,7 +21,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,6 +34,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getHallsHash } from '@/features/halls/actions';
+import { ID } from '@/lib/fetch/types';
 
 import { createTemplate /*uploadTemplateJSON*/ } from '../actions';
 import { /*KonvaNode,*/ TemplateBodyType, templateSchema } from '../schema';
@@ -44,6 +44,10 @@ import { useKonvaStage } from './context';
 
 export function CreateTemplateDialog() {
   const [isPending, startTransition] = useTransition();
+  const [loadingHalls, startLoadingHalls] = useTransition();
+  const [dropdownData, setDropdownData] = useState<{
+    hall_id?: Record<ID, string>;
+  }>({});
   const { getStage, initialValues: STAGE_INITIALS } = useKonvaStage();
   const [open, setOpen] = useState(false);
   const params = useSearchParams();
@@ -53,7 +57,6 @@ export function CreateTemplateDialog() {
   const form = useForm<TemplateBodyType>({
     resolver: zodResolver(templateSchema),
     defaultValues: {
-      event_id: Number(params.get('eventId')),
       template_name: '',
       template_desc: '',
       status: true,
@@ -147,12 +150,13 @@ export function CreateTemplateDialog() {
           toFormData({
             ...values,
             company_id: session?.user?.company_id,
-            tickets_file: createJsonFile(
+            template_type: 'json',
+            tickets_json: createJsonFile(
               ticketsSection.toJSON(),
               'tickets.json',
             ),
-            mask_file: createJsonFile(masksSection.toJSON(), 'masks.json'),
-            other_file: createJsonFile(clonedStage.toJSON(), 'others.json'),
+            mask_json: createJsonFile(masksSection.toJSON(), 'masks.json'),
+            others_json: createJsonFile(clonedStage.toJSON(), 'others.json'),
           }),
         );
         if (!data) return;
@@ -190,7 +194,7 @@ export function CreateTemplateDialog() {
         // );
         //
         // if (uploadedData)
-        router.replace(`/events/${values.event_id}/templates`);
+        router.replace(`/events/${params.get('eventId')}/templates`);
       } catch (e) {
         console.error(e);
         alert((e as Error).message);
@@ -207,6 +211,16 @@ export function CreateTemplateDialog() {
           const ticketsSection = getStage()?.findOne('#tickets');
           if (!masksSection || !ticketsSection)
             return alert('Please describe "Tickets / Seats" and "Mask" layer');
+
+          startLoadingHalls(() => {
+            Promise.all([getHallsHash().then((res) => res?.data || {})]).then(
+              ([hall_id]) => {
+                setDropdownData({
+                  hall_id,
+                });
+              },
+            );
+          });
           setOpen(true);
         }}
       >
@@ -220,12 +234,31 @@ export function CreateTemplateDialog() {
           <form onSubmit={form.handleSubmit(onSubmit, console.error)}>
             <FormField
               control={form.control}
-              name="event_id"
+              name="hall_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormControl>
-                    <Input {...field} type="hidden" />
-                  </FormControl>
+                  <FormLabel>Hall</FormLabel>
+                  <Select
+                    disabled={loadingHalls}
+                    onValueChange={(value) => field.onChange(Number(value))}
+                    value={field.value?.toString()}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select hall" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.entries(dropdownData?.hall_id || {}).map(
+                        ([key, val]) => (
+                          <SelectItem value={key} key={key}>
+                            {val}
+                          </SelectItem>
+                        ),
+                      )}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
                 </FormItem>
               )}
             />
@@ -237,23 +270,6 @@ export function CreateTemplateDialog() {
                   <FormLabel>Template name</FormLabel>
                   <FormControl>
                     <Input placeholder="Enter name" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="current_price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Price</FormLabel>
-                  <FormDescription>
-                    Initial price for each tickets.
-                  </FormDescription>
-                  <FormControl>
-                    <CurrencyItem field={field} placeholder={'Enter Price'} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

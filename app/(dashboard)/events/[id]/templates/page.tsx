@@ -15,7 +15,6 @@ import { getVenuesHash } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
-import { CreateDialog } from '../../components';
 import { getTemplates } from './actions';
 import { templatesColumns } from './columns';
 
@@ -60,14 +59,12 @@ export default async function TemplatesPage(props: {
           title={`Template (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_template']) && (
-          <CreateDialog>
-            <Link
-              href={`/build-template?eventId=${id}`}
-              className={buttonVariants({ className: 'text-xs md:text-sm' })}
-            >
-              <Plus className="h-4 w-4" /> Template үүсгэх
-            </Link>
-          </CreateDialog>
+          <Link
+            href={`/build-template?eventId=${id}`}
+            className={buttonVariants({ className: 'text-xs md:text-sm' })}
+          >
+            <Plus className="h-4 w-4" /> Template үүсгэх
+          </Link>
         )}
       </div>
       <Separator />
