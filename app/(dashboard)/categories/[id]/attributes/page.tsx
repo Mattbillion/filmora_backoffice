@@ -3,9 +3,11 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
+import { getCategoryDetail } from '@/features/category/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
@@ -24,6 +26,7 @@ export default async function CategoryAttributesPage(props: {
     props.params,
     props.searchParams,
   ]);
+  const { data: catData } = await getCategoryDetail(id);
   const { data } = await getAttributes({
     ...searchParams,
     filters: [
@@ -36,6 +39,14 @@ export default async function CategoryAttributesPage(props: {
   return (
     <>
       <div className="flex items-start justify-between">
+        <ReplaceBreadcrumdItem
+          data={{
+            categories: {
+              value: catData?.data?.cat_name,
+              selector: id,
+            },
+          }}
+        />
         <Heading
           title={`Category attributes list (${data?.total_count ?? data?.data?.length})`}
         />

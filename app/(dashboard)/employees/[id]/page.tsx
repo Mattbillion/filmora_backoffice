@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getEmployee } from '@/app/(dashboard)/employees/actions';
 import { ChangeEmail } from '@/app/(dashboard)/employees/components/edit/change-email';
 import { EmployeeCard } from '@/app/(dashboard)/employees/components/employee-card';
+import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 
 import { ChangePassword, EditForm } from '../components/edit';
 
@@ -23,6 +24,14 @@ export default async function Page({
 
   return (
     <div className="flex flex-col gap-6">
+      <ReplaceBreadcrumdItem
+        data={{
+          employees: {
+            value: userData?.email,
+            selector: id,
+          },
+        }}
+      />
       <EmployeeCard userData={userData} />
       <EditForm initialData={userData!} />
       <div className="flex gap-4">

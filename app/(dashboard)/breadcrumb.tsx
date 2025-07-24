@@ -19,7 +19,16 @@ export default function BreadcrumbLastPage() {
         <Fragment key={idx}>
           <BreadcrumbSeparator className="hidden md:block" />
           <BreadcrumbItem>
-            <BreadcrumbPage className="capitalize">{c}</BreadcrumbPage>
+            <BreadcrumbPage
+              id={
+                !isNaN(Number(c))
+                  ? `bc:${pageNames[idx - 1]}:${c}`
+                  : `bc:${idx}`
+              }
+              className="max-w-64 truncate capitalize"
+            >
+              {c}
+            </BreadcrumbPage>
           </BreadcrumbItem>
         </Fragment>
       ))}

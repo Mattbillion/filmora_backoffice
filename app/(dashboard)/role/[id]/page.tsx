@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -46,6 +47,14 @@ export default async function RoleDetailPage(props: {
 
   return (
     <>
+      <ReplaceBreadcrumdItem
+        data={{
+          role: {
+            value: currentRole?.role_name,
+            selector: id,
+          },
+        }}
+      />
       <div className="flex items-start justify-between">
         <Heading
           title={`${currentRole?.role_name + ' '}Permission list (${data?.total_count ?? data?.data?.length})`}

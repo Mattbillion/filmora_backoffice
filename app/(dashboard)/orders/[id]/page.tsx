@@ -1,5 +1,7 @@
 import { notFound } from 'next/navigation';
 
+import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
+
 import { getOrdersDetail } from '../actions';
 import OrderDetailClient from './client';
 
@@ -14,5 +16,17 @@ export default async function AdminOrderDetailPage({
 
   if (!order) return notFound();
 
-  return <OrderDetailClient order={order} />;
+  return (
+    <>
+      <ReplaceBreadcrumdItem
+        data={{
+          orders: {
+            value: order.order_number,
+            selector: id,
+          },
+        }}
+      />
+      <OrderDetailClient order={order} />
+    </>
+  );
 }

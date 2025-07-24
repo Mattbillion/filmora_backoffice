@@ -3,10 +3,13 @@ import { Plus } from 'lucide-react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
+import { getBranchesDetail } from '@/features/branches/actions';
 import { getHalls } from '@/features/halls/actions';
+import { getVenuesDetail } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
@@ -24,6 +27,8 @@ export default async function HallsPage(props: {
     props.searchParams,
     props.params,
   ]);
+  const { data: venueData } = await getVenuesDetail(venue_id);
+  const { data: branchData } = await getBranchesDetail(branch_id);
   const { data } = await getHalls({
     ...searchParams,
     filters: [
@@ -36,6 +41,18 @@ export default async function HallsPage(props: {
 
   return (
     <>
+      <ReplaceBreadcrumdItem
+        data={{
+          venues: {
+            value: venueData?.data?.venue_name,
+            selector: venue_id,
+          },
+          branches: {
+            value: branchData?.data?.branch_name,
+            selector: branch_id,
+          },
+        }}
+      />
       <div className="flex items-start justify-between">
         <Heading
           title={`Halls list (${data?.total_count ?? data?.data?.length})`}

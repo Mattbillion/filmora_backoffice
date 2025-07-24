@@ -1,22 +1,19 @@
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
 import { promisify } from 'util';
 import { gunzip } from 'zlib';
 
-import { auth } from '@/app/(auth)/auth';
-import KonvaStagePreview from '@/app/(dashboard)/events/[id]/templates/components/stage-preview';
+import { getTemplates } from '@/app/(dashboard)/events/[id]/templates/actions';
 import { getEventDetail } from '@/app/(dashboard)/events/actions';
 import { Heading } from '@/components/custom/heading';
+import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { getBranchesDetail } from '@/features/branches/actions';
 import { getHallDetail } from '@/features/halls/actions';
 import { getVenuesDetail } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
-import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
 
-import { getTemplates } from './actions';
+import KonvaStagePreview from './components/stage-preview';
 
 const gunzipAsync = promisify(gunzip);
 
@@ -46,17 +43,17 @@ async function getTemplateData(id: string) {
 
 export const dynamic = 'force-dynamic';
 
-export default async function TemplatesPage(props: {
+export default async function ScheduleListPage(props: {
   searchParams?: SearchParams;
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; templateId: string }>;
 }) {
-  const session = await auth();
-  const { id } = await props.params;
+  const { id, templateId } = await props.params;
   const searchParams = await props.searchParams;
   const { data: eventData } = await getEventDetail(id);
   const { data } = await getTemplates({
     ...searchParams,
     event_id: id,
+    filters: `id=${templateId}`,
   });
   const [template] = data?.data ?? [];
 
@@ -71,13 +68,26 @@ export default async function TemplatesPage(props: {
       eventData?.data?.hall_id
         ? getHallDetail(eventData?.data?.hall_id)
         : Promise.resolve(null),
-      template ? getTemplateData(id) : Promise.resolve(null),
+      // template ? getTemplateData(id) : Promise.resolve(null),
+      Promise.resolve(null),
     ],
   );
 
   return (
     <div className="space-y-6">
-      <Heading title="Template" />
+      <ReplaceBreadcrumdItem
+        data={{
+          events: {
+            value: eventData?.data?.event_name,
+            selector: id,
+          },
+          templates: {
+            value: data?.data[0]?.template_name,
+            selector: templateId,
+          },
+        }}
+      />
+      <Heading title="Template schedules" />
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -148,27 +158,16 @@ export default async function TemplatesPage(props: {
         </Card>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Seat Layout Preview</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {(data?.total_count ?? data?.data?.length) === 0 ? (
-            checkPermission(session, ['create_template']) && (
-              <div className="flex h-[600px] w-full max-w-full flex-col items-center justify-center overflow-auto rounded-md border bg-gray-100">
-                <Link
-                  href={`/build-template?eventId=${id}`}
-                  className="flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-primary-foreground"
-                >
-                  <Plus className="h-4 w-4" /> Create new template
-                </Link>
-              </div>
-            )
-          ) : templateJsonData ? (
+      {!!templateJsonData && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Seat Layout Preview</CardTitle>
+          </CardHeader>
+          <CardContent>
             <KonvaStagePreview json={templateJsonData} />
-          ) : null}
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

@@ -3,7 +3,9 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 import { auth } from '@/app/(auth)/auth';
+import { getEventDetail } from '@/app/(dashboard)/events/actions';
 import { Heading } from '@/components/custom/heading';
+import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 import { buttonVariants } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -31,6 +33,7 @@ export default async function TemplatesPage(props: {
     { data: venueData },
     { data: branchData },
     { data: hallData },
+    { data: eventData },
   ] = await Promise.all([
     getTemplates({
       ...searchParams,
@@ -39,10 +42,19 @@ export default async function TemplatesPage(props: {
     getVenuesHash(),
     getBranchesHash(),
     getHallsHash(),
+    getEventDetail(id),
   ]);
 
   return (
     <>
+      <ReplaceBreadcrumdItem
+        data={{
+          events: {
+            value: eventData?.data?.event_name,
+            selector: id,
+          },
+        }}
+      />
       <div className="flex items-start justify-between">
         <Heading
           title={`Template (${data?.total_count ?? data?.data?.length})`}
