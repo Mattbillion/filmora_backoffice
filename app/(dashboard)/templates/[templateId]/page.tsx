@@ -1,8 +1,6 @@
 import { promisify } from 'util';
 import { gunzip } from 'zlib';
 
-import { getTemplates } from '@/app/(dashboard)/events/[id]/templates/actions';
-import { getEventDetail } from '@/app/(dashboard)/events/actions';
 import { Heading } from '@/components/custom/heading';
 import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -13,6 +11,8 @@ import { getVenuesDetail } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { removeHTML } from '@/lib/utils';
 
+import { getTemplates } from '../actions';
+import { TemplatesItemType } from '../schema';
 import KonvaStagePreview from './components/stage-preview';
 
 const gunzipAsync = promisify(gunzip);
@@ -26,16 +26,11 @@ async function getDataFromGzip(url: string): Promise<any> {
   return JSON.parse(decompressed.toString('utf-8'));
 }
 
-async function getTemplateData(id: string) {
-  const res = await fetch(`${process.env.XOOX_DOMAIN}/client/seat_files/${id}`);
-  const resJson = await res.json();
-  const { gzip_tickets_url, gzip_other_url, gzip_mask_url } =
-    resJson?.data || {};
-
+async function getTemplateData(template: TemplatesItemType) {
   const [tickets, mask, stage] = await Promise.all([
-    getDataFromGzip(gzip_tickets_url),
-    getDataFromGzip(gzip_mask_url),
-    getDataFromGzip(gzip_other_url),
+    getDataFromGzip(template.tickets_json_url),
+    getDataFromGzip(template.mask_json_url),
+    getDataFromGzip(template.others_json_url),
   ]);
 
   return { tickets, mask, stage };
@@ -43,13 +38,12 @@ async function getTemplateData(id: string) {
 
 export const dynamic = 'force-dynamic';
 
-export default async function ScheduleListPage(props: {
+export default async function TemplateDetailPage(props: {
   searchParams?: SearchParams;
   params: Promise<{ id: string; templateId: string }>;
 }) {
   const { id, templateId } = await props.params;
   const searchParams = await props.searchParams;
-  const { data: eventData } = await getEventDetail(id);
   const { data } = await getTemplates({
     ...searchParams,
     event_id: id,
@@ -68,7 +62,7 @@ export default async function ScheduleListPage(props: {
       template?.hall_id
         ? getHallDetail(template?.hall_id)
         : Promise.resolve(null),
-      // template ? getTemplateData(id) : Promise.resolve(null),
+      template ? getTemplateData(template) : Promise.resolve(null),
       Promise.resolve(null),
     ],
   );
@@ -77,10 +71,6 @@ export default async function ScheduleListPage(props: {
     <div className="space-y-6">
       <ReplaceBreadcrumdItem
         data={{
-          events: {
-            value: eventData?.data?.event_name,
-            selector: id,
-          },
           templates: {
             value: data?.data[0]?.template_name,
             selector: templateId,
@@ -130,12 +120,6 @@ export default async function ScheduleListPage(props: {
             <CardTitle>Related Information</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <Label>Event</Label>
-              <p className="truncate text-muted-foreground">
-                {eventData?.data?.event_name}
-              </p>
-            </div>
             <div>
               <Label>Hall</Label>
               <p className="truncate text-muted-foreground">

@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
-    "@interpriz/eslint-config": "^0.0.19",
-    "@interpriz/lib": "^0.0.3",
+    "@interpriz/eslint-config": "0.0.19",
+    "@interpriz/lib": "^0.0.7",
     "@radix-ui/react-accordion": "^1.2.3",
     "@radix-ui/react-alert-dialog": "^1.1.5",
     "@radix-ui/react-avatar": "^1.1.2",

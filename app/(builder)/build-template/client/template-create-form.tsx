@@ -5,7 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Konva from 'konva';
 import { SaveIcon } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
@@ -36,10 +36,11 @@ import {
 } from '@/components/ui/select';
 import { getHallsHash } from '@/features/halls/actions';
 import { ID } from '@/lib/fetch/types';
+import { downloadToPreview, objToFormData } from '@/lib/utils';
 
-import { createTemplate /*uploadTemplateJSON*/ } from '../actions';
-import { /*KonvaNode,*/ TemplateBodyType, templateSchema } from '../schema';
-// import { dataMap } from './constants';
+import { createTemplate } from '../actions';
+import { KonvaNode, TemplateBodyType, templateSchema } from '../schema';
+import { dataMap } from './constants';
 import { useKonvaStage } from './context';
 
 export function CreateTemplateDialog() {
@@ -48,9 +49,12 @@ export function CreateTemplateDialog() {
   const [dropdownData, setDropdownData] = useState<{
     hall_id?: Record<ID, string>;
   }>({});
-  const { getStage, initialValues: STAGE_INITIALS } = useKonvaStage();
+  const {
+    getStage,
+    initialValues: STAGE_INITIALS,
+    zoomToFit,
+  } = useKonvaStage();
   const [open, setOpen] = useState(false);
-  const params = useSearchParams();
   const { data: session } = useSession();
   const router = useRouter();
 
@@ -63,24 +67,53 @@ export function CreateTemplateDialog() {
     },
   });
 
-  function toFormData(obj: Record<string, any>): FormData {
-    const fd = new FormData();
-
-    Object.entries(obj).forEach(([key, value]) => {
-      if (value instanceof Blob || value instanceof File) {
-        fd.append(key, value);
-      } else if (value !== undefined && value !== null) {
-        fd.append(key, String(value));
-      }
-    });
-
-    return fd;
-  }
-
   function createJsonFile(jsonString: any, name = 'stage.json') {
     const blob = new Blob([jsonString], { type: 'application/json' });
 
+    // downloadToPreview(blob, name);
     return new File([blob], name, { type: 'application/json' });
+  }
+
+  async function getStagePreview() {
+    const clonedStage = getStage().clone()!;
+    zoomToFit(clonedStage, false);
+
+    const selectedShapesLayer = clonedStage.findOne(
+      '.selected-shapes',
+    ) as Konva.Layer;
+
+    (clonedStage.findOne('.base') as Konva.Layer).setAttr('opacity', 0.04);
+
+    const ticketsSection: Konva.Node = clonedStage
+      ?.findOne('#tickets')
+      ?.clone();
+
+    const purchasables = ticketsSection
+      //@ts-ignore
+      ?.find(
+        (c: KonvaNode) =>
+          [dataMap.r, dataMap.t, dataMap.s].includes(c.attrs['data-type']) &&
+          c.attrs['data-purchasable'],
+      );
+
+    const emptyLayer = selectedShapesLayer.destroyChildren();
+
+    for (let i = 0; i < purchasables.length; i++) {
+      const clonedNode = purchasables[i]?.clone();
+      clonedNode.setAttr('opacity', 1);
+      emptyLayer.add(clonedNode);
+    }
+    clonedStage.findOne('#tickets')?.remove();
+    emptyLayer.batchDraw();
+
+    const stageBlob = (await clonedStage.toBlob()) as Blob;
+
+    const fileName = 'stage-preview.webp';
+    const mimeType = 'image/webp';
+
+    downloadToPreview(stageBlob, fileName);
+
+    return new File([stageBlob], fileName, { type: mimeType });
   }
 
   function onSubmit(values: TemplateBodyType) {
@@ -146,11 +179,14 @@ export function CreateTemplateDialog() {
       //     }) || [];
 
       try {
+        const stagePreview = await getStagePreview();
+
         const { data } = await createTemplate(
-          toFormData({
+          objToFormData({
             ...values,
             company_id: session?.user?.company_id,
             template_type: 'json',
+            preview: stagePreview,
             tickets_json: createJsonFile(
               ticketsSection.toJSON(),
               'tickets.json',
@@ -194,7 +230,7 @@ export function CreateTemplateDialog() {
         // );
         //
         // if (uploadedData)
-        router.replace(`/events/${params.get('eventId')}/templates`);
+        router.replace(`/templates`);
       } catch (e) {
         console.error(e);
         alert((e as Error).message);
@@ -308,8 +344,7 @@ export function CreateTemplateDialog() {
 
             <DialogFooter>
               <Button type="submit" disabled={isPending} className="mt-4">
-                <SaveIcon size="sm" />
-                {isPending && <LoaderIcon />}
+                {isPending ? <LoaderIcon /> : <SaveIcon size="sm" />}
                 Create
               </Button>
             </DialogFooter>

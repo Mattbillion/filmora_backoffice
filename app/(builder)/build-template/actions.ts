@@ -1,4 +1,4 @@
-import { RVK_TEMPLATES } from '@/app/(dashboard)/events/[id]/templates/schema';
+import { RVK_TEMPLATES } from '@/app/(dashboard)/templates/schema';
 import { xooxFetch } from '@/lib/fetch';
 import { executeRevalidate } from '@/lib/xoox';
 

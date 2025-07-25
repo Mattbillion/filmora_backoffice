@@ -9,7 +9,10 @@ export const templatesSchema = z.object({
   template_name: z.string(),
   template_desc: z.string(),
   template_order: z.number(),
-  template_json_url: z.string().optional(),
+  mask_json_url: z.string(),
+  others_json_url: z.string(),
+  tickets_json_url: z.string(),
+  preview: z.string(),
   status: z.boolean(),
   event_id: z.number(),
 });

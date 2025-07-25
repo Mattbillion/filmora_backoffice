@@ -3,9 +3,7 @@ import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 import { auth } from '@/app/(auth)/auth';
-import { getEventDetail } from '@/app/(dashboard)/events/actions';
 import { Heading } from '@/components/custom/heading';
-import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
 import { buttonVariants } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -22,45 +20,30 @@ export const dynamic = 'force-dynamic';
 
 export default async function TemplatesPage(props: {
   searchParams?: SearchParams;
-  params: Promise<{ id: string }>;
 }) {
   const session = await auth();
-  const { id } = await props.params;
   const searchParams = await props.searchParams;
   const [
     { data },
     { data: venueData },
     { data: branchData },
     { data: hallData },
-    { data: eventData },
   ] = await Promise.all([
-    getTemplates({
-      ...searchParams,
-      event_id: id,
-    }),
+    getTemplates(searchParams),
     getVenuesHash(),
     getBranchesHash(),
     getHallsHash(),
-    getEventDetail(id),
   ]);
 
   return (
     <>
-      <ReplaceBreadcrumdItem
-        data={{
-          events: {
-            value: eventData?.data?.event_name,
-            selector: id,
-          },
-        }}
-      />
       <div className="flex items-start justify-between">
         <Heading
           title={`Template (${data?.total_count ?? data?.data?.length})`}
         />
         {checkPermission(session, ['create_template']) && (
           <Link
-            href={`/build-template?eventId=${id}`}
+            href="/build-template"
             className={buttonVariants({ className: 'text-xs md:text-sm' })}
           >
             <Plus className="h-4 w-4" /> Template үүсгэх

@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, ReactNode } from 'react';
+import { Fragment, ReactNode, useEffect } from 'react';
 import Konva from 'konva';
 import { flatten, partition } from 'lodash';
 import { Edit } from 'lucide-react';
@@ -32,7 +32,12 @@ import {
 import { CreateTemplateDialog } from './template-create-form';
 
 export default function TicketEditor() {
-  const { stageChilds, baseLayer, focusNode, forceUpdate } = useKonvaStage();
+  const { stageChilds, baseLayer, focusNode, forceUpdate, zoomToFit } =
+    useKonvaStage();
+
+  useEffect(() => {
+    zoomToFit();
+  }, [baseLayer]);
 
   return (
     <Fragment>

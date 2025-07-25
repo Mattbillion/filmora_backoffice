@@ -17,6 +17,7 @@ import { dataMap } from './constants';
 
 type KonvaStageContextType = {
   getStage: () => Konva.Stage;
+  zoomToFit: (stage?: Konva.Stage, animated?: boolean) => void;
   stageChilds: KonvaNode[];
   focusNode: (node: KonvaNode) => void;
   baseLayer: Konva.Layer;
@@ -61,6 +62,12 @@ export const KonvaStageProvider = ({
   children: ReactNode;
 }) => {
   const stageRef = useRef<Konva.Stage>(null);
+  const stageClientRectRef = useRef<{
+    width: number;
+    height: number;
+    x: number;
+    y: number;
+  } | null>(null);
   const [_, forceUpdate] = useState(0);
 
   useEffect(() => {
@@ -128,6 +135,8 @@ export const KonvaStageProvider = ({
     (c) => c.getType() === 'Group',
   ) || []) as unknown as KonvaNode[];
 
+  const getStage = () => stageRef.current!;
+
   const focusNode = (n: KonvaNode) => {
     const selectedNodes = [
       baseLayer.findOne((c: KonvaNode) => c._id === n._id),
@@ -163,12 +172,57 @@ export const KonvaStageProvider = ({
     emptyLayer.batchDraw();
   };
 
+  const zoomToFit = (stage = getStage(), animated = true) => {
+    const contentRect = stageClientRectRef.current;
+    const containerSize = {
+      width: stage?.width() || 0,
+      height: stage?.height() || 0,
+    };
+
+    if (
+      !stage ||
+      !contentRect ||
+      containerSize.width === 0 ||
+      containerSize.height === 0
+    )
+      return;
+
+    const paddedWidth = containerSize.width * 0.8;
+    const paddedHeight = containerSize.height * 0.8;
+
+    const scaleX = paddedWidth / contentRect.width;
+    const scaleY = paddedHeight / contentRect.height;
+    const currentScale = Math.min(scaleX, scaleY, maxScale);
+
+    const offsetX =
+      (containerSize.width - contentRect.width * currentScale) / 2;
+    const offsetY =
+      (containerSize.height - contentRect.height * currentScale) / 2;
+
+    if (animated)
+      stage.to({
+        x: offsetX - contentRect.x * currentScale,
+        y: offsetY - contentRect.y * currentScale,
+        scaleY: currentScale,
+        scaleX: currentScale,
+      });
+    else
+      stage.setAttrs({
+        ...stage.getAttrs(),
+        x: offsetX - contentRect.x * currentScale,
+        y: offsetY - contentRect.y * currentScale,
+        scaleY: currentScale,
+        scaleX: currentScale,
+      });
+  };
+
   return (
     <KonvaStageContext.Provider
       value={{
-        getStage: () => stageRef.current!,
+        getStage,
         stageChilds,
         focusNode,
+        zoomToFit,
         baseLayer,
         forceUpdate: () => forceUpdate((c) => c + 1),
         initialValues: {
@@ -182,7 +236,15 @@ export const KonvaStageProvider = ({
     >
       <div className="flex">
         <KonvaStage
-          ref={stageRef}
+          ref={(ref) => {
+            if (ref) {
+              stageRef.current = ref;
+              const refRect = ref.getStage().getClientRect();
+
+              if (!stageClientRectRef.current && refRect.width > 0)
+                stageClientRectRef.current = refRect;
+            }
+          }}
           width={width}
           height={height}
           draggable

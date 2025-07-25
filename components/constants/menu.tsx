@@ -1,5 +1,6 @@
 import {
   BadgePercent,
+  BookOpenCheckIcon,
   ChartPieIcon,
   CircleDollarSign,
   GalleryVertical,
@@ -114,6 +115,13 @@ const productManagerRoutes: SubMenuItemType[] = [
       'update_company_merchandise_attribute_option_value',
       'delete_company_merchandise_attribute_option_value',
     ],
+  },
+  {
+    title: 'Templates',
+    url: '/templates',
+    subRoutes: false,
+    icon: BookOpenCheckIcon,
+    permissions: ['get_template_list', 'create_template', 'delete_template'],
   },
   {
     title: 'Эвент & Тоглолт',

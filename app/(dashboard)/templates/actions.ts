@@ -3,7 +3,7 @@ import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/xoox';
 
-import { RVK_TEMPLATES, TemplatesBodyType, TemplatesItemType } from './schema';
+import { RVK_TEMPLATES, TemplatesItemType } from './schema';
 
 export const getTemplates = async (searchParams?: QueryParams) => {
   try {
@@ -22,19 +22,6 @@ export const getTemplates = async (searchParams?: QueryParams) => {
     console.error(`Error fetching /templates:`, error);
     return { data: { data: [], total_count: 0 }, error };
   }
-};
-
-export const createTemplates = async (bodyData: TemplatesBodyType) => {
-  const { body, error } = await xooxFetch(`/templates`, {
-    method: 'POST',
-    body: bodyData,
-    cache: 'no-store',
-  });
-
-  if (error) throw new Error(error);
-
-  executeRevalidate([RVK_TEMPLATES]);
-  return { data: body, error: null };
 };
 
 export const deleteTemplatesDetail = async (param1: string | ID) => {

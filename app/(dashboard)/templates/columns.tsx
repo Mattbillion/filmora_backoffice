@@ -2,7 +2,8 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { ListTree, Trash } from 'lucide-react';
+import { Eye, Trash } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -57,19 +58,14 @@ const Action = ({ row }: CellContext<TemplatesItemType, unknown>) => {
 };
 
 const Navigation = ({ row }: CellContext<TemplatesItemType, unknown>) => {
-  const { data } = useSession();
-  const canAccess = checkPermission(data, ['create_event_schedule']);
-
   return (
     <div className="flex items-center justify-center gap-2">
-      {canAccess && (
-        <Link
-          href={`/events/${row.original.event_id}/templates/${row.original.id}/schedules`}
-          className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
-        >
-          <ListTree className="h-4 w-4" /> Schedules
-        </Link>
-      )}
+      <Link
+        href={`/templates/${row.original.id}`}
+        className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+      >
+        <Eye className="h-4 w-4" /> Preview
+      </Link>
     </div>
   );
 };
@@ -80,6 +76,26 @@ export const templatesColumns: ColumnDef<
   {
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
+  },
+  {
+    id: 'preview',
+    accessorKey: 'preview',
+    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) =>
+      row.original.preview ? (
+        <div className="relative aspect-square size-14 overflow-hidden rounded-lg bg-slate-100">
+          <Image
+            src={row.original.preview}
+            alt=""
+            fill
+            className="object-cover"
+          />
+        </div>
+      ) : (
+        'N/A'
+      ),
+    enableSorting: false,
+    enableColumnFilter: false,
   },
   {
     id: 'template_name',
@@ -111,16 +127,6 @@ export const templatesColumns: ColumnDef<
     cell: ({ row }) => row.original.template_order,
     enableSorting: true,
     enableColumnFilter: true,
-  },
-  {
-    id: 'template_json_url',
-    accessorKey: 'template_json_url',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <a href={row.original.template_json_url} target="_blank">
-        Preview JSON
-      </a>
-    ),
   },
   {
     id: 'hall_id',

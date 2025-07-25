@@ -1,8 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { isPath } from '@interpriz/lib/utils';
 import { ColumnFiltersState } from '@tanstack/react-table';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
+
+export * from '@interpriz/lib/utils';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -16,8 +19,6 @@ export const ensureStartsWith = (
     ? stringToCheck
     : `${startsWith}${stringToCheck}`;
 
-export const urlRegex = /\/([^/]+)$/;
-
 export type QueryParams = Record<
   string,
   | string
@@ -27,24 +28,6 @@ export type QueryParams = Record<
   | null
   | undefined
 >;
-
-export function objToQs(params: QueryParams): string {
-  const searchParams = new URLSearchParams();
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (Array.isArray(value)) {
-      value.forEach((item) => {
-        if (item !== null && item !== undefined) {
-          searchParams.append(key, item.toString());
-        }
-      });
-    } else if (value !== null && value !== undefined) {
-      searchParams.append(key, value.toString());
-    }
-  });
-
-  return searchParams.toString().replaceAll('%3D', '=');
-}
 
 export function qsToObj(queryString: string = '') {
   const cleanQuery = queryString.startsWith('?')
@@ -107,16 +90,6 @@ export const INITIAL_PAGINATION = {
   prevPage: 0,
 };
 
-export function isUri(str: string) {
-  const uriRegex = /^(https?:\/\/|ftp:\/\/|file:\/\/|www\.)/i;
-  return uriRegex.test(str);
-}
-
-export function isPath(str: string) {
-  const pathRegex = /^(\/|\.\/|\.\.\/+$)/;
-  return pathRegex.test(str);
-}
-
 export function extractActionError(e: Error): {
   message: string;
   errObj?: Record<string, { _errors: string[] }>;
@@ -136,13 +109,6 @@ export function stringifyError(error: Error & { error?: string }) {
   throw new Error(error?.error ?? error?.message ?? String(error));
 }
 
-export function currencyFormat(total: number, suffix: string = '₮') {
-  return String(total).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + suffix;
-}
-
-export const removeHTML = (str: string = '') =>
-  str.replace(/<\/?[^>]+(>|$)|&[^;]+;/g, '');
-
 export const imageResize = (
   src: string = '',
   size?: 'medium' | 'small' | 'large',
@@ -156,22 +122,6 @@ export const imageResize = (
 
   return src.replace(insertSizePattern, `/public/${size}/$1`);
 };
-
-// one line bolgoh hereggvi!!!
-export function clearObj(obj: Record<any, any> = {}) {
-  const result: Record<any, any> = {};
-  for (const key in obj) {
-    if (obj[key] !== undefined && obj[key] !== null) result[key] = obj[key];
-  }
-
-  return result;
-}
-
-export const isObject = (value: unknown) =>
-  typeof value === 'object' &&
-  value !== null &&
-  !Array.isArray(value) &&
-  !(value instanceof FormData);
 
 export function serializeColumnsFilters(filters: ColumnFiltersState): string {
   return filters.map((f) => `${f.id}=${f.value as string}`).join(',');

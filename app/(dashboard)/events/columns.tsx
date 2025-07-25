@@ -126,10 +126,10 @@ const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
     <div className="flex items-center justify-center gap-2">
       {canAccessTemplate && (
         <Link
-          href={`/events/${row.original.id}/templates`}
+          href={`/events/${row.original.id}/schedules`}
           className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
         >
-          <ListTree className="h-4 w-4" /> Templates
+          <ListTree className="h-4 w-4" /> Schedules
         </Link>
       )}
       {canAccessBosoo && (
