@@ -14,7 +14,6 @@ export const templatesSchema = z.object({
   tickets_json_url: z.string(),
   preview: z.string(),
   status: z.boolean(),
-  event_id: z.number(),
 });
 
 export type TemplatesBodyType = z.infer<typeof templatesSchema>;

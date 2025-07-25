@@ -82,7 +82,7 @@ export function CreateTemplateDialog() {
       '.selected-shapes',
     ) as Konva.Layer;
 
-    (clonedStage.findOne('.base') as Konva.Layer).setAttr('opacity', 0.04);
+    (clonedStage.findOne('.base') as Konva.Layer).setAttr('opacity', 0.05);
 
     const ticketsSection: Konva.Node = clonedStage
       ?.findOne('#tickets')

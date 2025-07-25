@@ -45,6 +45,7 @@ export default function DatePickerItem({
           <FormControl>
             <Button
               variant={'outline'}
+              size="lg"
               className={cn(
                 'w-full pl-3 text-left font-normal',
                 !field.value && 'text-muted-foreground',

@@ -119,7 +119,7 @@ const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
   ]);
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-end gap-2">
       {canAccessTemplate && (
         <Link
           href={`/events/${row.original.id}/schedules`}

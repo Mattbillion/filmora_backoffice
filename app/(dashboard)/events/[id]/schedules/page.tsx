@@ -1,16 +1,21 @@
 import { Suspense } from 'react';
+import { CalendarPlus } from 'lucide-react';
+import Link from 'next/link';
 
+import { auth } from '@/app/(auth)/auth';
 import { getEventDetail } from '@/app/(dashboard)/events/actions';
 import { getTemplateHash } from '@/app/(dashboard)/templates/actions';
 import { DateRangeFilter } from '@/components/custom/date-range-filter';
 import { Heading } from '@/components/custom/heading';
 import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
+import { buttonVariants } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { getBranchesHash } from '@/features/branches/actions';
 import { getHallsHash } from '@/features/halls/actions';
 import { getVenuesHash } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
+import { checkPermission } from '@/lib/permission';
 
 import { getSchedulesList } from './actions';
 import { schedulesColumns } from './columns';
@@ -21,6 +26,7 @@ export default async function ScheduleListPage(props: {
   searchParams?: SearchParams;
   params: Promise<{ id: string }>;
 }) {
+  const session = await auth();
   const params = await props.params;
   const searchParams = await props.searchParams;
   const [
@@ -53,6 +59,15 @@ export default async function ScheduleListPage(props: {
         <Heading
           title={`Эвент & Тоглолт хуваарь (${data?.total_count ?? data?.data?.length})`}
         />
+        {checkPermission(session, ['create_event_schedule']) && (
+          <Link
+            href={`/event-schedule/${params.id}`}
+            className={buttonVariants()}
+          >
+            <CalendarPlus size={16} />
+            Хуваарь үүсгэх
+          </Link>
+        )}
       </div>
       <Separator />
       <Suspense fallback="Loading">
