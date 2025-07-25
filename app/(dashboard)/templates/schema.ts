@@ -21,4 +21,14 @@ export type TemplatesBodyType = z.infer<typeof templatesSchema>;
 
 export type TemplatesItemType = PrettyType<BaseType<TemplatesBodyType>>;
 
+export type TemplatesDetailType = PrettyType<
+  BaseType<
+    TemplatesBodyType & {
+      gzip_mask_json_url: string;
+      gzip_others_json_url: string;
+      gzip_tickets_json_url: string;
+    }
+  >
+>;
+
 export const RVK_TEMPLATES = 'templates';
