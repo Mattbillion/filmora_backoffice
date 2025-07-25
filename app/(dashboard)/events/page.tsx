@@ -9,10 +9,7 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { getAgeRestrictionsHash } from '@/features/age/actions';
-import { getBranchesHash } from '@/features/branches/actions';
 import { getCategoriesHash } from '@/features/category/actions';
-import { getHallsHash } from '@/features/halls/actions';
-import { getVenuesHash } from '@/features/venues/actions';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
 
@@ -28,24 +25,15 @@ export default async function EventsPage(props: {
   // age_id venue_id branch_id hall_id
   const session = await auth();
   const searchParams = await props.searchParams;
-  const [
-    { data },
-    { data: categoryData },
-    { data: venueData },
-    { data: branchData },
-    { data: hallData },
-    { data: ageData },
-  ] = await Promise.all([
-    getEventsList({
-      ...searchParams,
-      company_id: session?.user?.company_id,
-    }),
-    getCategoriesHash(),
-    getVenuesHash(),
-    getBranchesHash(),
-    getHallsHash(),
-    getAgeRestrictionsHash(),
-  ]);
+  const [{ data }, { data: categoryData }, { data: ageData }] =
+    await Promise.all([
+      getEventsList({
+        ...searchParams,
+        company_id: session?.user?.company_id,
+      }),
+      getCategoriesHash(),
+      getAgeRestrictionsHash(),
+    ]);
 
   return (
     <>
@@ -69,9 +57,6 @@ export default async function EventsPage(props: {
           data={data?.data?.map((c) => ({
             ...c,
             category: categoryData[c.category_id] || '',
-            venue: venueData[c.venue_id] || '',
-            branch: branchData[c.branch_id] || '',
-            hall: hallData[c.hall_id] || '',
             age: ageData[c.age_id] || '',
             canModify: checkPermission(session, [
               'get_event',

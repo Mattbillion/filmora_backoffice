@@ -1,6 +1,5 @@
 import {
   BadgePercent,
-  BookOpenCheckIcon,
   ChartPieIcon,
   CircleDollarSign,
   GalleryVertical,
@@ -9,6 +8,7 @@ import {
   MapPin,
   MonitorCog,
   PackageIcon,
+  Puzzle,
   Shield,
   ShoppingCart,
   Store,
@@ -120,7 +120,7 @@ const productManagerRoutes: SubMenuItemType[] = [
     title: 'Templates',
     url: '/templates',
     subRoutes: false,
-    icon: BookOpenCheckIcon,
+    icon: Puzzle,
     permissions: ['get_template_list', 'create_template', 'delete_template'],
   },
   {

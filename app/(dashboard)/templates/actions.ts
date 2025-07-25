@@ -9,14 +9,17 @@ import {
   TemplatesItemType,
 } from './schema';
 
-export const getTemplates = async (searchParams?: QueryParams) => {
+export const getTemplates = async (
+  searchParams?: QueryParams,
+  cacheKeys: string[] = [],
+) => {
   try {
     const { body, error } = await xooxFetch<
       PaginatedResType<TemplatesItemType[]>
     >('/templates', {
       method: 'GET',
       searchParams,
-      next: { tags: [RVK_TEMPLATES] },
+      next: { tags: [RVK_TEMPLATES, ...cacheKeys] },
     });
 
     if (error) throw new Error(error);
@@ -25,6 +28,24 @@ export const getTemplates = async (searchParams?: QueryParams) => {
   } catch (error) {
     console.error(`Error fetching /templates:`, error);
     return { data: { data: [], total_count: 0 }, error };
+  }
+};
+
+export const getTemplateHash = async (searchParams: QueryParams = {}) => {
+  try {
+    const { data } = await getTemplates({ page_size: 10000, ...searchParams }, [
+      `${RVK_TEMPLATES}_${Buffer.from(JSON.stringify(searchParams || {})).toString('base64')}`,
+    ]);
+
+    return {
+      data: (data.data || []).reduce(
+        (acc, cur) => ({ ...acc, [cur.id]: cur }),
+        {},
+      ) as Record<ID, TemplatesItemType>,
+    };
+  } catch (error) {
+    console.error(`Error fetching getTemplatePreviewHash`, error);
+    return { data: {} as Record<ID, TemplatesItemType>, error };
   }
 };
 

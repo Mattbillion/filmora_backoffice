@@ -17,8 +17,10 @@ import {
 
 export function SortDropDownMenu<TData, TValue>({
   column,
+  label,
 }: {
   column: TableHeaderProps<TData, TValue>['column'];
+  label?: string;
 }) {
   const isSorted = column.getIsSorted() === 'asc';
   return (
@@ -39,7 +41,7 @@ export function SortDropDownMenu<TData, TValue>({
               <ArrowUpDownIcon size={14} className="opacity-50" />
             )
           )}
-          <p className="uppercase">{column.id}</p>
+          <p className="uppercase">{label || column.id.replace('_id', '')}</p>
         </Button>
       </DropdownMenuTrigger>
 
