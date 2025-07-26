@@ -45,31 +45,41 @@ function Node({ node }: { node: KNode }) {
 }
 
 function NodeGroup({ node }: { node: KGroup }) {
-  const { updatePurchasable } = usePurchasableUpdate();
+  const { updatePurchasable, updatedPurchasable } = usePurchasableUpdate();
   const { containPurchasableNode, getTicketsRef } = useStage();
   const [open, setOpen] = useState(false);
   const [purchasable, setPurchasable] = useState(containPurchasableNode(node));
   const [_, startCheckTransition] = useTransition();
 
-  function elemIncludesParentGroups(elemId: string, parentId: string): boolean {
-    const parentParts = parentId.split('-');
-    const regex = new RegExp(
-      parentParts.map((part) => `(?=.*${part})`).join(''),
+  useEffect(() => {
+    setPurchasable(
+      !!Object.entries(updatedPurchasable).filter(
+        ([nodeId, nodePurchasable]) =>
+          elemIncludesParentGroups(nodeId, node.id()) && nodePurchasable,
+      ).length,
     );
-    return regex.test(elemId);
+  }, [updatedPurchasable]);
+
+  function elemIncludesParentGroups(elemId: string, parentId: string): boolean {
+    const elemParts = elemId.split('-');
+    const parentParts = parentId.split('-');
+
+    return parentParts.every((part) => elemParts.includes(part));
   }
 
   const handleToggle = (checked: boolean) => {
-    // node.setAttr('data-purchasable', checked);
     startCheckTransition(() => {
-      getTicketsRef().find((c: KNode) => {
-        const idIncluded = elemIncludesParentGroups(c.id(), node.id());
-        const isSeat = c.attrs['data-seat'] || c.attrs['data-table'];
+      updatePurchasable(
+        getTicketsRef()
+          ?.find((c: KNode) => {
+            const idIncluded = elemIncludesParentGroups(c.id(), node.id());
+            const isSeat = c.attrs['data-seat'] || c.attrs['data-table'];
 
-        if (idIncluded && isSeat) updatePurchasable({ [c.id()]: checked });
-      });
+            return idIncluded && isSeat;
+          })
+          ?.reduce((acc, cur) => ({ ...acc, [cur.id()]: checked }), {}),
+      );
     });
-    setPurchasable(checked);
   };
 
   const children = node.getChildren?.((c) => canRender(c)) ?? [];
@@ -121,17 +131,6 @@ export default function PurchasableList() {
   const { getTicketsRef, seatsLoaded } = useStage();
 
   useEffect(() => {
-    console.log(
-      getTicketsRef()
-        ?.find((c: KNode) => typeof c.attrs['data-purchasable'] === 'boolean')
-        .reduce(
-          (acc, cur) => ({
-            ...acc,
-            [cur.id()]: cur.attrs['data-purchasable'],
-          }),
-          {},
-        ),
-    );
     updatePurchasable(
       getTicketsRef()
         ?.find((c: KNode) => typeof c.attrs['data-purchasable'] === 'boolean')
