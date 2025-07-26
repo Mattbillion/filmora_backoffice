@@ -16,7 +16,7 @@ export default async function EventSchedulePage({
   const templates = Object.values(data || {});
 
   return (
-    <div className="container mx-auto overflow-y-auto px-4 py-8">
+    <div className="container mx-auto flex-1 overflow-y-auto px-4 py-8">
       {/* Results count */}
       <div className="mb-6">
         <p className="text-muted-foreground">

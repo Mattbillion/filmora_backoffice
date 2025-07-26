@@ -18,7 +18,7 @@ export default async function EventScheduleLayout({
 
   return (
     <div
-      className="flex min-h-screen w-screen flex-col overflow-hidden bg-[#fafafa]"
+      className="flex h-screen w-screen flex-col overflow-hidden bg-[#fafafa]"
       style={{ minHeight: '100vh' }}
     >
       <header className="flex h-16 items-center border-b px-4">
