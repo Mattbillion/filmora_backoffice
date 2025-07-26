@@ -12,14 +12,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { imageResize } from '@/lib/utils';
+import { cn, imageResize } from '@/lib/utils';
 
-export function AvatarDropdown() {
+export function AvatarDropdown({
+  className,
+  avatarClassName,
+}: {
+  className?: string;
+  avatarClassName?: string;
+}) {
   const { data: session } = useSession();
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Avatar className="h-8 w-8 rounded-full">
+      <DropdownMenuTrigger className={className}>
+        <Avatar className={cn('h-8 w-8 rounded-full', avatarClassName)}>
           <AvatarImage
             src={imageResize(session?.user?.profile ?? '', 'small')}
             alt={session?.user?.name ?? ''}

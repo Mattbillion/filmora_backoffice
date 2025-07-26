@@ -1,11 +1,10 @@
 import type { TypedNode } from '../../../types';
 
 export const isInteractive = (node: TypedNode) => {
-  const idType = typeof node.attrs['data-seat-id'];
-
   return (
+    node.className !== 'Text' &&
     typeof node.attrs['data-purchasable'] === 'boolean' &&
-    (idType === 'number' || idType === 'string')
+    !!(node.attrs['data-seat'] || node.attrs['data-table'])
   );
 };
 

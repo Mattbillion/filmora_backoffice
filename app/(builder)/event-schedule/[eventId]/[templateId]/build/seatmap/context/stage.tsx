@@ -18,7 +18,13 @@ import dynamic from 'next/dynamic';
 
 import { cn } from '@/lib/utils';
 
-import { MAX_SCALE, MIN_SCALE, SCALE_BY, ZOOM_THRESHOLD } from '../constants';
+import {
+  dataMapReverse,
+  MAX_SCALE,
+  MIN_SCALE,
+  SCALE_BY,
+  ZOOM_THRESHOLD,
+} from '../constants';
 import {
   KEventObject,
   KGroup,
@@ -49,6 +55,7 @@ const StageContext = createContext<
       showTicketText: () => void;
       updateTicketVisibility: (newScale: number) => void;
       seatsLoaded: boolean;
+      containPurchasableNode: (node: KNode) => boolean;
     }
   | undefined
 >(undefined);
@@ -116,6 +123,7 @@ const StageProviderComponent = ({
   const stageRef = useRef<KStage>(null);
   const ticketsRef = useRef<KLayer>(null);
   const masksRef = useRef<KLayer>(null);
+  const seatIncludedGroupsRef = useRef<string[]>(null);
   let ticketsShown = false;
 
   const stageClientRectRef = useRef<{
@@ -126,6 +134,7 @@ const StageProviderComponent = ({
   } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
   const [renderTickets, setRenderTickets] = useState(false);
+  const [seatsLoaded, setSeatsLoaded] = useState(false);
   const [_, startTransition] = useTransition();
 
   // Memoize stage children to prevent unnecessary re-renders
@@ -171,7 +180,7 @@ const StageProviderComponent = ({
   }, []);
 
   useEffect(() => {
-    const timeout = setTimeout(() => setRenderTickets(true), 50);
+    const timeout = setTimeout(() => setRenderTickets(true), 200);
     return () => clearTimeout(timeout);
   }, [ticketsJson]);
 
@@ -191,8 +200,6 @@ const StageProviderComponent = ({
           }
         })
         .forEach((c) => c.destroy());
-
-      hideTicketText();
     });
   }, [renderTickets]);
 
@@ -277,6 +284,33 @@ const StageProviderComponent = ({
 
   const canRender = dimensions.width > 0 && dimensions.height > 0;
 
+  const containPurchasableNode = (node: KNode) => {
+    const nodeType = node.attrs['data-type'] as string;
+    const typeValue = node.attrs[`data-${nodeType}`] as string;
+    const typeId = dataMapReverse[nodeType] + typeValue;
+
+    if (seatIncludedGroupsRef.current)
+      return seatIncludedGroupsRef.current.includes(typeId);
+
+    const purchasables =
+      ticketsRef.current
+        ?.find((c: KNode) => c.attrs['data-purchasable'])
+        .map((c) =>
+          c
+            .id()
+            .split('-')
+            .filter((cc) => !!cc && !/^[stU]/g.test(cc)),
+        )
+        .reduce((acc, cur) => {
+          const arr = acc;
+          cur.map((c) => (!arr.includes(c) ? arr.push(c) : false));
+
+          return arr;
+        }, []) || [];
+
+    seatIncludedGroupsRef.current = purchasables;
+    return purchasables.includes(typeId);
+  };
   return (
     <StageContext.Provider
       value={{
@@ -287,7 +321,8 @@ const StageProviderComponent = ({
         updateTicketVisibility,
         hideTicketText,
         showTicketText,
-        seatsLoaded: canRender && renderTickets,
+        seatsLoaded,
+        containPurchasableNode,
       }}
     >
       <StageContainerWrapper>
@@ -316,7 +351,12 @@ const StageProviderComponent = ({
                 {stageChildren}
                 {renderTickets && (
                   <Layer
-                    ref={ticketsRef}
+                    ref={(ref) => {
+                      if (ref) {
+                        ticketsRef.current = ref;
+                        setTimeout(() => setSeatsLoaded(true), 100);
+                      }
+                    }}
                     name="tickets"
                     listening={false}
                     visible={!maskJson}
