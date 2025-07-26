@@ -3,7 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
-import { idRegex, translationMap } from '../seatmap/constants';
+import { dataMap, idRegex, translationMap } from '../seatmap/constants';
 import { usePurchasableUpdate } from '../seatmap/context/purchasable-context';
 import { useStage } from '../seatmap/context/stage';
 import { KGroup, KNode } from '../seatmap/types';
@@ -74,8 +74,10 @@ function NodeGroup({ node }: { node: KGroup }) {
           ?.find((c: KNode) => {
             const idIncluded = elemIncludesParentGroups(c.id(), node.id());
             const isSeat = c.attrs['data-seat'] || c.attrs['data-table'];
+            const canPurchase = idIncluded && isSeat;
 
-            return idIncluded && isSeat;
+            if (canPurchase) c.setAttr('data-purchasable', checked);
+            return canPurchase;
           })
           ?.reduce((acc, cur) => ({ ...acc, [cur.id()]: checked }), {}),
       );
@@ -152,6 +154,36 @@ export default function PurchasableList() {
           <PurchasableNode key={node._id} node={node} />
         ),
       )}
+      <button
+        type="button"
+        onClick={() => {
+          const purchasableItems =
+            getTicketsRef()
+              //@ts-ignore
+              ?.find(
+                (c: KNode) =>
+                  [dataMap.r, dataMap.t, dataMap.s].includes(
+                    c.attrs['data-type'],
+                  ) && c.attrs['data-purchasable'],
+              )
+              .map((c: KNode) => {
+                const json = c.toObject();
+                return Object.fromEntries(
+                  Object.entries({
+                    ...json.attrs,
+                    className: json.className,
+                  }).filter(
+                    ([k]) =>
+                      json.className !== 'Text' &&
+                      (k === 'id' || k.startsWith('data-')),
+                  ),
+                );
+              }) || [];
+          console.log(purchasableItems);
+        }}
+      >
+        sda
+      </button>
     </>
   );
 }
