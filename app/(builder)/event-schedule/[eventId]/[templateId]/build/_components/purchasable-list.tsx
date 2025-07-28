@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
+import Konva from 'konva';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 
 import { dataMap, idRegex, translationMap } from '../seatmap/constants';
@@ -23,6 +24,7 @@ function canRender(node: KNode) {
 }
 
 function Node({ node }: { node: KNode }) {
+  const { focusNode } = useStage();
   const { updatePurchasable, updatedPurchasable } = usePurchasableUpdate();
   const isPurchasable = updatedPurchasable[node.id()];
 
@@ -35,6 +37,7 @@ function Node({ node }: { node: KNode }) {
   return (
     <button
       type="button"
+      onMouseEnter={() => focusNode(node)}
       onClick={() => handleToggle(!isPurchasable)}
       className="rounded-md border p-4"
     >
@@ -46,7 +49,7 @@ function Node({ node }: { node: KNode }) {
 
 function NodeGroup({ node }: { node: KGroup }) {
   const { updatePurchasable, updatedPurchasable } = usePurchasableUpdate();
-  const { containPurchasableNode, getTicketsRef } = useStage();
+  const { containPurchasableNode, getTicketsRef, focusNode } = useStage();
   const [open, setOpen] = useState(false);
   const [purchasable, setPurchasable] = useState(containPurchasableNode(node));
   const [_, startCheckTransition] = useTransition();
@@ -88,7 +91,7 @@ function NodeGroup({ node }: { node: KGroup }) {
 
   const dataType = node.attrs['data-type'];
   return (
-    <div className="my-2 ml-4">
+    <div className="my-2 ml-4" onMouseEnter={() => focusNode(node)}>
       <div className="flex items-center space-x-2">
         {children.length > 0 ? (
           <button
@@ -130,20 +133,38 @@ function PurchasableNode({ node }: { node: KNode | KGroup }) {
 
 export default function PurchasableList() {
   const { updatePurchasable } = usePurchasableUpdate();
-  const { getTicketsRef, seatsLoaded } = useStage();
+  const { getTicketsRef, seatsLoaded, getStage } = useStage();
 
   useEffect(() => {
-    updatePurchasable(
-      getTicketsRef()
-        ?.find((c: KNode) => typeof c.attrs['data-purchasable'] === 'boolean')
-        .reduce(
-          (acc, cur) => ({
-            ...acc,
-            [cur.id()]: cur.attrs['data-purchasable'],
-          }),
-          {},
-        ),
-    );
+    if (seatsLoaded) {
+      console.log(
+        'tickets purchasable-list',
+        getTicketsRef()?.getChildren((c) => idRegex.test(c.id())),
+        getTicketsRef()?.children,
+      );
+      console.log(
+        getTicketsRef()
+          ?.find((c: KNode) => typeof c.attrs['data-purchasable'] === 'boolean')
+          .reduce(
+            (acc, cur) => ({
+              ...acc,
+              [cur.id()]: cur.attrs['data-purchasable'],
+            }),
+            {},
+          ),
+      );
+      updatePurchasable(
+        getTicketsRef()
+          ?.find((c: KNode) => typeof c.attrs['data-purchasable'] === 'boolean')
+          .reduce(
+            (acc, cur) => ({
+              ...acc,
+              [cur.id()]: cur.attrs['data-purchasable'],
+            }),
+            {},
+          ),
+      );
+    }
   }, [seatsLoaded]);
 
   if (!seatsLoaded) return null;
@@ -157,8 +178,18 @@ export default function PurchasableList() {
       <button
         type="button"
         onClick={() => {
+          const clonedStage = getStage().clone()!;
+          clonedStage?._clearCaches();
+          const clonedBaseLayer = clonedStage?.getLayers()[0]!;
+          clonedBaseLayer?.setAttr('opacity', 1);
+
+          const ticketsSection: Konva.Node = clonedStage
+            ?.findOne('.tickets')
+            ?.clone();
+          ticketsSection?.setAttr('opacity', 1);
+
           const purchasableItems =
-            getTicketsRef()
+            ticketsSection
               //@ts-ignore
               ?.find(
                 (c: KNode) =>

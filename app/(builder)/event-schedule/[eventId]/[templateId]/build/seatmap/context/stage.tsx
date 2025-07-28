@@ -1,6 +1,6 @@
 'use client';
 
-import {
+import React, {
   ComponentType,
   createContext,
   Fragment,
@@ -18,13 +18,7 @@ import dynamic from 'next/dynamic';
 
 import { cn } from '@/lib/utils';
 
-import {
-  dataMapReverse,
-  MAX_SCALE,
-  MIN_SCALE,
-  SCALE_BY,
-  ZOOM_THRESHOLD,
-} from '../constants';
+import { dataMapReverse, MAX_SCALE, MIN_SCALE, SCALE_BY } from '../constants';
 import {
   KEventObject,
   KGroup,
@@ -35,6 +29,7 @@ import {
   TypedNode,
   Vector2d,
 } from '../types';
+import { usePurchasableUpdate } from './purchasable-context';
 
 const RenderTicketNode = dynamic(() => import('./node-mapping'), {
   ssr: false,
@@ -44,18 +39,15 @@ const StageContext = createContext<
   | {
       getStage: () => KStage;
       getTicketsRef: () => KLayer;
-      getMasksRef: () => KLayer;
       getStageClientRect: () => {
         width: number;
         height: number;
         x: number;
         y: number;
       };
-      hideTicketText: () => void;
-      showTicketText: () => void;
-      updateTicketVisibility: (newScale: number) => void;
       seatsLoaded: boolean;
       containPurchasableNode: (node: KNode) => boolean;
+      focusNode: (node: KNode) => void;
     }
   | undefined
 >(undefined);
@@ -103,7 +95,6 @@ const MemoizedStage = memo(StageCanvas);
 const StageProviderComponent = ({
   stageJson,
   ticketsJson,
-  maskJson,
   children,
   addonBefore,
   addonAfter,
@@ -112,7 +103,6 @@ const StageProviderComponent = ({
 }: {
   stageJson: TypedNode;
   ticketsJson: TypedNode;
-  maskJson?: TypedNode;
   children: ReactNode;
   addonBefore?: ReactNode;
   addonAfter?: ReactNode;
@@ -122,9 +112,8 @@ const StageProviderComponent = ({
   const stageContainerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<KStage>(null);
   const ticketsRef = useRef<KLayer>(null);
-  const masksRef = useRef<KLayer>(null);
   const seatIncludedGroupsRef = useRef<string[]>(null);
-  let ticketsShown = false;
+  const { forceUpdate } = usePurchasableUpdate();
 
   const stageClientRectRef = useRef<{
     width: number;
@@ -133,75 +122,36 @@ const StageProviderComponent = ({
     y: number;
   } | null>(null);
   const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const [renderTickets, setRenderTickets] = useState(false);
   const [seatsLoaded, setSeatsLoaded] = useState(false);
   const [_, startTransition] = useTransition();
 
-  // Memoize stage children to prevent unnecessary re-renders
-  const stageChildren = useMemo(
-    () =>
-      stageJson.children?.map((child, idx) => (
-        <RenderTicketNode key={idx} node={child} improvePerformance />
-      )),
-    [stageJson.children],
-  );
-
-  const ticketChildren = useMemo(
-    () =>
-      ticketsJson.children?.map((node, idx) => (
-        <RenderTicketNode
-          key={`ticket-${idx}`}
-          node={node}
-          improvePerformance
-        />
-      )),
-    [ticketsJson.children],
-  );
-
-  const maskChildren = useMemo(
-    () =>
-      maskJson?.children?.map((node, idx) => (
-        <RenderTicketNode key={`mask-${idx}`} node={node} />
-      )),
-    [maskJson?.children],
-  );
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (!!ticketsJson && dimensions.width > 0 && dimensions.height > 0) {
+      timeout = setTimeout(() => {
+        forceUpdate();
+        setSeatsLoaded(true);
+      }, 500);
+    }
+    return () => timeout && clearTimeout(timeout);
+  }, [ticketsJson, dimensions]);
 
   useEffect(() => {
-    const resize = () => {
-      if (stageContainerRef.current) {
-        const { clientWidth, clientHeight } = stageContainerRef.current;
-        setDimensions({ width: clientWidth, height: clientHeight });
-      }
-    };
-
-    resize();
-    window.addEventListener('resize', resize);
-    return () => window.removeEventListener('resize', resize);
-  }, []);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => setRenderTickets(true), 200);
-    return () => clearTimeout(timeout);
-  }, [ticketsJson]);
-
-  useEffect(() => {
-    if (!renderTickets && !stageRef.current) return;
-    masksRef.current?.on('click', (e) => handleZoomToNode(e.target));
-
-    startTransition(() => {
-      ticketsRef.current
-        ?.find((node: KText) => {
+    if (seatsLoaded) {
+      startTransition(() => {
+        ticketsRef.current?.find((node: KText) => {
           if (node.className === 'Text') {
-            return (
+            const allSold =
               (node.getParent() as KGroup).find(
                 (childNode: KNode) => !!childNode.attrs['data-purchasable'],
-              ).length === 0
-            );
+              ).length === 0;
+
+            if (allSold) node.destroy();
           }
-        })
-        .forEach((c) => c.destroy());
-    });
-  }, [renderTickets]);
+        });
+      });
+    }
+  }, [seatsLoaded]);
 
   const handleWheel = (e: KEventObject<WheelEvent>) => {
     const stage = stageRef.current;
@@ -216,70 +166,6 @@ const StageProviderComponent = ({
 
     stage.scale(newScale);
     stage.position(newPosition);
-
-    if (maskJson) updateTicketVisibility(newScale.x);
-  };
-
-  const updateTicketVisibility = (newScale: number) => {
-    if (!maskJson) return;
-    const zoomedIn =
-      (stageClientRectRef.current?.width || 0) * newScale >
-      dimensions.width * ZOOM_THRESHOLD;
-
-    if (ticketsShown !== zoomedIn) {
-      ticketsRef.current?.visible(zoomedIn);
-      ticketsRef.current?.listening(zoomedIn);
-      masksRef.current?.visible(!zoomedIn);
-
-      ticketsRef.current?.getLayer()?.batchDraw();
-
-      ticketsShown = zoomedIn;
-    }
-  };
-
-  const handleZoomToNode = (node: KNode) => {
-    const stage = stageRef.current;
-    if (!stage) return;
-
-    const scaleBy = 2.5;
-
-    const box = node.getClientRect({ relativeTo: stage });
-
-    const { offsetWidth: containerWidth, offsetHeight: containerHeight } =
-      stage.container();
-
-    const newX = -(box.x + box.width / 2) * scaleBy + containerWidth / 2;
-    const newY = -(box.y + box.height / 2) * scaleBy + containerHeight / 2;
-
-    stage.to({
-      scaleX: scaleBy,
-      scaleY: scaleBy,
-      x: newX,
-      y: newY,
-      duration: 0.2,
-      onFinish: () => {
-        ticketsRef.current?.visible(true);
-        ticketsRef.current?.listening(true);
-        masksRef.current?.visible(false);
-
-        ticketsRef.current?.getLayer()?.batchDraw();
-      },
-    });
-
-    stage.scale({ x: scaleBy, y: scaleBy });
-    stage.position({ x: newX, y: newY });
-  };
-
-  const hideTicketText = () => {
-    const ticketsLayer = ticketsRef.current;
-    if (!ticketsLayer) return;
-    ticketsLayer.find((c: KNode) => c.className === 'Text' && c.visible(false));
-  };
-
-  const showTicketText = () => {
-    const ticketsLayer = ticketsRef.current;
-    if (!ticketsLayer) return;
-    ticketsLayer.find((c: KNode) => c.className === 'Text' && c.visible(true));
   };
 
   const canRender = dimensions.width > 0 && dimensions.height > 0;
@@ -311,24 +197,64 @@ const StageProviderComponent = ({
     seatIncludedGroupsRef.current = purchasables;
     return purchasables.includes(typeId);
   };
+
+  const focusNode = (node: KNode) => {
+    const ticketsLayer = stageRef.current?.findOne('.tickets') as KLayer;
+    const clonedNode = node.clone();
+    const selectedShapesLayer = stageRef.current?.findOne(
+      '.selected-shapes',
+    ) as KLayer;
+
+    ticketsLayer.cache();
+    ticketsLayer.setAttr('opacity', 0.3);
+    const emptyLayer = selectedShapesLayer.destroyChildren();
+    clonedNode.setAttr('opacity', 1);
+    emptyLayer.add(clonedNode);
+    emptyLayer.batchDraw();
+  };
+
+  const stageChildren = useMemo(
+    () =>
+      stageJson.children?.map((child, idx) => (
+        <RenderTicketNode key={idx} node={child} improvePerformance />
+      )),
+    [stageJson.children],
+  );
+
+  const ticketChildren = useMemo(
+    () =>
+      ticketsJson.children?.map((node, idx) => (
+        <RenderTicketNode
+          key={`ticket-${idx}`}
+          node={node}
+          improvePerformance
+        />
+      )),
+    [ticketsJson.children],
+  );
+
   return (
     <StageContext.Provider
       value={{
         getStage: () => stageRef.current!,
-        getTicketsRef: () => ticketsRef.current!,
-        getMasksRef: () => masksRef.current!,
+        getTicketsRef: () =>
+          ticketsRef.current! || stageRef.current!.findOne('.tickets'),
         getStageClientRect: () => stageClientRectRef.current!,
-        updateTicketVisibility,
-        hideTicketText,
-        showTicketText,
         seatsLoaded,
         containPurchasableNode,
+        focusNode,
       }}
     >
       <StageContainerWrapper>
         <div
           className={cn('touch-none select-none', containerClassName)}
-          ref={stageContainerRef}
+          ref={(ref) => {
+            if (ref && !stageContainerRef.current) {
+              stageContainerRef.current = ref;
+              const { clientWidth, clientHeight } = ref;
+              setDimensions({ width: clientWidth, height: clientHeight });
+            }
+          }}
         >
           {canRender && (
             <>
@@ -349,26 +275,16 @@ const StageProviderComponent = ({
                 draggable
               >
                 {stageChildren}
-                {renderTickets && (
-                  <Layer
-                    ref={(ref) => {
-                      if (ref) {
-                        ticketsRef.current = ref;
-                        setTimeout(() => setSeatsLoaded(true), 100);
-                      }
-                    }}
-                    name="tickets"
-                    listening={false}
-                    visible={!maskJson}
-                  >
-                    {ticketChildren}
-                  </Layer>
-                )}
-                {!!maskJson && (
-                  <Layer ref={masksRef} name="masks">
-                    {maskChildren}
-                  </Layer>
-                )}
+                <Layer ref={ticketsRef} name="tickets">
+                  {ticketChildren}
+                </Layer>
+                <Layer
+                  name="selected-shapes"
+                  imageSmoothingEnabled={false}
+                  listening={false}
+                  shadowForStrokeEnabled={false}
+                  perfectDrawEnabled={false}
+                />
               </MemoizedStage>
               {addonAfter}
             </>

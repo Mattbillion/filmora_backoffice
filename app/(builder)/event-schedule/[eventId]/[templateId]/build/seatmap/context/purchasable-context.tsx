@@ -1,10 +1,17 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useState,
+  useTransition,
+} from 'react';
 
 type PurchasableUpdateContextType = {
   updatePurchasable: (modifiedObj: Record<string, boolean>) => void;
   updatedPurchasable: Record<string, boolean>;
+  forceUpdate: () => void;
 };
 
 const PurchasableUpdateContext = createContext<
@@ -16,6 +23,8 @@ export function PurchasableUpdateProvider({
 }: {
   children: ReactNode;
 }) {
+  const [_, setUpdateCount] = useState(0);
+  const [_1, startTransition] = useTransition();
   const [purchasableNodeObj, setPurchasableNodeObj] = useState<
     Record<string, boolean>
   >({});
@@ -23,9 +32,13 @@ export function PurchasableUpdateProvider({
   return (
     <PurchasableUpdateContext.Provider
       value={{
-        updatePurchasable: (modifiedObj) =>
-          setPurchasableNodeObj((prev) => ({ ...prev, ...modifiedObj })),
+        updatePurchasable: (modifiedObj) => {
+          startTransition(() => {
+            setPurchasableNodeObj((prev) => ({ ...prev, ...modifiedObj }));
+          });
+        },
         updatedPurchasable: purchasableNodeObj,
+        forceUpdate: () => setUpdateCount((c) => c + 1),
       }}
     >
       {children}

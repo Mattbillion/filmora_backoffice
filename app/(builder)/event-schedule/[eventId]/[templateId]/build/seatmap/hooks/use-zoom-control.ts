@@ -23,7 +23,7 @@ function getZoomPercentage(scale: number): number {
 }
 
 export function useZoomControl(zoomLevel: number = 5) {
-  const { getStage, updateTicketVisibility, getStageClientRect } = useStage();
+  const { getStage, getStageClientRect } = useStage();
   const [percentage, setPercentage] = useState(100);
   const contentRect = getStageClientRect();
 
@@ -39,12 +39,12 @@ export function useZoomControl(zoomLevel: number = 5) {
 
     const updateZoom = () =>
       setPercentage(getZoomPercentage(getStage()?.scaleX() || 1));
-    stage.on('wheel touchmove touchend touchcancel', updateZoom);
+    stage.on('wheel', updateZoom);
 
     updateZoom();
 
     return () => {
-      stage.off('wheel touchmove touchend touchcancel', updateZoom);
+      stage.off('wheel', updateZoom);
     };
   }, []);
 
@@ -80,7 +80,6 @@ export function useZoomControl(zoomLevel: number = 5) {
       scaleX: scale,
     });
     setPercentage(getZoomPercentage(scale));
-    updateTicketVisibility(scale);
   };
 
   const setZoomByPercentage = (level: number) => {
@@ -104,7 +103,6 @@ export function useZoomControl(zoomLevel: number = 5) {
     stage.position(newPos);
     stage.batchDraw();
 
-    updateTicketVisibility(scale);
     setPercentage(level);
   };
 
