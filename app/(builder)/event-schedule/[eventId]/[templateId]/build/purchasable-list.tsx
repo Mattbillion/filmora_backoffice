@@ -1,17 +1,17 @@
 'use client';
 
 import { useEffect, useState, useTransition } from 'react';
-import Konva from 'konva';
 import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
 
-import { dataMap, idRegex, translationMap } from '../seatmap/constants';
-import { usePurchasableUpdate } from '../seatmap/context/purchasable-context';
-import { useStage } from '../seatmap/context/stage';
-import { KGroup, KNode } from '../seatmap/types';
+import { CreateScheduleDialog } from './schedule-create-form';
+import { idRegex, translationMap } from './seatmap/constants';
+import { usePurchasableUpdate } from './seatmap/context/purchasable-context';
+import { useStage } from './seatmap/context/stage';
+import { KGroup, KNode } from './seatmap/types';
 
 function canRender(node: KNode) {
   const notText = node.getClassName?.() !== 'Text';
@@ -145,7 +145,7 @@ function PurchasableNode({ node }: { node: KNode | KGroup }) {
 
 export default function PurchasableList() {
   const { updatePurchasable } = usePurchasableUpdate();
-  const { getTicketsRef, seatsLoaded, getStage, resetFocus } = useStage();
+  const { getTicketsRef, seatsLoaded, resetFocus } = useStage();
 
   useEffect(() => {
     if (seatsLoaded) {
@@ -176,48 +176,8 @@ export default function PurchasableList() {
           ),
         )}
       </div>
-      <Button
-        className="w-full"
-        size="lg"
-        type="button"
-        onClick={() => {
-          const clonedStage = getStage().clone()!;
-          clonedStage?._clearCaches();
-          const clonedBaseLayer = clonedStage?.getLayers()[0]!;
-          clonedBaseLayer?.setAttr('opacity', 1);
 
-          const ticketsSection: Konva.Node = clonedStage
-            ?.findOne('.tickets')
-            ?.clone();
-          ticketsSection?.setAttr('opacity', 1);
-
-          const purchasableItems =
-            ticketsSection
-              //@ts-ignore
-              ?.find(
-                (c: KNode) =>
-                  [dataMap.r, dataMap.t, dataMap.s].includes(
-                    c.attrs['data-type'],
-                  ) && c.attrs['data-purchasable'],
-              )
-              .map((c: KNode) => {
-                const json = c.toObject();
-                return Object.fromEntries(
-                  Object.entries({
-                    ...json.attrs,
-                    className: json.className,
-                  }).filter(
-                    ([k]) =>
-                      json.className !== 'Text' &&
-                      (k === 'id' || k.startsWith('data-')),
-                  ),
-                );
-              }) || [];
-          console.log(purchasableItems);
-        }}
-      >
-        Submit seats
-      </Button>
+      <CreateScheduleDialog />
     </div>
   );
 }

@@ -25,10 +25,12 @@ export default function DatePickerItem({
   label,
   description,
   disableBy = 'past',
+  className,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
   label?: string;
+  className?: string;
   description?: string;
   disableBy?: 'feature' | 'past' | 'none';
 }) {
@@ -38,7 +40,7 @@ export default function DatePickerItem({
     return false;
   };
   return (
-    <FormItem className="flex flex-col">
+    <FormItem className={className}>
       {label && <FormLabel>{label}</FormLabel>}
       <Popover>
         <PopoverTrigger asChild>

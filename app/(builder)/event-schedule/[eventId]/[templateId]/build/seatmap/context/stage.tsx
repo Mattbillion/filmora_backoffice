@@ -141,6 +141,7 @@ const StageProviderComponent = ({
 
   useEffect(() => {
     if (seatsLoaded) {
+      stageRef.current?.findOne('#bg')?.cache();
       startTransition(() => {
         ticketsRef.current
           ?.find((node: KText) => {

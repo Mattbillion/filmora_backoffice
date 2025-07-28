@@ -3,7 +3,7 @@
 import { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
-import PurchasableList from './_components/purchasable-list';
+import PurchasableList from './purchasable-list';
 import { TypedNode } from './seatmap';
 import { PurchasableUpdateProvider } from './seatmap/context/purchasable-context';
 
