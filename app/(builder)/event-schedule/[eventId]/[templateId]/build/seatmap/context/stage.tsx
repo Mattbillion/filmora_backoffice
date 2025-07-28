@@ -14,8 +14,10 @@ import React, {
   useTransition,
 } from 'react';
 import { Layer, Stage as StageCanvas } from 'react-konva';
+import type Konva from 'konva';
 import dynamic from 'next/dynamic';
 
+import { dataMap } from '@/app/(builder)/build-template/client/constants';
 import { cn } from '@/lib/utils';
 
 import { dataMapReverse, MAX_SCALE, MIN_SCALE, SCALE_BY } from '../constants';
@@ -48,6 +50,7 @@ const StageContext = createContext<
       seatsLoaded: boolean;
       containPurchasableNode: (node: KNode) => boolean;
       focusNode: (node: KNode) => void;
+      resetFocus: () => void;
     }
   | undefined
 >(undefined);
@@ -139,16 +142,17 @@ const StageProviderComponent = ({
   useEffect(() => {
     if (seatsLoaded) {
       startTransition(() => {
-        ticketsRef.current?.find((node: KText) => {
-          if (node.className === 'Text') {
-            const allSold =
-              (node.getParent() as KGroup).find(
-                (childNode: KNode) => !!childNode.attrs['data-purchasable'],
-              ).length === 0;
-
-            if (allSold) node.destroy();
-          }
-        });
+        ticketsRef.current
+          ?.find((node: KText) => {
+            if (node.className === 'Text') {
+              return (
+                (node.getParent() as KGroup).find(
+                  (childNode: KNode) => !!childNode.attrs['data-purchasable'],
+                ).length === 0
+              );
+            }
+          })
+          .forEach((node) => node.destroy());
       });
     }
   }, [seatsLoaded]);
@@ -199,8 +203,9 @@ const StageProviderComponent = ({
   };
 
   const focusNode = (node: KNode) => {
+    const baseLayer = stageRef.current?.findOne('.base') as KLayer;
     const ticketsLayer = stageRef.current?.findOne('.tickets') as KLayer;
-    const clonedNode = node.clone();
+    const selectedNodes = [node];
     const selectedShapesLayer = stageRef.current?.findOne(
       '.selected-shapes',
     ) as KLayer;
@@ -208,8 +213,46 @@ const StageProviderComponent = ({
     ticketsLayer.cache();
     ticketsLayer.setAttr('opacity', 0.3);
     const emptyLayer = selectedShapesLayer.destroyChildren();
-    clonedNode.setAttr('opacity', 1);
-    emptyLayer.add(clonedNode);
+
+    if ([dataMap.r, dataMap.t, dataMap.s].includes(node.attrs['data-type'])) {
+      const parent = node.getParent();
+      const selectedBox = node.getClientRect({ relativeTo: baseLayer });
+
+      const candidates = parent?.find('Text') as Konva.Text[];
+
+      for (const textNode of candidates) {
+        const textBox = textNode.getClientRect({ relativeTo: baseLayer });
+
+        const intersects =
+          selectedBox.x < textBox.x + textBox.width &&
+          selectedBox.x + selectedBox.width > textBox.x &&
+          selectedBox.y < textBox.y + textBox.height &&
+          selectedBox.y + selectedBox.height > textBox.y;
+
+        if (intersects) {
+          selectedNodes.push(textNode);
+        }
+      }
+    }
+
+    for (let i = 0; i < selectedNodes.length; i++) {
+      const clonedNode = selectedNodes[i]?.clone();
+      clonedNode.setAttr('opacity', 1);
+      emptyLayer.add(clonedNode);
+    }
+
+    emptyLayer.batchDraw();
+  };
+
+  const resetFocus = () => {
+    const ticketsLayer = stageRef.current?.findOne('.tickets') as KLayer;
+    const selectedShapesLayer = stageRef.current?.findOne(
+      '.selected-shapes',
+    ) as KLayer;
+
+    ticketsLayer.setAttr('opacity', 1);
+    ticketsLayer.clearCache();
+    const emptyLayer = selectedShapesLayer.destroyChildren();
     emptyLayer.batchDraw();
   };
 
@@ -243,6 +286,7 @@ const StageProviderComponent = ({
         seatsLoaded,
         containPurchasableNode,
         focusNode,
+        resetFocus,
       }}
     >
       <StageContainerWrapper>

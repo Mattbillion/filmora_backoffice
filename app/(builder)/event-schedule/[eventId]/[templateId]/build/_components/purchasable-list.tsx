@@ -2,7 +2,11 @@
 
 import { useEffect, useState, useTransition } from 'react';
 import Konva from 'konva';
-import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ChevronsDownUp, ChevronsUpDown } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { cn } from '@/lib/utils';
 
 import { dataMap, idRegex, translationMap } from '../seatmap/constants';
 import { usePurchasableUpdate } from '../seatmap/context/purchasable-context';
@@ -35,15 +39,18 @@ function Node({ node }: { node: KNode }) {
   const tableNo = node.getAttr?.('data-table');
 
   return (
-    <button
+    <Button
       type="button"
       onMouseEnter={() => focusNode(node)}
       onClick={() => handleToggle(!isPurchasable)}
-      className="rounded-md border p-4"
+      variant="outline"
+      className={cn(
+        'item-node inline-flex size-10 items-center justify-center rounded-md border p-4',
+        { 'border-primary': isPurchasable },
+      )}
     >
       {seatNo || tableNo}
-      {String(isPurchasable)}
-    </button>
+    </Button>
   );
 }
 
@@ -91,31 +98,36 @@ function NodeGroup({ node }: { node: KGroup }) {
 
   const dataType = node.attrs['data-type'];
   return (
-    <div className="my-2 ml-4" onMouseEnter={() => focusNode(node)}>
-      <div className="flex items-center space-x-2">
+    <div className="w-full py-2 pl-4 hover:bg-accent">
+      <div
+        className="flex items-center space-x-2"
+        onMouseEnter={() => focusNode(node)}
+      >
+        <Checkbox
+          checked={purchasable}
+          onClick={() => handleToggle(!purchasable)}
+        />
+
         {children.length > 0 ? (
           <button
             onClick={() => setOpen(!open)}
-            className="text-xs"
+            className="flex flex-1 items-center justify-between text-left text-xs"
             aria-label="Toggle children"
           >
-            {open ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+            <span className="text-sm font-medium">
+              {translationMap[dataType]}: {node.attrs[`data-${dataType}`]}
+            </span>
+            {open ? <ChevronsDownUp size={14} /> : <ChevronsUpDown size={14} />}
           </button>
         ) : (
-          <span className="inline-block w-[14px]" />
+          <span className="flex-1 text-sm font-medium">
+            {translationMap[dataType]}: {node.attrs[`data-${dataType}`]}
+          </span>
         )}
-        <input
-          type="checkbox"
-          checked={purchasable}
-          onChange={(e) => handleToggle(e.target.checked)}
-        />
-        <span className="text-sm font-medium">
-          {translationMap[dataType]}: {node.attrs[`data-${dataType}`]}
-        </span>
       </div>
 
       {open && children.length > 0 && (
-        <div className="mt-2 border-l border-gray-300 pl-4">
+        <div className="mt-2 border-l border-gray-300 pl-4 has-[.item-node]:flex has-[.item-node]:flex-wrap has-[.item-node]:gap-2">
           {children.map((child) => (
             <PurchasableNode key={child._id} node={child} />
           ))}
@@ -133,26 +145,10 @@ function PurchasableNode({ node }: { node: KNode | KGroup }) {
 
 export default function PurchasableList() {
   const { updatePurchasable } = usePurchasableUpdate();
-  const { getTicketsRef, seatsLoaded, getStage } = useStage();
+  const { getTicketsRef, seatsLoaded, getStage, resetFocus } = useStage();
 
   useEffect(() => {
     if (seatsLoaded) {
-      console.log(
-        'tickets purchasable-list',
-        getTicketsRef()?.getChildren((c) => idRegex.test(c.id())),
-        getTicketsRef()?.children,
-      );
-      console.log(
-        getTicketsRef()
-          ?.find((c: KNode) => typeof c.attrs['data-purchasable'] === 'boolean')
-          .reduce(
-            (acc, cur) => ({
-              ...acc,
-              [cur.id()]: cur.attrs['data-purchasable'],
-            }),
-            {},
-          ),
-      );
       updatePurchasable(
         getTicketsRef()
           ?.find((c: KNode) => typeof c.attrs['data-purchasable'] === 'boolean')
@@ -169,13 +165,20 @@ export default function PurchasableList() {
 
   if (!seatsLoaded) return null;
   return (
-    <>
-      {(getTicketsRef()?.getChildren((c) => idRegex.test(c.id())) ?? []).map(
-        (node) => (
-          <PurchasableNode key={node._id} node={node} />
-        ),
-      )}
-      <button
+    <div className="flex h-full flex-col">
+      <div
+        className="-mx-4 mb-4 min-h-0 flex-1 overflow-y-auto [&>*]:pr-4"
+        onMouseLeave={resetFocus}
+      >
+        {(getTicketsRef()?.getChildren((c) => idRegex.test(c.id())) ?? []).map(
+          (node) => (
+            <PurchasableNode key={node._id} node={node} />
+          ),
+        )}
+      </div>
+      <Button
+        className="w-full"
+        size="lg"
         type="button"
         onClick={() => {
           const clonedStage = getStage().clone()!;
@@ -213,8 +216,8 @@ export default function PurchasableList() {
           console.log(purchasableItems);
         }}
       >
-        sda
-      </button>
-    </>
+        Submit seats
+      </Button>
+    </div>
   );
 }

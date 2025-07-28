@@ -5,10 +5,7 @@ import { BackButton } from '@/app/(builder)/event-schedule/[eventId]/_components
 import { getEventDetail } from '@/app/(dashboard)/events/actions';
 import { getTemplateDetail } from '@/app/(dashboard)/templates/actions';
 import { TemplatesDetailType } from '@/app/(dashboard)/templates/schema';
-import { Badge } from '@/components/ui/badge';
-import { getBranchesDetail } from '@/features/branches/actions';
 import { getHallDetail } from '@/features/halls/actions';
-import { getVenuesDetail } from '@/features/venues/actions';
 
 import { AvatarDropdown } from '../../_components/avatar-dropdown';
 import ScheduleBuildClient from './client';
@@ -43,21 +40,14 @@ export default async function ScheduleBuildPage({
   const { data } = await getTemplateDetail(templateId);
   const template = data?.data;
 
-  const [venueData, eventData, branchData, hallData, templateJsonData] =
-    await Promise.all([
-      template?.venue_id
-        ? getVenuesDetail(template?.venue_id)
-        : Promise.resolve(null),
-      getEventDetail(eventId),
-      template?.branch_id
-        ? getBranchesDetail(template?.branch_id)
-        : Promise.resolve(null),
-      template?.hall_id
-        ? getHallDetail(template?.hall_id)
-        : Promise.resolve(null),
-      template ? getTemplateData(template) : Promise.resolve(null),
-      Promise.resolve(null),
-    ]);
+  const [eventData, hallData, templateJsonData] = await Promise.all([
+    getEventDetail(eventId),
+    template?.hall_id
+      ? getHallDetail(template?.hall_id)
+      : Promise.resolve(null),
+    template ? getTemplateData(template) : Promise.resolve(null),
+    Promise.resolve(null),
+  ]);
 
   const event = eventData?.data?.data!;
   const hall = hallData?.data?.data;
@@ -86,31 +76,13 @@ export default async function ScheduleBuildPage({
           stage={templateJsonData.stage}
           tickets={templateJsonData.tickets}
         >
-          <h1 className="mb-4 text-xl font-semibold">
-            Тоглолтын хуваарь нэмэх
-          </h1>
-          <div className="flex flex-wrap gap-2">
-            <Badge
-              variant="secondary"
-              className="space-x-1 text-xs font-medium"
-            >
-              <span>Event:</span>
-              <span>{event.event_name}</span>
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="space-x-1 text-xs font-medium"
-            >
-              <span>Venue:</span>
-              <span>{venueData?.data?.data.venue_name}</span>
-            </Badge>
-            <Badge
-              variant="secondary"
-              className="space-x-1 text-xs font-medium"
-            >
-              <span>Branch:</span>
-              <span>{branchData?.data?.data.branch_name}</span>
-            </Badge>
+          <div>
+            <span className="text-xs font-medium text-gray-600">
+              {event.event_name}
+            </span>
+            <h1 className="text-xl font-semibold leading-none">
+              Тоглолтын хуваарь нэмэх
+            </h1>
           </div>
         </ScheduleBuildClient>
       )}

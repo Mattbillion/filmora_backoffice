@@ -40,9 +40,9 @@ export default function ScheduleBuildClient({
           }
           stageContainerWrapper={StageWrapper}
         >
-          <div className="w-96 border-l bg-white">
+          <div className="flex h-dvh w-96 flex-col border-l bg-white">
             <div className="border-b p-4">{children}</div>
-            <div className="p-4">
+            <div className="min-h-0 flex-1 p-4">
               <PurchasableList />
             </div>
           </div>
