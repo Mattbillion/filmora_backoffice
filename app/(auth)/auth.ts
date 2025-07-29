@@ -73,7 +73,7 @@ export const {
               Authorization: `Bearer ${body.access_token}`,
             },
           });
-          const userData = userInfo.data || {};
+          const userData = userInfo?.data || {};
 
           const { data: assignedPermissionData } = await getAssignedPermission({
             Authorization: `Bearer ${body.access_token}`,
@@ -81,7 +81,7 @@ export const {
 
           return {
             ...userData,
-            permissions: assignedPermissionData.data.map(
+            permissions: assignedPermissionData?.data?.map(
               (c) => c?.permission_name,
             ),
             access_token: body.access_token,
@@ -133,6 +133,7 @@ export const {
 
           return {
             ...token,
+            id: body?.access_token || token?.id,
             access_token: body?.access_token,
             expires_at: getExpDateFromJWT(body?.access_token || ''),
             refresh_token: body?.refresh_token,

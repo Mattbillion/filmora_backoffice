@@ -6,7 +6,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import Konva from 'konva';
 import { SaveIcon } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 
 import CurrencyItem from '@/components/custom/currency-item';
 import DatePickerItem from '@/components/custom/datepicker-item';
@@ -30,9 +29,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { downloadToPreview, objToFormData } from '@/lib/utils';
+import { objToFormData } from '@/lib/utils';
 
-import { createSchedule } from './actions';
+import { createSchedule, uploadScheduleTicketJson } from './actions';
 import { ScheduleBodyType, scheduleSchema } from './schema';
 import { dataMap, KNode } from './seatmap';
 import { useStage } from './seatmap/context/stage';
@@ -43,7 +42,6 @@ export function CreateScheduleDialog() {
   const { getStage } = useStage();
 
   const [open, setOpen] = useState(false);
-  const { data: session } = useSession();
   const router = useRouter();
 
   const form = useForm<ScheduleBodyType>({
@@ -57,7 +55,7 @@ export function CreateScheduleDialog() {
   function createJsonFile(jsonString: any, name = 'stage.json') {
     const blob = new Blob([jsonString], { type: 'application/json' });
 
-    downloadToPreview(blob, name);
+    // downloadToPreview(blob, name);
     return new File([blob], name, { type: 'application/json' });
   }
 
@@ -68,10 +66,34 @@ export function CreateScheduleDialog() {
       const clonedBaseLayer = clonedStage?.getLayers()[0]!;
       clonedBaseLayer?.setAttr('opacity', 1);
 
-      const ticketsSection: Konva.Node = clonedStage
+      const ticketsSection: Konva.Layer = clonedStage
         ?.findOne('.tickets')
         ?.clone();
       ticketsSection?.setAttr('opacity', 1);
+      ticketsSection?.setAttr('ref', undefined);
+
+      ticketsSection?.find((n: Konva.Node) => {
+        const ticketLike = ['Path', 'Shape', 'Line', 'Rect', 'Circle'].includes(
+          n.className,
+        );
+        const newAttrs = {
+          ...n.getAttrs(),
+          class: undefined,
+          hitStrokeWidth: undefined,
+          listening: undefined,
+          shadowForStrokeEnabled: undefined,
+          perfectDrawEnabled: undefined,
+          strokeScaleEnabled: undefined,
+          shadowEnabled: undefined,
+          hitGraphEnabled: undefined,
+        };
+        n.setAttrs(newAttrs);
+
+        if (ticketLike && !n.getAttr('data-purchasable')) {
+          n.setAttr('fill', '#E0E0E0');
+        }
+        return true;
+      });
 
       const purchasableItems =
         ticketsSection
@@ -102,10 +124,10 @@ export function CreateScheduleDialog() {
         const startAtTime = values.start_at;
         const endAtTime = values.end_at;
 
-        const startAt = `${date}T${startAtTime}:00`;
-        const endAt = `${date}T${endAtTime}:00`;
+        const startAt = `${date}T${startAtTime}:00.000000Z`;
+        const endAt = `${date}T${endAtTime}:00.000000Z`;
 
-        const { data } = await createSchedule(
+        const { data, error } = await createSchedule(
           eventId as string,
           objToFormData({
             ...values,
@@ -117,43 +139,53 @@ export function CreateScheduleDialog() {
             ),
           }),
         );
-        if (!data) return;
-        console.log(data);
-        // const seatIdObj: Record<string, number> = data.seats.reduce(
-        //   (acc, cur) => ({ ...acc, [cur.seat_no]: cur.id }),
-        //   {},
-        // );
+
+        if (error)
+          throw new Error((error as Error)?.message || (error as string));
+
+        const newSchedule = data?.data;
+        if (!newSchedule?.schedule?.create_event_schedules) return;
+
+        const seatIdObj: Record<string, number> =
+          newSchedule?.seats?.reduce(
+            (acc, cur) => ({ ...acc, [cur.seat_no]: cur.id }),
+            {},
+          ) || {};
+
+        // define all ticket like nodes as not purchasable
+        //@ts-ignore
+        ticketsSection.find((n) => {
+          const seatId = seatIdObj[n.id()];
+          if (seatId) {
+            const newAttrs = {
+              ...n.getAttrs(),
+              'data-seat-id': seatId,
+              'data-price':
+                Number(values.price) +
+                Number(n.getAttr('data-price') || 0) +
+                Number(n.getAttr('data-additionalPrice') || 0),
+            };
+            n.setAttrs(newAttrs);
+          }
+        });
         //
-        // // define all ticket like nodes as not purchasable
-        // //@ts-ignore
-        // ticketsSection.find((n) => {
-        //   const seatId = seatIdObj[n.id()];
-        //   if (seatId) {
-        //     n.setAttr('data-seat-id', seatId);
-        //     n.setAttr(
-        //       'data-price',
-        //       Number(values.current_price) +
-        //         Number(n.getAttr('data-price') || 0) +
-        //         Number(n.getAttr('data-additionalPrice') || 0),
-        //     );
-        //   }
-        // });
-        //
-        // const { data: uploadedData } = await uploadTemplateJSON(
-        //   toFormData({
-        //     template_id: data.template_id,
-        //     company_id: session?.user?.company_id,
-        //     tickets_file: createJsonFile(
-        //       ticketsSection.toJSON(),
-        //       'tickets.json',
-        //     ),
-        //     mask_file: createJsonFile(masksSection.toJSON(), 'masks.json'),
-        //     other_file: createJsonFile(clonedStage.toJSON(), 'others.json'),
-        //   }),
-        // );
-        //
-        // if (uploadedData)
-        // router.replace(`/events/${eventId}/schedules`);
+        const { data: uploadedData, error: uploadError } =
+          await uploadScheduleTicketJson(
+            newSchedule?.schedule?.create_event_schedules,
+            objToFormData({
+              tickets_json: createJsonFile(
+                ticketsSection.toJSON(),
+                'tickets.json',
+              ),
+            }),
+          );
+
+        if (uploadError)
+          throw new Error(
+            (uploadError as Error)?.message || (uploadError as string),
+          );
+
+        if (uploadedData) router.replace(`/events/${eventId}/schedules`);
       } catch (e) {
         console.error(e);
         alert((e as Error).message);

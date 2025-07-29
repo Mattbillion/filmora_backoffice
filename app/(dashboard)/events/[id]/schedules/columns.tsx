@@ -34,14 +34,14 @@ export const schedulesColumns: ColumnDef<
     accessorKey: 'template_id',
     header: 'Template',
     cell: ({ row }) => (
-      <div className="flex min-w-40 items-center gap-2">
+      <div className="flex min-w-40 flex-wrap items-center gap-2">
         {!!row.original.templatePreview && (
           <Image
             src={row.original.templatePreview}
             width={150}
             height={150}
             alt="Stage preview"
-            className="rounded-md object-cover"
+            className="aspect-square overflow-hidden rounded-md bg-slate-50 object-cover"
           />
         )}
         <span>{row.original.templateName}</span>
@@ -91,7 +91,7 @@ export const schedulesColumns: ColumnDef<
     header: 'Дуусах цаг',
     cell: ({ row }) => (
       <Badge variant="secondary" className="text-nowrap">
-        {row.original.start_at.split('.')[0]}
+        {row.original.end_at.split('.')[0]}
       </Badge>
     ),
     enableSorting: false,

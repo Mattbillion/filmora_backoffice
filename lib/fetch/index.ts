@@ -74,7 +74,6 @@ export async function xooxFetch<
     if (options.syncTable) esSync(options.syncTable);
 
     if (!response.ok || body?.status !== 'success') {
-      console.warn(JSON.stringify(body, null, 2));
       const propperError = body?.detail?.[0]?.msg;
       let errorMsg = '';
 
@@ -105,7 +104,10 @@ export async function xooxFetch<
 
     if (errString.toLocaleLowerCase().includes('хүчингүй токен'))
       return signOut();
-    throw new Error(errString);
+    return {
+      body: {} as unknown as T,
+      error: errString,
+    };
   }
 }
 
