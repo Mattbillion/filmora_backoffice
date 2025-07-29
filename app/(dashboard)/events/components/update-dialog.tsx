@@ -2,6 +2,7 @@
 import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
@@ -175,7 +176,8 @@ export function UpdateDialog({
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                <SelectItem value={'Mongolia'}>Mongolia</SelectItem>
+                <SelectItem value="Mongolia">Mongolia</SelectItem>
+                <SelectItem value="English">English</SelectItem>
               </SelectContent>
             </Select>
             <FormMessage />
@@ -211,7 +213,15 @@ export function UpdateDialog({
           <FormItem>
             <FormLabel>Opening Date & Time</FormLabel>
             <FormControl>
-              <Input type="datetime-local" {...field} />
+              <Input
+                type="datetime-local"
+                value={
+                  field.value
+                    ? format(new Date(field.value), "yyyy-MM-dd'T'HH:mm")
+                    : ''
+                }
+                onChange={field.onChange}
+              />
             </FormControl>
             <FormMessage />
           </FormItem>

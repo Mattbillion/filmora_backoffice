@@ -107,10 +107,10 @@ const Action = ({ row }: CellContext<EventColumnType, unknown>) => {
 
 const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
   const { data } = useSession();
-  const canAccessTemplate =
+  const canAccessSchedule =
     (row.original.event_type === 'mixed' ||
       row.original.event_type === 'seat') &&
-    checkPermission(data, ['get_template_list']);
+    checkPermission(data, ['create_event_schedule']);
   const canAccessBosoo = checkPermission(data, [
     'create_bosoo_seat',
     'update_bosoo_seat',
@@ -118,9 +118,10 @@ const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
     'get_bosoo_seats',
   ]);
 
+  if (!canAccessSchedule && !canAccessBosoo) return null;
   return (
     <div className="flex items-center justify-end gap-2">
-      {canAccessTemplate && (
+      {canAccessSchedule && (
         <Link
           href={`/events/${row.original.id}/schedules`}
           className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
@@ -173,7 +174,7 @@ export const eventsColumns: ColumnDef<
         alt=""
         width={176}
         height={36}
-        className="rounded-s"
+        className="aspect-[1/0.5] overflow-hidden rounded-sm object-cover"
       />
     ),
     enableSorting: false,
@@ -200,7 +201,7 @@ export const eventsColumns: ColumnDef<
     id: 'duration',
     accessorKey: 'duration',
     header: 'Үргэлжлэх хугацаа',
-    cell: ({ row }) => `${row.original.duration} hrs`,
+    cell: ({ row }) => `${row.original.duration}цаг`,
     enableSorting: false,
     enableColumnFilter: true,
   },
@@ -211,7 +212,7 @@ export const eventsColumns: ColumnDef<
     cell: ({ row }) => (
       <Badge variant="secondary" className="text-nowrap">
         {row.original.openning_at
-          ? dayjs(row.original.openning_at).format('YYYY-MM-DD hh:mm')
+          ? dayjs(row.original.openning_at).format('YYYY-MM-DD')
           : undefined}
       </Badge>
     ),
@@ -244,31 +245,6 @@ export const eventsColumns: ColumnDef<
     ),
   },
   {
-    id: 'hall_id',
-    accessorKey: 'hall_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.hall,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'venue_id',
-    accessorKey: 'venue_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.venue,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'branch_id',
-    accessorKey: 'branch_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.branch,
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-
-  {
     id: 'created_at',
     accessorKey: 'created_at',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
@@ -276,7 +252,7 @@ export const eventsColumns: ColumnDef<
       <Badge variant="secondary" className="text-nowrap">
         {row.original.created_at
           ? dayjs(row.original.created_at).format('YYYY-MM-DD hh:mm')
-          : undefined}
+          : 'N/A'}
       </Badge>
     ),
     enableSorting: false,
@@ -290,7 +266,7 @@ export const eventsColumns: ColumnDef<
       <Badge variant="secondary" className="text-nowrap">
         {row.original.updated_at
           ? dayjs(row.original.updated_at).format('YYYY-MM-DD hh:mm')
-          : undefined}
+          : 'N/A'}
       </Badge>
     ),
   },
