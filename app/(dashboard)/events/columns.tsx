@@ -37,7 +37,6 @@ type EventColumnType = EventsItemType & {
   branch?: string;
   hall?: string;
   age?: string;
-  canModify: boolean;
 };
 
 const Action = ({ row }: CellContext<EventColumnType, unknown>) => {

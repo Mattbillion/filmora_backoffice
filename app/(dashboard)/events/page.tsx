@@ -58,12 +58,6 @@ export default async function EventsPage(props: {
             ...c,
             category: categoryData[c.category_id] || '',
             age: ageData[c.age_id] || '',
-            canModify: checkPermission(session, [
-              'get_event',
-              'update_event',
-              'delete_event',
-              'create_event_schedule',
-            ]),
           }))}
           rowCount={data?.total_count ?? data?.data?.length}
         >
