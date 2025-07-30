@@ -3,8 +3,12 @@
 import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import dayjs from 'dayjs';
+import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 
+import { getSchedulesHash } from '@/app/(dashboard)/events/[id]/schedules/actions';
+import { SchedulesItemType } from '@/app/(dashboard)/events/[id]/schedules/schema';
 import CurrencyItem from '@/components/custom/currency-item';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import {
@@ -23,6 +27,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { getDiscounts } from '@/features/discounts/actions';
+import { DiscountsItemType } from '@/features/discounts/schema';
 
 import { patchBosooSeats } from '../actions';
 import {
@@ -40,7 +45,11 @@ export function UpdateDialog({
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-  const [dropdownData, setDropdownData] = useState<Record<string, any[]>>({});
+  const [dropdownData, setDropdownData] = useState<{
+    discount_id: DiscountsItemType[];
+    schedule_id: Record<string, SchedulesItemType>;
+  }>({ discount_id: [], schedule_id: {} });
+  const params = useParams();
   const [loading, startLoadingTransition] = useTransition();
 
   const form = useForm<BosooSeatsBodyType>({
@@ -76,10 +85,14 @@ export function UpdateDialog({
       onOpenChange={(c) => {
         if (c) {
           startLoadingTransition(() => {
-            getDiscounts().then((res) =>
+            Promise.all([
+              getDiscounts().then((res) => res.data.data),
+              getSchedulesHash(params.id as string).then((res) => res.data),
+            ]).then(([discount_id, schedule_id]) =>
               setDropdownData((prevData) => ({
                 ...prevData,
-                discount_id: res.data.data,
+                discount_id,
+                schedule_id,
               })),
             );
           });
@@ -123,6 +136,34 @@ export function UpdateDialog({
             <FormControl>
               <CurrencyItem field={field} placeholder={'Enter Price'} />
             </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="schedule_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Цагийн хуваарь</FormLabel>
+            <Select onValueChange={(value) => field.onChange(Number(value))}>
+              <FormControl>
+                <SelectTrigger disabled={loading}>
+                  <SelectValue placeholder="Select Discount" />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {Object.values(dropdownData.schedule_id)?.map(
+                  (schedule, idx) => (
+                    <SelectItem key={idx} value={schedule.id.toString()}>
+                      {dayjs(schedule.date).format('YYYY-MM-DD')}{' '}
+                      {schedule.start_at}
+                    </SelectItem>
+                  ),
+                )}
+              </SelectContent>
+            </Select>
             <FormMessage />
           </FormItem>
         )}

@@ -10,6 +10,7 @@ export const bosooSeatsSchema = z.object({
   seat_stock: z.number(),
   event_id: z.number(),
   company_id: z.number(),
+  schedule_id: z.number(),
   discount_id: z.number().optional(),
 });
 
