@@ -15,7 +15,6 @@ export const eventsSchema = z.object({
   event_genre: z.string(),
   memo: z.string(),
   duration: z.number(),
-  openning_at: z.string(),
   language: z.string(),
   sponsor_name: z.string(),
   contact_info: z.string(),

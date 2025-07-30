@@ -218,20 +218,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
 
       <FormField
         control={form.control}
-        name="openning_at"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Opening Date & Time</FormLabel>
-            <FormControl>
-              <Input type="datetime-local" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
         name="duration"
         render={({ field }) => (
           <FormItem>

@@ -2,7 +2,6 @@
 import { ReactNode, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { format } from 'date-fns';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
@@ -199,28 +198,6 @@ export function UpdateDialog({
                 onChange={(e) =>
                   field.onChange(Number.parseInt(e.target.value) || 0)
                 }
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="openning_at"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Opening Date & Time</FormLabel>
-            <FormControl>
-              <Input
-                type="datetime-local"
-                value={
-                  field.value
-                    ? format(new Date(field.value), "yyyy-MM-dd'T'HH:mm")
-                    : ''
-                }
-                onChange={field.onChange}
               />
             </FormControl>
             <FormMessage />

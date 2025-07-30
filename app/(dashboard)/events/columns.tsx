@@ -205,20 +205,6 @@ export const eventsColumns: ColumnDef<
     enableColumnFilter: true,
   },
   {
-    id: 'openning_at',
-    accessorKey: 'openning_at',
-    header: 'Эхлэх огноо',
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="text-nowrap">
-        {row.original.openning_at
-          ? dayjs(row.original.openning_at).format('YYYY-MM-DD')
-          : undefined}
-      </Badge>
-    ),
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
     id: 'contact_info',
     accessorKey: 'contact_info',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
