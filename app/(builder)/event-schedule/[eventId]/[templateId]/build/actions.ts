@@ -16,6 +16,7 @@ export async function createSchedule(eventId: string | ID, formData: FormData) {
       method: 'POST',
       body: formData,
       cache: 'no-store',
+      syncTable: 'events',
     });
 
     if (error) throw new Error(error);
