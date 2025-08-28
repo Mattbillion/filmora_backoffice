@@ -165,7 +165,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             <Select onValueChange={(value) => field.onChange(Number(value))}>
               <FormControl>
                 <SelectTrigger disabled={loading}>
-                  <SelectValue placeholder="Select Discount" />
+                  <SelectValue placeholder="Select schedule" />
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
