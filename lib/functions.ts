@@ -18,7 +18,7 @@ export async function revalidateAll() {
 
 export async function revalidateXOOX(origin: 'vercel' | 'xoox') {
   const url = {
-    vercel: process.env.FRONT_VERCEL_DOMAIN || 'https://xoox.vercel.app',
+    vercel: process.env.FRONT_VERCEL_DOMAIN || 'https://xoox-client.vercel.app',
     xoox: process.env.FRONT_DOMAIN || 'https://xoox.mn',
   }[origin];
 
