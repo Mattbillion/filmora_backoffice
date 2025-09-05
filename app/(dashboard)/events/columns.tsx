@@ -106,10 +106,7 @@ const Action = ({ row }: CellContext<EventColumnType, unknown>) => {
 
 const Navigation = ({ row }: CellContext<EventColumnType, unknown>) => {
   const { data } = useSession();
-  const canAccessSchedule =
-    (row.original.event_type === 'mixed' ||
-      row.original.event_type === 'seat') &&
-    checkPermission(data, ['create_event_schedule']);
+  const canAccessSchedule = checkPermission(data, ['create_event_schedule']);
   const canAccessBosoo = checkPermission(data, [
     'create_bosoo_seat',
     'update_bosoo_seat',

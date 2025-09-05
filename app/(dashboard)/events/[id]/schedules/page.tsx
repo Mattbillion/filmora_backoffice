@@ -8,7 +8,7 @@ import { getTemplateHash } from '@/app/(dashboard)/templates/actions';
 import { DateRangeFilter } from '@/components/custom/date-range-filter';
 import { Heading } from '@/components/custom/heading';
 import { ReplaceBreadcrumdItem } from '@/components/custom/replace-breadcrumd-item';
-import { buttonVariants } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { getBranchesHash } from '@/features/branches/actions';
@@ -19,6 +19,7 @@ import { checkPermission } from '@/lib/permission';
 
 import { getSchedulesList } from './actions';
 import { schedulesColumns } from './columns';
+import { CreateDialog } from './create-dialog';
 
 export const dynamic = 'force-dynamic';
 
@@ -59,15 +60,23 @@ export default async function ScheduleListPage(props: {
         <Heading
           title={`Эвент & Тоглолт хуваарь (${data?.total_count ?? data?.data?.length})`}
         />
-        {checkPermission(session, ['create_event_schedule']) && (
-          <Link
-            href={`/event-schedule/${params.id}`}
-            className={buttonVariants()}
-          >
-            <CalendarPlus size={16} />
-            Хуваарь үүсгэх
-          </Link>
-        )}
+        {checkPermission(session, ['create_event_schedule']) &&
+          (eventData?.data?.event_type === 'bosoo' ? (
+            <CreateDialog>
+              <Button>
+                <CalendarPlus size={16} />
+                Хуваарь үүсгэх
+              </Button>
+            </CreateDialog>
+          ) : (
+            <Link
+              href={`/event-schedule/${params.id}`}
+              className={buttonVariants()}
+            >
+              <CalendarPlus size={16} />
+              Хуваарь үүсгэх
+            </Link>
+          ))}
       </div>
       <Separator />
       <Suspense fallback="Loading">

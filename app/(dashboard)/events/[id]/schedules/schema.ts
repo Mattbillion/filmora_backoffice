@@ -11,7 +11,19 @@ export const scheduleSchema = z.object({
   price: z.number(),
 });
 
+export const bosooScheduleSchema = z.object({
+  date: z.string(),
+  status: z.boolean(),
+  start_at: z.string(),
+  end_at: z.string(),
+  hall_id: z.number(),
+  company_id: z.number(),
+  price: z.number(),
+});
+
 export type SchedulesBodyType = z.infer<typeof scheduleSchema>;
+
+export type BosooSchedulesBodyType = z.infer<typeof bosooScheduleSchema>;
 
 export type SchedulesItemType = PrettyType<
   BaseType<

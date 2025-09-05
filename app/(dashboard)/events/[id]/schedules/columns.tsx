@@ -1,13 +1,22 @@
 'use client';
 
+import { useRef, useState } from 'react';
 import { currencyFormat } from '@interpriz/lib';
-import { ColumnDef } from '@tanstack/react-table';
+import { CellContext, ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
+import { Trash } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
+import {
+  DeleteDialog,
+  DeleteDialogRef,
+} from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 
+import { deleteSchedule } from './actions';
 import { SchedulesItemType } from './schema';
 
 type ScheduleColumnType = SchedulesItemType & {
@@ -16,6 +25,35 @@ type ScheduleColumnType = SchedulesItemType & {
   venue?: string;
   branch?: string;
   hall?: string;
+};
+
+const Action = ({ row }: CellContext<SchedulesItemType, unknown>) => {
+  const [loading, setLoading] = useState(false);
+  const deleteDialogRef = useRef<DeleteDialogRef>(null);
+
+  return (
+    <DeleteDialog
+      ref={deleteDialogRef}
+      loading={loading}
+      action={() => {
+        setLoading(true);
+        // TODO: Please check after generate
+        deleteSchedule(row.original.id)
+          .then((c) => toast.success(c.data.message))
+          .catch((c) => toast.error(c.message))
+          .finally(() => {
+            deleteDialogRef.current?.close();
+            setLoading(false);
+          });
+      }}
+      description="Are you sure you want to delete"
+    >
+      <Button size="sm" variant="destructive">
+        <Trash className="h-4 w-4" />
+        Delete
+      </Button>
+    </DeleteDialog>
+  );
 };
 
 export const schedulesColumns: ColumnDef<
@@ -148,15 +186,7 @@ export const schedulesColumns: ColumnDef<
     enableColumnFilter: true,
   },
   {
-    id: 'updated_at',
-    accessorKey: 'updated_at',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <Badge variant="secondary" className="text-nowrap">
-        {row.original.updated_at
-          ? dayjs(row.original.updated_at).format('YYYY-MM-DD hh:mm')
-          : undefined}
-      </Badge>
-    ),
+    id: 'actions',
+    cell: Action,
   },
 ];
