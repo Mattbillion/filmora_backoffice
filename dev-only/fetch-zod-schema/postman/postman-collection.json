@@ -4,7 +4,7 @@
     "name": "Dashboard",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
     "_exporter_id": "26046373",
-    "_collection_link": "https://xoox-project.postman.co/workspace/KinoD-endpoints~8e633d23-2aa4-4b21-9702-29d5834ce0ae/collection/7379022-6c67005f-4329-464d-8557-48e1345f49f0?action=share&source=collection_link&creator=26046373"
+    "_collection_link": "https://filmora-project.postman.co/workspace/KinoD-endpoints~8e633d23-2aa4-4b21-9702-29d5834ce0ae/collection/7379022-6c67005f-4329-464d-8557-48e1345f49f0?action=share&source=collection_link&creator=26046373"
   },
   "item": [
     {
@@ -367,7 +367,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTc4NTI5Njh9.kwNo3oMg4pqdqlasfJYb0sIYU7J-AcVyRSGLmIW490Y"
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTc5MTcwMDh9.zsrNf-COXUrpY55QVPvjt3giPnWWkaLHtLquIC3hVyc"
     }
   ]
 }

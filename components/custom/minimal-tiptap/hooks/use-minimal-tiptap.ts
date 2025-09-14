@@ -22,7 +22,7 @@ import {
   Selection,
   UnsetAllMarks,
 } from '../extensions';
-import { useThrottle } from '../hooks/use-throttle';
+import { useThrottle } from './use-throttle';
 import { getOutput } from '../utils';
 
 export interface UseMinimalTiptapEditorProps extends UseEditorOptions {

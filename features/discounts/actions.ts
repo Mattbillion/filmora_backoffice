@@ -1,13 +1,13 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import { DiscountsBodyType, DiscountsItemType, RVK_DISCOUNTS } from './schema';
 
 export const getDiscounts = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<DiscountsItemType[]>
     >('/discounts', {
       method: 'GET',
@@ -26,7 +26,7 @@ export const getDiscounts = async (searchParams?: QueryParams) => {
 
 export const getDiscountsHash = async (searchParams: QueryParams = {}) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<DiscountsItemType[]>
     >('/discounts', {
       method: 'GET',
@@ -53,7 +53,7 @@ export const getDiscountsHash = async (searchParams: QueryParams = {}) => {
 
 export const getDiscountsDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await xooxFetch<{ data: DiscountsItemType }>(
+    const { body, error } = await filmoraFetch<{ data: DiscountsItemType }>(
       `/discounts/${param1}`,
       {
         method: 'GET',
@@ -71,7 +71,7 @@ export const getDiscountsDetail = async (param1: string | ID) => {
 };
 
 export const createDiscounts = async (bodyData: DiscountsBodyType) => {
-  const { body, error } = await xooxFetch(`/discounts`, {
+  const { body, error } = await filmoraFetch(`/discounts`, {
     method: 'POST',
     body: bodyData,
     searchParams: { company_id: bodyData.company_id },
@@ -88,7 +88,7 @@ export const patchDiscountsDetail = async ({
   id: param1,
   ...bodyData
 }: DiscountsBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: DiscountsItemType }>(
+  const { body, error } = await filmoraFetch<{ data: DiscountsItemType }>(
     `/discounts/${param1}`,
     {
       method: 'PUT',
@@ -105,7 +105,7 @@ export const patchDiscountsDetail = async ({
 };
 
 export const deleteDiscountsDetail = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/discounts/${param1}`, {
+  const { body, error } = await filmoraFetch(`/discounts/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });

@@ -1,7 +1,7 @@
 const GET_REQUEST = `
 	export const {{name}} = async (searchParams?: QueryParams) => {
 			try {
-					const { body, error } = await xooxFetch<
+					const { body, error } = await filmoraFetch<
 							PaginatedResType< {{pascalCase route-name}}ItemType[] >
 					>('{{genRequestEndpoint pathList}}', {
 							method: '{{method}}',
@@ -22,7 +22,7 @@ const GET_REQUEST = `
 const GET_DETAIL_REQUEST = `
 	export const {{name}} = async ({{genRequestParam pathList}}) => {
 			try {
-					const { body, error } = await xooxFetch<{ data: {{pascalCase route-name}}ItemType }>(
+					const { body, error } = await filmoraFetch<{ data: {{pascalCase route-name}}ItemType }>(
 							\`{{genRequestEndpoint pathList}}\`,
 							{
 									method: '{{method}}',
@@ -42,7 +42,7 @@ const GET_DETAIL_REQUEST = `
 
 const DELETE_REQUEST = `
 	export const {{name}} = async ({{genRequestParam pathList}}) => {
-			const { body, error } = await xooxFetch(\`{{genRequestEndpoint pathList}}\`, {
+			const { body, error } = await filmoraFetch(\`{{genRequestEndpoint pathList}}\`, {
 					method: '{{method}}',
 					cache: 'no-store',
 			});
@@ -56,7 +56,7 @@ const DELETE_REQUEST = `
 
 const CREATE_REQUEST = `
 	export const {{name}} = async (bodyData: {{pascalCase route-name}}BodyType) => {
-			const { body, error } = await xooxFetch(\`{{genRequestEndpoint pathList}}\`, {
+			const { body, error } = await filmoraFetch(\`{{genRequestEndpoint pathList}}\`, {
 					method: '{{method}}',
             body: bodyData,
             cache: 'no-store',
@@ -74,7 +74,7 @@ const UPDATE_REQUEST = `
 			id: param1,
 			...bodyData
 	}: {{pascalCase route-name}}BodyType & { id: ID }) => {
-			const { body, error } = await xooxFetch<{ data: {{pascalCase route-name}}ItemType }>(
+			const { body, error } = await filmoraFetch<{ data: {{pascalCase route-name}}ItemType }>(
 					\`{{genRequestEndpoint pathList}}\`,
 					{
 							method: '{{method}}',
@@ -105,14 +105,14 @@ export const endpointRequestHelpers = (plop) => {
 	plop.setHelper('isPutRequest', (method) => method === 'PUT');
 	plop.setHelper('isDeleteRequest', (method) => method === 'DELETE');
 	plop.setHelper('genRequestParam', (pathList) => {
-		return pathList.filter(c => c === '{param}').map((c, idx) => `param${idx+1}: string | ID`).join(',');
+		return pathList.filter(c => c === '{param}').map((c, idx) => `param${idx + 1}: string | ID`).join(',');
 	});
 	plop.setHelper('genRequestEndpoint', (pathList) => {
 		let count = 0;
-		return '/' + pathList.map((c) => c === '{param}' ? '${param' + `${count+=1}}` : c).join('/');
+		return '/' + pathList.map((c) => c === '{param}' ? '${param' + `${count += 1}}` : c).join('/');
 	});
 	plop.setHelper('genRequestCacheKey', (pathList) => {
-		return pathList.filter(c => c === '{param}').map((c, idx) => '${param' + `${idx+1}}`).join('_');
+		return pathList.filter(c => c === '{param}').map((c, idx) => '${param' + `${idx + 1}}`).join('_');
 	});
 	plop.setHelper('getRequestNameByMethod', (endpointList, method) => endpointList.find(c => c.method === method)?.name || endpointList[0]?.name);
 }

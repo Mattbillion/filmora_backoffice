@@ -1,6 +1,6 @@
-import { revalidate, revalidateXOOX } from './functions';
+import { revalidate, revalidateFILMORA } from './functions';
 
-export type XOOXRevalidateParams = {
+export type FILMORARevalidateParams = {
   path?: string;
   type?: 'page' | 'layout';
   tag?: string;
@@ -9,21 +9,21 @@ export type XOOXRevalidateParams = {
 export function getOrigin() {
   const isClient = typeof window !== 'undefined';
   const isProd = isClient
-    ? window.location.host.includes('xoox.mn')
+    ? window.location.host.includes('filmora.mn')
     : process.env.NODE_ENV === 'production';
 
-  return isProd ? 'xoox' : 'vercel';
+  return isProd ? 'filmora' : 'vercel';
 }
 
 export function executeRevalidate(
-  revalidations: (XOOXRevalidateParams | string)[],
+  revalidations: (FILMORARevalidateParams | string)[],
 ) {
   try {
-    const xooxOrigin = getOrigin();
+    const filmoraOrigin = getOrigin();
     Promise.any(
       revalidations.map((c) => (typeof c === 'string' ? revalidate(c) : false)),
     );
-    revalidateXOOX(xooxOrigin);
+    revalidateFILMORA(filmoraOrigin);
   } catch (revalidateError) {
     console.error('Revalidation failed:', revalidateError);
   }

@@ -1,14 +1,14 @@
 'use server';
 
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { INITIAL_PAGINATION, QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import { CompanyBodyType, CompanyItemType, RVK_COMPANY } from './schema';
 
 export const createCompany = async (bodyData: CompanyBodyType) => {
-  const { body, error } = await xooxFetch<{ data: CompanyItemType }>(
+  const { body, error } = await filmoraFetch<{ data: CompanyItemType }>(
     'companies',
     {
       method: 'POST',
@@ -25,7 +25,7 @@ export const createCompany = async (bodyData: CompanyBodyType) => {
 
 export const getCompanyList = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<CompanyItemType[]>
     >('/companies', {
       method: 'GET',
@@ -44,7 +44,7 @@ export const getCompanyList = async (searchParams?: QueryParams) => {
 
 export const getCompanyListHash = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<CompanyItemType[]>
     >('/companies', {
       method: 'GET',
@@ -69,7 +69,7 @@ export const getCompanyListHash = async (searchParams?: QueryParams) => {
 export const getCompany = async (id: ID, headers?: Record<string, string>) => {
   try {
     if (!id) throw new Error(`Company with id ${id} not found`);
-    const { body, error } = await xooxFetch<{ data: CompanyItemType }>(
+    const { body, error } = await filmoraFetch<{ data: CompanyItemType }>(
       `/companies/${id}`,
       {
         method: 'GET',

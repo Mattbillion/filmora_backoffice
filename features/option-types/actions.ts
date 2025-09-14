@@ -1,7 +1,7 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import {
   OptionTypesBodyType,
@@ -10,7 +10,7 @@ import {
 } from './schema';
 
 export const createOptionTypes = async (bodyData: OptionTypesBodyType) => {
-  const { body, error } = await xooxFetch<{ data: OptionTypesItemType }>(
+  const { body, error } = await filmoraFetch<{ data: OptionTypesItemType }>(
     'option_types',
     {
       method: 'POST',
@@ -29,7 +29,7 @@ export const patchOptionTypes = async ({
   id,
   ...bodyData
 }: OptionTypesBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: OptionTypesItemType }>(
+  const { body, error } = await filmoraFetch<{ data: OptionTypesItemType }>(
     `/option_types/${id}`,
     {
       method: 'PUT',
@@ -45,7 +45,7 @@ export const patchOptionTypes = async ({
 };
 
 export const deleteOptionTypes = async (id: ID) => {
-  const { body, error } = await xooxFetch(`/option_types/${id}`, {
+  const { body, error } = await filmoraFetch(`/option_types/${id}`, {
     method: 'DELETE',
     cache: 'no-store',
   });
@@ -58,7 +58,7 @@ export const deleteOptionTypes = async (id: ID) => {
 
 export const getOptionTypesList = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<OptionTypesItemType[]>
     >('/option_types', {
       method: 'GET',

@@ -2,41 +2,21 @@
 const nextConfig = {
   images: {
     remotePatterns: [
+      // R2 domains from your media data
       {
         protocol: 'https',
-        hostname: 's3.ap-southeast-1.amazonaws.com',
-        pathname: '/xoox.mn/**',
-      },
-
-      {
-        protocol: 'https',
-        hostname: 'encrypted-tbn0.gstatic.com',
-        port: '',
-        pathname: '/**',
+        hostname: 'pub-*.r2.dev',
+        pathname: '/images/**',
       },
       {
         protocol: 'https',
-        hostname: 'xoox-project.s3.ap-southeast-1.amazonaws.com',
-        port: '',
-        pathname: '/**',
+        hostname: 'public.*.r2.cloudflarestorage.com',
+        pathname: '/images/**',
       },
       {
         protocol: 'https',
-        hostname: 'example.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 's3.us-west-1.amazonaws.com',
-        port: '',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'xoox.mn.s3.us-west-1.amazonaws.com',
-        port: '',
-        pathname: '/**',
+        hostname: 'movie-site.*.r2.cloudflarestorage.com',
+        pathname: '/images/**',
       },
     ],
   },

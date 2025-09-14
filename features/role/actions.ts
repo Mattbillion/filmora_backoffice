@@ -1,12 +1,12 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import { RoleBodyType, RoleItemType, RVK_ROLE } from './schema';
 
 export const createRole = async (bodyData: RoleBodyType) => {
-  const { body, error } = await xooxFetch<{ data: RoleItemType }>('roles', {
+  const { body, error } = await filmoraFetch<{ data: RoleItemType }>('roles', {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -20,7 +20,7 @@ export const createRole = async (bodyData: RoleBodyType) => {
 
 export const getRoleList = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<PaginatedResType<RoleItemType[]>>(
+    const { body, error } = await filmoraFetch<PaginatedResType<RoleItemType[]>>(
       '/roles',
       {
         method: 'GET',

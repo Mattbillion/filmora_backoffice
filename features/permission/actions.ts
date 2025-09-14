@@ -1,7 +1,7 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import {
   PermissionByRoleItemType,
@@ -13,7 +13,7 @@ import {
 export const createRoleByPermission = async (
   bodyData: RoleByPermissionBodyType,
 ) => {
-  const { body, error } = await xooxFetch<{ data: PermissionByRoleItemType }>(
+  const { body, error } = await filmoraFetch<{ data: PermissionByRoleItemType }>(
     'role_permissions',
     {
       method: 'POST',
@@ -29,7 +29,7 @@ export const createRoleByPermission = async (
 };
 
 export const deleteRoleByPermission = async (id: ID) => {
-  const { body, error } = await xooxFetch(`/role_permissions/${id}`, {
+  const { body, error } = await filmoraFetch(`/role_permissions/${id}`, {
     method: 'DELETE',
     cache: 'no-store',
   });
@@ -45,7 +45,7 @@ export const getPermissionList = async (
   headers?: Record<string, string>,
 ) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<PermissionItemType[]>
     >('/permissions', {
       method: 'GET',
@@ -67,7 +67,7 @@ export const getAssignedPermission = async (
   headers?: Record<string, string>,
 ) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<PermissionByRoleItemType & { permission_name: string }[]>
     >('/permissions_list', {
       method: 'GET',
@@ -91,7 +91,7 @@ export const getPermissionsByRoleId = async (
   searchParams?: QueryParams,
 ) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<PermissionByRoleItemType[]>
     >(`/role_permissions/${id}`, {
       method: 'GET',
