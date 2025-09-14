@@ -42,8 +42,8 @@ export function NavUser({ session }: { session: Session }) {
                 <AvatarFallback className="rounded-lg">
                   {(
                     (session?.user?.email ||
-                      (session.user.firstname || '')[0]?.concat(
-                        (session.user.lastname || '')[0],
+                      (session.user?.firstname || '')[0]?.concat(
+                        (session.user?.lastname || '')[0],
                       )) ??
                     ''
                   )?.slice(0, 2)}
@@ -78,7 +78,7 @@ export function NavUser({ session }: { session: Session }) {
                   <AvatarFallback className="rounded-lg">
                     {(
                       (session?.user?.email ||
-                        (session.user.firstname || '')[0]?.concat(
+                        (session.user?.firstname || '')[0]?.concat(
                           (session.user.lastname || '')[0],
                         )) ??
                       ''
@@ -87,9 +87,9 @@ export function NavUser({ session }: { session: Session }) {
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {session.user.firstname.concat(
+                    {session.user?.firstname?.concat(
                       ' ',
-                      session.user.lastname,
+                      session.user?.lastname,
                     ) ?? ''}
                   </span>
                   <span className="truncate">{session?.user?.email ?? ''}</span>
