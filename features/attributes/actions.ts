@@ -1,7 +1,7 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import {
   CategoryAttributesBodyType,
@@ -34,7 +34,7 @@ export const getAttributes = async (
   cacheKeys?: string[],
 ) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<CategoryAttributesItemType[]>
     >('/category_attributes', {
       method: 'GET',
@@ -54,7 +54,7 @@ export const getAttributes = async (
 };
 
 export const createAttribute = async (bodyData: CategoryAttributesBodyType) => {
-  const { body, error } = await xooxFetch(`/category_attributes`, {
+  const { body, error } = await filmoraFetch(`/category_attributes`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -70,7 +70,7 @@ export const patchAttribute = async ({
   id: param1,
   ...bodyData
 }: CategoryAttributesBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: CategoryAttributesItemType }>(
+  const { body, error } = await filmoraFetch<{ data: CategoryAttributesItemType }>(
     `/category_attributes/${param1}`,
     {
       method: 'PUT',
@@ -89,7 +89,7 @@ export const patchAttribute = async ({
 };
 
 export const deleteAttribute = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/category_attributes/${param1}`, {
+  const { body, error } = await filmoraFetch(`/category_attributes/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });
@@ -126,7 +126,7 @@ export const getAttributeValues = async (
   cacheKeys?: string[],
 ) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<CategoryAttributesValueItemType[]>
     >('/attribute_values', {
       method: 'GET',
@@ -146,7 +146,7 @@ export const getAttributeValues = async (
 };
 
 export const deleteAttributeValue = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/attribute_values/${param1}`, {
+  const { body, error } = await filmoraFetch(`/attribute_values/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });
@@ -167,7 +167,7 @@ export const patchAttributeValue = async ({
   id: ID;
   value: string;
 }) => {
-  const { body, error } = await xooxFetch<{
+  const { body, error } = await filmoraFetch<{
     data: CategoryAttributesValueItemType;
   }>(`/attribute_values/${param1}`, {
     method: 'PUT',
@@ -190,7 +190,7 @@ export const createAttributeValue = async (bodyData: {
   status: boolean;
   value: string;
 }) => {
-  const { body, error } = await xooxFetch(`/attribute_values`, {
+  const { body, error } = await filmoraFetch(`/attribute_values`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',

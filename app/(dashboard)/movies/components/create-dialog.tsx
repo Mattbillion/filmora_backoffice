@@ -1,12 +1,15 @@
 'use client';
 
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useEffect, useRef, useTransition, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
+import { getMedia } from '@/lib/functions';
+import MediaDialog from '@/components/custom/media-dialog';
 import {
   FormControl,
   FormField,
@@ -25,20 +28,30 @@ import {
 
 import { createMovies } from '../actions';
 import { MoviesBodyType, moviesSchema } from '../schema';
+import Image from 'next/image';
+import { X } from 'lucide-react';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
+  const [mediaList, setMediaList] = useState<any>([]);
+  const [selectedMedia, setSelectedMedia] = useState<any>([]);
+  console.log(mediaList, '<---');
+
+  useEffect(() => {
+    getMedia().then((res) => {
+      setMediaList(res);
+    });
+  }, []);
 
   const form = useForm<MoviesBodyType>({
     resolver: zodResolver(moviesSchema),
   });
 
-  function onSubmit({ status, ...values }: MoviesBodyType) {
+  function onSubmit({ ...values }: MoviesBodyType) {
     startTransition(() => {
       createMovies({
         ...values,
-        status: (status as unknown as string) === 'true',
       })
         .then(() => {
           toast.success('Created successfully');
@@ -48,6 +61,11 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         .catch((e) => toast.error(e.message));
     });
   }
+
+  const handleSelectMedia = (selectedImages: string[]) =>
+    setSelectedMedia(selectedImages);
+  const handleRemoveMedia = (mediaId: string) =>
+    setSelectedMedia(selectedMedia.filter((m: string) => m !== mediaId));
 
   return (
     <FormDialog
@@ -151,15 +169,15 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         control={form.control}
         name="poster_url"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Poster url</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Poster url" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <UploadImageItem
+            field={field}
+            imagePrefix="poster_url"
+            label="Poster url"
+          />
         )}
       />
+
+      <MediaDialog />
 
       <FormField
         control={form.control}

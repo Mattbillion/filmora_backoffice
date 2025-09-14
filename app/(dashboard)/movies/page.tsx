@@ -20,10 +20,7 @@ export default async function MoviesPage(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
-  const { data } = await getMovies({
-    ...searchParams,
-    company_id: session?.user?.company_id,
-  });
+  const { data } = await getMovies({});
 
   return (
     <>

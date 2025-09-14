@@ -1,13 +1,13 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import { HallsBodyType, HallsItemType, RVK_HALLS } from './schema';
 
 export const getHallDetail = async (hallId: ID | string) => {
   try {
-    const { body, error } = await xooxFetch<{ data: HallsItemType }>(
+    const { body, error } = await filmoraFetch<{ data: HallsItemType }>(
       `/halls/${hallId}`,
       {
         method: 'GET',
@@ -29,7 +29,7 @@ export const getHalls = async (
   cacheKeys: string[] = [],
 ) => {
   try {
-    const { body, error } = await xooxFetch<PaginatedResType<HallsItemType[]>>(
+    const { body, error } = await filmoraFetch<PaginatedResType<HallsItemType[]>>(
       '/halls',
       {
         method: 'GET',
@@ -66,7 +66,7 @@ export const getHallsHash = async (searchParams?: QueryParams) => {
 };
 
 export const createHalls = async (bodyData: HallsBodyType) => {
-  const { body, error } = await xooxFetch(`/halls`, {
+  const { body, error } = await filmoraFetch(`/halls`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -82,7 +82,7 @@ export const patchHallsDetail = async ({
   id: param1,
   ...bodyData
 }: HallsBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: HallsItemType }>(
+  const { body, error } = await filmoraFetch<{ data: HallsItemType }>(
     `/halls/${param1}`,
     {
       method: 'PUT',
@@ -98,7 +98,7 @@ export const patchHallsDetail = async ({
 };
 
 export const deleteHallsDetail = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/halls/${param1}`, {
+  const { body, error } = await filmoraFetch(`/halls/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });

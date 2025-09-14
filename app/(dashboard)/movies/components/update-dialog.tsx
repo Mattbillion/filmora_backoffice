@@ -1,12 +1,12 @@
 'use client';
-
-import { ReactNode, useRef, useTransition } from 'react';
+import { ReactNode, useEffect, useRef, useTransition, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -25,6 +25,7 @@ import {
 
 import { patchMoviesDetail } from '../actions';
 import { MoviesBodyType, MoviesItemType, moviesSchema } from '../schema';
+import { getMedia } from '@/lib/functions';
 
 export function UpdateDialog({
   children,
@@ -35,25 +36,58 @@ export function UpdateDialog({
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
+  const [mediaList, setMediaList] = useState<any[]>([]);
+
+  useEffect(() => {
+    // Fetch media if you need it for something
+    getMedia()
+      .then((res) => {
+        if (res?.data) {
+          setMediaList(res.data);
+          console.log('Media loaded:', res.data);
+        }
+      })
+      .catch((error) => {
+        console.error('Failed to load media:', error);
+      });
+  }, []);
 
   const form = useForm<MoviesBodyType>({
     resolver: zodResolver(moviesSchema),
     defaultValues: initialData,
   });
 
-  function onSubmit({ status, ...values }: MoviesBodyType) {
+
+
+  function onSubmit({ ...values }: MoviesBodyType) {
+    console.log('=== FORM SUBMIT TRIGGERED ===');
+    console.log('Form values:', values);
+    console.log('Initial data:', initialData);
+    console.log('Form state:', form.formState);
+    console.log('Form errors:', form.formState.errors);
+    console.log('================================');
+
     startTransition(() => {
+      console.log('=== INSIDE START TRANSITION ===');
+      console.log('Sending to API:', {
+        ...values,
+        id: initialData.id,
+      });
+
       patchMoviesDetail({
         ...values,
         id: initialData.id,
-        status: (status as unknown as string) === 'true',
       })
         .then(() => {
+          console.log('API call successful');
           toast.success('Updated successfully');
           dialogRef?.current?.close();
           form.reset();
         })
-        .catch((e) => toast.error(e.message));
+        .catch((e) => {
+          console.error('API call failed:', e);
+          toast.error(e.message);
+        });
     });
   }
 
@@ -67,6 +101,19 @@ export function UpdateDialog({
       submitText="Update"
       trigger={children}
     >
+
+      <FormField
+        control={form.control}
+        name="poster_url"
+        render={({ field }) => (
+          <UploadImageItem
+            field={field}
+            imagePrefix="movies"
+            label="Movie Poster"
+          />
+        )}
+      />
+
       <FormField
         control={form.control}
         name="title"
@@ -158,19 +205,7 @@ export function UpdateDialog({
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="poster_url"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Poster url</FormLabel>
-            <FormControl>
-              <Input placeholder="Enter Poster url" {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+
 
       <FormField
         control={form.control}

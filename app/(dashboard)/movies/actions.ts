@@ -1,12 +1,12 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import { MoviesBodyType, MoviesItemType, RVK_MOVIES } from './schema';
 
 export const createMovies = async (bodyData: MoviesBodyType) => {
-  const { body, error } = await xooxFetch(`/movies`, {
+  const { body, error } = await filmoraFetch(`/movies`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -22,7 +22,7 @@ export const patchMoviesDetail = async ({
   id: param1,
   ...bodyData
 }: MoviesBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: MoviesItemType }>(
+  const { body, error } = await filmoraFetch<{ data: MoviesItemType }>(
     `/movies/${param1}`,
     {
       method: 'PUT',
@@ -38,7 +38,7 @@ export const patchMoviesDetail = async ({
 };
 
 export const deleteMoviesDetail = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/movies/${param1}`, {
+  const { body, error } = await filmoraFetch(`/movies/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });
@@ -51,7 +51,7 @@ export const deleteMoviesDetail = async (param1: string | ID) => {
 
 export const getMovies = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<PaginatedResType<MoviesItemType[]>>(
+    const { body, error } = await filmoraFetch<PaginatedResType<MoviesItemType[]>>(
       '/movies',
       {
         method: 'GET',
@@ -71,7 +71,7 @@ export const getMovies = async (searchParams?: QueryParams) => {
 
 export const getMoviesDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await xooxFetch<{ data: MoviesItemType }>(
+    const { body, error } = await filmoraFetch<{ data: MoviesItemType }>(
       `/movies/${param1}`,
       {
         method: 'GET',

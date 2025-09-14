@@ -1,13 +1,13 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import { RVK_VENUES, VenuesBodyType, VenuesItemType } from './schema';
 
 export const getVenues = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<PaginatedResType<VenuesItemType[]>>(
+    const { body, error } = await filmoraFetch<PaginatedResType<VenuesItemType[]>>(
       '/venues',
       {
         method: 'GET',
@@ -27,7 +27,7 @@ export const getVenues = async (searchParams?: QueryParams) => {
 
 export const getVenuesHash = async () => {
   try {
-    const { body, error } = await xooxFetch<PaginatedResType<VenuesItemType[]>>(
+    const { body, error } = await filmoraFetch<PaginatedResType<VenuesItemType[]>>(
       '/venues',
       {
         method: 'GET',
@@ -52,7 +52,7 @@ export const getVenuesHash = async () => {
 
 export const getVenuesDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await xooxFetch<{ data: VenuesItemType }>(
+    const { body, error } = await filmoraFetch<{ data: VenuesItemType }>(
       `/venues/${param1}`,
       {
         method: 'GET',
@@ -70,7 +70,7 @@ export const getVenuesDetail = async (param1: string | ID) => {
 };
 
 export const createVenues = async (bodyData: VenuesBodyType) => {
-  const { body, error } = await xooxFetch(`/venues`, {
+  const { body, error } = await filmoraFetch(`/venues`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -86,7 +86,7 @@ export const patchVenuesDetail = async ({
   id: param1,
   ...bodyData
 }: VenuesBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: VenuesItemType }>(
+  const { body, error } = await filmoraFetch<{ data: VenuesItemType }>(
     `/venues/${param1}`,
     {
       method: 'PUT',
@@ -102,7 +102,7 @@ export const patchVenuesDetail = async ({
 };
 
 export const deleteVenuesDetail = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/venues/${param1}`, {
+  const { body, error } = await filmoraFetch(`/venues/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });

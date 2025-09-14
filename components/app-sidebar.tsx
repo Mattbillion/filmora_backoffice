@@ -63,7 +63,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
             </div>
             <div className="flex-1 text-left text-sm leading-tight">
               <p className="truncate font-semibold">
-                {session?.user?.company_name || 'XOOX'}
+                {session?.user?.company_name || 'FILMORA'}
               </p>
               {session?.user?.company_register && (
                 <p className="text-xs text-muted-foreground">

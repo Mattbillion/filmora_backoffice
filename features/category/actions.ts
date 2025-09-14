@@ -1,7 +1,7 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import {
   CategoryBodyType,
@@ -12,7 +12,7 @@ import {
 
 export const getCategories = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<CategoryItemType[]>
     >('/category', {
       method: 'GET',
@@ -31,7 +31,7 @@ export const getCategories = async (searchParams?: QueryParams) => {
 
 const getComCats = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<PaginatedResType<ComCatType[]>>(
+    const { body, error } = await filmoraFetch<PaginatedResType<ComCatType[]>>(
       '/company_categories',
       {
         method: 'GET',
@@ -86,7 +86,7 @@ export const getHierarchicalCategories = async (isSpecial?: boolean) => {
   let searchParams: QueryParams = { page_size: 100000 };
   if (isSpecial) searchParams.filters = 'special=true';
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<CategoryItemType[]>
     >('/category', {
       method: 'GET',
@@ -107,7 +107,7 @@ export const getHierarchicalCategories = async (isSpecial?: boolean) => {
 
 export const getCategoriesHash = async () => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<CategoryItemType[]>
     >('/category', {
       method: 'GET',
@@ -131,7 +131,7 @@ export const getCategoriesHash = async () => {
 
 export const getCategoryDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await xooxFetch<{ data: CategoryItemType }>(
+    const { body, error } = await filmoraFetch<{ data: CategoryItemType }>(
       `/category/${param1}`,
       {
         method: 'GET',
@@ -149,7 +149,7 @@ export const getCategoryDetail = async (param1: string | ID) => {
 };
 
 export const createCategory = async (bodyData: CategoryBodyType) => {
-  const { body, error } = await xooxFetch(`/category`, {
+  const { body, error } = await filmoraFetch(`/category`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -165,7 +165,7 @@ export const patchCategoryDetail = async ({
   id: param1,
   ...bodyData
 }: CategoryBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: CategoryItemType }>(
+  const { body, error } = await filmoraFetch<{ data: CategoryItemType }>(
     `/category/${param1}`,
     {
       method: 'PUT',
@@ -185,7 +185,7 @@ export const patchCategoryDetail = async ({
 };
 
 export const deleteCategoryDetail = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/category/${param1}`, {
+  const { body, error } = await filmoraFetch(`/category/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });

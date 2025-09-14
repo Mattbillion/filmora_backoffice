@@ -1,7 +1,7 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import { BranchesBodyType, BranchesItemType, RVK_BRANCHES } from './schema';
 
@@ -10,7 +10,7 @@ export const getBranches = async (
   cacheKeys: string[] = [],
 ) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<BranchesItemType[]>
     >('/branches', {
       method: 'GET',
@@ -47,7 +47,7 @@ export const getBranchesHash = async (searchParams?: QueryParams) => {
 
 export const getBranchesDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await xooxFetch<{ data: BranchesItemType }>(
+    const { body, error } = await filmoraFetch<{ data: BranchesItemType }>(
       `/branches/${param1}`,
       {
         method: 'GET',
@@ -65,7 +65,7 @@ export const getBranchesDetail = async (param1: string | ID) => {
 };
 
 export const createBranches = async (bodyData: BranchesBodyType) => {
-  const { body, error } = await xooxFetch(`/branches`, {
+  const { body, error } = await filmoraFetch(`/branches`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -81,7 +81,7 @@ export const patchBranchesDetail = async ({
   id: param1,
   ...bodyData
 }: BranchesBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: BranchesItemType }>(
+  const { body, error } = await filmoraFetch<{ data: BranchesItemType }>(
     `/branches/${param1}`,
     {
       method: 'PUT',
@@ -97,7 +97,7 @@ export const patchBranchesDetail = async ({
 };
 
 export const deleteBranchesDetail = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/branches/${param1}`, {
+  const { body, error } = await filmoraFetch(`/branches/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });

@@ -1,7 +1,7 @@
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
 import { QueryParams } from '@/lib/utils';
-import { executeRevalidate } from '@/lib/xoox';
+import { executeRevalidate } from '@/lib/filmora';
 
 import {
   AgeRestrictionsBodyType,
@@ -11,7 +11,7 @@ import {
 
 export const getAgeRestrictions = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<AgeRestrictionsItemType[]>
     >('/age_restrictions', {
       method: 'GET',
@@ -30,7 +30,7 @@ export const getAgeRestrictions = async (searchParams?: QueryParams) => {
 
 export const getAgeRestrictionsHash = async () => {
   try {
-    const { body, error } = await xooxFetch<
+    const { body, error } = await filmoraFetch<
       PaginatedResType<AgeRestrictionsItemType[]>
     >('/age_restrictions', {
       method: 'GET',
@@ -54,7 +54,7 @@ export const getAgeRestrictionsHash = async () => {
 
 export const getAgeRestrictionsDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await xooxFetch<{ data: AgeRestrictionsItemType }>(
+    const { body, error } = await filmoraFetch<{ data: AgeRestrictionsItemType }>(
       `/age_restrictions/${param1}`,
       {
         method: 'GET',
@@ -74,7 +74,7 @@ export const getAgeRestrictionsDetail = async (param1: string | ID) => {
 export const createAgeRestrictions = async (
   bodyData: AgeRestrictionsBodyType,
 ) => {
-  const { body, error } = await xooxFetch(`/age_restrictions`, {
+  const { body, error } = await filmoraFetch(`/age_restrictions`, {
     method: 'POST',
     body: bodyData,
     cache: 'no-store',
@@ -90,7 +90,7 @@ export const patchAgeRestrictionsDetail = async ({
   id: param1,
   ...bodyData
 }: AgeRestrictionsBodyType & { id: ID }) => {
-  const { body, error } = await xooxFetch<{ data: AgeRestrictionsItemType }>(
+  const { body, error } = await filmoraFetch<{ data: AgeRestrictionsItemType }>(
     `/age_restrictions/${param1}`,
     {
       method: 'PUT',
@@ -109,7 +109,7 @@ export const patchAgeRestrictionsDetail = async ({
 };
 
 export const deleteAgeRestrictionsDetail = async (param1: string | ID) => {
-  const { body, error } = await xooxFetch(`/age_restrictions/${param1}`, {
+  const { body, error } = await filmoraFetch(`/age_restrictions/${param1}`, {
     method: 'DELETE',
     cache: 'no-store',
   });

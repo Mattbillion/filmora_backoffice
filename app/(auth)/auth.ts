@@ -3,7 +3,7 @@ import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
 import { getAssignedPermission } from '@/features/permission/actions';
-import { xooxFetch } from '@/lib/fetch';
+import { filmoraFetch } from '@/lib/fetch';
 
 import { authConfig } from './auth.config';
 
@@ -48,27 +48,34 @@ export const {
         formData.append('username', username);
         formData.append('password', password);
 
-        const response = await fetch(
-          `${process.env.XOOX_DOMAIN || 'http://47.128.225.144:3000/api/v1'}/dashboard/auth/employee-login`,
-          {
-            method: 'POST',
-            body: formData,
-            cache: 'no-store',
-          },
-        );
-        const body: any = await response.json();
+        const apiUrl = `${process.env.FILMORA_DOMAIN || 'http://localhost:3000/api/v1'}/auth/employee-login`;
+        console.log('Attempting to login to:', apiUrl);
 
-        if (!response.ok || body?.status !== 'success')
-          throw new Error(
-            body?.detail?.[0]?.msg ||
-              body?.error ||
-              (body as any)?.message ||
-              (typeof body?.detail === 'string' ? body?.detail : undefined) ||
-              String(response.status),
-          );
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          body: formData,
+          cache: 'no-store',
+        });
+
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+
+        const body: any = await response.json();
+        console.log('Response body:', body);
+
+        if (!response.ok || body?.status !== 'success') {
+          const errorMsg = body?.detail?.[0]?.msg ||
+            body?.error ||
+            (body as any)?.message ||
+            (typeof body?.detail === 'string' ? body?.detail : undefined) ||
+            `HTTP ${response.status}: ${response.statusText}`;
+
+          console.error('Login failed:', errorMsg);
+          throw new Error(errorMsg);
+        }
 
         if (body?.access_token) {
-          const { body: userInfo } = await xooxFetch('/employeeinfo', {
+          const { body: userInfo } = await filmoraFetch('/employeeinfo', {
             headers: {
               Authorization: `Bearer ${body.access_token}`,
             },
@@ -108,7 +115,7 @@ export const {
           if (refreshAttempts > 3) return null;
 
           const response = await fetch(
-            `${process.env.XOOX_DOMAIN || 'http://47.128.225.144:3000/api/v1'}/dashboard/auth/employee-refresh-token`,
+            `${process.env.FILMORA_DOMAIN || 'http://localhost:3000/api/v1'}/auth/employee-refresh-token`,
             {
               method: 'POST',
               headers: {
@@ -125,10 +132,10 @@ export const {
           if (!response.ok || body?.status !== 'success')
             throw new Error(
               body?.detail?.[0]?.msg ||
-                body?.error ||
-                (body as any)?.message ||
-                (typeof body?.detail === 'string' ? body?.detail : undefined) ||
-                String(response.status),
+              body?.error ||
+              (body as any)?.message ||
+              (typeof body?.detail === 'string' ? body?.detail : undefined) ||
+              String(response.status),
             );
 
           return {

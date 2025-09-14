@@ -12,8 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { revalidateAll, revalidateXOOX } from '@/lib/functions';
-import { getOrigin } from '@/lib/xoox';
+import { revalidateAll, revalidateFILMORA } from '@/lib/functions';
+import { getOrigin } from '@/lib/filmora';
 
 export default function RevalidateMenu() {
   const [loading, setLoading] = useState(false);
@@ -25,11 +25,11 @@ export default function RevalidateMenu() {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              tooltip="Refresh xoox.mn and dashboard data"
+              tooltip="Refresh filmora.mn and dashboard data"
               disabled={loading}
               onClick={() => {
                 setLoading(true);
-                Promise.all([revalidateAll(), revalidateXOOX(getOrigin())])
+                Promise.all([revalidateAll(), revalidateFILMORA(getOrigin())])
                   .then(() => toast.success('Revalidate successfully'))
                   .finally(() => setLoading(false));
               }}

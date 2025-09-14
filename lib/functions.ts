@@ -16,10 +16,10 @@ export async function revalidateAll() {
   revalidatePath('/', 'layout');
 }
 
-export async function revalidateXOOX(origin: 'vercel' | 'xoox') {
+export async function revalidateFILMORA(origin: 'vercel' | 'filmora') {
   const url = {
-    vercel: process.env.FRONT_VERCEL_DOMAIN || 'https://xoox-client.vercel.app',
-    xoox: process.env.FRONT_DOMAIN || 'https://xoox.mn',
+    vercel: process.env.FRONT_VERCEL_DOMAIN || 'https://filmora-client.vercel.app',
+    filmora: process.env.FRONT_DOMAIN || 'https://filmora.mn',
   }[origin];
 
   let endpoint = `${url}/api/revalidate?secret=ps_ez&path=/`;
@@ -56,6 +56,40 @@ const imageSchema = z.object({
     ),
 });
 
+
+export async function getMedia(): Promise<{ data: MediaResponse | null; error: string | null }> {
+  const session = await auth();
+  const headers = new Headers({})
+
+  if (!!session?.user?.id)
+    headers.set("Authorization", `Bearer ${session?.user?.id}`);
+
+  try {
+    const res = await fetch(`${process.env.FILMORA_DOMAIN}/medias`, {
+      method: 'GET',
+      headers,
+      cache: 'no-store',
+    });
+
+    const result = await res.json();
+
+    if (!res.ok)
+      throw new Error(
+        result?.detail?.[0]?.msg ||
+        result?.error ||
+        (result as any)?.message ||
+        (typeof result?.detail === 'string' ? result?.detail : undefined) ||
+        String(res.status),
+      );
+
+    return { data: result, error: null };
+  } catch (error: any) {
+    console.log(error, "error shdee");
+    stringifyError(error);
+    return { data: null, error: error.message || 'Failed to fetch media' }
+  }
+}
+
 export async function uploadImage(formData: FormData) {
   try {
     validateSchema(imageSchema, formData);
@@ -70,7 +104,7 @@ export async function uploadImage(formData: FormData) {
 
     if (!!session?.user?.id)
       headers.set('Authorization', `Bearer ${session?.user?.id}`);
-    const res = await fetch(`${process.env.XOOX_DOMAIN}/client/upload-file`, {
+    const res = await fetch(`${process.env.FILMORA_DOMAIN}/upload-image`, {
       method: 'POST',
       body: formData,
       headers,
@@ -82,10 +116,10 @@ export async function uploadImage(formData: FormData) {
     if (!res.ok)
       throw new Error(
         result?.detail?.[0]?.msg ||
-          result?.error ||
-          (result as any)?.message ||
-          (typeof result?.detail === 'string' ? result?.detail : undefined) ||
-          String(res.status),
+        result?.error ||
+        (result as any)?.message ||
+        (typeof result?.detail === 'string' ? result?.detail : undefined) ||
+        String(res.status),
       );
 
     const filePath = result?.data?.data?.original;
@@ -131,7 +165,7 @@ export async function uploadAudio(formData: FormData) {
 
     if (!!session?.user?.id)
       headers.set('Authorization', `Bearer ${session?.user?.id}`);
-    const res = await fetch(`${process.env.XOOX_DOMAIN}/uploads/audio`, {
+    const res = await fetch(`${process.env.FILMORA_DOMAIN}/uploads/audio`, {
       method: 'POST',
       body: formData,
       headers,
@@ -157,3 +191,29 @@ export async function uploadAudio(formData: FormData) {
 }
 
 uploadAudio.runtime = 'nodejs';
+
+
+export type MediaItem = {
+  id: string;
+  image_url: string;
+  file_name: string;
+  file_size: number;
+  content_type: string;
+  created_at: string;
+};
+
+export type MediaPagination = {
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+  has_next: boolean;
+  has_prev: boolean;
+};
+
+export type MediaResponse = {
+  status: string;
+  message: string;
+  data: MediaItem[];
+  pagination: MediaPagination;
+};

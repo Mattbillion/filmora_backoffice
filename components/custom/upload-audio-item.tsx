@@ -43,8 +43,8 @@ export default function UploadAudioItem({
           {validAudio && (
             <audio
               src={
-                (process.env.NEXT_PUBLIC_XOOX_DOMAIN ??
-                  'http://3.95.231.68:3000/api/v1') + field.value
+                (process.env.NEXT_PUBLIC_FILMORA_DOMAIN ??
+                  (process.env.FILMORA_DOMAIN || 'http://localhost:3000/api/v1')) + field.value
               }
               controls
               className="h-11 w-full"

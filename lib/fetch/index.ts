@@ -11,10 +11,10 @@ import {
   QueryParams,
 } from '../utils';
 
-const domain = process.env.XOOX_DOMAIN;
+const domain = process.env.FILMORA_DOMAIN;
 
 if (!domain) {
-  throw new Error('XOOX_DOMAIN is not set or invalid');
+  throw new Error('FILMORA_DOMAIN is not set or invalid');
 }
 
 type FetchResult<T> = {
@@ -34,7 +34,7 @@ type ErrorType = {
   type: string;
 }[];
 
-export async function xooxFetch<
+export async function filmoraFetch<
   T extends object & {
     detail?: ErrorType;
     error?: string;
@@ -53,8 +53,11 @@ export async function xooxFetch<
     if (!headers.has('Authorization')) {
       // careful!!!
       const session = await auth();
-      if (!!session?.user?.id)
-        headers.set('Authorization', `Bearer ${session?.user?.id}`);
+      console.log('Session in filmoraFetch:', session?.user ? 'User exists' : 'No user');
+      console.log('Access token exists:', !!session?.user?.access_token);
+
+      if (!!session?.user?.access_token)
+        headers.set('Authorization', `Bearer ${session?.user?.access_token}`);
       if (!opts.searchParams) opts.searchParams = {};
 
       if (opts.method === 'GET') {
@@ -64,7 +67,7 @@ export async function xooxFetch<
     }
 
     const { endpoint, fetchOptions } = genFetchParams(url, {
-      cache: 'force-cache',
+      cache: 'no-store',
       ...opts,
       headers,
     });
@@ -149,7 +152,7 @@ function genFetchParams(url: string, options: FetchOptions = {}) {
 const esSync = async (tableName: string) => {
   try {
     await fetch(
-      `${process.env.XOOX_DOMAIN || process.env.NEXT_PUBLIC_XOOX_DOMAIN}/client/dbsync?table_name=${tableName}`,
+      `${process.env.FILMORA_DOMAIN || process.env.NEXT_PUBLIC_FILMORA_DOMAIN}/client/dbsync?table_name=${tableName}`,
     );
   } catch (error) {
     console.error('dbsync error', error);

@@ -2,6 +2,7 @@ import {
   BadgePercent,
   ChartPieIcon,
   CircleDollarSign,
+  FilmIcon,
   GalleryVertical,
   LayoutGrid,
   type LucideIcon,
@@ -184,10 +185,10 @@ const companyRoutes: SubMenuItemType[] = [
 
 const operationsRoutes: SubMenuItemType[] = [
   {
-    title: 'Захиалгууд',
-    url: '/orders',
+    title: 'Кинонууд',
+    url: '/movies',
     subRoutes: true,
-    icon: ShoppingCart,
+    icon: FilmIcon,
     permissions: ['get_order_list', 'get_order_detail'],
   },
   {

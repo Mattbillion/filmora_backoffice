@@ -95,8 +95,20 @@ const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
 
 export const moviesColumns: ColumnDef<MoviesItemType>[] = [
   {
-    accessorKey: 'id',
+    id: 'poster_url',
+    accessorKey: 'poster_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
+    cell: ({ row }) => (
+      <Image
+        src={row.original.poster_url}
+        alt=""
+        width={48}
+        height={48}
+        className="rounded-md"
+      />
+    ),
+    enableSorting: false,
+    enableColumnFilter: false,
   },
   {
     id: 'title',
@@ -111,12 +123,9 @@ export const moviesColumns: ColumnDef<MoviesItemType>[] = [
     accessorKey: 'description',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
-      <p>
-        html:{' '}
-        <span className="opacity-70">
-          {removeHTML(row.original.description?.slice(0, 300))}
-        </span>
-      </p>
+      <span className="opacity-70">
+        {removeHTML(row.original.description?.slice(0, 300))}
+      </span>
     ),
     enableSorting: false,
     enableColumnFilter: false,
@@ -153,14 +162,7 @@ export const moviesColumns: ColumnDef<MoviesItemType>[] = [
     enableSorting: false,
     enableColumnFilter: true,
   },
-  {
-    id: 'poster_url',
-    accessorKey: 'poster_url',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.poster_url?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
+
   {
     id: 'is_adult',
     accessorKey: 'is_adult',
@@ -169,58 +171,7 @@ export const moviesColumns: ColumnDef<MoviesItemType>[] = [
     enableSorting: false,
     enableColumnFilter: true,
   },
-  {
-    id: 'categories',
-    accessorKey: 'categories',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => {
-      const cellData = row.original.categories;
-      if (!!cellData[0]?.media_url)
-        return (
-          <div className="flex items-center">
-            {cellData.slice(0, 3).map((c, idx) => (
-              <Image
-                key={idx}
-                src={c.media_url}
-                alt=""
-                width={48}
-                height={48}
-                className="-mr-6 rounded-full border-border"
-              />
-            ))}
-          </div>
-        );
-      return <p>{cellData.join(', ')}</p>;
-    },
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
-  {
-    id: 'genres',
-    accessorKey: 'genres',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => {
-      const cellData = row.original.genres;
-      if (!!cellData[0]?.media_url)
-        return (
-          <div className="flex items-center">
-            {cellData.slice(0, 3).map((c, idx) => (
-              <Image
-                key={idx}
-                src={c.media_url}
-                alt=""
-                width={48}
-                height={48}
-                className="-mr-6 rounded-full border-border"
-              />
-            ))}
-          </div>
-        );
-      return <p>{cellData.join(', ')}</p>;
-    },
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
+
   {
     id: 'actions',
     cell: Action,

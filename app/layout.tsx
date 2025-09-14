@@ -17,8 +17,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: 'XOOX dashboard',
-  description: 'XOOX dashbaord next.js',
+  title: 'FILMORA dashboard',
+  description: 'FILMORA dashbaord next.js',
 };
 
 export default async function RootLayout({
