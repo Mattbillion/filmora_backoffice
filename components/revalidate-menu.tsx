@@ -12,8 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { getOrigin } from '@/lib/filmora';
-import { revalidateClient, revalidateLocal } from '@/lib/functions';
+import { revalidateClient, revalidateLocal } from '@/services/api/actions';
+import { getOrigin } from '@/services/api/helpers';
 
 export default function RevalidateMenu() {
   const [loading, setLoading] = useState(false);
