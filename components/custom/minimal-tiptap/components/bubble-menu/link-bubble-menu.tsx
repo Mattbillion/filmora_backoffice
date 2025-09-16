@@ -1,11 +1,13 @@
 import * as React from 'react';
+import { BubbleMenuPluginProps } from '@tiptap/extension-bubble-menu';
 // replaced: import { BubbleMenu, Editor } from '@tiptap/react';
 import type { Editor } from '@tiptap/react';
+import { BubbleMenu } from '@tiptap/react/menus';
 
-import { ShouldShowProps } from '../../types';
 import { LinkEditBlock } from '../link/link-edit-block';
 import { LinkPopoverBlock } from '../link/link-popover-block';
-import { BubbleMenu } from './BubbleMenuShim';
+
+// import { BubbleMenu } from './BubbleMenuShim';
 
 interface LinkBubbleMenuProps {
   editor: Editor;
@@ -34,7 +36,11 @@ export const LinkBubbleMenu: React.FC<LinkBubbleMenuProps> = ({ editor }) => {
   }, [editor]);
 
   const shouldShow = React.useCallback(
-    ({ editor: e, from, to }: ShouldShowProps) => {
+    ({
+      editor: e,
+      from,
+      to,
+    }: Parameters<BubbleMenuPluginProps['shouldShow']>[0]) => {
       if (from === to) return false;
 
       const { href } = e.getAttributes('link');
@@ -85,10 +91,7 @@ export const LinkBubbleMenu: React.FC<LinkBubbleMenuProps> = ({ editor }) => {
     <BubbleMenu
       editor={editor}
       shouldShow={shouldShow}
-      tippyOptions={{
-        placement: 'bottom-start',
-        onHidden: () => setShowEdit(false),
-      }}
+      options={{ placement: 'bottom-start', onHide: () => setShowEdit(false) }}
     >
       {showEdit ? (
         <LinkEditBlock

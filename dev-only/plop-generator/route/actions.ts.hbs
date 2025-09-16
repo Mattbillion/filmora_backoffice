@@ -6,23 +6,23 @@ import { executeRevalidate } from '@/lib/filmora';
 import { {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, RVK_{{constantCase route-name}} } from
 './schema';
 {{#if rawData}}
-{{#each endpointList}}
-{{#if (isGetRequest method name)}}
-{{> getRequest name=name method=method pathList=pathList route-name=../route-name}}
-{{/if}}
-{{#if (isGetDetailRequest method name)}}
-{{> getDetailRequest name=name method=method pathList=pathList route-name=../route-name}}
-{{/if}}
-{{#if (isDeleteRequest method)}}
-{{> deleteRequest name=name method=method pathList=pathList route-name=../route-name}}
-{{/if}}
-{{#if (isPostRequest method)}}
-{{> createRequest name=name method=method pathList=pathList route-name=../route-name}}
-{{/if}}
-{{#if (isPutRequest method)}}
-{{> updateRequest name=name method=method pathList=pathList route-name=../route-name}}
-{{/if}}
-{{/each}}
+    {{#each endpointList}}
+        {{#if (isGetRequest method name)}}
+            {{> getRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isGetDetailRequest method name)}}
+            {{> getDetailRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isDeleteRequest method)}}
+            {{> deleteRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isPostRequest method)}}
+            {{> createRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+        {{#if (isPutRequest method)}}
+            {{> updateRequest name=name method=method pathList=pathList route-name=../route-name}}
+        {{/if}}
+    {{/each}}
 {{else}}
 export const create{{pascalCase route-name}} = async (bodyData: {{pascalCase route-name}}BodyType) => {
 const { body, error } = await filmoraFetch<{ data: {{pascalCase route-name}}ItemType }>(
@@ -107,4 +107,4 @@ const { body, error } = await filmoraFetch<{ data: {{pascalCase route-name}}Item
                 return { data: null, error };
                 }
                 };
-                {{/if}}
+{{/if}}
