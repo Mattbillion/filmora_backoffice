@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { getMedia } from '@/lib/functions';
-import { MediaResponse, Media } from '../types';
-import { mediaColumns } from './columns';
+
 import { DataTable } from '@/components/ui/data-table';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { getMedia } from '@/lib/functions';
+
+import { MediaResponse } from '../types';
+import { mediaColumns } from './columns';
 
 export function Content() {
   const [data, setData] = useState<MediaResponse>({
@@ -20,7 +22,7 @@ export function Content() {
 
   useEffect(() => {
     getMedia().then((res) => {
-      if (!!res.data) {
+      if (res.data) {
         setData(res.data);
       }
     });

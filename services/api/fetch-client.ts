@@ -13,7 +13,6 @@ type AdditionalResults = {
   error?: string;
   success?: boolean;
   message?: string;
-  data?: any;
   status?: string;
   total_count?: number;
 };

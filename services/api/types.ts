@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type ID = number;
+export type ID = string;
 
 export type BaseType<T extends Record<string, any>> = {
   id: ID;

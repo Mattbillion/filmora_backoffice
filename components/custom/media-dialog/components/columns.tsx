@@ -1,41 +1,13 @@
 'use client';
 
-import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { MoreHorizontal } from 'lucide-react';
+import { ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 import Image from 'next/image';
 
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { Checkbox } from '@/components/ui/checkbox';
 
 import { MediaItemType } from './schema';
-import { Checkbox } from '@/components/ui/checkbox';
-import dayjs from 'dayjs';
-
-const Action = ({ row }: CellContext<MediaItemType, unknown>) => {
-  return (
-    <div className="me-2 flex justify-end gap-4">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
-};
 
 export const mediaColumns: ColumnDef<MediaItemType>[] = [
   {
@@ -112,10 +84,5 @@ export const mediaColumns: ColumnDef<MediaItemType>[] = [
     cell: ({ row }) => dayjs(row.original.created_at).format('DD/MM/YYYY'),
     enableSorting: false,
     enableColumnFilter: false,
-  },
-
-  {
-    id: 'actions',
-    cell: Action,
   },
 ];

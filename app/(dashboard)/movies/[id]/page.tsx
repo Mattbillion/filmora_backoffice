@@ -1,6 +1,7 @@
+import { Suspense } from 'react';
+
 import { getMoviesDetail } from '../actions';
 import Client from './client';
-import { Suspense } from 'react';
 
 export default async function Page({
   params,

@@ -15,6 +15,7 @@ import {
   getSortedRowModel,
   PaginationState,
   RowData,
+  RowSelectionState,
   SortingState,
   useReactTable,
   VisibilityState,
@@ -57,6 +58,8 @@ export interface DataTableProps<TData, TValue> {
   setDisabled?: any;
   isPending?: boolean;
   children?: ReactNode;
+  showColumnVisibility?: boolean;
+  onSelectedMedias?: (selected: TData[]) => void;
 }
 
 export function DataTable<TData, TValue>({
@@ -72,6 +75,8 @@ export function DataTable<TData, TValue>({
   setDisabled,
   isPending,
   children,
+  showColumnVisibility = false,
+  onSelectedMedias,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
 
@@ -98,6 +103,7 @@ export function DataTable<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 
   const pagination = useMemo(
     () => ({
@@ -120,6 +126,8 @@ export function DataTable<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    enableRowSelection: true,
     filterFns: {},
     manualFiltering: true,
     onSortingChange: setSorting,
@@ -132,6 +140,7 @@ export function DataTable<TData, TValue>({
       sorting,
       columnFilters,
       columnVisibility,
+      rowSelection,
     },
   });
 
@@ -167,6 +176,15 @@ export function DataTable<TData, TValue>({
     }
   }, [pageIndex, pageSize, serializedFilters, sortValues]);
 
+  useEffect(() => {
+    if (onSelectedMedias) {
+      const selectedRows = table
+        .getFilteredSelectedRowModel()
+        .rows.map((row) => row.original);
+      onSelectedMedias(selectedRows);
+    }
+  }, [rowSelection, onSelectedMedias]);
+
   // const availableFilters: string[] = table
   //   .getAllColumns()
   //   .filter((c) => c.getCanFilter())
@@ -174,62 +192,58 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="w-full">
-      <div className="mb-4 flex items-center justify-between">
+      <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">{children}</div>
-        <ColumnVisibility table={table} />
+        {showColumnVisibility && <ColumnVisibility table={table} />}
       </div>
-      <div className="border-input mb-4 w-full rounded-md border">
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
+      <Table>
+        <TableHeader>
+          {table.getHeaderGroups().map((headerGroup) => (
+            <TableRow key={headerGroup.id}>
+              {headerGroup.headers.map((header) => {
+                return (
+                  <TableHead key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                  </TableHead>
+                );
+              })}
+            </TableRow>
+          ))}
+        </TableHeader>
+
+        <TableBody>
+          {table.getRowModel().rows?.length ? (
+            table.getRowModel().rows.map((row) => (
+              <TableRow
+                key={row.id}
+                data-state={row.getIsSelected() && 'selected'}
+              >
+                {row.getVisibleCells().map((cell) => {
                   return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext(),
+                      )}
+                    </TableCell>
                   );
                 })}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    return (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    );
-                  })}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className="h-24 text-center">
+                No results.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
       {!hidePagination && (
         <div className="flex w-full flex-col-reverse items-center justify-between gap-2 md:flex-row">
           {!infinite && <DataTablePagination table={table} />}
