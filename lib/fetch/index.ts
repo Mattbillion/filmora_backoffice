@@ -33,6 +33,9 @@ type ErrorType = {
   type: string;
 }[];
 
+/*
+ * @deprecated use Custom Service actions with ExtendedFetchClient instead
+ * */
 export async function filmoraFetch<
   T extends object & {
     detail?: ErrorType;

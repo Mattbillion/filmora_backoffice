@@ -4,7 +4,7 @@ const config = require('../../config');
 const changeCase = require('change-case-all');
 
 function kebabWithPreservedBrackets(input) {
-  return input.replace(/(\[.*?\]|\(.*?\)|[^\/]+)/g, (match) => {
+  return input.replace(/(\[[^\]]*]|\([^)]*\)|[^\/]+)/g, (match) => {
     // If it's a bracketed part, preserve brackets and kebab inner content
     if (match.startsWith('[') && match.endsWith(']')) {
       const inner = match.slice(1, -1);
@@ -28,13 +28,42 @@ const routeActions = (routeName, endpoint, pathStr) => {
     path.resolve(process.cwd(), config.DASHBOARD_DIR),
   );
 
+  // Compute services base path relative to plop generator
+  const servicesBaseRelToPlop = path.relative(
+    path.resolve(__dirname, '..'),
+    path.resolve(process.cwd(), config.SERVICES_DIR),
+  );
+
   const dirPath = pathStr
     .split('/')
     .map(p => kebabWithPreservedBrackets(p))
     .join('/');
   const directory = `${dashboardBaseRelToPlop}/${dirPath}`;
 
+  const serviceDir = `${servicesBaseRelToPlop}/${changeCase.kebabCase(routeName)}`;
+
   return [
+    // Service layer files
+    {
+      type: 'fetchSchema',
+      path: `${serviceDir}/schema.ts`,
+      templateFile: './route/services/schema.ts.hbs',
+      data: templateData,
+    },
+    {
+      type: 'fetchSchema',
+      path: `${serviceDir}/service.ts`,
+      templateFile: './route/services/service.ts.hbs',
+      data: templateData,
+    },
+    {
+      type: 'add',
+      path: `${serviceDir}/index.ts`,
+      templateFile: './route/services/index.ts.hbs',
+      data: templateData,
+    },
+
+    // Route files (no local actions/schema anymore)
     {
       type: 'add',
       path: `${directory}/layout.tsx`,
@@ -61,18 +90,6 @@ const routeActions = (routeName, endpoint, pathStr) => {
     },
     {
       type: 'fetchSchema',
-      path: `${directory}/actions.ts`,
-      templateFile: './route/actions.ts.hbs',
-      data: templateData,
-    },
-    {
-      type: 'fetchSchema',
-      path: `${directory}/schema.ts`,
-      templateFile: './route/schema.ts.hbs',
-      data: templateData,
-    },
-    {
-      type: 'fetchSchema',
       path: `${directory}/columns.tsx`,
       templateFile: './route/columns.tsx.hbs',
       data: templateData,
@@ -95,6 +112,9 @@ const routeActions = (routeName, endpoint, pathStr) => {
           execSync(
             `${config.FORMAT_COMMAND} "${path.posix.join(config.DASHBOARD_DIR.replace(/\\/g, '/'), dirPath)}"`,
           );
+          execSync(
+            `${config.FORMAT_COMMAND} "${path.posix.join(config.SERVICES_DIR.replace(/\\/g, '/'), changeCase.kebabCase(routeName))}"`,
+          );
         }
         return 'Formatted with Prettier';
       } catch (error) {
@@ -106,6 +126,9 @@ const routeActions = (routeName, endpoint, pathStr) => {
         if (config.ENABLE_LINT) {
           execSync(
             `${config.LINT_COMMAND} "${path.posix.join(config.DASHBOARD_DIR.replace(/\\/g, '/'), dirPath)}"`,
+          );
+          execSync(
+            `${config.LINT_COMMAND} "${path.posix.join(config.SERVICES_DIR.replace(/\\/g, '/'), changeCase.kebabCase(routeName))}"`,
           );
         }
         return 'ESLint fixes applied successfully';

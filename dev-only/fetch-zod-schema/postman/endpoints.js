@@ -1,4 +1,4 @@
-const { variables, items } = require('./postman-data');
+const { items } = require('./postman-data');
 const { generatedRoutes } = require('./generated-routes');
 const changeCase = require('change-case-all');
 const config = require('../../config');

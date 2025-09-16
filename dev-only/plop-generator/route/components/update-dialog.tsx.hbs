@@ -24,8 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { {{getRequestNameByMethod endpointList 'PUT'}} } from '../actions';
-import { {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, {{camelCase route-name}}Schema } from '../schema';
+import { {{getRequestNameByMethod endpointList 'PUT'}}, {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, {{camelCase route-name}}Schema } from '@/services/{{kebabCase route-name}}';
 
 export function UpdateDialog({
   children,

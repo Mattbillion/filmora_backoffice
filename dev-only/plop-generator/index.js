@@ -62,7 +62,11 @@ module.exports = function (
       endpointList
     });
 
-    fs.writeFileSync(path.resolve(__dirname, outputPath), rendered);
+    // Ensure destination directory exists
+    const absOut = path.resolve(__dirname, outputPath);
+    fs.mkdirSync(path.dirname(absOut), { recursive: true });
+
+    fs.writeFileSync(absOut, rendered);
 
     return `Generated file at ${outputPath} \n schema: ${zodSchema}`;
   });

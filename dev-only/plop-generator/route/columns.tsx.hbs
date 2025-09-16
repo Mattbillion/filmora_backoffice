@@ -24,9 +24,8 @@ DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
 
-import { {{getRequestNameByMethod endpointList 'DELETE'}} } from './actions';
+import { {{getRequestNameByMethod endpointList 'DELETE'}}, {{pascalCase route-name}}ItemType } from '@/services/{{kebabCase route-name}}';
 import { UpdateDialog } from './components';
-import { {{pascalCase route-name}}ItemType } from './schema';
 import { removeHTML, currencyFormat } from '@/lib/utils';
 
 const Action = ({ row }: CellContext< {{pascalCase route-name}}ItemType, unknown>) => {

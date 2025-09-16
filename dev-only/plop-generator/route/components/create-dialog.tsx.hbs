@@ -24,8 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { {{getRequestNameByMethod endpointList 'POST'}} } from '../actions';
-import { {{pascalCase route-name}}BodyType, {{camelCase route-name}}Schema } from '../schema';
+import { {{getRequestNameByMethod endpointList 'POST'}}, {{pascalCase route-name}}BodyType, {{camelCase route-name}}Schema } from '@/services/{{kebabCase route-name}}';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef< FormDialogRef >(null);

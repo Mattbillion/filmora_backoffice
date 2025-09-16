@@ -29,5 +29,7 @@ module.exports = {
   ENABLE_LINT: true,
   // ESLint command; ensure you have it installed locally or globally
   LINT_COMMAND: 'npx eslint --fix',
-};
 
+  // New: services root directory for generated service modules
+  SERVICES_DIR: path.join('services'),
+};

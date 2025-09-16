@@ -16,7 +16,6 @@ variables.base = config.FILMORA_DOMAIN || variables.base;
 if (config.TOKEN) variables.token = config.TOKEN;
 
 module.exports = {
-  variables,
   items: collectionJson.item?.filter(c => !!c.item?.length) || [],
   curlCommand: (location) => `curl --location "${(config.FILMORA_DOMAIN || variables.base) + location}" \
       --header "Authorization: Bearer ${variables.token}"`,

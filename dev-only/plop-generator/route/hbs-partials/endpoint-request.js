@@ -1,101 +1,84 @@
-const GET_REQUEST = `
-	export const {{name}} = async (searchParams?: QueryParams) => {
-			try {
-					const { body, error } = await filmoraFetch<
+// New: Service-based request partials using shared API actions
+const SVC_GET_REQUEST = `
+export const {{name}} = async (searchParams?: QueryParams) => {
+  try {
+    const res = await actions.get<
 							PaginatedResType< {{pascalCase route-name}}ItemType[] >
-					>('{{genRequestEndpoint pathList}}', {
-							method: '{{method}}',
-							searchParams,
-							next: { tags: [RVK_{{constantCase route-name}}] },
-					});
-	
-					if (error) throw new Error(error);
-	
-					return { data: body, total_count: body.total_count };
-			} catch (error) {
-					console.error(\`Error fetching {{genRequestEndpoint pathList}}:\`, error);
-					return { data: { data: [], total_count: 0 }, error };
-			}
-	};
+					>(
+      '{{genRequestEndpoint pathList}}',
+      {
+        searchParams,
+        next: { tags: [RVK_{{constantCase route-name}}] },
+      },
+    );
+    const { body, error } = res;
+    if (error) throw new Error(error);
+    return { data: body, total_count: body.total_count };
+  } catch (error) {
+    console.error(\`Error fetching {{genRequestEndpoint pathList}}:\`, error);
+    return { data: { data: [], total_count: 0 }, error };
+  }
+};
 `;
 
-const GET_DETAIL_REQUEST = `
-	export const {{name}} = async ({{genRequestParam pathList}}) => {
-			try {
-					const { body, error } = await filmoraFetch<{ data: {{pascalCase route-name}}ItemType }>(
-							\`{{genRequestEndpoint pathList}}\`,
-							{
-									method: '{{method}}',
-									next: { tags: [\`\${RVK_{{constantCase route-name}} }_{{genRequestCacheKey pathList}}\`] },
-							},
-					);
-	
-					if (error) throw new Error(error);
-	
-					return { data: body };
-			} catch (error) {
-					console.error(\`Error fetching {{genRequestEndpoint pathList}}:\`, error);
-					return { data: null, error };
-			}
-	};
+const SVC_GET_DETAIL_REQUEST = `
+export const {{name}} = async ({{genRequestParam pathList}}) => {
+  try {
+    const res = await actions.get<{ data: {{pascalCase route-name}}ItemType }>(
+      \`{{genRequestEndpoint pathList}}\`,
+				{
+				next: { tags: [\`\${RVK_{{constantCase route-name}} }_{{genRequestCacheKey pathList}}\`] },
+		});
+    const { body, error } = res;
+    if (error) throw new Error(error);
+    return { data: body };
+  } catch (error) {
+    console.error(\`Error fetching {{genRequestEndpoint pathList}}:\`, error);
+    return { data: null, error };
+  }
+};
 `;
 
-const DELETE_REQUEST = `
-	export const {{name}} = async ({{genRequestParam pathList}}) => {
-			const { body, error } = await filmoraFetch(\`{{genRequestEndpoint pathList}}\`, {
-					method: '{{method}}',
-					cache: 'no-store',
-			});
-	
-			if (error) throw new Error(error);
-	
-			executeRevalidate([RVK_{{constantCase route-name}}, \`\${RVK_{{constantCase route-name}} }_{{genRequestCacheKey pathList}}\`]);
-			return { data: body, error: null };
-	};
+const SVC_DELETE_REQUEST = `
+export const {{name}} = async ({{genRequestParam pathList}}) => {
+  const res = await actions.destroy(\`{{genRequestEndpoint pathList}}\`);
+  const { body, error } = res;
+  if (error) throw new Error(error);
+  executeRevalidate([RVK_{{constantCase route-name}}, \`\${RVK_{{constantCase route-name}} }_{{genRequestCacheKey pathList}}\`]);
+  return { data: body, error: null };
+};
 `;
 
-const CREATE_REQUEST = `
-	export const {{name}} = async (bodyData: {{pascalCase route-name}}BodyType) => {
-			const { body, error } = await filmoraFetch(\`{{genRequestEndpoint pathList}}\`, {
-					method: '{{method}}',
-            body: bodyData,
-            cache: 'no-store',
-			});
-	
-			if (error) throw new Error(error);
-	
-			executeRevalidate([RVK_{{constantCase route-name}}]);
-			return { data: body, error: null };
-	};
+const SVC_CREATE_REQUEST = `
+export const {{name}} = async (bodyData: {{pascalCase route-name}}BodyType) => {
+  const res = await actions.post(\`{{genRequestEndpoint pathList}}\`, bodyData);
+  const { body, error } = res;
+  if (error) throw new Error(error);
+  executeRevalidate([RVK_{{constantCase route-name}}]);
+  return { data: body, error: null };
+};
 `;
 
-const UPDATE_REQUEST = `
-	export const {{name}} = async ({
-			id: param1,
-			...bodyData
-	}: {{pascalCase route-name}}BodyType & { id: ID }) => {
-			const { body, error } = await filmoraFetch<{ data: {{pascalCase route-name}}ItemType }>(
-					\`{{genRequestEndpoint pathList}}\`,
-					{
-							method: '{{method}}',
-							body: bodyData,
-							cache: 'no-store',
-					},
-			);
-	
-			if (error) throw new Error(error);
-	
-			executeRevalidate([RVK_{{constantCase route-name}}, \`\${RVK_{{constantCase route-name}} }_{{genRequestCacheKey pathList}}\`]);
-			return { data: body, error: null };
-	};
+const SVC_UPDATE_REQUEST = `
+export const {{name}} = async ({ id: param1, ...bodyData }: {{pascalCase route-name}}BodyType & { id: ID }) => {
+  const res = await actions.put<{ data: {{pascalCase route-name}}ItemType }>(
+    \`{{genRequestEndpoint pathList}}\`,
+    bodyData,
+  );
+  const { body, error } = res;
+  if (error) throw new Error(error);
+  executeRevalidate([RVK_{{constantCase route-name}}, \`\${RVK_{{constantCase route-name}} }_{{genRequestCacheKey pathList}}\`]);
+  return { data: body, error: null };
+};
 `;
 
 export const endpointRequestPartials = (plop) => {
-	plop.setPartial('getRequest', GET_REQUEST);
-	plop.setPartial('getDetailRequest', GET_DETAIL_REQUEST);
-	plop.setPartial('deleteRequest', DELETE_REQUEST);
-	plop.setPartial('createRequest', CREATE_REQUEST);
-	plop.setPartial('updateRequest', UPDATE_REQUEST);
+  // Register service-based partials
+  plop.setPartial('svcGetRequest', SVC_GET_REQUEST);
+  plop.setPartial('svcGetDetailRequest', SVC_GET_DETAIL_REQUEST);
+  plop.setPartial('svcDeleteRequest', SVC_DELETE_REQUEST);
+  plop.setPartial('svcCreateRequest', SVC_CREATE_REQUEST);
+  plop.setPartial('svcUpdateRequest', SVC_UPDATE_REQUEST);
 }
 
 export const endpointRequestHelpers = (plop) => {
