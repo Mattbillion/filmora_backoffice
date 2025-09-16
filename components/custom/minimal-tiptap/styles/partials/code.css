@@ -1,3 +1,5 @@
+@reference "tailwindcss";
+
 .minimal-tiptap-editor .ProseMirror code.inline {
   @apply rounded border border-[var(--mt-code-color)] bg-[var(--mt-code-background)] px-1 py-0.5 text-sm;
 }

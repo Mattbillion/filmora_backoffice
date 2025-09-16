@@ -142,7 +142,7 @@ export function MultiImageUpload({
                     height={200}
                   />
                   <div className="space-y-1 p-2 text-xs">
-                    <p className="break-all font-medium">{img.file.name}</p>
+                    <p className="font-medium break-all">{img.file.name}</p>
                     <p>{(img.file.size / 1024).toFixed(1)} KB</p>
                     <p className="uppercase">{img.file.type}</p>
                   </div>
@@ -156,7 +156,7 @@ export function MultiImageUpload({
                     <button
                       type="button"
                       onClick={() => removeImage(img.id)}
-                      className="absolute right-1 top-1 rounded-full bg-white p-1 shadow"
+                      className="absolute top-1 right-1 rounded-full bg-white p-1 shadow"
                     >
                       <X size={16} />
                     </button>

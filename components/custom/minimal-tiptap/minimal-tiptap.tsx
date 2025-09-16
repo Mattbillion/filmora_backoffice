@@ -27,7 +27,7 @@ export interface MinimalTiptapProps
 }
 
 const Toolbar = ({ editor }: { editor: Editor }) => (
-  <div className="shrink-0 overflow-x-auto border-b border-border p-2">
+  <div className="shrink-0 overflow-x-auto border-b p-2">
     <div className="flex w-max items-center gap-px">
       <SectionOne editor={editor} activeLevels={[1, 2, 3, 4, 5, 6]} />
 
@@ -88,7 +88,7 @@ export const MinimalTiptapEditor = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        'flex h-auto min-h-72 w-full flex-col rounded-md border border-input shadow-sm focus-within:border-primary',
+        'border-input focus-within:ring-ring flex h-auto min-h-0 w-full flex-col rounded-md border focus-within:ring-1',
         className,
       )}
     >

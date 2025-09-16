@@ -1,7 +1,7 @@
 import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/filmora';
+import { QueryParams } from '@/lib/utils';
 
 import { MoviesBodyType, MoviesItemType, RVK_MOVIES } from './schema';
 
@@ -51,14 +51,13 @@ export const deleteMoviesDetail = async (param1: string | ID) => {
 
 export const getMovies = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await filmoraFetch<PaginatedResType<MoviesItemType[]>>(
-      '/movies',
-      {
-        method: 'GET',
-        searchParams,
-        next: { tags: [RVK_MOVIES] },
-      },
-    );
+    const { body, error } = await filmoraFetch<
+      PaginatedResType<MoviesItemType[]>
+    >('/movies', {
+      method: 'GET',
+      searchParams,
+      next: { tags: [RVK_MOVIES] },
+    });
 
     if (error) throw new Error(error);
 

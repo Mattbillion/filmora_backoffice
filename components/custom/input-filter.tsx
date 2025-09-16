@@ -21,8 +21,8 @@ const InputFilter = ({
   const router = useRouter();
 
   const handleSearch = (val: string) => {
-    let paramsObj = { ...queryParams };
-    if (!!val) {
+    const paramsObj = { ...queryParams };
+    if (val) {
       lodashSet(paramsObj, name, val);
     } else {
       unset(paramsObj, name);

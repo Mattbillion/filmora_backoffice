@@ -44,7 +44,8 @@ export default function UploadAudioItem({
             <audio
               src={
                 (process.env.NEXT_PUBLIC_FILMORA_DOMAIN ??
-                  (process.env.FILMORA_DOMAIN || 'http://localhost:3000/api/v1')) + field.value
+                  (process.env.FILMORA_DOMAIN ||
+                    'http://localhost:3000/api/v1')) + field.value
               }
               controls
               className="h-11 w-full"

@@ -1,15 +1,14 @@
 'use client';
 
-import { ReactNode, useEffect, useRef, useTransition, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
-import { getMedia } from '@/lib/functions';
 import MediaDialog from '@/components/custom/media-dialog';
+import UploadImageItem from '@/components/custom/upload-image-item';
 import {
   FormControl,
   FormField,
@@ -25,11 +24,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getMedia } from '@/lib/functions';
 
 import { createMovies } from '../actions';
 import { MoviesBodyType, moviesSchema } from '../schema';
-import Image from 'next/image';
-import { X } from 'lucide-react';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);

@@ -1,19 +1,21 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { getMedia, MediaItem } from '@/lib/functions';
+import React, { useEffect, useState } from 'react';
+import { Check, X } from 'lucide-react';
+import Image from 'next/image';
+
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Dialog,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogFooter,
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import Image from 'next/image';
+import { getMedia, MediaItem } from '@/lib/functions';
+
 import { ScrollArea } from '../ui/scroll-area';
-import { Check, X } from 'lucide-react';
 
 interface MediaDialogProps {
   selectedImages?: string[];
@@ -68,27 +70,25 @@ export default function MediaDialog({ trigger }: MediaDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <div className="flex flex-col gap-2">
-        <div className="flex gap-2">
-          <div className="flex h-[120px] gap-2">
-            {selectedImages.map((m: string, idx: number) => (
-              <div className="relative aspect-square" key={idx}>
-                <X className="absolute right-2 top-2 z-10 size-4 text-white" />
-                <Image
-                  src={m}
-                  alt="selected image"
-                  fill
-                  className="object-cover"
-                />
-              </div>
-            ))}
-          </div>
+        <div className="bg-accent flex gap-2 rounded-md">
+          {selectedImages.map((m: string, idx: number) => (
+            <div className="relative aspect-square" key={idx}>
+              <X className="absolute top-2 right-2 z-10 size-4 text-white" />
+              <Image
+                src={m}
+                alt="selected image"
+                fill
+                className="object-cover"
+              />
+            </div>
+          ))}
         </div>
         <DialogTrigger asChild>
           {trigger || <Button variant="outline">Select Images</Button>}
         </DialogTrigger>
       </div>
       <DialogContent className="flex h-[720px] max-w-[820px] flex-col gap-0 overflow-hidden p-0">
-        <DialogHeader className="border-b border-border p-4">
+        <DialogHeader className="border-b p-4">
           <DialogTitle>
             Select Images ({selectedMediaIds.length} selected)
           </DialogTitle>
@@ -102,8 +102,8 @@ export default function MediaDialog({ trigger }: MediaDialogProps) {
                   key={media.id}
                   className={`relative aspect-square cursor-pointer overflow-hidden rounded-lg border-2 transition-all ${
                     isSelected
-                      ? 'border-primary ring-2 ring-primary/20'
-                      : 'border-border hover:border-primary/50'
+                      ? 'border-primary ring-primary/20 ring-2'
+                      : 'hover:border-primary/50 border'
                   }`}
                   onClick={() => handleImageSelect(media.id)}
                 >
@@ -114,13 +114,13 @@ export default function MediaDialog({ trigger }: MediaDialogProps) {
                     className="object-cover"
                   />
                   {isSelected && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-primary/20">
-                      <div className="rounded-full bg-primary p-1 text-primary-foreground">
+                    <div className="bg-primary/20 absolute inset-0 flex items-center justify-center">
+                      <div className="bg-primary text-primary-foreground rounded-full p-1">
                         <Check className="h-4 w-4" />
                       </div>
                     </div>
                   )}
-                  <div className="absolute right-2 top-2">
+                  <div className="absolute top-2 right-2">
                     <Checkbox
                       checked={isSelected}
                       onChange={() => handleImageSelect(media.id)}
@@ -132,7 +132,7 @@ export default function MediaDialog({ trigger }: MediaDialogProps) {
             })}
           </div>
         </ScrollArea>
-        <DialogFooter className="border-t border-border p-4">
+        <DialogFooter className="border-t p-4">
           <div className="flex gap-2">
             <Button variant="outline" onClick={handleCancel}>
               <X className="mr-2 h-4 w-4" />

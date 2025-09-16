@@ -22,8 +22,8 @@ import {
   Selection,
   UnsetAllMarks,
 } from '../extensions';
-import { useThrottle } from './use-throttle';
 import { getOutput } from '../utils';
+import { useThrottle } from './use-throttle';
 
 export interface UseMinimalTiptapEditorProps extends UseEditorOptions {
   value?: Content;

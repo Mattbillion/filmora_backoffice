@@ -79,7 +79,10 @@ const FormSheet = forwardRef<FormDialogRef, FormSheetProps>(
         {!!trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
         <SheetContent
           aria-describedby={undefined}
-          className={cn('w-[650px] !max-w-[90%]', dialogContentClassName)}
+          className={cn(
+            'flex w-[650px] max-w-[90%]! flex-col',
+            dialogContentClassName,
+          )}
         >
           {(title || description) && (
             <SheetHeader>
@@ -89,16 +92,19 @@ const FormSheet = forwardRef<FormDialogRef, FormSheetProps>(
           )}
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit, console.error)}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit, console.error)}
+              className="flex min-h-0 flex-1 flex-col"
+            >
               <div
                 className={cn(
-                  'max-h-[calc(100vh-150px)] space-y-4 overflow-y-scroll px-2 py-1',
+                  'min-h-0 flex-1 space-y-4 overflow-y-scroll px-2 py-1',
                   containerClassName,
                 )}
               >
                 {children}
               </div>
-              <SheetFooter className={cn('pr-2 pt-4', footerClassName)}>
+              <SheetFooter className={cn('pt-4 pr-2', footerClassName)}>
                 {footerActions}
                 <Button
                   type="submit"

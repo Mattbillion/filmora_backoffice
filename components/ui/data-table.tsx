@@ -178,7 +178,7 @@ export function DataTable<TData, TValue>({
         <div className="flex items-center gap-2">{children}</div>
         <ColumnVisibility table={table} />
       </div>
-      <div className="mb-4 w-full rounded-md border border-input">
+      <div className="border-input mb-4 w-full rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (

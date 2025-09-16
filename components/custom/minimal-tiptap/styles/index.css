@@ -2,6 +2,7 @@
 @import './partials/placeholder.css';
 @import './partials/lists.css';
 @import './partials/typography.css';
+@reference "tailwindcss";
 
 :root {
   --mt-font-size-regular: 0.9375rem;
@@ -143,15 +144,20 @@
 
 .minimal-tiptap-editor .ProseMirror blockquote::before,
 .minimal-tiptap-editor .ProseMirror blockquote.is-empty::before {
-  @apply absolute bottom-0 left-0 top-0 h-full w-1 rounded-sm bg-accent-foreground/15 content-[''];
+  @apply absolute bottom-0 left-0 top-0 h-full w-1 rounded-sm content-[''];
+  /* was: @apply bg-accent-foreground/15 */
+  background-color: hsl(var(--accent-foreground) / 0.15);
 }
 
 .minimal-tiptap-editor .ProseMirror hr {
-  @apply my-3 h-0.5 w-full border-none bg-[var(--mt-hr)];
+  @apply my-3 h-0.5 w-full border-none;
+  background-color: var(--mt-hr);
 }
 
 .minimal-tiptap-editor .ProseMirror-focused hr.ProseMirror-selectednode {
-  @apply rounded-full outline outline-2 outline-offset-1 outline-muted-foreground;
+  @apply rounded-full outline outline-2 outline-offset-1;
+  /* was: @apply outline-muted-foreground */
+  outline-color: hsl(var(--muted-foreground));
 }
 
 .minimal-tiptap-editor .ProseMirror .ProseMirror-gapcursor {
@@ -173,7 +179,8 @@
 .minimal-tiptap-editor .ProseMirror .selection,
 .minimal-tiptap-editor .ProseMirror *::selection,
 ::selection {
-  @apply bg-primary/25;
+  /* was: @apply bg-primary/25 */
+  background-color: hsl(var(--primary) / 0.25);
 }
 
 /* Override native selection when custom selection is present */

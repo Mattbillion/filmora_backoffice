@@ -1,5 +1,5 @@
 'use client';
-import { ReactNode, useEffect, useRef, useTransition, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
@@ -22,10 +22,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { getMedia } from '@/lib/functions';
 
 import { patchMoviesDetail } from '../actions';
 import { MoviesBodyType, MoviesItemType, moviesSchema } from '../schema';
-import { getMedia } from '@/lib/functions';
 
 export function UpdateDialog({
   children,
@@ -43,8 +43,9 @@ export function UpdateDialog({
     getMedia()
       .then((res) => {
         if (res?.data) {
-          setMediaList(res.data);
-          console.log('Media loaded:', res.data);
+          // v2 API returns { status, message, data, pagination }
+          setMediaList((res.data as any)?.data ?? []);
+          console.log('Media loaded:', (res.data as any)?.data);
         }
       })
       .catch((error) => {
@@ -56,8 +57,6 @@ export function UpdateDialog({
     resolver: zodResolver(moviesSchema),
     defaultValues: initialData,
   });
-
-
 
   function onSubmit({ ...values }: MoviesBodyType) {
     console.log('=== FORM SUBMIT TRIGGERED ===');
@@ -101,7 +100,6 @@ export function UpdateDialog({
       submitText="Update"
       trigger={children}
     >
-
       <FormField
         control={form.control}
         name="poster_url"
@@ -204,8 +202,6 @@ export function UpdateDialog({
           </FormItem>
         )}
       />
-
-
 
       <FormField
         control={form.control}
