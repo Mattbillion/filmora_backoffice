@@ -33,12 +33,11 @@ export function UpdateDialog({
     defaultValues: initialData,
   });
 
-  function onSubmit({ status, ...values }: GenresBodyType) {
+  function onSubmit(values: GenresBodyType) {
     startTransition(() => {
       patchGenresDetail({
         ...values,
         id: initialData.id,
-        status: (status as unknown as string) === 'true',
       })
         .then(() => {
           toast.success('Updated successfully');

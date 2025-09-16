@@ -26,12 +26,9 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     resolver: zodResolver(genresSchema),
   });
 
-  function onSubmit({ status, ...values }: GenresBodyType) {
+  function onSubmit(values: GenresBodyType) {
     startTransition(() => {
-      createGenres({
-        ...values,
-        status: (status as unknown as string) === 'true',
-      })
+      createGenres(values)
         .then(() => {
           toast.success('Created successfully');
           dialogRef?.current?.close();
