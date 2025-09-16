@@ -7,7 +7,7 @@ module.exports = {
   // Base URL for API requests
   FILMORA_DOMAIN: process.env.FILMORA_DOMAIN,
   // Optional override for Postman variables.token; leave null to use Postman value
-  TOKEN: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTgwOTE1Mjh9.eT_NsvxmkuoK39Il8VAa18AwZjBzAu2fceKUUiOCjwA',
+  TOKEN: 'LOL:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTgwOTE1Mjh9.eT_NsvxmkuoK39Il8VAa18AwZjBzAu2fceKUUiOCjwA',
   POSTMAN_COLLECTION_PATH: path.join('dev-only', 'fetch-zod-schema', 'postman', 'postman-collection.json'),
 
   // Fetching & schema

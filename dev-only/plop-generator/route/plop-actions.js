@@ -71,7 +71,7 @@ const serviceActions = (routeName, endpoint) => {
     {
       type: 'fetchSchema',
       path: `${serviceDir}/schema.ts`,
-      templateFile: './route/schema.ts.hbs',
+      templateFile: './route/services/schema.ts.hbs',
       data: templateData,
     },
     {
