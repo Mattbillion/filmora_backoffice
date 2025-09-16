@@ -9,7 +9,7 @@ export function TableHeaderWrapper<TData, TValue>({
   label,
 }: TableHeaderProps<TData, TValue>) {
   return (
-    <div className="flex w-full flex-shrink-0 flex-col gap-2">
+    <div className="flex w-full shrink-0 flex-col gap-2">
       <SortDropDownMenu column={column} label={label} />
 
       {searchable && (

@@ -12,17 +12,18 @@ export async function revalidate(tagName: string) {
   revalidateTag(tagName);
 }
 
-export async function revalidateAll() {
+export async function revalidateLocal() {
   revalidatePath('/', 'layout');
 }
 
-export async function revalidateFILMORA(origin: 'vercel' | 'filmora') {
+export async function revalidateClient(origin: 'vercel' | 'filmora') {
   const url = {
-    vercel: process.env.FRONT_VERCEL_DOMAIN || 'https://filmora-client.vercel.app',
+    vercel:
+      process.env.FRONT_VERCEL_DOMAIN || 'https://filmora-client.vercel.app',
     filmora: process.env.FRONT_DOMAIN || 'https://filmora.mn',
   }[origin];
 
-  let endpoint = `${url}/api/revalidate?secret=ps_ez&path=/`;
+  const endpoint = `${url}/api/revalidate?secret=ps_ez&path=/`;
   try {
     const res = await fetch(endpoint, { method: 'POST', cache: 'no-store' });
     const result = await res.json();
@@ -56,21 +57,18 @@ const imageSchema = z.object({
     ),
 });
 
-
-export async function getMedia(params?: { page?: number, limit?: number, search?: string }): Promise<{ data: MediaResponse | null; error: string | null }> {
+export async function getMedia(): Promise<{
+  data: MediaResponse | null;
+  error: string | null;
+}> {
   const session = await auth();
-  const headers = new Headers({})
+  const headers = new Headers({});
 
-  const searchParams = new URLSearchParams();
-  if (params?.page) searchParams.set('page', params.page.toString());
-  if (params?.limit) searchParams.set('limit', params.limit.toString());
-  if (params?.search) searchParams.set('search', params.search);
-
-  if (!!session?.user?.id)
-    headers.set("Authorization", `Bearer ${session?.user?.id}`);
+  if (session?.user?.id)
+    headers.set('Authorization', `Bearer ${session?.user?.id}`);
 
   try {
-    const res = await fetch(`${process.env.FILMORA_DOMAIN}/medias?${searchParams.toString()}`, {
+    const res = await fetch(`${process.env.FILMORA_DOMAIN}/medias`, {
       method: 'GET',
       headers,
       cache: 'no-store',
@@ -81,21 +79,21 @@ export async function getMedia(params?: { page?: number, limit?: number, search?
     if (!res.ok)
       throw new Error(
         result?.detail?.[0]?.msg ||
-        result?.error ||
-        (result as any)?.message ||
-        (typeof result?.detail === 'string' ? result?.detail : undefined) ||
-        String(res.status),
+          result?.error ||
+          (result as any)?.message ||
+          (typeof result?.detail === 'string' ? result?.detail : undefined) ||
+          String(res.status),
       );
 
     return { data: result, error: null };
   } catch (error: any) {
-    console.log(error, "error shdee");
+    console.log(error, 'error shdee');
     stringifyError(error);
-    return { data: null, error: error.message || 'Failed to fetch media' }
+    return { data: null, error: error.message || 'Failed to fetch media' };
   }
 }
 
-export async function uploadImage(formData: FormData, options?: { onUploadProgress?: (progressEvent: ProgressEvent) => void }) {
+export async function uploadImage(formData: FormData) {
   try {
     validateSchema(imageSchema, formData);
 
@@ -107,7 +105,7 @@ export async function uploadImage(formData: FormData, options?: { onUploadProgre
 
     const headers = new Headers({});
 
-    if (!!session?.user?.id)
+    if (session?.user?.id)
       headers.set('Authorization', `Bearer ${session?.user?.id}`);
     const res = await fetch(`${process.env.FILMORA_DOMAIN}/upload-image`, {
       method: 'POST',
@@ -121,10 +119,10 @@ export async function uploadImage(formData: FormData, options?: { onUploadProgre
     if (!res.ok)
       throw new Error(
         result?.detail?.[0]?.msg ||
-        result?.error ||
-        (result as any)?.message ||
-        (typeof result?.detail === 'string' ? result?.detail : undefined) ||
-        String(res.status),
+          result?.error ||
+          (result as any)?.message ||
+          (typeof result?.detail === 'string' ? result?.detail : undefined) ||
+          String(res.status),
       );
 
     const filePath = result?.data?.data?.original;
@@ -168,7 +166,7 @@ export async function uploadAudio(formData: FormData) {
 
     const headers = new Headers({});
 
-    if (!!session?.user?.id)
+    if (session?.user?.id)
       headers.set('Authorization', `Bearer ${session?.user?.id}`);
     const res = await fetch(`${process.env.FILMORA_DOMAIN}/uploads/audio`, {
       method: 'POST',
@@ -196,7 +194,6 @@ export async function uploadAudio(formData: FormData) {
 }
 
 uploadAudio.runtime = 'nodejs';
-
 
 export type MediaItem = {
   id: string;

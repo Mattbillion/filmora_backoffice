@@ -43,7 +43,7 @@ const ImageViewBlock = ({ editor, node, getPos }: NodeViewProps) => {
                     <img
                       alt={node.attrs.alt}
                       src={node.attrs.src}
-                      className="absolute left-2/4 top-2/4 m-0 h-full max-w-full -translate-x-2/4 -translate-y-2/4 transform object-contain"
+                      className="absolute top-2/4 left-2/4 m-0 h-full max-w-full -translate-x-2/4 -translate-y-2/4 transform object-contain"
                     />
                   </picture>
                 </div>

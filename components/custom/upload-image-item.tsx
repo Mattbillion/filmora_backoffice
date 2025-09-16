@@ -46,7 +46,7 @@ export default function UploadImageItem({
                 className="h-full w-full bg-slate-200 object-cover"
               />
               {loading && (
-                <div className="absolute left-0 top-0 flex h-full w-full items-center justify-center bg-black/30">
+                <div className="absolute top-0 left-0 flex h-full w-full items-center justify-center bg-black/30">
                   <Loader2 size={24} color="white" className="animate-spin" />
                 </div>
               )}

@@ -1,7 +1,7 @@
 import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/filmora';
+import { QueryParams } from '@/lib/utils';
 
 import {
   CategoryBodyType,
@@ -83,7 +83,7 @@ export const getHierarchicalComCat = async () => {
   };
 };
 export const getHierarchicalCategories = async (isSpecial?: boolean) => {
-  let searchParams: QueryParams = { page_size: 100000 };
+  const searchParams: QueryParams = { page_size: 100000 };
   if (isSpecial) searchParams.filters = 'special=true';
   try {
     const { body, error } = await filmoraFetch<

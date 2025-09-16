@@ -25,7 +25,6 @@ type FetchResult<T> = {
 type FetchOptions = Omit<RequestInit, 'body'> & {
   body?: Record<string, unknown> | FormData;
   searchParams?: QueryParams;
-  syncTable?: string;
 };
 
 type ErrorType = {
@@ -45,7 +44,7 @@ export async function filmoraFetch<
     total_count?: number;
   },
 >(url: string, options: FetchOptions = {}): Promise<FetchResult<T>> {
-  let opts = { ...options };
+  const opts = { ...options };
 
   try {
     const headers = new Headers(options.headers);
@@ -53,16 +52,17 @@ export async function filmoraFetch<
     if (!headers.has('Authorization')) {
       // careful!!!
       const session = await auth();
-      
+      const accessToken = (session?.user as any)?.access_token as
+        | string
+        | undefined;
+      console.log(
+        'Session in filmoraFetch:',
+        session?.user ? 'User exists' : 'No user',
+      );
+      console.log('Access token exists:', !!accessToken);
 
-      if (!!session?.user?.id)
-        headers.set('Authorization', `Bearer ${session?.user?.id}`);
+      if (accessToken) headers.set('Authorization', `Bearer ${accessToken}`);
       if (!opts.searchParams) opts.searchParams = {};
-
-      if (opts.method === 'GET') {
-        opts.searchParams.company_id = session?.user?.company_id;
-        // opts.searchParams.com_id = session?.user?.company_id;
-      }
     }
 
     const { endpoint, fetchOptions } = genFetchParams(url, {
@@ -73,7 +73,6 @@ export async function filmoraFetch<
 
     const response = await fetch(endpoint, fetchOptions);
     const body: T = await response.json();
-    if (options.syncTable) esSync(options.syncTable);
 
     if (!response.ok || body?.status !== 'success') {
       const propperError = body?.detail?.[0]?.msg;
@@ -114,7 +113,7 @@ export async function filmoraFetch<
 }
 
 function genFetchParams(url: string, options: FetchOptions = {}) {
-  let endpoint = `${domain}/dashboard${ensureStartsWith(url, '/')}`;
+  let endpoint = `${domain}${ensureStartsWith(url, '/')}`;
   const headers = new Headers(options.headers);
 
   const isBodyObject = isObject(options.body);
@@ -147,13 +146,3 @@ function genFetchParams(url: string, options: FetchOptions = {}) {
 
   return { endpoint, fetchOptions: fetchOptions as RequestInit };
 }
-
-const esSync = async (tableName: string) => {
-  try {
-    await fetch(
-      `${process.env.FILMORA_DOMAIN || process.env.NEXT_PUBLIC_FILMORA_DOMAIN}/client/dbsync?table_name=${tableName}`,
-    );
-  } catch (error) {
-    console.error('dbsync error', error);
-  }
-};

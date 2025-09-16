@@ -10,6 +10,7 @@ export const authConfig = {
   providers: [],
   callbacks: {
     authorized({ auth, request: { nextUrl } }) {
+      console.log('auth.config > authorized()', JSON.stringify(auth));
       const isLoggedIn = !!auth?.user;
 
       // console.log(JSON.stringify(auth, null, 2), 'auth.config.ts check user');

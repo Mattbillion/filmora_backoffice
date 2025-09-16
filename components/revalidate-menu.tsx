@@ -12,8 +12,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { revalidateAll, revalidateFILMORA } from '@/lib/functions';
 import { getOrigin } from '@/lib/filmora';
+import { revalidateClient, revalidateLocal } from '@/lib/functions';
 
 export default function RevalidateMenu() {
   const [loading, setLoading] = useState(false);
@@ -29,7 +29,7 @@ export default function RevalidateMenu() {
               disabled={loading}
               onClick={() => {
                 setLoading(true);
-                Promise.all([revalidateAll(), revalidateFILMORA(getOrigin())])
+                Promise.all([revalidateLocal(), revalidateClient(getOrigin())])
                   .then(() => toast.success('Revalidate successfully'))
                   .finally(() => setLoading(false));
               }}

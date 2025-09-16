@@ -95,7 +95,7 @@ export const HierarchicalSelect = ({
         onClick={() => setIsOpen(!isOpen)}
         disabled={disabled}
         aria-label="Select category"
-        className="flex w-full items-center justify-between rounded border p-2 hover:bg-accent"
+        className="hover:bg-accent flex w-full items-center justify-between rounded border p-2"
       >
         <span className="truncate text-sm">
           {value
@@ -108,7 +108,7 @@ export const HierarchicalSelect = ({
       </button>
 
       {isOpen && (
-        <div className="absolute z-50 mt-1 w-full rounded border bg-background shadow-lg">
+        <div className="bg-background absolute z-50 mt-1 w-full rounded border shadow-lg">
           <div className="max-h-80 overflow-y-auto p-2">
             {breadcrumbs.length > 0 && (
               <div className="mb-2 flex flex-wrap">
@@ -118,7 +118,7 @@ export const HierarchicalSelect = ({
                     setCurrentLevel(categories);
                     setBreadcrumbs([]);
                   }}
-                  className="flex items-center rounded px-2 py-1 text-sm hover:bg-accent"
+                  className="hover:bg-accent flex items-center rounded px-2 py-1 text-sm"
                 >
                   All <span className="mx-1">›</span>
                 </button>
@@ -127,7 +127,7 @@ export const HierarchicalSelect = ({
                     key={crumb.id}
                     type="button"
                     onClick={() => handleBreadcrumbClick(index + 1)}
-                    className="flex items-center rounded px-2 py-1 text-sm hover:bg-accent"
+                    className="hover:bg-accent flex items-center rounded px-2 py-1 text-sm"
                   >
                     {crumb.cat_name}
                     <span className="mx-1">›</span>

@@ -1,7 +1,7 @@
 import { filmoraFetch } from '@/lib/fetch';
 import { PaginatedResType } from '@/lib/fetch/types';
-import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/filmora';
+import { QueryParams } from '@/lib/utils';
 
 import { RoleBodyType, RoleItemType, RVK_ROLE } from './schema';
 
@@ -20,14 +20,13 @@ export const createRole = async (bodyData: RoleBodyType) => {
 
 export const getRoleList = async (searchParams?: QueryParams) => {
   try {
-    const { body, error } = await filmoraFetch<PaginatedResType<RoleItemType[]>>(
-      '/roles',
-      {
-        method: 'GET',
-        searchParams,
-        next: { tags: [RVK_ROLE] },
-      },
-    );
+    const { body, error } = await filmoraFetch<
+      PaginatedResType<RoleItemType[]>
+    >('/roles', {
+      method: 'GET',
+      searchParams,
+      next: { tags: [RVK_ROLE] },
+    });
 
     if (error) throw new Error(error);
 

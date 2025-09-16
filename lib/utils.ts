@@ -95,7 +95,6 @@ export function extractActionError(e: Error): {
   errObj?: Record<string, { _errors: string[] }>;
 } {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _errors, ...errObj } = JSON.parse(e.message);
     return { message: (Object.values(errObj)[0] as any)?._errors?.[0], errObj };
   } catch {
@@ -114,7 +113,7 @@ export const imageResize = (
   size?: 'medium' | 'small' | 'large',
 ) => {
   const sizePattern = /\/public\/(small|medium|large)\//i;
-  const insertSizePattern = /\/public\/([^\/]+)$/i;
+  const insertSizePattern = /\/public\/([^/]+)$/i;
 
   if (!size) return src;
   if (sizePattern.test(src))

@@ -88,7 +88,7 @@ const ImageEditBlock = ({
           {loading ? 'Uploading...' : 'Upload from your computer'}
         </Button>
         {!!error && (
-          <p className="!mt-1 text-[0.8rem] font-medium text-destructive">
+          <p className="text-destructive mt-1! text-[0.8rem] font-medium">
             {error}
           </p>
         )}

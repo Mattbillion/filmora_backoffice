@@ -1,7 +1,7 @@
 import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { QueryParams } from '@/lib/utils';
 import { executeRevalidate } from '@/lib/filmora';
+import { QueryParams } from '@/lib/utils';
 
 import {
   PermissionByRoleItemType,
@@ -13,14 +13,13 @@ import {
 export const createRoleByPermission = async (
   bodyData: RoleByPermissionBodyType,
 ) => {
-  const { body, error } = await filmoraFetch<{ data: PermissionByRoleItemType }>(
-    'role_permissions',
-    {
-      method: 'POST',
-      body: bodyData,
-      cache: 'no-store',
-    },
-  );
+  const { body, error } = await filmoraFetch<{
+    data: PermissionByRoleItemType;
+  }>('role_permissions', {
+    method: 'POST',
+    body: bodyData,
+    cache: 'no-store',
+  });
 
   if (error) throw new Error(error);
 

@@ -2,9 +2,6 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
-import { getAssignedPermission } from '@/features/permission/actions';
-import { filmoraFetch } from '@/lib/fetch';
-
 import { authConfig } from './auth.config';
 
 declare module 'next-auth' {
@@ -48,7 +45,7 @@ export const {
         formData.append('username', username);
         formData.append('password', password);
 
-        const apiUrl = `${'http://localhost:3000/api/v1'}/dashboard/auth/employee-login`;
+        const apiUrl = `${process.env.FILMORA_DOMAIN}/auth/employee-login`;
         console.log('Attempting to login to:', apiUrl);
 
         const response = await fetch(apiUrl, {
@@ -57,14 +54,11 @@ export const {
           cache: 'no-store',
         });
 
-        console.log('Response status:', response.status);
-        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
-
         const body: any = await response.json();
-        console.log('Response body:', body);
 
         if (!response.ok || body?.status !== 'success') {
-          const errorMsg = body?.detail?.[0]?.msg ||
+          const errorMsg =
+            body?.detail?.[0]?.msg ||
             body?.error ||
             (body as any)?.message ||
             (typeof body?.detail === 'string' ? body?.detail : undefined) ||
@@ -74,31 +68,13 @@ export const {
           throw new Error(errorMsg);
         }
 
-        if (body?.access_token) {
-          const { body: userInfo } = await filmoraFetch('/employeeinfo', {
-            headers: {
-              Authorization: `Bearer ${body.access_token}`,
-            },
-          });
-          const userData = userInfo?.data || {};
-
-          const { data: assignedPermissionData } = await getAssignedPermission({
-            Authorization: `Bearer ${body.access_token}`,
-          });
-
-          return {
-            ...userData,
-            permissions: assignedPermissionData?.data?.map(
-              (c) => c?.permission_name,
-            ),
-            access_token: body.access_token,
-            refresh_token: body.refresh_token,
-            expires_at: getExpDateFromJWT(body.access_token),
-            id: body.access_token,
-          } as any;
-        }
-
-        return null;
+        console.log('Login body information:', JSON.stringify(body));
+        return {
+          access_token: body.access_token,
+          refresh_token: body.refresh_token,
+          expires_at: getExpDateFromJWT(body.access_token),
+          id: body.access_token,
+        } as any;
       },
     }),
   ],
@@ -132,10 +108,10 @@ export const {
           if (!response.ok || body?.status !== 'success')
             throw new Error(
               body?.detail?.[0]?.msg ||
-              body?.error ||
-              (body as any)?.message ||
-              (typeof body?.detail === 'string' ? body?.detail : undefined) ||
-              String(response.status),
+                body?.error ||
+                (body as any)?.message ||
+                (typeof body?.detail === 'string' ? body?.detail : undefined) ||
+                String(response.status),
             );
 
           return {

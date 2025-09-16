@@ -133,7 +133,7 @@ export function BannerUpload({
       <FormControl>
         <div
           {...getRootProps()}
-          className="relative flex h-64 cursor-pointer items-center justify-center overflow-hidden rounded-xl border border-border bg-gray-50 p-6 text-center"
+          className="relative flex h-64 cursor-pointer items-center justify-center overflow-hidden rounded-xl border bg-gray-50 p-6 text-center"
         >
           <input {...getInputProps()} />
           {image ? (
@@ -155,7 +155,7 @@ export function BannerUpload({
                   type="button"
                   size="icon"
                   onClick={removeImage}
-                  className="absolute right-2 top-2 z-10 rounded-full bg-white p-1 shadow"
+                  className="absolute top-2 right-2 z-10 rounded-full bg-white p-1 shadow"
                   aria-label="Remove image"
                 >
                   <X size={16} />

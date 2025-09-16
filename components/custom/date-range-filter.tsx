@@ -52,7 +52,7 @@ export function DateRangeFilter({
 
   const handleSelect = (range: DateRange | undefined) => {
     setDate(range);
-    let paramsObj = { ...queryParams };
+    const paramsObj = { ...queryParams };
     if (!range?.from && !range?.to) {
       unset(paramsObj, start);
       unset(paramsObj, end);

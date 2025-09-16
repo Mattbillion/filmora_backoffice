@@ -25,7 +25,7 @@ const StatusFilter = ({
   const router = useRouter();
 
   const handleSelect = (val: string) => {
-    let paramsObj = { ...queryParams };
+    const paramsObj = { ...queryParams };
     if (val !== 'all') {
       lodashSet(paramsObj, name, val);
     } else {
