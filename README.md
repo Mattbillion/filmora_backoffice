@@ -1,5 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Dev-only generator
+
+Generate dashboard routes and services from a Postman collection during development.
+
+- Open the guide: [dev-only/README.md](dev-only/README.md)
+
 ## Getting Started
 
 First, run the development server:

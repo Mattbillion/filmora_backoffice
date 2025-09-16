@@ -1,141 +1,140 @@
 # dev-only: Postman-driven route generator
 
-Developer-only tooling to scaffold Next.js dashboard routes using a shared services layer and Postman collection + live API samples.
+Tooling to scaffold Next.js dashboard routes using a shared services layer from a Postman collection and live API samples.
 
-- Inputs: Postman collection (with base URL and token variables) + API endpoints
-- Output:
-  - Service modules under [services/{entity}](../services/): `schema.ts`, `service.ts`, `index.ts`
-  - Route modules under [app/(dashboard)/...](../app/(dashboard)/) using the service functions
+## Quick start (configure and run first)
 
-Quick links (click to open):
-- [fetch-zod-schema/](fetch-zod-schema/)
-  - [fetch-zod-schema/index.js](fetch-zod-schema/index.js)
-  - [postman/postman-collection.json](fetch-zod-schema/postman/postman-collection.json)
-  - [postman/postman-data.js](fetch-zod-schema/postman/postman-data.js)
-  - [postman/endpoints.js](fetch-zod-schema/postman/endpoints.js)
-  - [postman/generated-routes.js](fetch-zod-schema/postman/generated-routes.js)
-- [plop-generator/](plop-generator/)
-  - [plop-generator/index.js](plop-generator/index.js)
-  - [route/plop-actions.js](plop-generator/route/plop-actions.js)
-  - Templates: [route/layout.tsx.hbs](plop-generator/route/layout.tsx.hbs), [route/loading.tsx.hbs](plop-generator/route/loading.tsx.hbs), [route/page.tsx.hbs](plop-generator/route/page.tsx.hbs), [route/columns.tsx.hbs](plop-generator/route/columns.tsx.hbs)
-  - Service templates: [route/schema.ts.hbs](plop-generator/route/schema.ts.hbs), [route/services/service.ts.hbs](plop-generator/route/services/service.ts.hbs), [route/services/index.ts.hbs](plop-generator/route/services/index.ts.hbs)
-  - Partials: [route/hbs-partials/form-items.js](plop-generator/route/hbs-partials/form-items.js), [route/hbs-partials/endpoint-request.js](plop-generator/route/hbs-partials/endpoint-request.js)
+1) Configure once
+- Edit [dev-only/config.js](config.js)
+  - FILMORA_DOMAIN: API base URL used during generation
+  - TOKEN: optional override for Postman token (leave null to use collection variable)
+  - POSTMAN_COLLECTION_PATH: path to your exported Postman collection JSON
+  - DASHBOARD_DIR: route output root (default: [app/(dashboard)](../app/(dashboard)/))
+  - SERVICES_DIR: service output root (default: [services](../services/))
 
-Tip: In GitHub or VS Code, the links above are clickable.
+2) Prepare Postman collection
+- Put it at the configured path: [fetch-zod-schema/postman/postman-collection.json](fetch-zod-schema/postman/postman-collection.json)
+- Ensure variables exist in the collection (unless overridden in config):
+  - base (API base) and token (Bearer)
 
-## Structure
+3) Generate
+- Generate service only
 
-- [fetch-zod-schema/](fetch-zod-schema/)
-  - [index.js](fetch-zod-schema/index.js): Fetches sample data via curl, infers Zod schema, returns endpoint metadata
-  - [postman/](fetch-zod-schema/postman/)
-    - [postman-collection.json](fetch-zod-schema/postman/postman-collection.json): Your Postman export (must include variables like `base` and `token`)
-    - [postman-data.js](fetch-zod-schema/postman/postman-data.js): Loads variables, reads config, and builds the curl command
-    - [endpoints.js](fetch-zod-schema/postman/endpoints.js): Flattens the collection into grouped endpoints for generation
-    - [generated-routes.js](fetch-zod-schema/postman/generated-routes.js): Lists current top-level routes under [app/(dashboard)](../app/(dashboard)/)
-- [plop-generator/](plop-generator/)
-  - [index.js](plop-generator/index.js): Plop setup, helpers, and generators (`service`, `services`, `route`, `routes`)
-  - [route/](plop-generator/route/)
-    - [plop-actions.js](plop-generator/route/plop-actions.js): Generates service files under [services/{entity}](../services/) and route files under [app/(dashboard)/{path}](../app/(dashboard)/)
-    - Templates: see Quick links above
-    - [hbs-partials/](plop-generator/route/hbs-partials/): Reusable template bits (form fields, request actions)
-
-## Configuration ([dev-only/config.js](config.js))
-
-Set your config once in [dev-only/config.js](config.js). Keys in use:
-- FILMORA_DOMAIN: API base URL used to call endpoints during generation.
-- TOKEN: Optional Bearer token override. If null, token comes from Postman collection variables.
-- POSTMAN_COLLECTION_PATH: Path to the Postman JSON collection used for endpoints and variables.
-- CACHE_TTL_SECONDS: Cache TTL (seconds) for fetched sample responses used in schema inference.
-- DEFAULT_PAGE, DEFAULT_PAGE_SIZE: Pagination defaults injected into GET list endpoint queries.
-- DASHBOARD_DIR: Path to the Next.js dashboard root where files are generated and discovered.
-- SERVICES_DIR: Path to the services root where per-entity service modules are generated.
-- ENABLE_FORMAT, FORMAT_COMMAND: Run formatting after generation (default: Prettier write).
-- ENABLE_LINT, LINT_COMMAND: Run lint fixes after generation (default: ESLint --fix).
-
-Example:
-
-```js
-// dev-only/config.js
-const path = require('path');
-module.exports = {
-  FILMORA_DOMAIN: process.env.FILMORA_DOMAIN,
-  TOKEN: null,
-  POSTMAN_COLLECTION_PATH: path.join('dev-only', 'fetch-zod-schema', 'postman', 'postman-collection.json'),
-  CACHE_TTL_SECONDS: 10,
-  DEFAULT_PAGE: 1,
-  DEFAULT_PAGE_SIZE: 1,
-  DASHBOARD_DIR: path.join('app', '(dashboard)'),
-  SERVICES_DIR: path.join('services'),
-  ENABLE_FORMAT: true,
-  FORMAT_COMMAND: 'npx prettier --write',
-  ENABLE_LINT: true,
-  LINT_COMMAND: 'npx eslint --fix',
-};
+```bash
+pnpm gen:service
 ```
 
-## Contracts and assumptions
+  - Prompts: route-name (alias), endpoint (base path)
+- Generate multiple services
 
-- List responses (GET collection): `{ data: T[], total_count: number }`
-- Detail responses (GET detail): `{ data: T }`
-- Auth is a Bearer token set in the Postman variables or provided via config override
-- GET list endpoints accept `page` and `page_size`; fetcher injects `?page=1&page_size=1` by default (configurable)
+```bash
+pnpm gen:services
+```
 
-## Generation flow (service-based)
+  - Input: alias:endpoint (space-separated)
+  - Example: genres:genres movies:movies
+- Generate route (service auto-created if missing)
 
-1) Parse Postman collection
-- [endpoints.js](fetch-zod-schema/postman/endpoints.js) walks folders and requests, yielding:
-  - name: derived from method + path (e.g., `getMovies`, `getMovieDetail`)
-  - method: `GET|POST|PUT|DELETE`
-  - endpoint: "/path" with injected query for GET lists
-  - pathList: normalized segments; numeric parts replaced by `{param}`
-  - base: first path segment (grouping key)
-- [generated-routes.js](fetch-zod-schema/postman/generated-routes.js) logs what routes already exist in [app/(dashboard)](../app/(dashboard)/)
+```bash
+pnpm gen:route
+```
 
-2) Fetch sample and build schema
-- [fetch-zod-schema/index.js](fetch-zod-schema/index.js):
-  - selects a suitable GET endpoint for the base
-  - calls the API via curl using base URL + Authorization
-  - extracts a representative item (first element if `data` is an array)
-  - strips meta fields
-  - converts the payload to a Zod schema (`json-to-zod`)
-  - returns `rawData`, `dataKeys`, `zodSchema` string, `endpointList`
+  - Prompts: route-name, endpoint, path
+  - Example: route-name=genres, endpoint=genres, path=genres
+- Generate multiple routes (services auto-created if missing)
 
-3) Render templates
-- [plop-generator/route/plop-actions.js](plop-generator/route/plop-actions.js):
-  - Writes service files to [services/{entity}](../services/): schema.ts, service.ts, index.ts
-  - Writes route files under [app/(dashboard)/{path}](../app/(dashboard)/): layout.tsx, loading.tsx, page.tsx, columns.tsx, components/
-  - Route files import from `@/services/{entity}`
-  - Runs Prettier and ESLint if enabled
+```bash
+pnpm gen:routes
+```
+
+  - Input: alias:endpoint:path (space-separated)
+  - Example: genres:genres:genres movies:movies:movies
+
+Tip: All links below are clickable in GitHub/VS Code.
 
 ## What gets generated
 
 Under [services/{entity}](../services/):
-- schema.ts (Zod schema, types, cache key; imports shared types from [services/api/types.ts](../services/api/types.ts))
-- service.ts (CRUD functions using `services/api/actions` and revalidation helpers)
+- schema.ts (Zod schema, types; imports shared types from [services/api/types.ts](../services/api/types.ts))
+- service.ts (CRUD using [services/api/actions.ts](../services/api/actions.ts) + revalidation helpers)
 - index.ts (barrel export)
 
 Under [app/(dashboard)/{path}](../app/(dashboard)/):
 - layout.tsx, loading.tsx
-- page.tsx (uses `get{Entity}` from services)
-- columns.tsx (uses `{Entity}ItemType` and delete function from services)
+- page.tsx (uses service get-list)
+- columns.tsx (uses ItemType and delete from service)
 - components/
   - index.ts
-  - create-dialog.tsx, update-dialog.tsx (forms using service schema/types and service actions)
+  - create-dialog.tsx, update-dialog.tsx (forms using service schema/types and actions)
 
-## Usage
+## Structure (for reference)
 
-Prerequisites:
-- Export your Postman collection to the path in POSTMAN_COLLECTION_PATH
-- Ensure collection variables:
-  - base: if not using FILMORA_DOMAIN override
-  - token: valid Bearer token (unless TOKEN override is set)
+- [fetch-zod-schema/](fetch-zod-schema/)
+  - [index.js](fetch-zod-schema/index.js): fetch sample via curl, infer Zod, return endpoint metadata
+  - [postman/](fetch-zod-schema/postman/)
+    - [postman-collection.json](fetch-zod-schema/postman/postman-collection.json)
+    - [postman-data.js](fetch-zod-schema/postman/postman-data.js)
+    - [endpoints.js](fetch-zod-schema/postman/endpoints.js)
+    - [generated-routes.js](fetch-zod-schema/postman/generated-routes.js)
+- [plop-generator/](plop-generator/)
+  - [index.js](plop-generator/index.js): defines generators (service, services, route, routes)
+  - [route/](plop-generator/route/)
+    - [plop-actions.js](plop-generator/route/plop-actions.js)
+    - Templates: [layout.tsx.hbs](plop-generator/route/layout.tsx.hbs), [loading.tsx.hbs](plop-generator/route/loading.tsx.hbs), [page.tsx.hbs](plop-generator/route/page.tsx.hbs), [columns.tsx.hbs](plop-generator/route/columns.tsx.hbs)
+    - Service templates: [schema.ts.hbs](plop-generator/route/schema.ts.hbs), [services/service.ts.hbs](plop-generator/route/services/service.ts.hbs), [services/index.ts.hbs](plop-generator/route/services/index.ts.hbs)
+    - Partials: [hbs-partials/form-items.js](plop-generator/route/hbs-partials/form-items.js), [hbs-partials/endpoint-request.js](plop-generator/route/hbs-partials/endpoint-request.js)
 
-Commands (package.json scripts may expose these):
-- Generate a single route: `pnpm gen:route`
-- Generate multiple routes: `pnpm gen:routes`
+## Generation flow (how it works)
+
+1) Parse Postman collection
+- [endpoints.js](fetch-zod-schema/postman/endpoints.js) walks folders and requests, yielding:
+  - name (getX, getXDetail, createX, patchXDetail, deleteXDetail)
+  - method: GET|POST|PUT|DELETE
+  - endpoint: "/path" (+ default query for GET lists)
+  - pathList: normalized segments (numeric → {param})
+  - base: first path segment (group key)
+- [generated-routes.js](fetch-zod-schema/postman/generated-routes.js) lists current folders under [app/(dashboard)](../app/(dashboard)/)
+
+2) Fetch sample + build schema
+- [index.js](fetch-zod-schema/index.js):
+  - picks a suitable GET list endpoint for the base
+  - calls the API via curl (base + token)
+  - extracts first item from data[], strips meta, converts to Zod (json-to-zod)
+  - returns rawData, dataKeys, zodSchema, endpointList (used by templates)
+
+3) Render templates
+- [plop-actions.js](plop-generator/route/plop-actions.js):
+  - Service outputs → [services/{entity}](../services/)
+  - Route outputs → [app/(dashboard)/{path}](../app/(dashboard)/)
+  - Runs Prettier/ESLint if enabled in [config.js](config.js)
+
+## Configuration (details)
+
+Edit [dev-only/config.js](config.js):
+- FILMORA_DOMAIN: API base URL
+- TOKEN: optional token override (null → use Postman variable)
+- POSTMAN_COLLECTION_PATH: path to collection JSON
+- CACHE_TTL_SECONDS: schema fetch cache TTL (seconds)
+- DEFAULT_PAGE, DEFAULT_PAGE_SIZE: injected defaults for GET list
+- DASHBOARD_DIR: dashboard root (default: app/(dashboard))
+- SERVICES_DIR: services root (default: services)
+- ENABLE_FORMAT/FORMAT_COMMAND, ENABLE_LINT/LINT_COMMAND
+
+## Contracts and assumptions
+
+- List GET: `{ data: T[], total_count: number }`
+- Detail GET: `{ data: T }`
+- Auth: Bearer token from Postman variables (or TOKEN override)
+- GET list accepts `page` and `page_size`; injector uses `?page=1&page_size=1` by default
 
 ## Troubleshooting
 
-- No endpoints found: ensure the base group matches the first path segment in the Postman collection
-- Empty data error: list GET should return a non-empty `data` array
-- 401/403: confirm token via Postman variable or config override
+- No endpoints found
+  - Ensure the base group matches the first path segment in Postman
+  - Items should be inside folders in the collection
+- Empty data error
+  - Ensure the GET list returns non-empty `data` array (seed or adjust query)
+- 401/403
+  - Verify collection token or TOKEN override
+- Path conflicts
+  - If a route folder exists, adjust path or remove existing files before re-gen
