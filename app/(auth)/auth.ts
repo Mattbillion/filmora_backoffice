@@ -48,7 +48,7 @@ export const {
         formData.append('username', username);
         formData.append('password', password);
 
-        const apiUrl = `${process.env.FILMORA_DOMAIN || 'http://localhost:3000/api/v1'}/auth/employee-login`;
+        const apiUrl = `${'http://localhost:3000/api/v1'}/dashboard/auth/employee-login`;
         console.log('Attempting to login to:', apiUrl);
 
         const response = await fetch(apiUrl, {

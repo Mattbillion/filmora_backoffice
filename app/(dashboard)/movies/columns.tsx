@@ -27,6 +27,8 @@ import { removeHTML } from '@/lib/utils';
 import { deleteMoviesDetail } from './actions';
 import { UpdateDialog } from './components';
 import { MoviesItemType } from './schema';
+import { Checkbox } from '@/components/ui/checkbox';
+import { useRouter } from 'next/navigation';
 
 const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
@@ -34,6 +36,7 @@ const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
   const { data } = useSession();
   const canDelete = checkPermission(data, []);
   const canEdit = checkPermission(data, []);
+  const router = useRouter();
 
   if (!canEdit && !canDelete) return null;
 
@@ -50,14 +53,21 @@ const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {canEdit && (
-            <UpdateDialog
-              initialData={row.original}
-              key={JSON.stringify(row.original)}
+            <Button
+              onClick={() => router.push(`/movies/${row.original.id}`)}
+              className="flex w-full items-center justify-start px-2"
+              variant="ghost"
             >
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <Edit className="h-4 w-4" /> Edit
-              </DropdownMenuItem>
-            </UpdateDialog>
+              <Edit className="h-4 w-4" /> Edit{' '}
+            </Button>
+            // <UpdateDialog
+            //   initialData={row.original}
+            //   key={JSON.stringify(row.original)}
+            // >
+            //   <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+            //     <Edit className="h-4 w-4" /> Edit
+            //   </DropdownMenuItem>
+            // </UpdateDialog>
           )}
           {canDelete && (
             <DeleteDialog
@@ -99,13 +109,14 @@ export const moviesColumns: ColumnDef<MoviesItemType>[] = [
     accessorKey: 'poster_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => (
-      <Image
-        src={row.original.poster_url}
-        alt=""
-        width={48}
-        height={48}
-        className="rounded-md"
-      />
+      <div className="relative aspect-[3/4] overflow-hidden rounded-md">
+        <Image
+          src={row.original.poster_url}
+          alt=""
+          fill
+          className="object-cover"
+        />
+      </div>
     ),
     enableSorting: false,
     enableColumnFilter: false,
