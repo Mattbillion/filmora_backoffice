@@ -8,8 +8,8 @@ import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
 import { checkPermission } from '@/lib/permission';
+import { getGenres } from '@/services/genres';
 
-import { getGenres } from './actions';
 import { genresColumns } from './columns';
 import { CreateDialog } from './components';
 

@@ -14,9 +14,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
-import { patchGenresDetail } from '../actions';
-import { GenresBodyType, GenresItemType, genresSchema } from '../schema';
+import {
+  GenresBodyType,
+  GenresItemType,
+  genresSchema,
+  patchGenresDetail,
+} from '@/services/genres';
 
 export function UpdateDialog({
   children,

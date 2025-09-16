@@ -21,10 +21,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
+import { deleteGenresDetail, GenresItemType } from '@/services/genres';
 
-import { deleteGenresDetail } from './actions';
 import { UpdateDialog } from './components';
-import { GenresItemType } from './schema';
 
 const Action = ({ row }: CellContext<GenresItemType, unknown>) => {
   const [loading, setLoading] = useState(false);

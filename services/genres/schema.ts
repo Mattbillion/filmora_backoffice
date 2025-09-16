@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { BaseType, PrettyType } from '@/lib/fetch/types';
+import type { BaseType, PrettyType } from '../api/types';
 
 export const genresSchema = z.object({ name: z.string() });
 

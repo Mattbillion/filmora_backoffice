@@ -14,9 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-
-import { createGenres } from '../actions';
-import { GenresBodyType, genresSchema } from '../schema';
+import { createGenres, GenresBodyType, genresSchema } from '@/services/genres';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
