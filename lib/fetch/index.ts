@@ -53,11 +53,10 @@ export async function filmoraFetch<
     if (!headers.has('Authorization')) {
       // careful!!!
       const session = await auth();
-      console.log('Session in filmoraFetch:', session?.user ? 'User exists' : 'No user');
-      console.log('Access token exists:', !!session?.user?.access_token);
+      
 
-      if (!!session?.user?.access_token)
-        headers.set('Authorization', `Bearer ${session?.user?.access_token}`);
+      if (!!session?.user?.id)
+        headers.set('Authorization', `Bearer ${session?.user?.id}`);
       if (!opts.searchParams) opts.searchParams = {};
 
       if (opts.method === 'GET') {

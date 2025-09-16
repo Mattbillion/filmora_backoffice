@@ -57,15 +57,20 @@ const imageSchema = z.object({
 });
 
 
-export async function getMedia(): Promise<{ data: MediaResponse | null; error: string | null }> {
+export async function getMedia(params?: { page?: number, limit?: number, search?: string }): Promise<{ data: MediaResponse | null; error: string | null }> {
   const session = await auth();
   const headers = new Headers({})
+
+  const searchParams = new URLSearchParams();
+  if (params?.page) searchParams.set('page', params.page.toString());
+  if (params?.limit) searchParams.set('limit', params.limit.toString());
+  if (params?.search) searchParams.set('search', params.search);
 
   if (!!session?.user?.id)
     headers.set("Authorization", `Bearer ${session?.user?.id}`);
 
   try {
-    const res = await fetch(`${process.env.FILMORA_DOMAIN}/medias`, {
+    const res = await fetch(`${process.env.FILMORA_DOMAIN}/medias?${searchParams.toString()}`, {
       method: 'GET',
       headers,
       cache: 'no-store',
@@ -90,7 +95,7 @@ export async function getMedia(): Promise<{ data: MediaResponse | null; error: s
   }
 }
 
-export async function uploadImage(formData: FormData) {
+export async function uploadImage(formData: FormData, options?: { onUploadProgress?: (progressEvent: ProgressEvent) => void }) {
   try {
     validateSchema(imageSchema, formData);
 
