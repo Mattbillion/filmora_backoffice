@@ -1,5 +1,6 @@
 const { execSync } = require('child_process');
-const dashboardSrc = '../../app/(dashboard)';
+const path = require('path');
+const config = require('../../config');
 const changeCase = require('change-case-all');
 
 function kebabWithPreservedBrackets(input) {
@@ -18,13 +19,20 @@ function kebabWithPreservedBrackets(input) {
   });
 }
 
-const routeActions = (routeName, endpoint, path) => {
-  const templateData = { 'route-name': routeName, endpoint, path };
-  const dirPath = path
+const routeActions = (routeName, endpoint, pathStr) => {
+  const templateData = { 'route-name': routeName, endpoint, path: pathStr };
+
+  // Compute dashboard base path relative to dev-only/plop-generator (index.js resolves outputs relative to its __dirname)
+  const dashboardBaseRelToPlop = path.relative(
+    path.resolve(__dirname, '..'),
+    path.resolve(process.cwd(), config.DASHBOARD_DIR),
+  );
+
+  const dirPath = pathStr
     .split('/')
     .map(p => kebabWithPreservedBrackets(p))
     .join('/');
-  const directory = `${dashboardSrc}/${dirPath}`;
+  const directory = `${dashboardBaseRelToPlop}/${dirPath}`;
 
   return [
     {
@@ -83,10 +91,11 @@ const routeActions = (routeName, endpoint, path) => {
     },
     () => {
       try {
-        execSync(
-          `npx prettier --write "app/(dashboard)/${dirPath}"`,
-        );
-
+        if (config.ENABLE_FORMAT) {
+          execSync(
+            `${config.FORMAT_COMMAND} "${path.posix.join(config.DASHBOARD_DIR.replace(/\\/g, '/'), dirPath)}"`,
+          );
+        }
         return 'Formatted with Prettier';
       } catch (error) {
         return 'Failed to format files.';
@@ -94,10 +103,11 @@ const routeActions = (routeName, endpoint, path) => {
     },
     () => {
       try {
-        execSync(
-          `npx eslint --fix "app/(dashboard)/${dirPath}"`,
-        );
-
+        if (config.ENABLE_LINT) {
+          execSync(
+            `${config.LINT_COMMAND} "${path.posix.join(config.DASHBOARD_DIR.replace(/\\/g, '/'), dirPath)}"`,
+          );
+        }
         return 'ESLint fixes applied successfully';
       } catch (error) {
         return 'Failed to apply ESLint fixes. Check for unresolved lint errors.';

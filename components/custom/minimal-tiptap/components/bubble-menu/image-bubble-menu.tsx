@@ -15,7 +15,7 @@ const ImageBubbleMenu = ({ editor }: { editor: Editor }) => {
     <BubbleMenu
       editor={editor}
       shouldShow={shouldShow}
-      tippyOptions={{
+      options={{
         placement: 'bottom',
         offset: [0, 8],
       }}

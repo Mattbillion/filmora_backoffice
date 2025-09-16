@@ -1,6 +1,7 @@
 const { variables, items } = require('./postman-data');
 const { generatedRoutes } = require('./generated-routes');
 const changeCase = require('change-case-all');
+const config = require('../../config');
 
 const objToQs = (arr) =>
   arr
@@ -14,11 +15,11 @@ const injectSearchQuery = (reqItem) => {
         objToQs([
           {
             key: 'page',
-            value: '1',
+            value: String(config.DEFAULT_PAGE ?? 1),
           },
           {
             key: 'page_size',
-            value: '1',
+            value: String(config.DEFAULT_PAGE_SIZE ?? 1),
           },
         ].concat(
             reqItem.request.url.query?.filter(

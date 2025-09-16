@@ -2,11 +2,12 @@ const { execSync } = require('child_process');
 const { jsonToZod } = require('json-to-zod');
 const changeCase = require('change-case-all');
 const NodeCache = require('node-cache');
+const config = require('../config');
 
 const { endpoints } = require('./postman/endpoints');
 const { curlCommand } = require('./postman/postman-data');
 
-const cache = new NodeCache({ stdTTL: 10 }); // by seconds
+const cache = new NodeCache({ stdTTL: Number(config.CACHE_TTL_SECONDS) || 10 }); // by seconds
 
 module.exports = {
   fetchZodSchema: (path, name) => {
@@ -42,14 +43,13 @@ module.exports = {
         dataKeys: Object.keys(itemData),
         schema: jsonToZod(
           itemData,
-          changeCase.camelCase((name || obj.name) + 'Schema'),
+          changeCase.camelCase((name || path) + 'Schema'),
         ),
         endpointList
       };
 
       console.log('Endpoint list for actions.ts', JSON.stringify(endpointList, null, 2));
 
-      // throw Error(`mmmmhn`);
       cache.set(cacheKey, data);
       console.log(`Cached response for: ${cacheKey}`);
 

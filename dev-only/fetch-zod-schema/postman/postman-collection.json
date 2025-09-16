@@ -3,8 +3,8 @@
     "_postman_id": "6c67005f-4329-464d-8557-48e1345f49f0",
     "name": "Dashboard",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "26046373",
-    "_collection_link": "https://filmora-project.postman.co/workspace/KinoD-endpoints~8e633d23-2aa4-4b21-9702-29d5834ce0ae/collection/7379022-6c67005f-4329-464d-8557-48e1345f49f0?action=share&source=collection_link&creator=26046373"
+    "_exporter_id": "48477449",
+    "_collection_link": "https://xoox-project.postman.co/workspace/KinoD-endpoints~8e633d23-2aa4-4b21-9702-29d5834ce0ae/collection/7379022-6c67005f-4329-464d-8557-48e1345f49f0?action=share&source=collection_link&creator=48477449"
   },
   "item": [
     {
@@ -13,21 +13,16 @@
         {
           "name": "create category",
           "request": {
-            "auth": {
-              "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiYWRtaW4iLCJleHAiOjE3NTcwNzM4NTh9.Sl8OYssIayAlCf2iJFZJ0VvlH5VG-btq0Q-k4brSraU",
-                  "type": "string"
-                }
-              ]
-            },
             "method": "POST",
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"is_adult\": false\n}"
+              "raw": "{\n  \"name\": \"test\",\n  \"description\": \"string\",\n  \"is_adult\": false\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
             },
             "url": {
               "raw": "{{base}}/categories",
@@ -48,7 +43,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"name\": \"string\",\n  \"description\": \"string\",\n  \"is_adult\": true\n}",
+              "raw": "{\n  \"name\": \"lol\",\n  \"description\": \"string\",\n  \"is_adult\": true\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -56,13 +51,13 @@
               }
             },
             "url": {
-              "raw": "{{base}}/categories/1",
+              "raw": "{{base}}/categories/9",
               "host": [
                 "{{base}}"
               ],
               "path": [
                 "categories",
-                "1"
+                "9"
               ]
             }
           },
@@ -74,13 +69,13 @@
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "{{base}}/categories/1",
+              "raw": "{{base}}/categories/9",
               "host": [
                 "{{base}}"
               ],
               "path": [
                 "categories",
-                "1"
+                "9"
               ]
             }
           },
@@ -129,13 +124,13 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base}}/categories/1",
+              "raw": "{{base}}/categories/9",
               "host": [
                 "{{base}}"
               ],
               "path": [
                 "categories",
-                "1"
+                "9"
               ]
             }
           },
@@ -153,7 +148,7 @@
             "header": [],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"string\",\n  \"description\": \"string\",\n  \"type\": \"movie\",\n  \"year\": 1900,\n  \"price\": 0,\n  \"is_premium\": false,\n  \"poster_url\": \"http://string\",\n  \"trailer_url\": \"http://string\",\n  \"m3u8_url\": \"http://string\",\n  \"is_adult\": false,\n  \"category_ids\": [],\n  \"genre_ids\": []\n}",
+              "raw": "{\n  \"title\": \"The Angry Birds Movie 2\",\n  \"description\": \"Red, Chuck, Bomb and the rest of their feathered friends are surprised when a green pig suggests that they put aside their differences and unite to fight a common threat. Aggressive birds from an island covered in ice are planning to use an elaborate weapon to destroy the fowl and swine.\",\n  \"type\": \"movie\",\n  \"year\": 2020,\n  \"price\": 10000,\n  \"is_premium\": true,\n  \"poster_url\": \"http://string\",\n  \"load_image_url\": \"http://string\",\n  \"is_adult\": false,\n  \"category_ids\": [1,2],\n  \"genre_ids\": [1,2]\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -235,13 +230,98 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{base}}/movies/7bc5b1dd-b14e-4397-901a-c9c72e716630",
+              "raw": "{{base}}/movies/99fe0940-9a26-40e7-9323-9a529c7e4aa3",
               "host": [
                 "{{base}}"
               ],
               "path": [
                 "movies",
-                "7bc5b1dd-b14e-4397-901a-c9c72e716630"
+                "99fe0940-9a26-40e7-9323-9a529c7e4aa3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "upload video",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/Users/misu/Downloads/4K ULtra HD  SAMSUNG UHD Demo׃ LED TV - 4K Ultra HD (1080p, h264).mp4"
+                },
+                {
+                  "key": "is_trailer",
+                  "value": "true",
+                  "type": "text"
+                },
+                {
+                  "key": "movie_id",
+                  "value": "810e26ef-639d-4739-bbd6-421caaa1f891",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base}}/upload-video",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "upload-video"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get videos",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "movie_id",
+                  "value": "c1a102ff-f719-4245-8944-95e0de83403f",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base}}/videos",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "videos"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete video",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/videos/611380de-82ed-4f98-84d4-44767c883faf",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "videos",
+                "611380de-82ed-4f98-84d4-44767c883faf"
               ]
             }
           },
@@ -288,11 +368,199 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "getMedias",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTc5OTgyNDZ9.LE06qLnwXTI2PiuO1nZMZvfPPX7YbGH8N6z2rdLIkxU",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": "/Users/misu/Downloads/40509579_007.webp"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base}}/medias",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "medias"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "genres",
+      "item": [
+        {
+          "name": "genres list",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/genres",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "genres"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "get genre",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/genres/1",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "genres",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "create genre",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"string\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/genres",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "genres"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "update genre",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"test\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base}}/genres/3",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "genres",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "delete genre",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/genres/3",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "genres",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "series",
+      "item": [
+        {
+          "name": "New Request",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base}}/series/18bc2ad6-ee6f-4cd2-a856-6938d152c0d3/seasons",
+              "host": [
+                "{{base}}"
+              ],
+              "path": [
+                "series",
+                "18bc2ad6-ee6f-4cd2-a856-6938d152c0d3",
+                "seasons"
+              ]
+            }
+          },
+          "response": []
         }
       ]
     },
     {
       "name": "login",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.collectionVariables.set('token', pm.response.json().access_token)",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {}
+          }
+        }
+      ],
       "request": {
         "auth": {
           "type": "noauth"
@@ -333,7 +601,7 @@
     "bearer": [
       {
         "key": "token",
-        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTczODk3NjR9.0HR-IZYdH8u-mNeZTG0yBLTjDtxpf_uQ5UI2jveT5zc",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTgwMDc0MjZ9.Y-TOZoYTbD0dPRGHzQxSkudwZFqHSHgi6IBPEbe1gb4",
         "type": "string"
       }
     ]
@@ -345,7 +613,12 @@
         "type": "text/javascript",
         "packages": {},
         "exec": [
-          ""
+          "pm.request.headers.remove('Authorization');",
+          "",
+          "pm.request.headers.add({",
+          "  key: 'Authorization',",
+          "  value: 'Bearer ' + pm.collectionVariables.get('token')",
+          "});"
         ]
       }
     },
@@ -367,7 +640,7 @@
     },
     {
       "key": "token",
-      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTc5MTcwMDh9.zsrNf-COXUrpY55QVPvjt3giPnWWkaLHtLquIC3hVyc"
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI3ZWJmMzAzNS00M2E4LTQwNjUtYTc4My0xZGQ1N2I0OTZjNjYiLCJyb2xlIjoiZW1wbG95ZWUiLCJleHAiOjE3NTczODk3NjR9.0HR-IZYdH8u-mNeZTG0yBLTjDtxpf_uQ5UI2jveT5zc"
     }
   ]
 }
