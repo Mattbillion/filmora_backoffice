@@ -1,5 +1,4 @@
 const { execSync } = require('child_process');
-// const { fetchZodSchema } = require("../../fetch-zod-schema");
 const dashboardSrc = '../../app/(dashboard)';
 const changeCase = require('change-case-all');
 
@@ -20,7 +19,6 @@ function kebabWithPreservedBrackets(input) {
 }
 
 const routeActions = (routeName, endpoint, path) => {
-  // const zodSchema = fetchZodSchema(endpoint, routeName);
   const templateData = { 'route-name': routeName, endpoint, path };
   const dirPath = path
     .split('/')
