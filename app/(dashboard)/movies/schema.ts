@@ -11,8 +11,8 @@ export const moviesSchema = z.object({
   is_premium: z.boolean(),
   poster_url: z.string(),
   is_adult: z.boolean(),
-  categories: z.array(z.unknown()),
-  genres: z.array(z.unknown()),
+  categories_ids: z.array(z.number()),
+  genres_ids: z.array(z.number()),
 });
 
 export type MoviesBodyType = z.infer<typeof moviesSchema>;

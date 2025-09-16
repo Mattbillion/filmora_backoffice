@@ -4,6 +4,7 @@ import { executeRevalidate } from '@/lib/filmora';
 import { QueryParams } from '@/lib/utils';
 
 import { MoviesBodyType, MoviesItemType, RVK_MOVIES } from './schema';
+import { MovieDetailResponse } from './[id]/types';
 
 export const createMovies = async (bodyData: MoviesBodyType) => {
   const { body, error } = await filmoraFetch(`/movies`, {
@@ -70,7 +71,7 @@ export const getMovies = async (searchParams?: QueryParams) => {
 
 export const getMoviesDetail = async (param1: string | ID) => {
   try {
-    const { body, error } = await filmoraFetch<{ data: MoviesItemType }>(
+    const { body, error } = await filmoraFetch<MovieDetailResponse>(
       `/movies/${param1}`,
       {
         method: 'GET',
@@ -83,6 +84,30 @@ export const getMoviesDetail = async (param1: string | ID) => {
     return { data: body };
   } catch (error) {
     console.error(`Error fetching /movies/${param1}:`, error);
+    return { data: null, error };
+  }
+};
+
+
+export const getCategories = async () => {
+  try {
+    const { body, error } = await filmoraFetch<{}>(
+      `/categories`,
+      {
+        method: 'GET',
+        next: { tags: [`${RVK_MOVIES}_categories`] },
+      },
+    );
+    console.log(body, 'Body!!!');
+
+    if (error) {
+      console.log("FilmoraFetch error:", error);
+      throw new Error(error);
+    }
+
+    return { data: body };
+  } catch (error) {
+    console.error(`Error fetching /categories`, error);
     return { data: null, error };
   }
 };

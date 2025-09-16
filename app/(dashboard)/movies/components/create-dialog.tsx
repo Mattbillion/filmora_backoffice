@@ -1,14 +1,22 @@
 'use client';
 
-import { ReactNode, useEffect, useRef, useState, useTransition } from 'react';
+import {
+  ReactNode,
+  useEffect,
+  useRef,
+  useTransition,
+  useState,
+  useMemo,
+} from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import MediaDialog from '@/components/custom/media-dialog';
 import UploadImageItem from '@/components/custom/upload-image-item';
+import { getMedia } from '@/lib/functions';
+import { MediaDialog } from '@/components/custom/media-dialog';
 import {
   FormControl,
   FormField,
@@ -24,27 +32,36 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { getMedia } from '@/lib/functions';
 
-import { createMovies } from '../actions';
-import { MoviesBodyType, moviesSchema } from '../schema';
+import { createMovies, getCategories } from '../actions';
+import { CategoriesItemType, MoviesBodyType, moviesSchema } from '../schema';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
-  const [mediaList, setMediaList] = useState<any>([]);
-  const [selectedMedia, setSelectedMedia] = useState<any>([]);
-  console.log(mediaList, '<---');
+  const [categories, setCategories] = useState<CategoriesItemType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    getMedia().then((res) => {
-      setMediaList(res);
-    });
-  }, []);
+  const movieCategories = useMemo(() => {
+    return categories.map((category) => category);
+  }, [categories]);
 
   const form = useForm<MoviesBodyType>({
     resolver: zodResolver(moviesSchema),
+    defaultValues: {
+      poster_url:
+        'https://pub-d5eb1ad6397e41f3b73dbf714e065f20.r2.dev/images/7ebf3035-43a8-4065-a783-1dd57b496c66/a447a117-f5b7-4fa7-a3c5-0d27cc68fc8c.webp',
+      categories_ids: [1, 2],
+      genre_ids: [1, 2],
+    },
   });
+
+  const formValues = form.getValues();
+
+  useEffect(() => {
+    console.log(formValues, 'Form values!!!');
+  }, []);
 
   function onSubmit({ ...values }: MoviesBodyType) {
     startTransition(() => {
@@ -60,11 +77,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     });
   }
 
-  const handleSelectMedia = (selectedImages: string[]) =>
-    setSelectedMedia(selectedImages);
-  const handleRemoveMedia = (mediaId: string) =>
-    setSelectedMedia(selectedMedia.filter((m: string) => m !== mediaId));
-
   return (
     <FormDialog
       ref={dialogRef}
@@ -75,6 +87,34 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       submitText="Create"
       trigger={children}
     >
+      <FormField
+        control={form.control}
+        name="categories_ids"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Categories</FormLabel>
+            <FormControl>
+              <Select onValueChange={(value) => field.onChange(value)}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a Category" />
+                </SelectTrigger>
+                <SelectContent>
+                  {movieCategories?.map((category: CategoriesItemType[0]) => (
+                    <SelectItem
+                      key={category.id}
+                      value={category.id.toString()}
+                    >
+                      {category.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
       <FormField
         control={form.control}
         name="title"
@@ -163,7 +203,9 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         )}
       />
 
-      <FormField
+      <MediaDialog />
+
+      {/* <FormField
         control={form.control}
         name="poster_url"
         render={({ field }) => (
@@ -173,9 +215,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
             label="Poster url"
           />
         )}
-      />
-
-      <MediaDialog />
+      /> */}
 
       <FormField
         control={form.control}
