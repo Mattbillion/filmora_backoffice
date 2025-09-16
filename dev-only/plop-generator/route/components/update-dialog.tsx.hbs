@@ -45,12 +45,11 @@ export function UpdateDialog({
     defaultValues: initialData,
   });
 
-  function onSubmit({ status, ...values }: {{pascalCase route-name}}BodyType) {
+  function onSubmit(values: {{pascalCase route-name}}BodyType) {
     startTransition(() => {
      {{getRequestNameByMethod endpointList "PUT"}}({
         ...values,
         id: initialData.id,
-        status: (status as unknown as string) === 'true',
       })
         .then(() => {
           toast.success('Updated successfully');

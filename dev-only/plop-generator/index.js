@@ -1,4 +1,4 @@
-const { routeActions } = require('./route/plop-actions');
+const { routeActions, serviceActions, computePaths } = require('./route/plop-actions');
 const { fetchZodSchema } = require('../fetch-zod-schema');
 const {registerFormPartials} = require('./route/hbs-partials/form-items');
 const fs = require('fs');
@@ -62,69 +62,94 @@ module.exports = function (
       endpointList
     });
 
-    // Ensure destination directory exists
     const absOut = path.resolve(__dirname, outputPath);
     fs.mkdirSync(path.dirname(absOut), { recursive: true });
-
     fs.writeFileSync(absOut, rendered);
 
     return `Generated file at ${outputPath} \n schema: ${zodSchema}`;
   });
 
-  plop.setGenerator('route', {
-    description:
-      'Generate a next.js route with actions, schema, page, layout, loading, create-dialog.tsx, update-dialog.tsx',
+  // Service-only generator
+  plop.setGenerator('service', {
+    description: 'Generate only the service layer under services/{entity}',
     prompts: [
-      {
-        type: 'input',
-        name: 'route-name',
-        message:
-          "Enter the route alias (e.g., 'company', 'banners', company/[id] as companyDetail):",
-      },
-      {
-        type: 'input',
-        name: 'endpoint',
-        message: "Enter the API endpoint (e.g., 'companies', 'banners'):",
-      },
-      {
-        type: 'input',
-        name: 'path',
-        message:
-          "Enter the path (e.g., 'companies', 'banners', 'company/[id]'):",
-      },
+      { type: 'input', name: 'route-name', message: "Enter the service alias (e.g., 'genres'):" },
+      { type: 'input', name: 'endpoint', message: "Enter the API endpoint base (e.g., 'genres'):" },
     ],
-    actions: (data) =>
-      routeActions(data['route-name'], data['endpoint'], data['path']),
+    actions: (data) => serviceActions(data['route-name'], data['endpoint'])
   });
-  plop.setGenerator('routes', {
-    description:
-      'Generate multiple next.js routes with actions, schema, page, layout, loading, create-dialog.tsx, update-dialog.tsx',
+
+  // Multi-service generator
+  plop.setGenerator('services', {
+    description: 'Generate multiple services: alias:endpoint (space-separated)',
     prompts: [
-      {
-        type: 'input',
-        name: 'routes',
-        message:
-          "Enter the routes in the format 'alias:endpoint:path' (e.g., 'company:companies:company companyDetail:company:company/[id] banner:banners:banner category:category:cats'):",
-      },
+      { type: 'input', name: 'services', message: "Enter services like 'genres:genres movies:movies'" },
     ],
     actions: (data) => {
-      const routeArray = data?.routes?.split(' ');
-
+      const entries = data?.services?.split(' ').filter(Boolean) || [];
       const actions = [];
-      for (const route of routeArray) {
-        const [routeName, endpoint, path] = route.split(':');
-
-        if (!routeName || !endpoint || !path) {
-          actions.push({
-            type: 'abort',
-            message: `Invalid route format: '${route}'. Please provide the input in the alias:endpoint:path format.`,
-          });
+      for (const entry of entries) {
+        const [routeName, endpoint] = entry.split(':');
+        if (!routeName || !endpoint) {
+          actions.push({ type: 'abort', message: `Invalid service format: '${entry}'. Use alias:endpoint.` });
           continue;
         }
-
-        actions.push(...routeActions(routeName, endpoint, path));
+        actions.push(...serviceActions(routeName, endpoint));
       }
+      return actions;
+    }
+  });
 
+  // Route generator that auto-creates service if missing
+  plop.setGenerator('route', {
+    description:
+      'Generate a Next.js route (page, columns, layout, loading, dialogs). Auto-generates service if missing.',
+    prompts: [
+      { type: 'input', name: 'route-name', message: "Enter the route alias (e.g., 'genres'):" },
+      { type: 'input', name: 'endpoint', message: "Enter the API endpoint base (e.g., 'genres'):" },
+      { type: 'input', name: 'path', message: "Enter the dashboard path (e.g., 'genres' or 'genres/[id]'):" },
+    ],
+    actions: (data) => {
+      const routeName = data['route-name'];
+      const endpoint = data['endpoint'];
+      const pathStr = data['path'];
+
+      // Check if service exists
+      const { serviceDir } = computePaths(routeName, routeName);
+      const absServiceDir = path.resolve(__dirname, serviceDir);
+      const serviceExists = fs.existsSync(absServiceDir) && fs.existsSync(path.join(absServiceDir, 'service.ts')) && fs.existsSync(path.join(absServiceDir, 'schema.ts'));
+
+      const actions = [];
+      if (!serviceExists) {
+        actions.push(...serviceActions(routeName, endpoint));
+      }
+      actions.push(...routeActions(routeName, endpoint, pathStr));
+      return actions;
+    },
+  });
+
+  // Multi-route generator (auto-create services as needed)
+  plop.setGenerator('routes', {
+    description:
+      "Generate multiple routes. Input 'alias:endpoint:path' (space-separated). Auto-generates services if missing.",
+    prompts: [
+      { type: 'input', name: 'routes', message: "Example: 'genres:genres:genres movies:movies:movies'" },
+    ],
+    actions: (data) => {
+      const entries = data?.routes?.split(' ').filter(Boolean) || [];
+      const actions = [];
+      for (const entry of entries) {
+        const [routeName, endpoint, pathStr] = entry.split(':');
+        if (!routeName || !endpoint || !pathStr) {
+          actions.push({ type: 'abort', message: `Invalid route format: '${entry}'. Use alias:endpoint:path.` });
+          continue;
+        }
+        const { serviceDir } = computePaths(routeName, routeName);
+        const absServiceDir = path.resolve(__dirname, serviceDir);
+        const serviceExists = fs.existsSync(absServiceDir) && fs.existsSync(path.join(absServiceDir, 'service.ts')) && fs.existsSync(path.join(absServiceDir, 'schema.ts'));
+        if (!serviceExists) actions.push(...serviceActions(routeName, endpoint));
+        actions.push(...routeActions(routeName, endpoint, pathStr));
+      }
       return actions;
     },
   });

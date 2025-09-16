@@ -38,12 +38,9 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     resolver: zodResolver({{camelCase route-name}}Schema),
   });
 
-  function onSubmit({ status, ...values }: {{pascalCase route-name}}BodyType) {
+  function onSubmit(values: {{pascalCase route-name}}BodyType) {
     startTransition(() => {
-      {{getRequestNameByMethod endpointList "POST"}}({
-        ...values,
-        status: (status as unknown as string) === 'true',
-      })
+      {{getRequestNameByMethod endpointList "POST"}}(values)
         .then(() => {
           toast.success('Created successfully');
           dialogRef?.current?.close();

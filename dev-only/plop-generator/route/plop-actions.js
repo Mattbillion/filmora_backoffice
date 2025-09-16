@@ -19,35 +19,59 @@ function kebabWithPreservedBrackets(input) {
   });
 }
 
-const routeActions = (routeName, endpoint, pathStr) => {
-  const templateData = { 'route-name': routeName, endpoint, path: pathStr };
+function executePrettier(baseDir, dir) {
+  try {
+    if (config.ENABLE_FORMAT) {
+      execSync(
+        `${config.FORMAT_COMMAND} "${path.posix.join(baseDir.replace(/\\/g, '/'), dir)}"`,
+      );
+    }
+    return 'Formatted with Prettier:' + dir;
+  } catch (error) {
+    return 'Failed to format files:' + dir;
+  }
+}
 
-  // Compute dashboard base path relative to dev-only/plop-generator (index.js resolves outputs relative to its __dirname)
+function executeESLint(baseDir, dir) {
+  try {
+    if (config.ENABLE_LINT) {
+      execSync(
+        `${config.LINT_COMMAND} "${path.posix.join(baseDir.replace(/\\/g, '/'), dir)}"`,
+      );
+    }
+    return 'ESLint fixes applied:' + dir;
+  } catch (error) {
+    return 'Failed to apply ESLint fixes:.' + dir;
+  }
+}
+
+const computePaths = (routeName, pathStr) => {
   const dashboardBaseRelToPlop = path.relative(
     path.resolve(__dirname, '..'),
     path.resolve(process.cwd(), config.DASHBOARD_DIR),
   );
-
-  // Compute services base path relative to plop generator
   const servicesBaseRelToPlop = path.relative(
     path.resolve(__dirname, '..'),
     path.resolve(process.cwd(), config.SERVICES_DIR),
   );
-
   const dirPath = pathStr
     .split('/')
-    .map(p => kebabWithPreservedBrackets(p))
+    .map((p) => kebabWithPreservedBrackets(p))
     .join('/');
   const directory = `${dashboardBaseRelToPlop}/${dirPath}`;
-
   const serviceDir = `${servicesBaseRelToPlop}/${changeCase.kebabCase(routeName)}`;
+  return { dashboardBaseRelToPlop, servicesBaseRelToPlop, dirPath, directory, serviceDir };
+};
+
+const serviceActions = (routeName, endpoint) => {
+  const { serviceDir } = computePaths(routeName, routeName);
+  const templateData = { 'route-name': routeName, endpoint, path: routeName };
 
   return [
-    // Service layer files
     {
       type: 'fetchSchema',
       path: `${serviceDir}/schema.ts`,
-      templateFile: './route/services/schema.ts.hbs',
+      templateFile: './route/schema.ts.hbs',
       data: templateData,
     },
     {
@@ -62,8 +86,16 @@ const routeActions = (routeName, endpoint, pathStr) => {
       templateFile: './route/services/index.ts.hbs',
       data: templateData,
     },
+    () => executePrettier(config.SERVICES_DIR,changeCase.kebabCase(routeName)),
+    () => executeESLint(config.SERVICES_DIR,changeCase.kebabCase(routeName)),
+  ];
+};
 
-    // Route files (no local actions/schema anymore)
+const routeActions = (routeName, endpoint, pathStr) => {
+  const templateData = { 'route-name': routeName, endpoint, path: pathStr };
+  const { dirPath, directory } = computePaths(routeName, pathStr);
+
+  return [
     {
       type: 'add',
       path: `${directory}/layout.tsx`,
@@ -106,37 +138,9 @@ const routeActions = (routeName, endpoint, pathStr) => {
       templateFile: './route/components/update-dialog.tsx.hbs',
       data: templateData,
     },
-    () => {
-      try {
-        if (config.ENABLE_FORMAT) {
-          execSync(
-            `${config.FORMAT_COMMAND} "${path.posix.join(config.DASHBOARD_DIR.replace(/\\/g, '/'), dirPath)}"`,
-          );
-          execSync(
-            `${config.FORMAT_COMMAND} "${path.posix.join(config.SERVICES_DIR.replace(/\\/g, '/'), changeCase.kebabCase(routeName))}"`,
-          );
-        }
-        return 'Formatted with Prettier';
-      } catch (error) {
-        return 'Failed to format files.';
-      }
-    },
-    () => {
-      try {
-        if (config.ENABLE_LINT) {
-          execSync(
-            `${config.LINT_COMMAND} "${path.posix.join(config.DASHBOARD_DIR.replace(/\\/g, '/'), dirPath)}"`,
-          );
-          execSync(
-            `${config.LINT_COMMAND} "${path.posix.join(config.SERVICES_DIR.replace(/\\/g, '/'), changeCase.kebabCase(routeName))}"`,
-          );
-        }
-        return 'ESLint fixes applied successfully';
-      } catch (error) {
-        return 'Failed to apply ESLint fixes. Check for unresolved lint errors.';
-      }
-    },
+    () => executePrettier(config.DASHBOARD_DIR,dirPath),
+    () => executeESLint(config.DASHBOARD_DIR,dirPath),
   ];
 };
 
-module.exports = { routeActions };
+module.exports = { routeActions, serviceActions, computePaths };
