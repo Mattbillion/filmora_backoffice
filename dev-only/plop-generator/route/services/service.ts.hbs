@@ -5,6 +5,10 @@ import { executeRevalidate } from '../api/helpers';
 import { ID, PaginatedResType } from '../api/types';
 import { {{pascalCase route-name}}BodyType, {{pascalCase route-name}}ItemType, RVK_{{constantCase route-name}} } from './schema';
 
+type {{pascalCase route-name}}QueryParams = QueryParams & {
+    return_columns?: (keyof {{pascalCase route-name}}ItemType)[];
+};
+
 {{#if rawData}}
   {{#each endpointList}}
     {{#if (isGetRequest method name)}}

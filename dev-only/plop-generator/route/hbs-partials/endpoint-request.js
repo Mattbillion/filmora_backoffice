@@ -22,11 +22,14 @@ export const {{name}} = async (searchParams?: QueryParams) => {
 `;
 
 const SVC_GET_DETAIL_REQUEST = `
-export const {{name}} = async ({{genRequestParam pathList}}) => {
+export const {{name}} = async ({{genRequestParam pathList}}, returnColumns: {{pascalCase route-name}}QueryParams['return_columns']) => {
   try {
     const res = await actions.get<{ data: {{pascalCase route-name}}ItemType }>(
       \`{{genRequestEndpoint pathList}}\`,
 				{
+				...(returnColumns
+          ? { searchParams: { return_columns: returnColumns } }
+          : {}),
 				next: { tags: [\`\${RVK_{{constantCase route-name}} }_{{genRequestCacheKey pathList}}\`] },
 		});
     const { body, error } = res;

@@ -5,7 +5,11 @@ import { executeRevalidate } from '../api/helpers';
 import { ID, PaginatedResType } from '../api/types';
 import { GenresBodyType, GenresItemType, RVK_GENRES } from './schema';
 
-export const getGenres = async (searchParams?: QueryParams) => {
+type GenresQueryParams = QueryParams & {
+  return_columns?: (keyof GenresItemType)[];
+};
+
+export const getGenres = async (searchParams: GenresQueryParams) => {
   try {
     const res = await actions.get<PaginatedResType<GenresItemType[]>>(
       '/genres',
@@ -23,11 +27,17 @@ export const getGenres = async (searchParams?: QueryParams) => {
   }
 };
 
-export const getGenresDetail = async (param1: string | ID) => {
+export const getGenresDetail = async (
+  param1: string | ID,
+  returnColumns: GenresQueryParams['return_columns'],
+) => {
   try {
     const res = await actions.get<{ data: GenresItemType }>(
       `/genres/${param1}`,
       {
+        ...(returnColumns
+          ? { searchParams: { return_columns: returnColumns } }
+          : {}),
         next: { tags: [`${RVK_GENRES}_${param1}`] },
       },
     );
