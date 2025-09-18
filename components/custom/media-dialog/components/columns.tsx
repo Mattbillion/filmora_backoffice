@@ -1,11 +1,13 @@
 'use client';
 
 import { CellContext, ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 import { MoreHorizontal } from 'lucide-react';
 import Image from 'next/image';
 
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,8 +17,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 import { MediaItemType } from './schema';
-import { Checkbox } from '@/components/ui/checkbox';
-import dayjs from 'dayjs';
 
 const Action = ({ row }: CellContext<MediaItemType, unknown>) => {
   return (

@@ -20,10 +20,7 @@ export default async function GenresPage(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
-  const { data } = await getGenres({
-    ...searchParams,
-    company_id: session?.user?.company_id,
-  });
+  const { data } = await getGenres(searchParams);
 
   return (
     <>

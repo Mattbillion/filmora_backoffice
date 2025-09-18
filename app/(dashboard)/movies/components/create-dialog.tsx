@@ -1,12 +1,14 @@
+/* eslint-disable */
+
 'use client';
 
 import {
   ReactNode,
   useEffect,
-  useRef,
-  useTransition,
-  useState,
   useMemo,
+  useRef,
+  useState,
+  useTransition,
 } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,8 +16,6 @@ import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
-import UploadImageItem from '@/components/custom/upload-image-item';
-import { getMedia } from '@/lib/functions';
 import { MediaDialog } from '@/components/custom/media-dialog';
 import {
   FormControl,
@@ -33,8 +33,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { createMovies, getCategories } from '../actions';
-import { CategoriesItemType, MoviesBodyType, moviesSchema } from '../schema';
+import { createMovies } from '../actions';
+import { MoviesBodyType, moviesSchema } from '../schema';
+
+type CategoriesItemType = any;
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
@@ -53,7 +55,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       poster_url:
         'https://pub-d5eb1ad6397e41f3b73dbf714e065f20.r2.dev/images/7ebf3035-43a8-4065-a783-1dd57b496c66/a447a117-f5b7-4fa7-a3c5-0d27cc68fc8c.webp',
       categories_ids: [1, 2],
-      genre_ids: [1, 2],
+      genres_ids: [1, 2],
     },
   });
 

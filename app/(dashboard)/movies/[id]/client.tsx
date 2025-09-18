@@ -1,18 +1,20 @@
 'use client';
 import React from 'react';
-import { MovieDetail } from './types';
 import { useForm } from 'react-hook-form';
-import { MoviesBodyType, moviesSchema } from '../schema';
 import { zodResolver } from '@hookform/resolvers/zod';
+
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
+  Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-  Form,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+
+import { MoviesBodyType, moviesSchema } from '../schema';
+import { MovieDetail } from './types';
 
 export default function Client({ data }: { data: MovieDetail }) {
   const categories = data.categories?.map((category) => category);
@@ -21,8 +23,8 @@ export default function Client({ data }: { data: MovieDetail }) {
     defaultValues: data,
   });
 
-  function onSubmit(data: MoviesBodyType) {
-    return console.log(data);
+  function onSubmit(d: MoviesBodyType) {
+    return console.log(d);
   }
 
   console.log(categories, 'data');

@@ -102,5 +102,6 @@ export const genresColumns: ColumnDef<GenresItemType>[] = [
   {
     id: 'actions',
     cell: Action,
+    enableHiding: false,
   },
 ];

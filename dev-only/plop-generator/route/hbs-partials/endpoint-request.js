@@ -1,8 +1,7 @@
 // New: Service-based request partials using shared API actions
 const SVC_GET_REQUEST = `
 export const {{name}} = async (searchParams?: QueryParams) => {
-  try {
-    const res = await actions.get<
+  const res = await actions.get<
 							PaginatedResType< {{pascalCase route-name}}ItemType[] >
 					>(
       '{{genRequestEndpoint pathList}}',
@@ -14,17 +13,12 @@ export const {{name}} = async (searchParams?: QueryParams) => {
     const { body, error } = res;
     if (error) throw new Error(error);
     return { data: body, total_count: body.total_count };
-  } catch (error) {
-    console.error(\`Error fetching {{genRequestEndpoint pathList}}:\`, error);
-    return { data: { data: [], total_count: 0 }, error };
-  }
 };
 `;
 
 const SVC_GET_DETAIL_REQUEST = `
-export const {{name}} = async ({{genRequestParam pathList}}, returnColumns: {{pascalCase route-name}}QueryParams['return_columns']) => {
-  try {
-    const res = await actions.get<{ data: {{pascalCase route-name}}ItemType }>(
+export const {{name}} = async ({{genRequestParam pathList}}, returnColumns?: {{pascalCase route-name}}QueryParams['return_columns']) => {
+  const res = await actions.get<{ data: {{pascalCase route-name}}ItemType }>(
       \`{{genRequestEndpoint pathList}}\`,
 				{
 				...(returnColumns
@@ -35,10 +29,6 @@ export const {{name}} = async ({{genRequestParam pathList}}, returnColumns: {{pa
     const { body, error } = res;
     if (error) throw new Error(error);
     return { data: body };
-  } catch (error) {
-    console.error(\`Error fetching {{genRequestEndpoint pathList}}:\`, error);
-    return { data: null, error };
-  }
 };
 `;
 

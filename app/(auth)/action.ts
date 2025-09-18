@@ -27,6 +27,7 @@ export const login = async (
 
     return { status: 'success' };
   } catch (error) {
+    console.log(error);
     if (error instanceof z.ZodError) {
       return { status: 'invalid_data' };
     }

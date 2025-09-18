@@ -28,3 +28,12 @@ export function executeRevalidate(
     console.error('Revalidation failed:', revalidateError);
   }
 }
+
+export function isRedirectLike(e: unknown): boolean {
+  return (
+    typeof e === 'object' &&
+    e !== null &&
+    'message' in e &&
+    (e as any).message === 'NEXT_REDIRECT'
+  );
+}

@@ -40,7 +40,7 @@ export const LinkBubbleMenu: React.FC<LinkBubbleMenuProps> = ({ editor }) => {
       editor: e,
       from,
       to,
-    }: Parameters<BubbleMenuPluginProps['shouldShow']>[0]) => {
+    }: Parameters<NonNullable<BubbleMenuPluginProps['shouldShow']>>[0]) => {
       if (from === to) return false;
 
       const { href } = e.getAttributes('link');

@@ -9,45 +9,27 @@ type GenresQueryParams = QueryParams & {
   return_columns?: (keyof GenresItemType)[];
 };
 
-export const getGenres = async (searchParams: GenresQueryParams) => {
-  try {
-    const res = await actions.get<PaginatedResType<GenresItemType[]>>(
-      '/genres',
-      {
-        searchParams,
-        next: { tags: [RVK_GENRES] },
-      },
-    );
-    const { body, error } = res;
-    if (error) throw new Error(error);
-    return { data: body, total_count: body.total_count };
-  } catch (error) {
-    console.error(`Error fetching /genres:`, error);
-    return { data: { data: [], total_count: 0 }, error };
-  }
+export const getGenres = async (searchParams: GenresQueryParams = {}) => {
+  const res = await actions.get<PaginatedResType<GenresItemType[]>>('/genres', {
+    searchParams,
+    next: { tags: [RVK_GENRES] },
+  });
+  const { body } = res;
+  return { data: body, total_count: body.total_count };
 };
 
 export const getGenresDetail = async (
   param1: string | ID,
-  returnColumns: GenresQueryParams['return_columns'],
+  returnColumns?: GenresQueryParams['return_columns'],
 ) => {
-  try {
-    const res = await actions.get<{ data: GenresItemType }>(
-      `/genres/${param1}`,
-      {
-        ...(returnColumns
-          ? { searchParams: { return_columns: returnColumns } }
-          : {}),
-        next: { tags: [`${RVK_GENRES}_${param1}`] },
-      },
-    );
-    const { body, error } = res;
-    if (error) throw new Error(error);
-    return { data: body };
-  } catch (error) {
-    console.error(`Error fetching /genres/${param1}:`, error);
-    return { data: null, error };
-  }
+  const res = await actions.get<{ data: GenresItemType }>(`/genres/${param1}`, {
+    ...(returnColumns
+      ? { searchParams: { return_columns: returnColumns } }
+      : {}),
+    next: { tags: [`${RVK_GENRES}_${param1}`] },
+  });
+  const { body } = res;
+  return { data: body };
 };
 
 export const createGenres = async (bodyData: GenresBodyType) => {

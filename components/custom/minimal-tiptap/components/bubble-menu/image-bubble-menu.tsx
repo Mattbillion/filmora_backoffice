@@ -17,7 +17,6 @@ const ImageBubbleMenu = ({ editor }: { editor: Editor }) => {
       shouldShow={shouldShow}
       options={{
         placement: 'bottom',
-        offset: [0, 8],
       }}
     >
       <ImagePopoverBlock onRemove={unSetImage} />

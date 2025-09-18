@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import type { BaseType, PrettyType } from '@/lib/fetch/types';
+import type { PrettyType } from '@/lib/fetch/types';
 
 export const mediaSchema = z.object({
   id: z.string(),

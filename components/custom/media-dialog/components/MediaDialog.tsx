@@ -1,20 +1,17 @@
 'use client';
-import { useState } from 'react';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
-  DialogTrigger,
+  DialogClose,
   DialogContent,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
-  DialogFooter,
-  DialogClose,
+  DialogTrigger,
 } from '@/components/ui/dialog';
+
 import { Content } from './Content';
-import { Grid2X2, Rows3Icon } from 'lucide-react';
-import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
-import { Input } from '@/components/ui/input';
 
 export function MediaDialog() {
   return (
@@ -23,8 +20,8 @@ export function MediaDialog() {
         <DialogTrigger asChild>
           <Button variant="outline">Open Dialog</Button>
         </DialogTrigger>
-        <DialogContent className="w-full min-w-[720px] max-w-[1200px] overflow-hidden p-0">
-          <DialogHeader className="border-b border-border bg-slate-50 px-4 py-3">
+        <DialogContent className="w-full max-w-[1200px] min-w-[720px] overflow-hidden p-0">
+          <DialogHeader className="border-border border-b bg-slate-50 px-4 py-3">
             <DialogTitle className="text-md">Media manager</DialogTitle>
           </DialogHeader>
 

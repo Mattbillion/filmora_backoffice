@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -25,10 +26,7 @@ import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
 
 import { deleteMoviesDetail } from './actions';
-import { UpdateDialog } from './components';
 import { MoviesItemType } from './schema';
-import { Checkbox } from '@/components/ui/checkbox';
-import { useRouter } from 'next/navigation';
 
 const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);

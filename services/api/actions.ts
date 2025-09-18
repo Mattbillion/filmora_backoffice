@@ -2,6 +2,7 @@
 
 import { FetchOptions } from '@interpriz/lib/services';
 import { revalidatePath, revalidateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 import { auth } from '@/app/(auth)/auth';
 
@@ -15,31 +16,80 @@ const apiServer = new ExtendedFetchClient({
   },
 });
 
+function redirectIfUnauthorized(error: unknown) {
+  const msg = (error as any)?.error || (error as any)?.message || String(error);
+  if (String(msg).toLowerCase().includes('unauthorized')) {
+    redirect('/logout?redirectTo=/login');
+  }
+}
+
 export async function get<T>(
   url: string,
   options: Omit<FetchOptions, 'body'> = {},
 ) {
-  return await apiServer.get<T>(url, { cache: 'force-cache', ...options });
+  try {
+    return await apiServer.get<T>(url, { cache: 'force-cache', ...options });
+  } catch (error) {
+    redirectIfUnauthorized(error);
+    throw error;
+  }
 }
 
 export async function request<T>(url: string, options?: FetchOptions) {
-  return await apiServer.request<T>(url, options);
+  try {
+    return await apiServer.request<T>(url, options);
+  } catch (error) {
+    redirectIfUnauthorized(error);
+    throw error;
+  }
 }
 
-export async function post<T>(url: string, body: any, options?: FetchOptions) {
-  return await apiServer.post<T>(url, body, options);
+export async function post<T>(
+  url: string,
+  body: unknown,
+  options?: FetchOptions,
+) {
+  try {
+    return await apiServer.post<T>(url, body, options);
+  } catch (error) {
+    redirectIfUnauthorized(error);
+    throw error;
+  }
 }
 
-export async function put<T>(url: string, body: any, options?: FetchOptions) {
-  return await apiServer.put<T>(url, body, options);
+export async function put<T>(
+  url: string,
+  body: unknown,
+  options?: FetchOptions,
+) {
+  try {
+    return await apiServer.put<T>(url, body, options);
+  } catch (error) {
+    redirectIfUnauthorized(error);
+    throw error;
+  }
 }
 
-export async function patch<T>(url: string, body: any, options?: FetchOptions) {
-  return await apiServer.patch<T>(url, body, options);
+export async function patch<T>(
+  url: string,
+  body: unknown,
+  options?: FetchOptions,
+) {
+  try {
+    return await apiServer.patch<T>(url, body, options);
+  } catch (error) {
+    redirectIfUnauthorized(error);
+    throw error;
+  }
 }
 
 export async function destroy<T>(url: string, options?: FetchOptions) {
-  return await apiServer.delete<T>(url, options);
+  try {
+    return await apiServer.delete<T>(url, options);
+  } catch (error) {
+    redirectIfUnauthorized(error);
+    throw error;
+  }
 }
 
 export async function revalidate(tagName: string) {
