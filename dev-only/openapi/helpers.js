@@ -22,30 +22,42 @@ function findValueByKey(obj, targetKey) {
 	return undefined;
 }
 
-// Function to resolve $ref to actual schema or return the ref name
-const pointToSchema = (schema) => {
+const pointToSchemaRecursive = (schema, cb) => {
 	if (!schema) return {};
 
 	const schemaRef = findValueByKey(schema, '$ref');
 	if (schemaRef) {
 		const refName = schemaRef.replace("#/components/schemas/", "");
 		const sch = componentSchemas[refName] || {};
-
-		if(findValueByKey(sch, '$ref'))
-			return pointToSchema(componentSchemas[refName] || {});
-		return refName;
+		const nestedRefName = findValueByKey(sch, '$ref');
+		if(nestedRefName) cb(pointToSchemaRecursive(sch, cb));
+		return sch;
 	}
 
 	return schema;
 }
 
+// Function to resolve $ref to actual schema or return the ref name
+const pointToSchema = (schema) => {
+	if (!schema) return {};
+
+	const schemaRef = findValueByKey(schema, '$ref');
+	if (schemaRef) return schemaRef.replace("#/components/schemas/", "");
+
+	return schema;
+}
+
 // Convert OpenAPI schema to Zod schema string
-function openApiToZodString(schema, components = {}, nameHint = "Schema") {
+function openApiToZodString(schema) {
 	if (!schema) return "z.any()";
 
 	if (schema.enum) return `z.enum(${JSON.stringify(schema.enum)})`;
 
+	if(schema.$ref) return changeCase.camelCase(schema.$ref.replace("#/components/schemas/", "")) + 'Schema';
+
 	switch (schema.type) {
+		case "undefined":
+			return "";
 		case "null":
 			return "";
 		case "string":
@@ -57,12 +69,12 @@ function openApiToZodString(schema, components = {}, nameHint = "Schema") {
 		case "boolean":
 			return "z.boolean()";
 		case "array":
-			return `z.array(${openApiToZodString(schema.items, components, nameHint + "Item")})`;
+			return `z.array(${openApiToZodString(schema.items)})`;
 		case "object": {
 			const shape = Object.entries(schema.properties || {})
 				.filter(([key]) => !['id', 'created_at', 'updated_at', 'created_employee'].includes(key))
 				.map(([key, value]) => {
-					let field = openApiToZodString(value, components, key);
+					let field = openApiToZodString(value);
 
 					// mark as optional if not required
 					if (!(schema.required || []).includes(key)) field += ".optional()";
@@ -76,16 +88,15 @@ function openApiToZodString(schema, components = {}, nameHint = "Schema") {
 
 	if (schema.anyOf || schema.oneOf) {
 		const shape = (schema.anyOf || schema.oneOf)
-			.map((s, i) => openApiToZodString(s, components, nameHint + i))
-			.filter(Boolean)
-			.join(", ");
+			.map((s) => openApiToZodString(s))
+			.filter(Boolean);
 		if(shape.length === 1) return shape; // no need for union if only one type
-		return `z.union([${shape}])`;
+		return `z.union([${shape.join(", ")}])`;
 	}
 
 	if (schema.allOf) {
 		return schema.allOf
-			.map((s, i) => `(${openApiToZodString(s, components, nameHint + i)})`)
+			.map((s) => `(${openApiToZodString(s)})`)
 			.filter(Boolean)
 			.join(".and");
 	}
@@ -124,4 +135,4 @@ function modifyRouteParamsWithType(def) {
 	}
 }
 
-module.exports = { findValueByKey, pointToSchema, openApiToZodString, modifyRouteParamsWithType };
+module.exports = { findValueByKey, pointToSchema, openApiToZodString, modifyRouteParamsWithType, pointToSchemaRecursive };

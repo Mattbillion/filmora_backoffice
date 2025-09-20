@@ -3,15 +3,6 @@ const fs = require('fs');
 const path = require('path');
 
 function loadDashboardPaths() {
-  const jsonPath = path.resolve(__dirname, 'dashboardPaths.json');
-  try {
-    const text = fs.readFileSync(jsonPath, 'utf8');
-    const clean = text.split('\n').filter((ln) => !ln.startsWith('[')).join('\n');
-    const obj = JSON.parse(clean);
-    if (obj && typeof obj === 'object') return obj;
-  } catch (e) {
-    // fallback below
-  }
   const { dashboardPaths } = require('./endpoint-group');
   return dashboardPaths;
 }
@@ -26,16 +17,6 @@ module.exports = function (plop) {
   plop.setHelper('camelCase', (s) => changeCase.camelCase(String(s || '')));
   plop.setHelper('kebabCase', (s) => changeCase.paramCase(String(s || '')));
   plop.setHelper('constantCase', (s) => changeCase.constantCase(String(s || '')));
-
-  function buildSchemas(service) {
-    const svc = dashboardPaths[service];
-    const schemas = (svc.schemas || []).map((sch) => {
-      const camelName = changeCase.camelCase(sch.schemaName);
-      const typeName = changeCase.pascalCase(camelName);
-      return { camelName, typeName, schemaString: sch.schemaString };
-    });
-    return schemas;
-  }
 
   function pickContentType(arr) {
     if (!arr || !Array.isArray(arr) || !arr.length) return undefined;
@@ -101,7 +82,7 @@ module.exports = function (plop) {
         const data = {
           service,
           rvkConst: changeCase.constantCase(service),
-          schemas: buildSchemas(service),
+          schemas: dashboardPaths[service].schema,
           endpointList: buildEndpoints(service),
         };
 

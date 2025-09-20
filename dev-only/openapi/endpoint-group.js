@@ -54,13 +54,25 @@ Object.values(pathGroups).forEach((methods) => {
 		if (method.responses) {
 			Object.entries(method.responses).forEach(([status, resp]) => {
 				if (Number(status) < 400 && resp.content && resp.content['application/json']) {
-					method.schema = pointToSchema(resp.content['application/json'].schema);
+					const methodSchema = pointToSchema(resp.content['application/json'].schema);
+					method.schema = methodSchema;
+					const schemaImports = new Set([]);
+
+					function addImportsFromSchema(schemaName) {
+						if(!schemaImports.has(schemaName)) schemaImports.add(changeCase.camelCase(schemaName));
+						const nestedRef = findValueByKey(componentSchemas[schemaName], '$ref')?.replace("#/components/schemas/", "");
+						if(nestedRef) addImportsFromSchema(nestedRef);
+					}
+
+					if(typeof methodSchema === 'string') addImportsFromSchema(methodSchema);
+
+					method.schemaImports = Array.from(schemaImports).map(c => c + 'Schema');
 				}
 			});
 		}
 		if(method.requestBody) {
 			method.bodySchema = pointToSchema(findValueByKey(method.requestBody, 'schema'));
-			method.contentType = Object.keys(findValueByKey(method.requestBody, 'content'));
+			method.contentType = Object.keys(findValueByKey(method.requestBody, 'content'))[0];
 		}
 		delete method.requestBody;
 		delete method.responses;
@@ -74,40 +86,55 @@ Object.values(pathGroups).forEach((methods) => {
 
 let dashboardPaths = {};
 
-Object.entries(pathGroups).forEach(([service, method]) => {
-	const schemas = Array.from(
-		new Set([
-				...Object.values(method)
-				.map((c) => (
-					typeof c.schema === 'string' ?
-						c.schema
-						:
-						undefined
-				))
-				.filter(Boolean),
-			...Object.values(method)
-				.map((c) => (
-					typeof c.bodySchema === 'string' ?
-						c.bodySchema
-						:
-						undefined
-				))
-				.filter(Boolean)
-		])
-	).map(c => ({
-		schemaName: changeCase.camelCase(c),
-		schemaString: openApiToZodString(componentSchemas[c], componentSchemas, c),
-		schemaObject: Object.fromEntries(
-			Object.entries(
-				findValueByKey(componentSchemas[c] || {}, 'properties')
-			).filter(([key]) => !['id', 'created_at', 'updated_at', 'created_employee'].includes(key))
-		),
-	}))
+Object.entries(pathGroups).forEach(([service, methods]) => {
+	const schemas = new Set();
+
+	function addToSchemas(schemaName) {
+		const key = changeCase.camelCase(schemaName);
+		if(!schemas.has(key)) {
+			const schemaObject = componentSchemas[schemaName] || {};
+
+
+			const schemaRef = findValueByKey(schemaObject, '$ref');
+			if (schemaRef) addToSchemas(schemaRef.replace("#/components/schemas/", ""));
+
+			schemas.add({
+				schemaName: key + 'Schema',
+				schemaTypeName: changeCase.pascalCase(key) + 'Type',
+				schemaString: openApiToZodString(componentSchemas[schemaName]),
+				schemaObject,
+				schemaEntries:
+					Object.keys(findValueByKey(schemaObject, 'properties') || {})
+						.filter((k) => !['id', 'created_at', 'updated_at', 'created_employee'].includes(k))
+			});
+		}
+	}
+
+	Object.values(methods).forEach(method => {
+		if(typeof method.schema === 'string') {
+			addToSchemas(method.schema)
+		}
+		if(typeof method.schema === 'object' && !!method.schema) schemas.add(method.schema)
+		if(typeof method.bodySchema === 'object' && !!method.bodySchema) schemas.add(method.bodySchema)
+
+		if(typeof method.bodySchema === 'string') {
+			addToSchemas(method.bodySchema)
+		}
+	})
+
 	dashboardPaths[service] = {
-		schemas,
-		endpoints: Object.values(method),
+		schemas: Array.from(schemas),
+		endpoints: Object.values(methods),
 	}
 })
 
-
+/**
+ *
+ * @return {{dashboardPaths: {
+ *   [x: string]: {
+ *     schemas: {schemaName: string, schemaTypeName: string, schemaString: string, schemaObject: object, schemaEntries: [string, string][]}[],
+ *     endpoints: {summary: string, route: string, method: string, schema?: string, bodySchema?: string, contentType?: string, pathArgs?: string, queryArg?: string, schemaImports: string[]}[]
+ *   }
+ * }} An object containing grouped dashboard paths with their schemas and endpoints.
+* */
 module.exports = { dashboardPaths }
