@@ -1,0 +1,8 @@
+import { z } from 'zod';
+
+{{#each schemas}}
+export const {{this.camelName}}Schema = {{this.schemaString}};
+export type {{this.typeName}} = z.infer<typeof {{this.camelName}}Schema>;
+{{/each}}
+
+export const RVK_{{constantCase service}} = '{{kebabCase service}}';

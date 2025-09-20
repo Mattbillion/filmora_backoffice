@@ -1,6 +1,6 @@
 const changeCase = require('change-case-all');
 const {endpointPaths, componentSchemas} = require('./openapi-curl');
-const {findValueByKey, openApiToZodString, pointToSchema} = require('./helpers')
+const {findValueByKey, openApiToZodString, pointToSchema, modifyRouteParamsWithType} = require('./helpers');
 
 // Group paths by their first segment after /api/v1/dashboard
 const pathGroups = Object.entries(endpointPaths)
@@ -17,29 +17,31 @@ const pathGroups = Object.entries(endpointPaths)
 
 		const [root, ...childRoutes] = cleanPath.split('/').filter(Boolean);
 
+
+		const modifiedMethods = Object.entries(methods).map(([m,r]) => {
+			const {pathArgs, queryArg, route} = modifyRouteParamsWithType({...r, route: path.replace('/api/v1/dashboard', '')});
+			const methodObj = {
+				...r,
+				summary: changeCase.camelCase(r.summary),
+				route,
+				method: changeCase.upperCase(m)
+			};
+
+			if(queryArg) methodObj.queryArg = queryArg;
+			if(pathArgs) methodObj.pathArgs = pathArgs;
+
+			return methodObj;
+		})
+
 		if (childRoutes.length > 0) {
 			pathObj[root] = Array.from(new Set([
 				...(pathObj[root] || []),
-				...Object.entries(methods).map(([m,r]) => (
-					{
-						...r,
-						summary: changeCase.camelCase(r.summary),
-						route: path.replace('/api/v1/dashboard', ''),
-						method: m
-					}
-				)),
+				...modifiedMethods,
 			]))
 		} else {
 			pathObj[cleanPath] = Array.from(new Set([
 				...existedPath,
-				...Object.entries(methods).map(([m,r]) => (
-					{
-						...r,
-						summary: changeCase.camelCase(r.summary),
-						route: path.replace('/api/v1/dashboard', ''),
-						method: m
-					}
-				)),
+				...modifiedMethods,
 			]));
 		}
 
@@ -66,6 +68,7 @@ Object.values(pathGroups).forEach((methods) => {
 		delete method.operationId;
 		delete method.security;
 		delete method.description;
+		delete method.parameters;
 	})
 });
 
