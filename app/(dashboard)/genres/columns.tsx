@@ -21,11 +21,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { deleteGenresDetail, GenresItemType } from '@/services/genres';
+import { deleteGenre, GenreResponseType } from '@/services/genres';
 
 import { UpdateDialog } from './components';
 
-const Action = ({ row }: CellContext<GenresItemType, unknown>) => {
+const Action = ({ row }: CellContext<GenreResponseType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
@@ -63,7 +63,7 @@ const Action = ({ row }: CellContext<GenresItemType, unknown>) => {
               action={() => {
                 setLoading(true);
                 // TODO: Please check after generate
-                deleteGenresDetail(row.original.id)
+                deleteGenre(row.original.id)
                   .then((c) => toast.success(c.data.message))
                   .catch((c) => toast.error(c.message))
                   .finally(() => {
@@ -90,7 +90,7 @@ const Action = ({ row }: CellContext<GenresItemType, unknown>) => {
   );
 };
 
-export const genresColumns: ColumnDef<GenresItemType>[] = [
+export const genresColumns: ColumnDef<GenreResponseType>[] = [
   {
     id: 'name',
     accessorKey: 'name',

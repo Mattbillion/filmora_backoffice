@@ -24,7 +24,7 @@ const pathGroups = Object.entries(endpointPaths)
 				...r,
 				summary: changeCase.camelCase(r.summary),
 				route,
-				method: changeCase.upperCase(m)
+				method: {'delete':'destroy'}[m] || m
 			};
 
 			if(queryArg) methodObj.queryArg = queryArg;
@@ -64,14 +64,32 @@ Object.values(pathGroups).forEach((methods) => {
 						if(nestedRef) addImportsFromSchema(nestedRef);
 					}
 
-					if(typeof methodSchema === 'string') addImportsFromSchema(methodSchema);
+					if(typeof methodSchema === 'string') {
+						addImportsFromSchema(methodSchema);
+						method.schemaTypeName = changeCase.pascalCase(methodSchema);
+					}
 
 					method.schemaImports = Array.from(schemaImports).map(c => c + 'Schema');
 				}
 			});
 		}
 		if(method.requestBody) {
-			method.bodySchema = pointToSchema(findValueByKey(method.requestBody, 'schema'));
+			const methodSchema = pointToSchema(findValueByKey(method.requestBody, 'schema'));
+			method.bodySchema = methodSchema;
+			const schemaImports = new Set([]);
+
+			function addImportsFromSchema(schemaName) {
+				if(!schemaImports.has(schemaName)) schemaImports.add(changeCase.camelCase(schemaName));
+				const nestedRef = findValueByKey(componentSchemas[schemaName], '$ref')?.replace("#/components/schemas/", "");
+				if(nestedRef) addImportsFromSchema(nestedRef);
+			}
+
+			if(typeof methodSchema === 'string') {
+				addImportsFromSchema(methodSchema);
+				method.bodySchemaTypeName = changeCase.pascalCase(methodSchema);
+			}
+
+			method.schemaImports = [...(method.schemaImports || []), ...Array.from(schemaImports).map(c => c + 'Schema')];
 			method.contentType = Object.keys(findValueByKey(method.requestBody, 'content'))[0];
 		}
 		delete method.requestBody;
@@ -87,7 +105,7 @@ Object.values(pathGroups).forEach((methods) => {
 let dashboardPaths = {};
 
 Object.entries(pathGroups).forEach(([service, methods]) => {
-	const schemas = new Set();
+	const schemas = new Map();
 
 	function addToSchemas(schemaName) {
 		const key = changeCase.camelCase(schemaName);
@@ -98,7 +116,7 @@ Object.entries(pathGroups).forEach(([service, methods]) => {
 			const schemaRef = findValueByKey(schemaObject, '$ref');
 			if (schemaRef) addToSchemas(schemaRef.replace("#/components/schemas/", ""));
 
-			schemas.add({
+			schemas.set(key, {
 				schemaName: key + 'Schema',
 				schemaTypeName: changeCase.pascalCase(key) + 'Type',
 				schemaString: openApiToZodString(componentSchemas[schemaName]),
@@ -114,8 +132,6 @@ Object.entries(pathGroups).forEach(([service, methods]) => {
 		if(typeof method.schema === 'string') {
 			addToSchemas(method.schema)
 		}
-		if(typeof method.schema === 'object' && !!method.schema) schemas.add(method.schema)
-		if(typeof method.bodySchema === 'object' && !!method.bodySchema) schemas.add(method.bodySchema)
 
 		if(typeof method.bodySchema === 'string') {
 			addToSchemas(method.bodySchema)
@@ -123,10 +139,16 @@ Object.entries(pathGroups).forEach(([service, methods]) => {
 	})
 
 	dashboardPaths[service] = {
-		schemas: Array.from(schemas),
-		endpoints: Object.values(methods),
+		schemas: Array.from(schemas.values()),
+		endpoints: Object.values(methods).map(method => ({
+			...method,
+			schemaImports:
+				method.schemaImports
+					.map(c => Array.from(schemas.values()).find(cc => cc.schemaName === c)?.schemaTypeName || c
+				).join(', '),
+		})),
 	}
-})
+});
 
 /**
  *

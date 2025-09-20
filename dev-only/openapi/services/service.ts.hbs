@@ -1,85 +1,63 @@
 import { QueryParams } from '@/lib/utils';
-import * as actions from '../actions';
-import { executeRevalidate } from '../helpers';
-import type { ID, PaginatedResType } from '../types';
-import * as Schemas from './schema';
+import * as actions from '../api/actions';
+import { executeRevalidate } from '../api/helpers';
+import type { ID, PaginatedResType } from '../api/types';
+import { RVK_{{rvkConst}}, {{{schemaImports}}} } from './schema';
 
 // Auto-generated service for {{service}}
 
-function buildUrl(path: string, pathParams?: Record<string, string | number>) {
-  if (!pathParams) return path;
-  return path.replace(/\{([^}]+)\}/g, (_, key) => encodeURIComponent(String(pathParams[key])));
-}
-
-function buildQuery(searchParams?: QueryParams) {
-  if (!searchParams) return undefined;
-  const entries: string[] = [];
-  for (const [k, v] of Object.entries(searchParams)) {
-    if (v === undefined || v === null) continue;
-    if (Array.isArray(v)) v.forEach((vv) => entries.push(`${encodeURIComponent(k)}[]=${encodeURIComponent(String(vv))}`));
-    else entries.push(`${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`);
-  }
-  return entries.length ? entries.join('&') : undefined;
-}
-
-async function encodeBody(contentType: string | undefined, body: any) {
-  if (!contentType || body == null) return body;
-  if (contentType.includes('application/json')) return body;
-  if (contentType.includes('application/x-www-form-urlencoded')) {
-    const usp = new URLSearchParams();
-    Object.entries(body).forEach(([k, v]) => {
-      if (v === undefined || v === null) return;
-      if (Array.isArray(v)) v.forEach((vv) => usp.append(k, String(vv)));
-      else usp.append(k, String(v));
-    });
-    return usp;
-  }
-  if (contentType.includes('multipart/form-data')) {
-    const fd = new FormData();
-    Object.entries(body).forEach(([k, v]) => {
-      if (v === undefined || v === null) return;
-      if (Array.isArray(v)) v.forEach((vv) => fd.append(k, vv as any));
-      else fd.append(k, v as any);
-    });
-    return fd;
-  }
-  return body;
-}
-
 {{#each endpointList}}
-export async function {{this.fnName}}(args?: {
-  path?: Record<string, string | number>;
-  query?: QueryParams;
-  body?: {{#if this.bodyTypeName}}Schemas.{{this.bodyTypeName}}{{else}}any{{/if}};
-}) {
-  const route = '{{this.route}}';
-  const url = buildUrl(route, args?.path);
-  const qs = buildQuery(args?.query);
-  const fullUrl = qs ? `${url}?${qs}` : url;
-
+export async function {{this.summary}}(
+    {{#if this.pathArgs}}
+        {{{this.pathArgs}}},
+    {{/if}}
+    {{#if this.queryArg}}
+        searchParams:{{{this.queryArg}}} = {},
+    {{/if}}
+    {{#if (or (eq this.method 'post') (eq this.method 'put') (eq this.method 'patch'))}}
+        body: {{#if this.bodySchemaTypeName}}{{this.bodySchemaTypeName}}Type{{/if}}
+    {{/if}}
+) {
   {{#if (eq this.method 'get')}}
-  const res = await actions.get<any>(fullUrl, { next: { tags: [Schemas.RVK_{{../rvkConst}}{{#if this.detailTag}}, `${Schemas.RVK_{{../rvkConst}}}_${String(args?.path?.{{this.detailTag}})}`{{/if}}] } });
+  const res = await actions.get<{{#if this.schemaTypeName}}{{this.schemaTypeName}}Type{{else}}any{{/if}}>({{{this.route}}},
+      {
+        {{#if this.queryArg}}
+        searchParams,
+        {{/if}}
+        next: {
+                tags: [
+                    RVK_{{../rvkConst}}
+                        {{#if this.pathArgs}}
+                            {{#each this.detailTag}}
+                                ,`${ RVK_{{../../rvkConst}} }_{{{this}}}`
+                            {{/each}}
+                        {{/if}}
+                    ]
+            }
+      });
   {{/if}}
-  {{#if (eq this.method 'delete')}}
-  const res = await actions.destroy<any>(fullUrl);
+  {{#if (eq this.method 'destroy')}}
+  const res = await actions.destroy<{{#if this.schemaTypeName}}{{this.schemaTypeName}}Type{{else}}any{{/if}}>({{{this.route}}});
   {{/if}}
   {{#if (or (eq this.method 'post') (eq this.method 'put') (eq this.method 'patch'))}}
-  const body = await encodeBody('{{this.contentType}}', args?.body);
-  const res = await actions.{{this.method}}<any>(fullUrl, body);
+  const res = await actions.{{this.method}}<{{#if this.schemaTypeName}}{{this.schemaTypeName}}Type{{else}}any{{/if}}>({{{this.route}}}, body);
   {{/if}}
 
-  const { body: response, error } = res as any;
+  const { body: response, error } = res;
   if (error) throw new Error(error);
 
   {{#if this.shouldRevalidate}}
-  executeRevalidate([Schemas.RVK_{{../rvkConst}}{{#if this.detailTag}}, `${Schemas.RVK_{{../rvkConst}}}_${String(args?.path?.{{this.detailTag}})}`{{/if}}]);
+  executeRevalidate([
+              RVK_{{../rvkConst}}
+              {{#if this.pathArgs}}
+                  {{#each this.detailTag}}
+                          ,`${ RVK_{{../../rvkConst}} }_{{{this}}}`
+                  {{/each}}
+              {{/if}}
+          ]);
   {{/if}}
 
-  {{#if this.responseTypeName}}
-  return { data: response as Schemas.{{this.responseTypeName}} };
-  {{else}}
-  return { data: response };
-  {{/if}}
+  return response;
 }
 
 {{/each}}

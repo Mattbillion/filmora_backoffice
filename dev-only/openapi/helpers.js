@@ -72,7 +72,6 @@ function openApiToZodString(schema) {
 			return `z.array(${openApiToZodString(schema.items)})`;
 		case "object": {
 			const shape = Object.entries(schema.properties || {})
-				.filter(([key]) => !['id', 'created_at', 'updated_at', 'created_employee'].includes(key))
 				.map(([key, value]) => {
 					let field = openApiToZodString(value);
 

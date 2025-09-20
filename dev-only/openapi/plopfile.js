@@ -1,6 +1,5 @@
 const changeCase = require('change-case-all');
-const fs = require('fs');
-const path = require('path');
+const {execSync} = require("child_process");
 
 function loadDashboardPaths() {
   const { dashboardPaths } = require('./endpoint-group');
@@ -8,6 +7,27 @@ function loadDashboardPaths() {
 }
 
 const dashboardPaths = loadDashboardPaths();
+
+const execEslint = (service) => {
+  try {
+    execSync(`npx eslint --fix "services/${service}/**"`);
+
+    return 'ESLint fixes applied successfully';
+  } catch (error) {
+    return 'Failed to apply ESLint fixes. Check for unresolved lint errors.';
+  }
+}
+const execPrettier = (service) => {
+  try {
+    execSync(
+      `npx prettier --write "services/${service}/**"`,
+    );
+
+    return 'Formatted with Prettier';
+  } catch (error) {
+    return 'Failed to format files.';
+  }
+}
 
 module.exports = function (plop) {
   // helpers
@@ -18,60 +38,7 @@ module.exports = function (plop) {
   plop.setHelper('kebabCase', (s) => changeCase.paramCase(String(s || '')));
   plop.setHelper('constantCase', (s) => changeCase.constantCase(String(s || '')));
 
-  function pickContentType(arr) {
-    if (!arr || !Array.isArray(arr) || !arr.length) return undefined;
-    return String(arr[0]);
-  }
-
-  function findTypeNameForRef(service, refName) {
-    if (!refName) return undefined;
-    const camel = changeCase.camelCase(refName);
-    const typeName = changeCase.pascalCase(camel);
-    // Ensure it exists in schemas; if not, still return for external/global refs
-    return typeName;
-  }
-
-  function buildEndpoints(service) {
-    const svc = dashboardPaths[service];
-    const usedNames = new Set();
-
-    return (svc.endpoints || []).map((ep) => {
-      const method = ep.method.toLowerCase();
-      const route = ep.route; // starts with '/'
-      const contentType = pickContentType(ep.contentType);
-
-      // function name from summary or fallback
-      let baseName = ep.summary ? changeCase.camelCase(ep.summary) : `${method} ${route}`;
-      baseName = changeCase.camelCase(baseName.replace(/[^a-zA-Z0-9]+/g, ' '));
-      let fnName = baseName;
-      let i = 2;
-      while (usedNames.has(fnName)) {
-        fnName = `${baseName}${i++}`;
-      }
-      usedNames.add(fnName);
-
-      // detail tag param (first path param)
-      const m = route.match(/\{([^}]+)\}/);
-      const detailTag = m ? m[1] : undefined;
-
-      const bodyTypeName = findTypeNameForRef(service, ep.bodySchema);
-      const responseTypeName = findTypeNameForRef(service, ep.schema);
-      const shouldRevalidate = method !== 'get';
-
-      return {
-        fnName,
-        route,
-        method,
-        contentType: contentType || '',
-        detailTag,
-        bodyTypeName,
-        responseTypeName,
-        shouldRevalidate,
-      };
-    });
-  }
-
-  plop.setGenerator('get-openapi-services', {
+  plop.setGenerator('gen-openapi-services', {
     description: 'Generate API services from OpenAPI (dashboardPaths) without prompts',
     prompts: [],
     actions: function () {
@@ -79,34 +46,56 @@ module.exports = function (plop) {
       const actions = [];
 
       services.forEach((service) => {
+        const serviceSchemaImports = Array.from(
+          new Set(
+            dashboardPaths[service].endpoints
+              .map((endpoint) => endpoint.schemaImports)
+              // Joining "comma,seperated,string" by comma to avoid nested arrays after flat
+              .join(', ')
+              // Resplitting by comma and filtering out empty strings
+              .split(',')
+              .filter(Boolean)
+          )
+        )
         const data = {
           service,
           rvkConst: changeCase.constantCase(service),
-          schemas: dashboardPaths[service].schema,
-          endpointList: buildEndpoints(service),
+          schemas: dashboardPaths[service].schemas,
+          endpointList: dashboardPaths[service].endpoints.map(endpoint => ({
+            ...endpoint,
+            shouldRevalidate: endpoint.method?.toLowerCase() !== 'get' && endpoint.pathArgs,
+            detailTag: endpoint.pathArgs?.split(',')
+              .map((arg) => {
+                const argName = arg.split(':')[0];
+                return argName + '_' + '$' + '{' + `${argName}}`
+              }) || []
+          })),
+          isFormData: dashboardPaths[service].contentType?.includes('form-data'),
+          schemaImports: serviceSchemaImports
         };
 
         actions.push({
           type: 'add',
-          path: `services/api/${service}/schema.ts`,
-          templateFile: 'dev-only/openapi/services/schema.ts.hbs',
+          path: `../../services/${service}/index.ts`,
+          templateFile: './services/index.ts.hbs',
+          force: true,
+        });
+        actions.push({
+          type: 'add',
+          path: `../../services/${service}/schema.ts`,
+          templateFile: './services/schema.ts.hbs',
           data,
           force: true,
         });
         actions.push({
           type: 'add',
-          path: `services/api/${service}/service.ts`,
-          templateFile: 'dev-only/openapi/services/service.ts.hbs',
+          path: `../../services/${service}/service.ts`,
+          templateFile: './services/service.ts.hbs',
           data,
           force: true,
         });
-        actions.push({
-          type: 'add',
-          path: `services/api/${service}/index.ts`,
-          templateFile: 'dev-only/openapi/services/index.ts.hbs',
-          data,
-          force: true,
-        });
+        actions.push(() => execPrettier(service));
+        actions.push(() => execEslint(service));
       });
 
       return actions;

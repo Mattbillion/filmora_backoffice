@@ -1,63 +1,89 @@
-import { QueryParams } from '@/lib/utils';
-
 import * as actions from '../api/actions';
 import { executeRevalidate } from '../api/helpers';
-import { ID, PaginatedResType } from '../api/types';
-import { GenresBodyType, GenresItemType, RVK_GENRES } from './schema';
+import {
+  BaseResponseUnionDictNoneTypeType,
+  BaseResponseUnionGenreResponseNoneTypeType,
+  BaseResponseUnionListGenreResponseNoneTypeType,
+  GenreCreateType,
+  GenreUpdateType,
+  RVK_GENRES,
+} from './schema';
 
-type GenresQueryParams = QueryParams & {
-  return_columns?: (keyof GenresItemType)[];
-};
+// Auto-generated service for genres
 
-export const getGenres = async (searchParams: GenresQueryParams = {}) => {
-  const res = await actions.get<PaginatedResType<GenresItemType[]>>('/genres', {
-    searchParams,
-    next: { tags: [RVK_GENRES] },
-  });
-  const { body } = res;
-  return { data: body, total_count: body.total_count };
-};
-
-export const getGenresDetail = async (
-  param1: string | ID,
-  returnColumns?: GenresQueryParams['return_columns'],
-) => {
-  const res = await actions.get<{ data: GenresItemType }>(`/genres/${param1}`, {
-    ...(returnColumns
-      ? { searchParams: { return_columns: returnColumns } }
-      : {}),
-    next: { tags: [`${RVK_GENRES}_${param1}`] },
-  });
-  const { body } = res;
-  return { data: body };
-};
-
-export const createGenres = async (bodyData: GenresBodyType) => {
-  const res = await actions.post(`/genres`, bodyData);
-  const { body, error } = res;
-  if (error) throw new Error(error);
-  executeRevalidate([RVK_GENRES]);
-  return { data: body, error: null };
-};
-
-export const patchGenresDetail = async ({
-  id: param1,
-  ...bodyData
-}: GenresBodyType & { id: ID }) => {
-  const res = await actions.put<{ data: GenresItemType }>(
-    `/genres/${param1}`,
-    bodyData,
+export async function getGenres(
+  searchParams: {
+    page?: number;
+    page_size?: number;
+  } = {},
+) {
+  const res = await actions.get<BaseResponseUnionListGenreResponseNoneTypeType>(
+    `/genres`,
+    {
+      searchParams,
+      next: {
+        tags: [RVK_GENRES],
+      },
+    },
   );
-  const { body, error } = res;
-  if (error) throw new Error(error);
-  executeRevalidate([RVK_GENRES, `${RVK_GENRES}_${param1}`]);
-  return { data: body, error: null };
-};
 
-export const deleteGenresDetail = async (param1: string | ID) => {
-  const res = await actions.destroy(`/genres/${param1}`);
-  const { body, error } = res;
+  const { body: response, error } = res;
   if (error) throw new Error(error);
-  executeRevalidate([RVK_GENRES, `${RVK_GENRES}_${param1}`]);
-  return { data: body, error: null };
-};
+
+  return response;
+}
+
+export async function createGenre(body: GenreCreateType) {
+  const res = await actions.post<BaseResponseUnionGenreResponseNoneTypeType>(
+    `/genres`,
+    body,
+  );
+
+  const { body: response, error } = res;
+  if (error) throw new Error(error);
+
+  return response;
+}
+
+export async function getGenre(genreId: number) {
+  const res = await actions.get<BaseResponseUnionGenreResponseNoneTypeType>(
+    `/genres/${genreId}`,
+    {
+      next: {
+        tags: [RVK_GENRES, `${RVK_GENRES}_genreId_${genreId}`],
+      },
+    },
+  );
+
+  const { body: response, error } = res;
+  if (error) throw new Error(error);
+
+  return response;
+}
+
+export async function updateGenre(genreId: number, body: GenreUpdateType) {
+  const res = await actions.put<BaseResponseUnionGenreResponseNoneTypeType>(
+    `/genres/${genreId}`,
+    body,
+  );
+
+  const { body: response, error } = res;
+  if (error) throw new Error(error);
+
+  executeRevalidate([RVK_GENRES, `${RVK_GENRES}_genreId_${genreId}`]);
+
+  return response;
+}
+
+export async function deleteGenre(genreId: number) {
+  const res = await actions.destroy<BaseResponseUnionDictNoneTypeType>(
+    `/genres/${genreId}`,
+  );
+
+  const { body: response, error } = res;
+  if (error) throw new Error(error);
+
+  executeRevalidate([RVK_GENRES, `${RVK_GENRES}_genreId_${genreId}`]);
+
+  return response;
+}

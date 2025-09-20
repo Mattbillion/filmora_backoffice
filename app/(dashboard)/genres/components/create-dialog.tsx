@@ -14,19 +14,23 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { createGenres, GenresBodyType, genresSchema } from '@/services/genres';
+import {
+  createGenre,
+  genreCreateSchema,
+  GenreCreateType,
+} from '@/services/genres';
 
 export function CreateDialog({ children }: { children: ReactNode }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<GenresBodyType>({
-    resolver: zodResolver(genresSchema),
+  const form = useForm<GenreCreateType>({
+    resolver: zodResolver(genreCreateSchema),
   });
 
-  function onSubmit(values: GenresBodyType) {
+  function onSubmit(values: GenreCreateType) {
     startTransition(() => {
-      createGenres(values)
+      createGenre(values)
         .then(() => {
           toast.success('Created successfully');
           dialogRef?.current?.close();
