@@ -1,5 +1,6 @@
 const changeCase = require('change-case-all');
 const {endpointPaths, componentSchemas} = require('./openapi-curl');
+const {findValueByKey, openApiToZodString, pointToSchema} = require('./helpers')
 
 // Group paths by their first segment after /api/v1/dashboard
 const pathGroups = Object.entries(endpointPaths)
@@ -44,43 +45,6 @@ const pathGroups = Object.entries(endpointPaths)
 
 		return pathObj;
 	}, {});
-
-// Recursive function to find a key in a nested object
-function findValueByKey(obj, targetKey) {
-	if (obj === null || typeof obj !== "object") return undefined;
-
-	if (targetKey in obj) {
-		return obj[targetKey];
-	}
-
-	for (const key in obj) {
-		if (typeof obj[key] === "object") {
-			const found = findValueByKey(obj[key], targetKey);
-			if (found !== undefined) {
-				return found;
-			}
-		}
-	}
-
-	return undefined;
-}
-
-// Function to resolve $ref to actual schema or return the ref name
-const pointToSchema = (schema) => {
-	if (!schema) return {};
-
-	const schemaRef = findValueByKey(schema, '$ref');
-	if (schemaRef) {
-		const refName = schemaRef.replace("#/components/schemas/", "");
-		const sch = componentSchemas[refName] || {};
-
-		if(findValueByKey(sch, '$ref'))
-			return pointToSchema(componentSchemas[refName] || {});
-		return refName;
-	}
-
-	return schema;
-}
 
 // Recursively point to schema for each method
 Object.values(pathGroups).forEach((methods) => {
@@ -127,7 +91,15 @@ Object.entries(pathGroups).forEach(([service, method]) => {
 				))
 				.filter(Boolean)
 		])
-	)
+	).map(c => ({
+		schemaName: changeCase.camelCase(c),
+		schemaString: openApiToZodString(componentSchemas[c], componentSchemas, c),
+		schemaObject: Object.fromEntries(
+			Object.entries(
+				findValueByKey(componentSchemas[c] || {}, 'properties')
+			).filter(([key]) => !['id', 'created_at', 'updated_at', 'created_employee'].includes(key))
+		),
+	}))
 	dashboardPaths[service] = {
 		schemas,
 		endpoints: Object.values(method),
