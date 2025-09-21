@@ -1,20 +1,61 @@
-// services/categories/schema.ts
 import { z } from 'zod';
 
-export const CategorySchema = z.object({
-  id: z.number().int().positive(),
+export const categoryResponseSchema = z.object({
+  id: z.number(),
   name: z.string(),
-  description: z.string(),
-  is_adult: z.boolean(),
+  description: z.string().optional(),
+  is_adult: z.boolean().optional(),
 });
 
-export const CategoriesResponseSchema = z.object({
-  status: z.string(), // or z.literal("success") if you want to lock it
+export type CategoryResponseType = z.infer<typeof categoryResponseSchema>;
+
+export const baseResponseListUnionCategoryResponseNoneTypeSchema = z.object({
+  status: z.string(),
   message: z.string(),
-  data: z.array(CategorySchema),
-  total_count: z.number().int().nonnegative().optional(), // include if your API returns it
+  data: z.array(categoryResponseSchema),
+  total_count: z.number().optional(),
 });
 
-// Types you’ll use in TS
-export type Category = z.output<typeof CategorySchema>;
-export type CategoriesResponse = z.output<typeof CategoriesResponseSchema>;
+export type BaseResponseListUnionCategoryResponseNoneTypeType = z.infer<
+  typeof baseResponseListUnionCategoryResponseNoneTypeSchema
+>;
+
+export const baseResponseUnionCategoryResponseNoneTypeSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: categoryResponseSchema,
+  total_count: z.number().optional(),
+});
+
+export type BaseResponseUnionCategoryResponseNoneTypeType = z.infer<
+  typeof baseResponseUnionCategoryResponseNoneTypeSchema
+>;
+
+export const categoryCreateSchema = z.object({
+  name: z.string(),
+  description: z.string().optional(),
+  is_adult: z.boolean().optional(),
+});
+
+export type CategoryCreateType = z.infer<typeof categoryCreateSchema>;
+
+export const categoryUpdateSchema = z.object({
+  name: z.string().optional(),
+  description: z.string().optional(),
+  is_adult: z.boolean().optional(),
+});
+
+export type CategoryUpdateType = z.infer<typeof categoryUpdateSchema>;
+
+export const baseResponseUnionDictNoneTypeSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: z.object({}),
+  total_count: z.number().optional(),
+});
+
+export type BaseResponseUnionDictNoneTypeType = z.infer<
+  typeof baseResponseUnionDictNoneTypeSchema
+>;
+
+export const RVK_CATEGORIES = 'categories';

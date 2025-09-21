@@ -15,10 +15,10 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-  GenresBodyType,
-  GenresItemType,
-  genresSchema,
-  patchGenresDetail,
+  GenreResponseType,
+  genreUpdateSchema,
+  GenreUpdateType,
+  updateGenre,
 } from '@/services/genres';
 
 export function UpdateDialog({
@@ -26,22 +26,19 @@ export function UpdateDialog({
   initialData,
 }: {
   children: ReactNode;
-  initialData: GenresItemType;
+  initialData: GenreResponseType;
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<GenresBodyType>({
-    resolver: zodResolver(genresSchema),
+  const form = useForm<GenreUpdateType>({
+    resolver: zodResolver(genreUpdateSchema),
     defaultValues: initialData,
   });
 
-  function onSubmit({ ...values }: GenresBodyType) {
+  function onSubmit(values: GenreUpdateType) {
     startTransition(() => {
-      patchGenresDetail({
-        ...values,
-        id: initialData.id,
-      })
+      updateGenre(initialData.id, values)
         .then(() => {
           toast.success('Updated successfully');
           dialogRef?.current?.close();

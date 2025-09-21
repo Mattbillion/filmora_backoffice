@@ -20,14 +20,12 @@ export default async function GenresPage(props: {
 }) {
   const session = await auth();
   const searchParams = await props.searchParams;
-  const { data } = await getGenres(searchParams);
+  const { data, total_count } = await getGenres(searchParams);
 
   return (
     <>
       <div className="flex items-start justify-between">
-        <Heading
-          title={`Genres list (${data?.total_count ?? data?.data?.length})`}
-        />
+        <Heading title={`Genres list (${total_count ?? data?.length})`} />
         {checkPermission(session, []) && (
           <CreateDialog>
             <Button className="text-xs md:text-sm">
@@ -40,8 +38,8 @@ export default async function GenresPage(props: {
       <Suspense fallback="Loading">
         <DataTable
           columns={genresColumns}
-          data={data?.data}
-          rowCount={data?.total_count ?? data?.data?.length}
+          data={data}
+          rowCount={total_count ?? data?.length}
         />
       </Suspense>
     </>
