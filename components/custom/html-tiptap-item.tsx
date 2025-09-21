@@ -36,7 +36,7 @@ export default function HtmlTipTapItem({
               formState.errors[field.name],
           })}
           output="html"
-          immediatelyRender={true}
+          immediatelyRender={false}
           editable={true}
           injectCSS={true}
           editorClassName="focus:outline-none p-5"

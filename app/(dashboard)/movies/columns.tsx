@@ -24,9 +24,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
-
-import { deleteMoviesDetail } from './actions';
-import { MoviesItemType } from './schema';
+import { MoviesItemType } from '@/services/movies/schema';
+import { deleteMoviesDetail } from '@/services/movies/service';
 
 const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
   const [loading, setLoading] = useState(false);
@@ -159,7 +158,7 @@ export const moviesColumns: ColumnDef<MoviesItemType>[] = [
     id: 'price',
     accessorKey: 'price',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.price?.slice(0, 300),
+    cell: ({ row }) => row.original.price,
     enableSorting: true,
     enableColumnFilter: true,
   },
