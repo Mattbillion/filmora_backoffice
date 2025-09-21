@@ -90,19 +90,6 @@ module.exports = function (plop) {
           schemaImports: serviceSchemaImports
         };
 
-        // actions.push({
-        //   type: 'add',
-        //   path: `../../services/${service}/index.ts`,
-        //   templateFile: './services/index.ts.hbs',
-        //   force: true,
-        // });
-        // actions.push({
-        //   type: 'add',
-        //   path: `../../services/${service}/schema.ts`,
-        //   templateFile: './services/schema.ts.hbs',
-        //   data,
-        //   force: true,
-        // });
         actions.push({
           type: 'add',
           path: `../../services/${service}.ts`,

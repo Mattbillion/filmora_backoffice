@@ -69,37 +69,6 @@ module.exports = function (
     return `Generated file at ${outputPath} \n schema: ${zodSchema}`;
   });
 
-  // Service-only generator
-  plop.setGenerator('service', {
-    description: 'Generate only the service layer under services/{entity}',
-    prompts: [
-      { type: 'input', name: 'route-name', message: "Enter the service alias (e.g., 'genres'):" },
-      { type: 'input', name: 'endpoint', message: "Enter the API endpoint base (e.g., 'genres'):" },
-    ],
-    actions: (data) => serviceActions(data['route-name'], data['endpoint'])
-  });
-
-  // Multi-service generator
-  plop.setGenerator('services', {
-    description: 'Generate multiple services: alias:endpoint (space-separated)',
-    prompts: [
-      { type: 'input', name: 'services', message: "Enter services like 'genres:genres movies:movies'" },
-    ],
-    actions: (data) => {
-      const entries = data?.services?.split(' ').filter(Boolean) || [];
-      const actions = [];
-      for (const entry of entries) {
-        const [routeName, endpoint] = entry.split(':');
-        if (!routeName || !endpoint) {
-          actions.push({ type: 'abort', message: `Invalid service format: '${entry}'. Use alias:endpoint.` });
-          continue;
-        }
-        actions.push(...serviceActions(routeName, endpoint));
-      }
-      return actions;
-    }
-  });
-
   // Route generator that auto-creates service if missing
   plop.setGenerator('route', {
     description:
@@ -124,32 +93,6 @@ module.exports = function (
         actions.push(...serviceActions(routeName, endpoint));
       }
       actions.push(...routeActions(routeName, endpoint, pathStr));
-      return actions;
-    },
-  });
-
-  // Multi-route generator (auto-create services as needed)
-  plop.setGenerator('routes', {
-    description:
-      "Generate multiple routes. Input 'alias:endpoint:path' (space-separated). Auto-generates services if missing.",
-    prompts: [
-      { type: 'input', name: 'routes', message: "Example: 'genres:genres:genres movies:movies:movies'" },
-    ],
-    actions: (data) => {
-      const entries = data?.routes?.split(' ').filter(Boolean) || [];
-      const actions = [];
-      for (const entry of entries) {
-        const [routeName, endpoint, pathStr] = entry.split(':');
-        if (!routeName || !endpoint || !pathStr) {
-          actions.push({ type: 'abort', message: `Invalid route format: '${entry}'. Use alias:endpoint:path.` });
-          continue;
-        }
-        const { serviceDir } = computePaths(routeName, routeName);
-        const absServiceDir = path.resolve(__dirname, serviceDir);
-        const serviceExists = fs.existsSync(absServiceDir) && fs.existsSync(path.join(absServiceDir, 'service.ts')) && fs.existsSync(path.join(absServiceDir, 'schema.ts'));
-        if (!serviceExists) actions.push(...serviceActions(routeName, endpoint));
-        actions.push(...routeActions(routeName, endpoint, pathStr));
-      }
       return actions;
     },
   });

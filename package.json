@@ -9,9 +9,7 @@
     "lint": "eslint . --fix",
     "format": "prettier --write .",
     "gen:route": "plop route --plopfile dev-only/plop-generator/index.js",
-    "gen:routes": "plop routes --plopfile dev-only/plop-generator/index.js",
-    "gen:service": "plop service --plopfile dev-only/plop-generator/index.js",
-    "gen:services": "plop services --plopfile dev-only/plop-generator/index.js",
+    "gen:dashboard-route": "plop route --plopfile dev-only/dashboard-route/index.js",
     "gen:openapi-services": "plop gen-openapi-services --plopfile dev-only/openapi/plopfile.js"
   },
   "dependencies": {
