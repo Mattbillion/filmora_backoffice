@@ -1,99 +1,67 @@
-import * as actions from '../api/actions';
-import { executeRevalidate } from '../api/helpers';
-import {
-  BaseResponseUnionDictNoneTypeType,
-  BaseResponseUnionListMovieListResponseNoneTypeType,
-  BaseResponseUnionMovieResponseNoneTypeType,
-  BaseResponseUnionMovieResponseNoneTypeType,
-  MovieCreateType,
-  MovieUpdateType,
-  RVK_MOVIES,
-  SingleItemReponseMovieResponseType,
-} from './schema';
+import { QueryParams } from '@interpriz/lib/utils';
 
-// Auto-generated service for movies
+import { filmoraFetch } from '@/lib/fetch';
+import { ID, PaginatedResType } from '@/lib/fetch/types';
+import { executeRevalidate } from '@/lib/filmora';
 
-export async function createMovie(body: MovieCreateType) {
-  const res = await actions.post<BaseResponseUnionMovieResponseNoneTypeType>(
-    `/movies`,
-    body,
-  );
+import { MoviesBodyType, MoviesItemType, RVK_MOVIES } from './schema';
 
-  const { body: response, error } = res;
-  if (error) throw new Error(error);
+export async function getMovies(searchParams?: QueryParams) {
+  try {
+    const { body, error } = await filmoraFetch<
+      PaginatedResType<MoviesBodyType>
+    >('/movies', {
+      method: 'GET',
+      searchParams,
+      next: { tags: [RVK_MOVIES] },
+    });
+    if (error) throw new Error(error);
 
-  return response;
+    return { data: body, error: null };
+  } catch (error) {
+    console.error(`Error fetchin /movies:`, error);
+    return { data: { data: [], total_count: 0 }, error };
+  }
 }
 
-export async function getMovies(
-  searchParams: {
-    page?: number;
-    page_size?: number;
-    title?: string;
-    type?: string;
-    year?: number;
-    category_id?: number;
-    genre_id?: number;
-    is_premium?: boolean;
-    is_adult?: boolean;
-  } = {},
-) {
-  const res =
-    await actions.get<BaseResponseUnionListMovieListResponseNoneTypeType>(
-      `/movies`,
+export async function deleteMoviesDetail(param1: string | ID) {
+  const { body, error } = await filmoraFetch(`/movies/${param1}`, {
+    method: 'DELETE',
+    cache: 'no-store',
+  });
+
+  if (error) throw new Error(error);
+
+  executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_${param1}`]);
+  return { data: body, error: null };
+}
+
+export async function getMoviesDetail(param1: string | ID) {
+  try {
+    const { body, error } = await filmoraFetch<{ data: MoviesItemType }>(
+      `/movies/${param1}`,
       {
-        searchParams,
-        next: {
-          tags: [RVK_MOVIES],
-        },
+        method: 'GET',
+        next: { tags: [`${RVK_MOVIES}_${param1}`] },
       },
     );
-
-  const { body: response, error } = res;
-  if (error) throw new Error(error);
-
-  return response;
+    if (error) throw new Error(error);
+    return { data: body };
+  } catch (error) {
+    console.error(`Error fetching /movies/${param1}:`, error);
+    return { data: null, error };
+  }
 }
 
-export async function getMovie(movieId: string) {
-  const res = await actions.get<SingleItemReponseMovieResponseType>(
-    `/movies/${movieId}`,
-    {
-      next: {
-        tags: [RVK_MOVIES, `${RVK_MOVIES}_movieId_${movieId}`],
-      },
-    },
-  );
-
-  const { body: response, error } = res;
+export async function updateMovie(param1: string | ID, payload: any) {
+  const { body, error } = await filmoraFetch<{
+    data: MoviesItemType;
+    status: string;
+    message: string;
+  }>(`/movies/${param1}`, {
+    method: 'PUT',
+    body: payload,
+  });
   if (error) throw new Error(error);
-
-  return response;
-}
-
-export async function updateMovie(movieId: string, body: MovieUpdateType) {
-  const res = await actions.put<BaseResponseUnionMovieResponseNoneTypeType>(
-    `/movies/${movieId}`,
-    body,
-  );
-
-  const { body: response, error } = res;
-  if (error) throw new Error(error);
-
-  executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_movieId_${movieId}`]);
-
-  return response;
-}
-
-export async function deleteMovie(movieId: string) {
-  const res = await actions.destroy<BaseResponseUnionDictNoneTypeType>(
-    `/movies/${movieId}`,
-  );
-
-  const { body: response, error } = res;
-  if (error) throw new Error(error);
-
-  executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_movieId_${movieId}`]);
-
-  return response;
+  return { data: body, error: null };
 }

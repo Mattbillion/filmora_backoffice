@@ -132,7 +132,7 @@ function genFetchParams(url: string, options: FetchOptions = {}) {
   };
 
   if (isBodyObject) {
-    fetchOptions.body = JSON.stringify(clearObj(options.body)) as any;
+    fetchOptions.body = JSON.stringify(options.body) as any;
   }
 
   fetchOptions.credentials = 'include';
