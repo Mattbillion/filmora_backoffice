@@ -8,7 +8,6 @@
     "start": "next start",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
-    "gen:route": "plop route --plopfile dev-only/plop-generator/index.js",
     "gen:dashboard-route": "plop route --plopfile dev-only/dashboard-route/index.js",
     "gen:openapi-services": "plop gen-openapi-services --plopfile dev-only/openapi/plopfile.js"
   },
