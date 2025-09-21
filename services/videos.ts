@@ -1,6 +1,7 @@
-import * as actions from '../api/actions';
-import { executeRevalidate } from '../api/helpers';
-import { BaseResponseUnionListDictNoneTypeType, RVK_VIDEOS } from './schema';
+import * as actions from './api/actions';
+import { executeRevalidate } from './api/helpers';
+import { RVK_VIDEOS } from './rvk';
+import { BaseResponseUnionListDictNoneTypeType } from './schema';
 
 // Auto-generated service for videos
 

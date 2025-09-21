@@ -1,8 +1,8 @@
-import * as actions from '../api/actions';
+import * as actions from './api/actions';
+import { RVK_SEASONS } from './rvk';
 import {
   BaseResponseUnionListSeriesSeasonDictType,
   BaseResponseUnionSeriesSeasonDictType,
-  RVK_SEASONS,
 } from './schema';
 
 // Auto-generated service for seasons

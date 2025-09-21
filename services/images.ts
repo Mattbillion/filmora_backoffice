@@ -1,6 +1,7 @@
-import * as actions from '../api/actions';
-import { executeRevalidate } from '../api/helpers';
-import { ImageListResponseType, RVK_IMAGES } from './schema';
+import * as actions from './api/actions';
+import { executeRevalidate } from './api/helpers';
+import { RVK_IMAGES } from './rvk';
+import { ImageListResponseType } from './schema';
 
 // Auto-generated service for images
 

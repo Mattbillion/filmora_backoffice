@@ -1,4 +1,4 @@
-import * as actions from '../api/actions';
+import * as actions from './api/actions';
 import { BaseResponseDictType, BodyDashboardUploadImageType } from './schema';
 
 // Auto-generated service for upload-image

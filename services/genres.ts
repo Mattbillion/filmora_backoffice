@@ -1,12 +1,12 @@
-import * as actions from '../api/actions';
-import { executeRevalidate } from '../api/helpers';
+import * as actions from './api/actions';
+import { executeRevalidate } from './api/helpers';
+import { RVK_GENRES } from './rvk';
 import {
   BaseResponseUnionDictNoneTypeType,
   BaseResponseUnionGenreResponseNoneTypeType,
   BaseResponseUnionListGenreResponseNoneTypeType,
   GenreCreateType,
   GenreUpdateType,
-  RVK_GENRES,
 } from './schema';
 
 // Auto-generated service for genres

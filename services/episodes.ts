@@ -1,5 +1,6 @@
-import * as actions from '../api/actions';
-import { BaseResponseUnionSeriesEpisodeDictType, RVK_EPISODES } from './schema';
+import * as actions from './api/actions';
+import { RVK_EPISODES } from './rvk';
+import { BaseResponseUnionSeriesEpisodeDictType } from './schema';
 
 // Auto-generated service for episodes
 

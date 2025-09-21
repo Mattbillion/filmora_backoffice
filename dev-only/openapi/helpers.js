@@ -55,17 +55,60 @@ function openApiToZodString(schema) {
 
 	if(schema.$ref) return changeCase.camelCase(schema.$ref.replace("#/components/schemas/", "")) + 'Schema';
 
+	function handleStrType(schema) {
+
+		function handleByFormat() {
+			switch (schema.format) {
+				case 'date-time':
+					return "z.iso.datetime()";
+				case 'date':
+					return "z.string().date()";
+				case 'email':
+					return "z.string().email()";
+				case 'uuid':
+					return "z.uuid()";
+				case 'url':
+					return "z.string().url()";
+				case 'binary':
+					return "z.instanceof(Blob)"; // Safe for browser and Node.js
+				default:
+					return "z.string()"; // fallback for unknown formats
+			}
+		}
+		if (schema.maxLength || schema.minLength) {
+			let str = handleByFormat();
+			if (schema.maxLength) str += `.max(${schema.maxLength})`;
+			if (schema.minLength) str += `.min(${schema.minLength})`;
+			return str;
+		}
+		return handleByFormat();
+	}
+
+	function handleIntegerType(schema) {
+		let num = "z.number().int()";
+		if(schema.minimum !== undefined) num += `.min(${schema.minimum})`;
+		if(schema.maximum !== undefined) num += `.max(${schema.maximum})`;
+		return num;
+	}
+
+	function handleNumberType(schema) {
+		let num = "z.number()";
+		if(schema.minimum !== undefined) num += `.min(${schema.minimum})`;
+		if(schema.maximum !== undefined) num += `.max(${schema.maximum})`;
+		return num;
+	}
+
 	switch (schema.type) {
 		case "undefined":
 			return "";
 		case "null":
 			return "";
 		case "string":
-			return "z.string()";
+			return handleStrType(schema);
 		case "integer":
-			return "z.number()";
+			return handleIntegerType(schema);
 		case "number":
-			return "z.number()";
+			return handleNumberType(schema);
 		case "boolean":
 			return "z.boolean()";
 		case "array":

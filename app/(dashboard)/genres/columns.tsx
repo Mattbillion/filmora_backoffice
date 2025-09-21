@@ -21,7 +21,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { deleteGenre, GenreResponseType } from '@/services/genres';
+import { deleteGenre } from '@/services/genres';
+import { GenreResponseType } from '@/services/schema';
 
 import { UpdateDialog } from './components';
 

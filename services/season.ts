@@ -1,10 +1,10 @@
-import * as actions from '../api/actions';
-import { executeRevalidate } from '../api/helpers';
+import * as actions from './api/actions';
+import { executeRevalidate } from './api/helpers';
+import { RVK_SEASON } from './rvk';
 import {
   BaseResponseDictType,
   BaseResponseUnionSeriesSeasonDictType,
   BaseResponseUnionSeriesSeasonDictType,
-  RVK_SEASON,
   SeriesSeasonCreateType,
   SeriesSeasonUpdateType,
 } from './schema';

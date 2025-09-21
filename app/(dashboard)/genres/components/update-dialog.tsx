@@ -14,12 +14,12 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { updateGenre } from '@/services/genres';
 import {
   GenreResponseType,
   genreUpdateSchema,
   GenreUpdateType,
-  updateGenre,
-} from '@/services/genres';
+} from '@/services/schema';
 
 export function UpdateDialog({
   children,

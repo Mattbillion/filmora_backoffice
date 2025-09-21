@@ -1,12 +1,12 @@
-import * as actions from '../api/actions';
-import { executeRevalidate } from '../api/helpers';
+import * as actions from './api/actions';
+import { executeRevalidate } from './api/helpers';
+import { RVK_CATEGORIES } from './rvk';
 import {
   BaseResponseListUnionCategoryResponseNoneTypeType,
   BaseResponseUnionCategoryResponseNoneTypeType,
   BaseResponseUnionDictNoneTypeType,
   CategoryCreateType,
   CategoryUpdateType,
-  RVK_CATEGORIES,
 } from './schema';
 
 // Auto-generated service for categories

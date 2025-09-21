@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { getCategories } from '@/services/categories/service';
+import { getCategories } from '@/services/categories';
 import {
   MoviesBodyType,
   MoviesItemType,

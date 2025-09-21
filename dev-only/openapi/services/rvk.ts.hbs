@@ -1,0 +1,3 @@
+{{#each revalidationKeys}}
+    export const RVK_{{constantCase this}} = '{{rvkValue}}' as const;
+{{/each}}

@@ -103,30 +103,30 @@ Object.values(pathGroups).forEach((methods) => {
 });
 
 let dashboardPaths = {};
+const schemas = new Map();
+
+function addToSchemas(schemaName) {
+	const key = changeCase.camelCase(schemaName);
+	if(!schemas.has(key)) {
+		const schemaObject = componentSchemas[schemaName] || {};
+
+
+		const schemaRef = findValueByKey(schemaObject, '$ref');
+		if (schemaRef) addToSchemas(schemaRef.replace("#/components/schemas/", ""));
+
+		schemas.set(key, {
+			schemaName: key + 'Schema',
+			schemaTypeName: changeCase.pascalCase(key) + 'Type',
+			schemaString: openApiToZodString(componentSchemas[schemaName]),
+			schemaObject,
+			schemaEntries:
+				Object.keys(findValueByKey(schemaObject, 'properties') || {})
+					.filter((k) => !['id', 'created_at', 'updated_at', 'created_employee'].includes(k))
+		});
+	}
+}
 
 Object.entries(pathGroups).forEach(([service, methods]) => {
-	const schemas = new Map();
-
-	function addToSchemas(schemaName) {
-		const key = changeCase.camelCase(schemaName);
-		if(!schemas.has(key)) {
-			const schemaObject = componentSchemas[schemaName] || {};
-
-
-			const schemaRef = findValueByKey(schemaObject, '$ref');
-			if (schemaRef) addToSchemas(schemaRef.replace("#/components/schemas/", ""));
-
-			schemas.set(key, {
-				schemaName: key + 'Schema',
-				schemaTypeName: changeCase.pascalCase(key) + 'Type',
-				schemaString: openApiToZodString(componentSchemas[schemaName]),
-				schemaObject,
-				schemaEntries:
-					Object.keys(findValueByKey(schemaObject, 'properties') || {})
-						.filter((k) => !['id', 'created_at', 'updated_at', 'created_employee'].includes(k))
-			});
-		}
-	}
 
 	Object.values(methods).forEach(method => {
 		if(typeof method.schema === 'string') {
@@ -139,7 +139,6 @@ Object.entries(pathGroups).forEach(([service, methods]) => {
 	})
 
 	dashboardPaths[service] = {
-		schemas: Array.from(schemas.values()),
 		endpoints: Object.values(methods).map(method => ({
 			...method,
 			schemaImports:
@@ -150,13 +149,5 @@ Object.entries(pathGroups).forEach(([service, methods]) => {
 	}
 });
 
-/**
- *
- * @return {{dashboardPaths: {
- *   [x: string]: {
- *     schemas: {schemaName: string, schemaTypeName: string, schemaString: string, schemaObject: object, schemaEntries: [string, string][]}[],
- *     endpoints: {summary: string, route: string, method: string, schema?: string, bodySchema?: string, contentType?: string, pathArgs?: string, queryArg?: string, schemaImports: string[]}[]
- *   }
- * }} An object containing grouped dashboard paths with their schemas and endpoints.
-* */
-module.exports = { dashboardPaths }
+
+module.exports = { dashboardPaths, schemas: Array.from(schemas.values()) }

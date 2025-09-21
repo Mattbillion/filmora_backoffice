@@ -1,0 +1,11 @@
+export const RVK_SEASONS = '' as const;
+export const RVK_EPISODES = '' as const;
+export const RVK_SEASON = '' as const;
+export const RVK_AUTH = '' as const;
+export const RVK_UPLOAD_IMAGE = '' as const;
+export const RVK_IMAGES = '' as const;
+export const RVK_CATEGORIES = '' as const;
+export const RVK_GENRES = '' as const;
+export const RVK_MOVIES = '' as const;
+export const RVK_UPLOAD_VIDEO = '' as const;
+export const RVK_VIDEOS = '' as const;

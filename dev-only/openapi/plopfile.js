@@ -6,26 +6,32 @@ function loadDashboardPaths() {
   return dashboardPaths;
 }
 
+function loadSchemas() {
+  const { schemas } = require('./endpoint-group');
+  return schemas;
+}
+
 const dashboardPaths = loadDashboardPaths();
+const schemas = loadSchemas();
 
 const execEslint = (service) => {
   try {
-    execSync(`npx eslint --fix "services/${service}/**"`);
+    execSync(`npx eslint --fix "services/${service}.ts"`);
 
-    return 'ESLint fixes applied successfully';
+    return `ESLint fixes applied successfully: "services/${service}.ts"`;
   } catch (error) {
-    return 'Failed to apply ESLint fixes. Check for unresolved lint errors.';
+    return `"services/${service}.ts" Failed to apply ESLint fixes. Check for unresolved lint errors.`;
   }
 }
 const execPrettier = (service) => {
   try {
     execSync(
-      `npx prettier --write "services/${service}/**"`,
+      `npx prettier --write "services/${service}.ts"`,
     );
 
-    return 'Formatted with Prettier';
+    return `Formatted with Prettier: services/${service}.ts`;
   } catch (error) {
-    return 'Failed to format files.';
+    return `Failed to format "services/${service}.ts"`;
   }
 }
 
@@ -43,7 +49,17 @@ module.exports = function (plop) {
     prompts: [],
     actions: function () {
       const services = Object.keys(dashboardPaths);
-      const actions = [];
+      const actions = [
+        {
+          type: 'add',
+          path: `../../services/rvk.ts`,
+          templateFile: './services/rvk.ts.hbs',
+          data: { revalidationKeys: services },
+          force: true,
+        },
+        () => execPrettier('rvk'),
+        () => execEslint('rvk')
+      ];
 
       services.forEach((service) => {
         const serviceSchemaImports = Array.from(
@@ -74,22 +90,22 @@ module.exports = function (plop) {
           schemaImports: serviceSchemaImports
         };
 
+        // actions.push({
+        //   type: 'add',
+        //   path: `../../services/${service}/index.ts`,
+        //   templateFile: './services/index.ts.hbs',
+        //   force: true,
+        // });
+        // actions.push({
+        //   type: 'add',
+        //   path: `../../services/${service}/schema.ts`,
+        //   templateFile: './services/schema.ts.hbs',
+        //   data,
+        //   force: true,
+        // });
         actions.push({
           type: 'add',
-          path: `../../services/${service}/index.ts`,
-          templateFile: './services/index.ts.hbs',
-          force: true,
-        });
-        actions.push({
-          type: 'add',
-          path: `../../services/${service}/schema.ts`,
-          templateFile: './services/schema.ts.hbs',
-          data,
-          force: true,
-        });
-        actions.push({
-          type: 'add',
-          path: `../../services/${service}/service.ts`,
+          path: `../../services/${service}.ts`,
           templateFile: './services/service.ts.hbs',
           data,
           force: true,
@@ -97,6 +113,18 @@ module.exports = function (plop) {
         actions.push(() => execPrettier(service));
         actions.push(() => execEslint(service));
       });
+
+      actions.push(...[
+        {
+          type: 'add',
+          path: `../../services/schema.ts`,
+          templateFile: './services/schema.ts.hbs',
+          data: { schemas },
+          force: true,
+        },
+        () => execPrettier('schema'),
+        () => execEslint('schema')
+      ])
 
       return actions;
     },
