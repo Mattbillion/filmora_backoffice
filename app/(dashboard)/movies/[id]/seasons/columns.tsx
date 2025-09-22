@@ -1,5 +1,3 @@
-'use client';
-
 import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
 
@@ -13,14 +11,6 @@ export const seasonsColumns: ColumnDef<SeriesSeasonType>[] = [
     accessorKey: 'id',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) => row.original.id,
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'movie_id',
-    accessorKey: 'movie_id',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.movie_id,
     enableSorting: true,
     enableColumnFilter: true,
   },

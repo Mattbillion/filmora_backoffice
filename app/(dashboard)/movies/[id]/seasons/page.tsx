@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -12,20 +11,18 @@ import { seasonsColumns } from './columns';
 export const dynamic = 'force-dynamic';
 
 export default async function SeasonsPage(props: {
+  params: Promise<{ id: string }>;
   searchParams?: SearchParams<{
     page?: number;
     page_size?: number;
   }>;
 }) {
-  const session = await auth();
+  const params = await props.params;
   const searchParams = await props.searchParams;
-  const { data } = await getSeriesSeasons(
-    '-1', // movieId: string  // Check and fix, its generated and might be dumb
-    searchParams,
-  );
+  const { data, total_count } = await getSeriesSeasons(params.id, searchParams);
 
-  const list = data?.data || []; // Check and fix, its generated and might be dumb
-  const count = data?.total_count ?? list.length; // Check and fix, its generated and might be dumb
+  const list = data || [];
+  const count = total_count ?? list.length;
 
   return (
     <>
