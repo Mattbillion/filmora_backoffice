@@ -28,7 +28,7 @@ export type BaseResponseUnionListSeriesSeasonDictType = z.infer<
 export const baseResponseUnionSeriesSeasonDictSchema = z.object({
   status: z.string(),
   message: z.string(),
-  data: z.union([seriesSeasonSchema]),
+  data: seriesSeasonSchema,
   total_count: z.number().int().optional(),
 });
 

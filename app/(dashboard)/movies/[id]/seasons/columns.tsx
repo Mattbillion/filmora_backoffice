@@ -1,8 +1,10 @@
+'use client';
+
 import { ColumnDef } from '@tanstack/react-table';
 import Image from 'next/image';
 
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { removeHTML } from '@/lib/utils';
+import { isUri, removeHTML } from '@/lib/utils';
 import { SeriesSeasonType } from '@/services/schema';
 
 export const seasonsColumns: ColumnDef<SeriesSeasonType>[] = [
@@ -55,9 +57,9 @@ export const seasonsColumns: ColumnDef<SeriesSeasonType>[] = [
     accessorKey: 'cover_image_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
     cell: ({ row }) =>
-      row.original.cover_image_url ? (
+      isUri(row.original.cover_image_url) ? (
         <Image
-          src={row.original.cover_image_url}
+          src={row.original.cover_image_url!}
           alt=""
           width={48}
           height={48}
