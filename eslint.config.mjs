@@ -12,7 +12,15 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   {
-    ignores: ['dev-only', '.next', '.turbo', 'dist', 'build', 'coverage'],
+    ignores: [
+      'dev-only/**',
+      '.next',
+      '.turbo',
+      'dist',
+      'build',
+      'coverage',
+      'next-env.d.ts',
+    ],
   },
   ...compat.extends('next/core-web-vitals', 'next/typescript'),
   ...interprizConfig,

@@ -4,7 +4,6 @@ import { RVK_SEASON } from './rvk';
 import {
   BaseResponseDictType,
   BaseResponseUnionSeriesSeasonDictType,
-  BaseResponseUnionSeriesSeasonDictType,
   SeriesSeasonCreateType,
   SeriesSeasonUpdateType,
 } from './schema';

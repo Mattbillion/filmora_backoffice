@@ -51,9 +51,9 @@ export async function post<T>(
 ) {
   try {
     return await apiServer.post<T>(url, body, options);
-  } catch (error) {
+  } catch (error: any) {
     redirectIfUnauthorized(error);
-    throw error;
+    throw new Error(error.error);
   }
 }
 
