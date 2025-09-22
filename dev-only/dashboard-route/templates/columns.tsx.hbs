@@ -25,7 +25,7 @@ import { Button } from '@/components/ui/button';
 {{#if endpoints.list}}
     import {
         {{#each endpoints.list}}
-            {{this.summary}}{{#unless @last}},{{/unless}}
+            {{this.summary}},
         {{/each}}
         {{#each endpoints.remove}}
             {{this.summary}}{{#unless @last}},{{/unless}}
@@ -176,7 +176,7 @@ export const {{camelCase service}}Columns: ColumnDef<{{columnSchema.schemaTypeNa
                     {{#if (isCurrency this.field)}}
                         currencyFormat(row.original.{{this.field}}),
                     {{else}}
-                        {{#if (eq this.value 'boolean')}}
+                        {{#if (eq this.type 'boolean')}}
                             <Badge variant={row.original.{{this.field}} ? 'outline' : 'destructive'}>
                             {row.original.{{this.field}} ? 'Active' : 'Inactive'}
                             </Badge>,
