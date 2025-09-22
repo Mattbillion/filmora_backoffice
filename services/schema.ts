@@ -289,7 +289,7 @@ export const movieListResponseSchema = z.object({
   price: z.number().int().optional(),
   is_premium: z.boolean().optional(),
   poster_url: z.string().optional(),
-  load_image_url: z.string().optional(),
+  load_image_url: z.string(),
   trailer_url: z.string().optional(),
   is_adult: z.boolean().optional(),
   created_at: z.iso.datetime(),

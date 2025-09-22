@@ -5,6 +5,8 @@ import { Toaster } from 'sonner';
 
 import './globals.css';
 
+import { ThemeProvider } from '@/components/custom/theme-provider';
+
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
   variable: '--font-geist-sans',
@@ -27,21 +29,21 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/*<ThemeProvider*/}
-        {/*  attribute="class"*/}
-        {/*  defaultTheme="system"*/}
-        {/*  enableSystem*/}
-        {/*  disableTransitionOnChange*/}
-        {/*>*/}
         <SessionProvider>
-          {children}
-          <Toaster />
+          <ThemeProvider
+            defaultTheme="dark"
+            attribute="class"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster position="top-center" />
+          </ThemeProvider>
         </SessionProvider>
-        {/*</ThemeProvider>*/}
       </body>
     </html>
   );

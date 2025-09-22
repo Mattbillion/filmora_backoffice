@@ -3,7 +3,6 @@
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -24,10 +23,10 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
-import { MoviesItemType } from '@/services/movies/schema';
 import { deleteMoviesDetail } from '@/services/movies/service';
+import { MovieListResponseType } from '@/services/schema';
 
-const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
+const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
@@ -100,24 +99,24 @@ const Action = ({ row }: CellContext<MoviesItemType, unknown>) => {
   );
 };
 
-export const moviesColumns: ColumnDef<MoviesItemType>[] = [
-  {
-    id: 'poster_url',
-    accessorKey: 'poster_url',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <div className="relative aspect-[3/4] overflow-hidden rounded-md">
-        <Image
-          src={row.original.poster_url}
-          alt=""
-          fill
-          className="object-cover"
-        />
-      </div>
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
-  },
+export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
+  // {
+  //   id: 'poster_url',
+  //   accessorKey: 'poster_url',
+  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
+  //   cell: ({ row }) => (
+  //     <div className="relative aspect-[3/4] overflow-hidden rounded-md">
+  //       <Image
+  //         src={row.original.poster_url ?? ''}
+  //         alt=""
+  //         fill
+  //         className="object-cover"
+  //       />
+  //     </div>
+  //   ),
+  //   enableSorting: false,
+  //   enableColumnFilter: false,
+  // },
   {
     id: 'title',
     accessorKey: 'title',

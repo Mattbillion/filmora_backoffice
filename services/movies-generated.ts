@@ -12,7 +12,7 @@ import {
 
 // Auto-generated service for movies
 
-export async function createMovie(body: MovieCreateType) {
+export async function createMovieAction(body: MovieCreateType) {
   const res = await actions.post<BaseResponseUnionMovieResponseNoneTypeType>(
     `/movies`,
     body,
@@ -20,7 +20,7 @@ export async function createMovie(body: MovieCreateType) {
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
-
+  executeRevalidate([RVK_MOVIES]);
   return response;
 }
 

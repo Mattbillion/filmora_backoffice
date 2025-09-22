@@ -569,7 +569,7 @@ export const MultiSelect = React.forwardRef<MultiSelectRef, MultiSelectProps>(
 
     const getOptionByValue = React.useCallback(
       (value: string): MultiSelectOption | undefined => {
-        const option = getAllOptions().find((option) => option.value === value);
+        const option = getAllOptions().find((op) => op.value === value);
         if (!option && process.env.NODE_ENV === 'development') {
           console.warn(
             `MultiSelect: Option with value "${value}" not found in options list`,

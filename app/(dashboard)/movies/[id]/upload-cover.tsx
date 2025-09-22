@@ -3,11 +3,15 @@
 import { useCallback, useRef, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import { uploadMedia } from '@/services/media/service';
 import { type MoviesItemType } from '@/services/movies/schema';
 import { updateMovie } from '@/services/movies/service';
+import { ImageInfoType } from '@/services/schema';
+
+import { MediaDialog } from './media-dialog';
 
 export function UploadCover({
   id,
@@ -20,7 +24,32 @@ export function UploadCover({
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  /** Upload + update movie immediately */
+  const updateMovieWithNewCover = async (imageUrl: string) => {
+    const payload = {
+      title: initialData.title,
+      description: initialData.description,
+      type: initialData.type,
+      year: Number(initialData.year),
+      price: Number(initialData.price),
+      is_premium: initialData.is_premium,
+      is_adult: initialData.is_adult,
+      poster_url: initialData.poster_url,
+      load_image_url: imageUrl, //Setting new cover
+      categories: initialData.categories.map((c) => c.id),
+      genres: initialData.genres.map((g) => g.id),
+    };
+    return updateMovie(id, payload);
+  };
+
+  const getSelectedImage = async (image: ImageInfoType) => {
+    setIsUploading(true);
+    setPreview(image.image_url);
+    await updateMovieWithNewCover(image.image_url).finally(() => {
+      setIsUploading(false);
+      toast.success('Зургийг амжилттай орууллаа!');
+    });
+  };
+
   const handleFileSelect = useCallback(
     async (file: File) => {
       if (!file) return;
@@ -37,7 +66,6 @@ export function UploadCover({
       try {
         setIsUploading(true);
 
-        // Step 1: upload image
         const formData = new FormData();
         formData.append('file', file);
         formData.append('prefix', 'movies');
@@ -47,30 +75,12 @@ export function UploadCover({
 
         const imageUrl = body.data.images.original;
 
-        // Step 2: update preview
         setPreview(imageUrl);
 
-        // Step 3: send update to backend immediately
-        const payload = {
-          title: initialData.title,
-          description: initialData.description,
-          type: initialData.type,
-          year: Number(initialData.year),
-          price: Number(initialData.price),
-          is_premium: initialData.is_premium,
-          is_adult: initialData.is_adult,
-          poster_url: initialData.poster_url,
-          load_image_url: imageUrl, // new
-          categories: initialData.categories.map((c) => c.id),
-          genres: initialData.genres.map((g) => g.id),
-        };
-
-        const updated = await updateMovie(id, payload);
-        console.log('updated', updated);
-
-        console.log('✅ Movie updated with new cover:', updated);
+        await updateMovieWithNewCover(imageUrl);
+        toast.success('Зургийг амжилттай орууллаа!');
       } catch (err) {
-        console.error('Upload/update failed:', err);
+        toast.error('Зургийг оруулахад алдаа гарлаа!');
       } finally {
         setIsUploading(false);
       }
@@ -81,7 +91,7 @@ export function UploadCover({
   return (
     <div className="w-full">
       <h1 className="text-lg font-medium">Movie cover</h1>
-      <div className="relative aspect-[5/2] overflow-hidden rounded-xl bg-black">
+      <div className="relative aspect-[4/2] overflow-hidden rounded-xl bg-black">
         <Image
           src={preview || '/placeholder-image.jpg'}
           alt="Movie cover"
@@ -90,21 +100,15 @@ export function UploadCover({
           unoptimized
         />
 
-        {/* Upload button triggers hidden file input */}
-        <div className="absolute right-4 bottom-4">
+        <div className="absolute right-4 bottom-4 flex items-center gap-2">
           <Button
             type="button"
             onClick={() => inputRef.current?.click()}
             disabled={isUploading}
           >
-            {isUploading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Uploading...
-              </>
-            ) : (
-              'Upload Cover'
-            )}
+            Upload Cover
           </Button>
+          <MediaDialog updateAction={getSelectedImage} />
         </div>
 
         {/* Loader overlay */}
@@ -123,7 +127,7 @@ export function UploadCover({
         onChange={(e) => {
           const file = e.target.files?.[0];
           if (file) {
-            e.currentTarget.value = ''; // allow reselect same file
+            e.currentTarget.value = '';
             handleFileSelect(file);
           }
         }}
