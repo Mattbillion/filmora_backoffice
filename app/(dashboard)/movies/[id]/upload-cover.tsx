@@ -77,7 +77,7 @@ export function UploadCover({
 
         setPreview(imageUrl);
 
-        updateMovieWithNewCover(imageUrl);
+        await updateMovieWithNewCover(imageUrl);
         toast.success('Зургийг амжилттай орууллаа!');
       } catch (err) {
         toast.error('Зургийг оруулахад алдаа гарлаа!');
