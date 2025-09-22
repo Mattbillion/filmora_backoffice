@@ -44,7 +44,7 @@ export function UploadCover({
   const getSelectedImage = async (image: ImageInfoType) => {
     setIsUploading(true);
     setPreview(image.image_url);
-    updateMovieWithNewCover(image.image_url).finally(() => {
+    await updateMovieWithNewCover(image.image_url).finally(() => {
       setIsUploading(false);
       toast.success('Зургийг амжилттай орууллаа!');
     });
