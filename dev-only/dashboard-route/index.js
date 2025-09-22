@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const changeCase = require('change-case');
 const {findValueByKey} = require("../openapi/helpers");
+const {execSync} = require("child_process");
 
 const loadDashboardPaths = () => {
 	try {
@@ -60,7 +61,7 @@ function categorizeEndpoints(endpoints) {
 	return result;
 }
 
-function getEndpointSchemaFields(endpoint = {}) {
+function getEndpointLastSchema(endpoint = {}) {
 	const {schemaTypeName} = endpoint;
 	const schema = schemas.find(c => c.schemaTypeName === schemaTypeName + 'Type');
 
@@ -75,7 +76,11 @@ function getEndpointSchemaFields(endpoint = {}) {
 		return schemaObj;
 	}
 
-	return Object.entries(findSchemaRecursive(schema)?.schemaObject?.properties || {}).map(([field,value]) => {
+	return findSchemaRecursive(schema);
+}
+
+function getEndpointSchemaFields(schema = {}) {
+	return Object.entries(schema?.schemaObject?.properties || {}).map(([field,value]) => {
 		const val = (value.anyOf || value.oneOf || value.allOf || [value])[0];
 
 		function handleVal() {
@@ -91,6 +96,30 @@ function getEndpointSchemaFields(endpoint = {}) {
 	});
 }
 
+
+const execEslint = (service) => {
+	try {
+		console.log('eslint dir:', path.posix.join(path.join('app', '(dashboard)'), service, '**').replace(/\\/g, '/'))
+		execSync(`npx eslint --fix "${path.posix.join(path.join('app', '(dashboard)'), service, '**').replace(/\\/g, '/')}"`);
+
+		return `ESLint fixes applied successfully: "app/(dashboard)/${service}/**"`;
+	} catch (error) {
+		return `"app/(dashboard)/${service}/**" Failed to apply ESLint fixes. Check for unresolved lint errors.`;
+	}
+}
+const execPrettier = (service) => {
+	try {
+		console.log('prettier dir:', path.posix.join(path.join('app', '(dashboard)'), service).replace(/\\/g, '/'))
+		execSync(
+			`npx prettier --write "${path.posix.join(path.join('app', '(dashboard)'), service).replace(/\\/g, '/')}"`,
+		);
+
+		return `Formatted with Prettier: app/(dashboard)/${service}/**`;
+	} catch (error) {
+		return `Failed to format "app/(dashboard)/${service}/**"` + String(error.message);
+	}
+}
+
 module.exports = function (
 	/** @type {import('plop').NodePlopAPI} */
 	plop,
@@ -98,6 +127,7 @@ module.exports = function (
 
 	plop.setHelper('eq', (a, b) => String(a) === String(b));
 	plop.setHelper('or', (a, b) => a || b);
+	plop.setHelper('and', (a, b) => a && b);
 	plop.setHelper('pascalCase', (s) => changeCase.pascalCase(String(s || '')));
 	plop.setHelper('camelCase', (s) => changeCase.camelCase(String(s || '')));
 	plop.setHelper('kebabCase', (s) => changeCase.paramCase(String(s || '')));
@@ -127,6 +157,7 @@ module.exports = function (
 
 		return !isImage && !isHtml && !isArray;
 	});
+	plop.setHelper('getEndpointLastSchema', getEndpointLastSchema);
 
 	plop.setGenerator('route', {
 		description:
@@ -180,6 +211,7 @@ module.exports = function (
 				});
 
 			console.log('\n serviceSchemas \n',JSON.stringify(serviceSchemas), '\n\n\n');
+			console.log('\n rawEndpoints \n',JSON.stringify(rawEndpoints), '\n\n\n');
 			console.log('\n categorizedEndpoints \n',JSON.stringify(categorizedEndpoints), '\n\n\n');
 			console.log('\n getEndpointSchemaFields \n',JSON.stringify(getEndpointSchemaFields(categorizedEndpoints.list[0])), '\n\n\n');
 
@@ -188,18 +220,40 @@ module.exports = function (
 				service,
 				endpoints: categorizedEndpoints,
 				pathType,
-				columnFields: getEndpointSchemaFields(categorizedEndpoints.list[0])
+				columnFields: getEndpointSchemaFields(getEndpointLastSchema(categorizedEndpoints.list[0])),
+				columnSchema: getEndpointLastSchema(categorizedEndpoints.list[0])
 			}
 
-			const actions = [];
-
-			// actions.push({
-			// 	type: 'add',
-			// 	path: `../../app/(dashboard)/${service}/columns.tsx`,
-			// 	templateFile: './templates/columns.tsx.hbs',
-			// 	data,
-			// 	force: true,
-			// })
+			const actions = [
+				{
+					type: 'add',
+					path: `../../app/(dashboard)/${service}/loading.tsx`,
+					templateFile: './templates/loading.tsx.hbs',
+					force: true,
+				},
+				{
+					type: 'add',
+					path: `../../app/(dashboard)/${service}/layout.tsx`,
+					templateFile: './templates/layout.tsx.hbs',
+					force: true,
+				},
+				{
+					type: 'add',
+					path: `../../app/(dashboard)/${service}/columns.tsx`,
+					templateFile: './templates/columns.tsx.hbs',
+					data,
+					force: true,
+				},
+				{
+					type: 'add',
+					path: `../../app/(dashboard)/${service}/page.tsx`,
+					templateFile: './templates/page.tsx.hbs',
+					data,
+					force: true,
+				},
+				() => execPrettier(service),
+				() => execEslint(service),
+			];
 
 			console.log('\x1b[31m%s\x1b[0m','Yuu ch hiidgvimaa ene generator')
 

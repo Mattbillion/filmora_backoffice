@@ -17,9 +17,7 @@ export type PrettyType<T> = T extends object
   ? { [key in keyof T]: T[key] extends object ? PrettyType<T[key]> : T[key] }
   : T;
 
-export type SearchParams = Promise<{
-  [key: string]: string | string[] | undefined;
-}>;
+export type SearchParams<T extends Partial<Record<string, any>>> = Promise<T>;
 
 export type ReplaceType<BT, Replacements extends { [K in keyof BT]?: any }> = {
   [Key in keyof BT]: Key extends keyof Replacements

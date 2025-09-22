@@ -21,95 +21,122 @@ import {
 
 
 import { Button } from '@/components/ui/button';
+{{#if endpoints.list}}
+    import {
+        {{#each endpoints.list}}
+            {{this.summary}}{{#unless @last}},{{/unless}}
+        {{/each}}
+        {{#each endpoints.remove}}
+            {{this.summary}}{{#unless @last}},{{/unless}}
+        {{/each}}
+    } from '@/services/{{service}}';
+    import {
+        {{#each endpoints.list}}
+            {{this.schemaImports}}{{#unless @last}},{{/unless}}
+        {{/each}}
+    } from '@/services/schema';
+{{/if}}
 
 {{#if endpoints.remove}}
-import {
-    DeleteDialog,
-    DeleteDialogRef,
-} from '@/components/custom/delete-dialog';
-import {
-    {{#each endpoints.remove}}
-        {{this.summary}}{{#unless @last}},{{/unless}}
-    {{/each}}
-} from '@/services/{{service}}';
-import {
-    {{#each endpoints.remove}}
-        {{this.schemaImports}}{{#unless @last}},{{/unless}}
-    {{/each}}
-} from '@/services/schema';
+    import {
+        DeleteDialog,
+        DeleteDialogRef,
+    } from '@/components/custom/delete-dialog';
+    import {
+        {{#each endpoints.remove}}
+            {{this.summary}}{{#unless @last}},{{/unless}}
+        {{/each}}
+    } from '@/services/{{service}}';
+    import {
+        {{#each endpoints.remove}}
+            {{this.schemaImports}}{{#unless @last}},{{/unless}}
+        {{/each}}
+    } from '@/services/schema';
 {{/if}}
 
 {{#if (eq pathType 'all-in-one')}}
-import { UpdateDialog } from './components';
+    {{#if endpoints.update}}
+        import { UpdateDialog } from './components';
+    {{/if}}
 {{/if}}
 import { removeHTML, currencyFormat } from '@/lib/utils';
 
-const Action = ({ row }: CellContext< {{pascalCase service}}ItemType, unknown>) => {
-    const [loading, setLoading] = useState(false);
-    const deleteDialogRef = useRef< DeleteDialogRef>(null);
-    const { data } = useSession();
-    const canDelete = checkPermission(data, []);
-    {{#if (eq pathType 'all-in-one')}}
-    const canEdit = checkPermission(data, []);
-    {{/if}}
+{{#if (or endpoints.remove endpoints.update)}}
+    const Action = ({ row }: CellContext< {{columnSchema.schemaTypeName}}, unknown>) => {
+        const [loading, setLoading] = useState(false);
+        const deleteDialogRef = useRef< DeleteDialogRef>(null);
+        const { data } = useSession();
+        {{#if endpoints.remove}}
+            const canDelete = checkPermission(data, []);
+        {{/if}}
+        {{#if endpoints.update}}
+            {{#if (eq pathType 'all-in-one')}}
+                const canEdit = checkPermission(data, []);
+            {{/if}}
+        {{/if}}
 
-    if ({{#if (eq pathType 'all-in-one')}}!canEdit && {{/if}}!canDelete) return null;
+        if ({{#if (eq pathType 'all-in-one')}}!canEdit && {{/if}}!canDelete) return null;
 
-    return (
-    <div className="me-2 flex justify-end gap-4">
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
-                    <span className="sr-only">Open menu</span>
-                    <MoreHorizontal className="h-4 w-4" />
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                {{#if (eq pathType 'all-in-one')}}
-                    {canEdit && (
-                    <UpdateDialog initialData={row.original} key={JSON.stringify(row.original)}>
-                        <DropdownMenuItem onSelect={ ( e )=> e.preventDefault() } >
-                            <Edit className="h-4 w-4" /> Edit
-                        </DropdownMenuItem>
-                    </UpdateDialog>
-                    )}
-                {{/if}}
-                {canDelete && (
-                <DeleteDialog ref={deleteDialogRef} loading={loading} action={ ()=> {
-                    setLoading(true);
-                    // TODO: Please check after generate
-                    {{#each endpoints.remove}}
-                        {{this.summary}}(row.original.id)
-                        .then((c) => toast.success(c.data.message))
-                        .catch((c) => toast.error(c.message))
-                        .finally(() => {
-                            deleteDialogRef.current?.close();
-                            setLoading(false);
-                        });
-                    {{/each}}
+        return (
+        <div className="me-2 flex justify-end gap-4">
+            <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="h-8 w-8 p-0">
+                        <span className="sr-only">Open menu</span>
+                        <MoreHorizontal className="h-4 w-4" />
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    {{#if (eq pathType 'all-in-one')}}
+                        {{#if endpoints.update}}
+                            {canEdit && (
+                                <UpdateDialog initialData={row.original} key={JSON.stringify(row.original)}>
+                                    <DropdownMenuItem onSelect={ ( e )=> e.preventDefault() } >
+                                        <Edit className="h-4 w-4" /> Edit
+                                    </DropdownMenuItem>
+                                </UpdateDialog>
+                            )}
+                        {{/if}}
+                    {{/if}}
+                    {{#if endpoints.remove}}
+                        {canDelete && (
+                            <DeleteDialog ref={deleteDialogRef} loading={loading} action={ ()=> {
+                                setLoading(true);
+                                // TODO: Please check after generate
+                                {{#each endpoints.remove}}
+                                    {{this.summary}}(row.original.id)
+                                    .then((c) => toast.success(c.data.message))
+                                    .catch((c) => toast.error(c.message))
+                                    .finally(() => {
+                                        deleteDialogRef.current?.close();
+                                        setLoading(false);
+                                    });
+                                {{/each}}
 
-                    }}
-                    description={
-                    <>
-                        Are you sure you want to delete this item? This action cannot be undone.
-                    </>
-                    }
-                    >
-                    <DropdownMenuItem onSelect={(e)=> e.preventDefault()}>
-                        <Trash className="h-4 w-4" />
-                        Delete
-                    </DropdownMenuItem>
-                </DeleteDialog>
-                )}
-            </DropdownMenuContent>
-        </DropdownMenu>
-    </div>
-    );
-};
+                                }}
+                                description={
+                                    <>
+                                        Are you sure you want to delete this item? <br/> This action cannot be undone.
+                                    </>
+                                }
+                                >
+                                <DropdownMenuItem onSelect={(e)=> e.preventDefault()}>
+                                    <Trash className="h-4 w-4" />
+                                    Delete
+                                </DropdownMenuItem>
+                            </DeleteDialog>
+                        )}
+                    {{/if}}
+                </DropdownMenuContent>
+            </DropdownMenu>
+        </div>
+        );
+    };
+{{/if}}
 
-export const {{camelCase service}}Columns: ColumnDef<{{pascalCase service}}ResponseType>[] = [
+export const {{camelCase service}}Columns: ColumnDef<{{columnSchema.schemaTypeName}}>[] = [
 
     {{#if columnFields}}
         {{#each columnFields}}
@@ -137,7 +164,10 @@ export const {{camelCase service}}Columns: ColumnDef<{{pascalCase service}}Respo
                     <span className="opacity-70">{removeHTML(row.original.{{this.field}}?.slice(0,300))}</span>,
                     {{else}}
                         {{#if (isImage this.field)}}
-                            <Image src={ row.original.{{this.field}} } alt="" width={48} height={48} className="rounded-md" />,
+                            (   row.original.{{this.field}} ?
+                                    <Image src={ row.original.{{this.field}} } alt="" width={48} height={48} className="rounded-md"/>
+                                : <span className="opacity-70 size-12 rounded-md text-xs">No Image</span>
+                            ),
                         {{else}}
                             row.original.{{this.field}}?.slice(0,300),
                         {{/if}}
@@ -161,9 +191,11 @@ export const {{camelCase service}}Columns: ColumnDef<{{pascalCase service}}Respo
             },
         {{/each}}
     {{/if}}
-    {
-        id: 'actions',
-        cell: Action,
-        enableHiding: false,
-    },
+    {{#if (or endpoints.remove endpoints.update)}}
+        {
+            id: 'actions',
+            cell: Action,
+            enableHiding: false,
+        },
+    {{/if}}
 ];
