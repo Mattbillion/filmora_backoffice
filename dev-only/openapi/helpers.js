@@ -39,7 +39,7 @@ const pointToSchemaRecursive = (schema, cb) => {
 
 // Function to resolve $ref to actual schema or return the ref name
 const pointToSchema = (schema) => {
-	if (!schema) return {};
+	if (!schema) return null;
 
 	const schemaRef = findValueByKey(schema, '$ref');
 	if (schemaRef) return schemaRef.replace("#/components/schemas/", "");
@@ -166,7 +166,7 @@ function modifyRouteParamsWithType(def) {
 	// Build TS param signatures
 	const pathArgs = pathParams.map(p => `${changeCase.camelCase(p.name)}: ${mapSchemaToTs(p.schema)}`).join(", ");
 	const queryArg = queryParams.length ? `{\n${queryParams
-		.map(p => `  ${p.name}${!p.required && '?'}: ${mapSchemaToTs(p.schema)}`)
+		.map(p => `  ${p.name}${!p.required ? '?' : ''}: ${mapSchemaToTs(p.schema)}`)
 		.join(";\n")}\n}` : "";
 	const routeExpr = "`" + def.route.replace(/\{(\w+)\}/g, (_, name) => `\${${changeCase.camelCase(name)}}`) + "`";
 

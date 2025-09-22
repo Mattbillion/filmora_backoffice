@@ -82,8 +82,8 @@ module.exports = function (plop) {
             shouldRevalidate: endpoint.method?.toLowerCase() !== 'get' && endpoint.pathArgs,
             detailTag: endpoint.pathArgs?.split(',')
               .map((arg) => {
-                const argName = arg.split(':')[0];
-                return argName + '_' + '$' + '{' + `${argName}}`
+                const argName = arg.split(':')[0]?.trim() || '';
+                return changeCase.snakeCase(argName) + '_' + '$' + '{' + `${argName}}`
               }) || []
           })),
           isFormData: dashboardPaths[service].contentType?.includes('form-data'),
