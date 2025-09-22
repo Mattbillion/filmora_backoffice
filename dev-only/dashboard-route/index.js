@@ -137,8 +137,8 @@ module.exports = function (
 		return typeof v === 'string' && (v.includes('desc') || v.includes('body'));
 	});
 	plop.setHelper('isImage', (key) => typeof key === 'string' && ['img', 'image', 'post','bann'].some(ext => key.toLowerCase().includes(ext)));
-	plop.setHelper('isID', (key) => String(key).toLowerCase().endsWith('_id'));
-	plop.setHelper('isCurrency', (key) => /(price|sale)/g.test(key));
+	plop.setHelper('isID', (key) => String(key).toLowerCase().includes('_id'));
+	plop.setHelper('isCurrency', (key) => /(price|sale|total)/g.test(key));
 	plop.setHelper('isArray', (value) => Array.isArray(value));
 	plop.setHelper('canFetchData', (dataKeys = []) => dataKeys.some(c => c.endsWith('_id')));
 	plop.setHelper('getNameField', (dataKeys = []) => dataKeys.find(c => c.includes('_name') || c.includes('title')) || dataKeys[0] || 'no_name');
@@ -158,6 +158,7 @@ module.exports = function (
 		return !isImage && !isHtml && !isArray;
 	});
 	plop.setHelper('getEndpointLastSchema', getEndpointLastSchema);
+	plop.setHelper('getEndpointSchemaFields', (endpoint) => getEndpointLastSchema(getEndpointLastSchema(endpoint)));
 
 	plop.setGenerator('route', {
 		description:
@@ -211,6 +212,7 @@ module.exports = function (
 				});
 
 			console.log('\n serviceSchemas \n',JSON.stringify(serviceSchemas), '\n\n\n');
+			console.log('\n serviceSchemaImports \n',JSON.stringify(serviceSchemaImports), '\n\n\n');
 			console.log('\n rawEndpoints \n',JSON.stringify(rawEndpoints), '\n\n\n');
 			console.log('\n categorizedEndpoints \n',JSON.stringify(categorizedEndpoints), '\n\n\n');
 			console.log('\n getEndpointSchemaFields \n',JSON.stringify(getEndpointSchemaFields(categorizedEndpoints.list[0])), '\n\n\n');
@@ -255,7 +257,7 @@ module.exports = function (
 				() => execEslint(service),
 			];
 
-			console.log('\x1b[31m%s\x1b[0m','Yuu ch hiidgvimaa ene generator')
+			// console.log('\x1b[31m%s\x1b[0m','Yuu ch hiidgvimaa ene generator')
 
 			return actions;
 		},
