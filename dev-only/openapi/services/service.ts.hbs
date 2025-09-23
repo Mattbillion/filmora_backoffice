@@ -20,7 +20,7 @@ export async function {{this.summary}}(
         searchParams?:{{pascalCase this.summary}}SearchParams,
     {{/if}}
     {{#if (or (eq this.method 'post') (eq this.method 'put') (eq this.method 'patch'))}}
-        {{#if this.bodySchemaTypeName}}body: {{this.bodySchemaTypeName}}Type{{/if}}
+        body: {{#if this.bodySchemaTypeName}}{{this.bodySchemaTypeName}}Type{{else}}any{{/if}}
     {{/if}}
 ) {
   {{#if (eq this.method 'get')}}
