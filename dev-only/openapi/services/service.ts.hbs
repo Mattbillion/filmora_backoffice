@@ -17,10 +17,10 @@ export async function {{this.summary}}(
         {{{this.pathArgs}}},
     {{/if}}
     {{#if this.queryArg}}
-        searchParams:{{pascalCase this.summary}}SearchParams,
+        searchParams?:{{pascalCase this.summary}}SearchParams,
     {{/if}}
     {{#if (or (eq this.method 'post') (eq this.method 'put') (eq this.method 'patch'))}}
-        body: {{#if this.bodySchemaTypeName}}{{this.bodySchemaTypeName}}Type{{/if}}
+        {{#if this.bodySchemaTypeName}}body: {{this.bodySchemaTypeName}}Type{{/if}}
     {{/if}}
 ) {
   {{#if (eq this.method 'get')}}
