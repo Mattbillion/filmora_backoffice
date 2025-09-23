@@ -11,3 +11,4 @@ export const RVK_UPLOAD_VIDEO = '' as const;
 export const RVK_VIDEOS = '' as const;
 export const RVK_RENTALS = '' as const;
 export const RVK_SUBSCRIPTIONS = '' as const;
+export const RVK_MEDIA = '/upload-image' as const;

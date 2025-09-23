@@ -28,8 +28,8 @@ export default async function GenresPage(props: {
         <Heading title={`Genres list (${total_count ?? data?.length})`} />
         {checkPermission(session, []) && (
           <CreateDialog>
-            <Button className="text-xs md:text-sm">
-              <Plus className="h-4 w-4" /> Add New
+            <Button className="text-xs md:text-sm" variant="outline">
+              <Plus className="h-4 w-4" /> Шинэ жанр оруулах
             </Button>
           </CreateDialog>
         )}

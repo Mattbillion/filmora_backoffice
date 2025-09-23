@@ -1,6 +1,6 @@
 import * as actions from './api/actions';
 import { RVK_SUBSCRIPTIONS } from './rvk';
-import {} from './schema';
+import { BaseResponseUnionListSubscriptionUserDataNoneTypeType } from './schema';
 
 // Auto-generated service for subscriptions
 
@@ -14,12 +14,16 @@ export async function getSubscriptionUsers(
     offset?: number;
   } = {},
 ) {
-  const res = await actions.get<any>(`/subscriptions/users`, {
-    searchParams,
-    next: {
-      tags: [RVK_SUBSCRIPTIONS],
-    },
-  });
+  const res =
+    await actions.get<BaseResponseUnionListSubscriptionUserDataNoneTypeType>(
+      `/subscriptions/users`,
+      {
+        searchParams,
+        next: {
+          tags: [RVK_SUBSCRIPTIONS],
+        },
+      },
+    );
 
   const { body: response, error } = res;
   if (error) throw new Error(error);

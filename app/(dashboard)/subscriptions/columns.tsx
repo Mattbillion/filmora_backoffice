@@ -1,25 +1,62 @@
 'use client';
 
-import { useRef, useState } from 'react';
-import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import { toast } from 'sonner';
-import Image from 'next/image';
-import { checkPermission } from '@/lib/permission';
-import { useSession } from 'next-auth/react';
-import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
-import { Badge } from '@/components/ui/badge';
+import { ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { isUri, removeHTML, currencyFormat } from '@/lib/utils';
+import { SubscriptionUserDataType } from '@/services/schema';
 
-import { Button } from '@/components/ui/button';
-
-export const subscriptionsColumns: ColumnDef<>[] = [];
+export const subscriptionsColumns: ColumnDef<SubscriptionUserDataType>[] = [
+  {
+    accessorKey: 'full_name',
+    header: 'Full Name',
+    cell: ({ row }) => row.original.full_name ?? '—',
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'email',
+    header: 'Email',
+    cell: ({ row }) => row.original.email,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'plan',
+    header: 'Plan',
+    cell: ({ row }) => row.original.plan,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'status',
+    header: 'Status',
+    cell: ({ row }) => row.original.status,
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    accessorKey: 'started_at',
+    header: 'Started At',
+    cell: ({ row }) =>
+      row.original.started_at
+        ? dayjs(row.original.started_at).format('YYYY-MM-DD HH:mm')
+        : '—',
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'expires_at',
+    header: 'Expires At',
+    cell: ({ row }) =>
+      row.original.expires_at
+        ? dayjs(row.original.expires_at).format('YYYY-MM-DD HH:mm')
+        : '—',
+    enableSorting: true,
+  },
+  {
+    accessorKey: 'user_id',
+    header: 'User ID',
+    cell: ({ row }) => row.original.user_id,
+    enableSorting: false,
+    enableColumnFilter: false,
+  },
+];

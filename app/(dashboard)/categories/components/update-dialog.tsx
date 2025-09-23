@@ -9,19 +9,14 @@ import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { updateCategory } from '@/services/categories';
 import {
   CategoryResponseType,
@@ -31,6 +26,7 @@ import {
 
 export function UpdateDialog({
   children,
+
   initialData,
 }: {
   children: ReactNode;
@@ -70,8 +66,8 @@ export function UpdateDialog({
         control={form.control}
         name="name"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Category name</FormLabel>
+          <FormItem className="flex flex-col gap-2">
+            <FormLabel>Ангилалын нэр</FormLabel>
             <FormControl>
               <Input placeholder="Enter category name" {...field} />
             </FormControl>
@@ -84,23 +80,22 @@ export function UpdateDialog({
         control={form.control}
         name="is_adult"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Adult</FormLabel>
-            <Select
-              onValueChange={(value) => field.onChange(value === 'true')}
-              defaultValue={String(field.value)}
-            >
-              <FormControl>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a Special" />
-                </SelectTrigger>
-              </FormControl>
-              <SelectContent defaultValue="false">
-                <SelectItem value="true">True</SelectItem>
-                <SelectItem value="false">False</SelectItem>
-              </SelectContent>
-            </Select>
-            <FormMessage />
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+            <div className="flex flex-col gap-1">
+              <FormLabel className="text-md font-semibold">
+                Насанд хүрэгчдийн ангилал эсэх ?
+              </FormLabel>
+              <FormDescription className="text-muted-foreground">
+                Тухайн оруулж буй ангилал насанд хүрэгчдийн ангилалд орох эсэх?
+              </FormDescription>
+            </div>
+            <FormControl>
+              <Switch
+                checked={field.value || false}
+                onCheckedChange={(checked) => field.onChange(checked)}
+                aria-readonly
+              />
+            </FormControl>
           </FormItem>
         )}
       />
