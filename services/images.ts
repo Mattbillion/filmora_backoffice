@@ -31,7 +31,7 @@ export async function deleteImage(imageId: string) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_IMAGES, `${RVK_IMAGES}_imageId_${imageId}`]);
+  executeRevalidate([RVK_IMAGES, `${RVK_IMAGES}_image_id_${imageId}`]);
 
   return response;
 }

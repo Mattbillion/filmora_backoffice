@@ -17,7 +17,7 @@ export type SeriesSeasonType = z.infer<typeof seriesSeasonSchema>;
 export const baseResponseUnionListSeriesSeasonDictSchema = z.object({
   status: z.string(),
   message: z.string(),
-  data: z.union([z.array(seriesSeasonSchema)]),
+  data: z.union([z.array(seriesSeasonSchema), z.object({})]),
   total_count: z.number().int().optional(),
 });
 
@@ -28,7 +28,7 @@ export type BaseResponseUnionListSeriesSeasonDictType = z.infer<
 export const baseResponseUnionSeriesSeasonDictSchema = z.object({
   status: z.string(),
   message: z.string(),
-  data: seriesSeasonSchema,
+  data: z.union([seriesSeasonSchema, z.object({})]),
   total_count: z.number().int().optional(),
 });
 
@@ -156,44 +156,6 @@ export type BaseResponseListUnionCategoryResponseNoneTypeType = z.infer<
   typeof baseResponseListUnionCategoryResponseNoneTypeSchema
 >;
 
-export const baseResponseUnionCategoryResponseNoneTypeSchema = z.object({
-  status: z.string(),
-  message: z.string(),
-  data: categoryResponseSchema,
-  total_count: z.number().int().optional(),
-});
-
-export type BaseResponseUnionCategoryResponseNoneTypeType = z.infer<
-  typeof baseResponseUnionCategoryResponseNoneTypeSchema
->;
-
-export const categoryCreateSchema = z.object({
-  name: z.string(),
-  description: z.string().optional(),
-  is_adult: z.boolean().optional(),
-});
-
-export type CategoryCreateType = z.infer<typeof categoryCreateSchema>;
-
-export const categoryUpdateSchema = z.object({
-  name: z.string().optional(),
-  description: z.string().optional(),
-  is_adult: z.boolean().optional(),
-});
-
-export type CategoryUpdateType = z.infer<typeof categoryUpdateSchema>;
-
-export const baseResponseUnionDictNoneTypeSchema = z.object({
-  status: z.string(),
-  message: z.string(),
-  data: z.object({}),
-  total_count: z.number().int().optional(),
-});
-
-export type BaseResponseUnionDictNoneTypeType = z.infer<
-  typeof baseResponseUnionDictNoneTypeSchema
->;
-
 export const genreResponseSchema = z.object({
   id: z.number().int(),
   name: z.string(),
@@ -211,29 +173,6 @@ export const baseResponseUnionListGenreResponseNoneTypeSchema = z.object({
 export type BaseResponseUnionListGenreResponseNoneTypeType = z.infer<
   typeof baseResponseUnionListGenreResponseNoneTypeSchema
 >;
-
-export const baseResponseUnionGenreResponseNoneTypeSchema = z.object({
-  status: z.string(),
-  message: z.string(),
-  data: genreResponseSchema,
-  total_count: z.number().int().optional(),
-});
-
-export type BaseResponseUnionGenreResponseNoneTypeType = z.infer<
-  typeof baseResponseUnionGenreResponseNoneTypeSchema
->;
-
-export const genreCreateSchema = z.object({
-  name: z.string(),
-});
-
-export type GenreCreateType = z.infer<typeof genreCreateSchema>;
-
-export const genreUpdateSchema = z.object({
-  name: z.string().optional(),
-});
-
-export type GenreUpdateType = z.infer<typeof genreUpdateSchema>;
 
 export const movieResponseSchema = z.object({
   title: z.string().max(500).min(1),
@@ -289,7 +228,7 @@ export const movieListResponseSchema = z.object({
   price: z.number().int().optional(),
   is_premium: z.boolean().optional(),
   poster_url: z.string().optional(),
-  load_image_url: z.string(),
+  load_image_url: z.string().optional(),
   trailer_url: z.string().optional(),
   is_adult: z.boolean().optional(),
   created_at: z.iso.datetime(),
@@ -329,12 +268,23 @@ export const movieUpdateSchema = z.object({
   is_premium: z.boolean().optional(),
   poster_url: z.string().optional(),
   is_adult: z.boolean().optional(),
-  category_ids: z.array(z.number().int()).optional(),
-  genre_ids: z.array(z.number().int()).optional(),
+  categories: z.array(z.number().int()).optional(),
+  genres: z.array(z.number().int()).optional(),
   load_image_url: z.string().optional(),
 });
 
 export type MovieUpdateType = z.infer<typeof movieUpdateSchema>;
+
+export const baseResponseUnionDictNoneTypeSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: z.object({}),
+  total_count: z.number().int().optional(),
+});
+
+export type BaseResponseUnionDictNoneTypeType = z.infer<
+  typeof baseResponseUnionDictNoneTypeSchema
+>;
 
 export const bodyDashboardUploadVideoSchema = z.object({
   file: z.instanceof(Blob),

@@ -9,3 +9,5 @@ export const RVK_GENRES = '' as const;
 export const RVK_MOVIES = '' as const;
 export const RVK_UPLOAD_VIDEO = '' as const;
 export const RVK_VIDEOS = '' as const;
+export const RVK_RENTALS = '' as const;
+export const RVK_SUBSCRIPTIONS = '' as const;

@@ -41,7 +41,8 @@ function categorizeEndpoints(endpoints) {
 
 		if (name.startsWith("get") && ep.method.toLowerCase() === "get") {
 			// If route has params, assume detail, else list
-			if (!ep.schema.toLowerCase().includes("list")) {
+			console.log(typeof ep.schema, ep.schema)
+			if (!ep.schema?.toLowerCase().includes("list")) {
 				result.detail.push(ep);
 			} else {
 				result.list.push(ep);

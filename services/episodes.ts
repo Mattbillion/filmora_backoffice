@@ -7,7 +7,7 @@ import { BaseResponseUnionSeriesEpisodeDictType } from './schema';
 export async function getSeriesEpisodes(seasonNumber: string) {
   const res = await actions.get<any>(`/episodes/${seasonNumber}`, {
     next: {
-      tags: [RVK_EPISODES, `${RVK_EPISODES}_seasonNumber_${seasonNumber}`],
+      tags: [RVK_EPISODES, `${RVK_EPISODES}_season_number_${seasonNumber}`],
     },
   });
 
@@ -22,7 +22,7 @@ export async function getSeriesEpisode(episodeId: string) {
     `/episodes/${episodeId}/details`,
     {
       next: {
-        tags: [RVK_EPISODES, `${RVK_EPISODES}_episodeId_${episodeId}`],
+        tags: [RVK_EPISODES, `${RVK_EPISODES}_episode_id_${episodeId}`],
       },
     },
   );

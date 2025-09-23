@@ -27,7 +27,7 @@ export async function deleteVideo(jobId: string) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_VIDEOS, `${RVK_VIDEOS}_jobId_${jobId}`]);
+  executeRevalidate([RVK_VIDEOS, `${RVK_VIDEOS}_job_id_${jobId}`]);
 
   return response;
 }

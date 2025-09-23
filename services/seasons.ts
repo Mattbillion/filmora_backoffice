@@ -19,7 +19,7 @@ export async function getSeriesSeasons(
     {
       searchParams,
       next: {
-        tags: [RVK_SEASONS, `${RVK_SEASONS}_movieId_${movieId}`],
+        tags: [RVK_SEASONS, `${RVK_SEASONS}_movie_id_${movieId}`],
       },
     },
   );
@@ -35,7 +35,7 @@ export async function getSeriesSeason(seasonId: string) {
     `/seasons/${seasonId}/details`,
     {
       next: {
-        tags: [RVK_SEASONS, `${RVK_SEASONS}_seasonId_${seasonId}`],
+        tags: [RVK_SEASONS, `${RVK_SEASONS}_season_id_${seasonId}`],
       },
     },
   );

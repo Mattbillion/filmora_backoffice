@@ -55,7 +55,7 @@ Object.values(pathGroups).forEach((methods) => {
 			Object.entries(method.responses).forEach(([status, resp]) => {
 				if (Number(status) < 400 && resp.content && resp.content['application/json']) {
 					const methodSchema = pointToSchema(resp.content['application/json'].schema);
-					method.schema = methodSchema;
+					method.schema = typeof methodSchema === 'string' ? methodSchema : null;
 					const schemaImports = new Set([]);
 
 					function addImportsFromSchema(schemaName) {

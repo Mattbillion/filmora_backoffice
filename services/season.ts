@@ -4,6 +4,7 @@ import { RVK_SEASON } from './rvk';
 import {
   BaseResponseDictType,
   BaseResponseUnionSeriesSeasonDictType,
+  BaseResponseUnionSeriesSeasonDictType,
   SeriesSeasonCreateType,
   SeriesSeasonUpdateType,
 } from './schema';
@@ -34,7 +35,7 @@ export async function updateSeriesSeason(
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_SEASON, `${RVK_SEASON}_seasonId_${seasonId}`]);
+  executeRevalidate([RVK_SEASON, `${RVK_SEASON}_season_id_${seasonId}`]);
 
   return response;
 }
@@ -47,7 +48,7 @@ export async function deleteSeriesSeason(seasonId: string) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_SEASON, `${RVK_SEASON}_seasonId_${seasonId}`]);
+  executeRevalidate([RVK_SEASON, `${RVK_SEASON}_season_id_${seasonId}`]);
 
   return response;
 }
