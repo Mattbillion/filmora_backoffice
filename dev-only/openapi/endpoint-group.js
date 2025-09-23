@@ -75,7 +75,7 @@ Object.values(pathGroups).forEach((methods) => {
 		}
 		if(method.requestBody) {
 			const methodSchema = pointToSchema(findValueByKey(method.requestBody, 'schema'));
-			method.bodySchema = methodSchema;
+			method.bodySchema = typeof methodSchema === 'string' ? methodSchema : null;
 			const schemaImports = new Set([]);
 
 			function addImportsFromSchema(schemaName) {
