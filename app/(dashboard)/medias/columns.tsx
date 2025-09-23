@@ -2,7 +2,9 @@
 
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import dayjs from 'dayjs';
+import { MoreHorizontal, Trash } from 'lucide-react';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -10,8 +12,8 @@ import {
   DeleteDialog,
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,22 +23,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
-import { deleteCategory } from '@/services/categories';
-import { CategoryResponseType } from '@/services/schema';
+import { deleteImage } from '@/services/images';
+import { ImageInfoType } from '@/services/schema';
 
-import { UpdateDialog } from './components';
-
-const Action = ({ row }: CellContext<CategoryResponseType, unknown>) => {
+const Action = ({ row }: CellContext<ImageInfoType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
   const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
-
-  if (!canEdit && !canDelete) return null;
-
-  console.log(row.original, 'row.original');
 
   return (
     <div className="me-2 flex justify-end gap-4">
@@ -50,16 +44,6 @@ const Action = ({ row }: CellContext<CategoryResponseType, unknown>) => {
         <DropdownMenuContent>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          {canEdit && (
-            <UpdateDialog
-              initialData={row.original}
-              key={JSON.stringify(row.original)}
-            >
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <Edit className="h-4 w-4" /> Edit
-              </DropdownMenuItem>
-            </UpdateDialog>
-          )}
           {canDelete && (
             <DeleteDialog
               ref={deleteDialogRef}
@@ -67,7 +51,7 @@ const Action = ({ row }: CellContext<CategoryResponseType, unknown>) => {
               action={() => {
                 setLoading(true);
                 // TODO: Please check after generate
-                deleteCategory(row.original.id)
+                deleteImage(row.original.id)
                   .then((c) => toast.success(c.data.message))
                   .catch((c) => toast.error(c.message))
                   .finally(() => {
@@ -77,9 +61,8 @@ const Action = ({ row }: CellContext<CategoryResponseType, unknown>) => {
               }}
               description={
                 <>
-                  Are you sure you want to delete this item? &#34;
-                  {row.original.name}&#34;
-                  <br /> This action cannot be undone.
+                  Are you sure you want to delete this item? <br /> This action
+                  cannot be undone.
                 </>
               }
             >
@@ -95,7 +78,47 @@ const Action = ({ row }: CellContext<CategoryResponseType, unknown>) => {
   );
 };
 
-export const categoriesColumns: ColumnDef<CategoryResponseType>[] = [
+export const imagesColumns: ColumnDef<ImageInfoType>[] = [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && 'indeterminate')
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+      />
+    ),
+
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
+
+  {
+    id: 'image_url',
+    accessorKey: 'image_url',
+    header: () => <h1>Зураг</h1>,
+    cell: ({ row }) => (
+      <Image
+        src={row.original.image_url!}
+        alt=""
+        width={48}
+        height={48}
+        className="aspect-square rounded-md object-contain"
+      />
+    ),
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
   {
     id: 'id',
     accessorKey: 'id',
@@ -104,35 +127,36 @@ export const categoriesColumns: ColumnDef<CategoryResponseType>[] = [
     enableSorting: true,
     enableColumnFilter: true,
   },
+
   {
-    id: 'name',
-    accessorKey: 'name',
-    header: () => <h1>Нэр</h1>,
-    cell: ({ row }) => row.original.name?.slice(0, 300),
+    id: 'file_name',
+    accessorKey: 'file_name',
+    header: () => <div>File Name</div>,
+    cell: ({ row }) => row.original.file_name?.slice(0, 300),
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
-    id: 'description',
-    accessorKey: 'description',
-    header: () => <h1>Дэлгэрэнгүй тайлбар</h1>,
-    cell: ({ row }) => (
-      <span className="opacity-70">
-        {removeHTML(row.original.description?.slice(0, 300))}
-      </span>
-    ),
-    enableSorting: false,
-    enableColumnFilter: false,
+    id: 'file_size',
+    accessorKey: 'file_size',
+    header: ({ column }) => <h1>File Size</h1>,
+    cell: ({ row }) => row.original.file_size,
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
-    id: 'is_adult',
-    accessorKey: 'is_adult',
-    header: () => <h1>Насанд хүрэгчдийн кино эсэх</h1>,
-    cell: ({ row }) => (
-      <Badge variant="secondary">
-        {row.original.is_adult ? 'Тийм' : 'Үгүй'}
-      </Badge>
-    ),
+    id: 'content_type',
+    accessorKey: 'content_type',
+    header: ({ column }) => <h1 className="text-nowrap">Content Type</h1>,
+    cell: ({ row }) => row.original.content_type.replace('image/', ''),
+    enableSorting: true,
+    enableColumnFilter: true,
+  },
+  {
+    id: 'created_at',
+    accessorKey: 'created_at',
+    header: ({ column }) => <h1>Created At</h1>,
+    cell: ({ row }) => dayjs(row.original.created_at).format('DD/MM/YYYY'),
     enableSorting: true,
     enableColumnFilter: true,
   },

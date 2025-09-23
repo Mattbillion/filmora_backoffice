@@ -35,8 +35,8 @@ export default function Page() {
   return (
     <div className="bg-background flex h-screen w-screen items-center justify-center">
       <div className="flex w-full max-w-md flex-col gap-8 overflow-hidden rounded-2xl">
-        <div className="flex flex-col items-center justify-center gap-2 px-4 text-center sm:px-16">
-          <h3 className="text-xl font-semibold dark:text-zinc-50">Sign In</h3>
+        <div className="flex flex-col gap-2 px-4 sm:px-16">
+          <h3 className="text-xl font-semibold dark:text-zinc-50">Нэвтрэх</h3>
           <p className="text-sm text-gray-500 dark:text-zinc-400">
             Use your username and password to sign in
           </p>

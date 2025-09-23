@@ -43,7 +43,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       form={form}
       onSubmit={onSubmit}
       loading={isPending}
-      title="Create new Genres"
+      title="Шинэ жанр оруулах"
       submitText="Create"
       trigger={children}
     >
@@ -51,10 +51,10 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         control={form.control}
         name="name"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>Name</FormLabel>
+          <FormItem className="flex flex-col gap-2">
+            <FormLabel>Жанрын нэр</FormLabel>
             <FormControl>
-              <Input placeholder="Enter Name" {...field} />
+              <Input placeholder="Жанрын нэр" {...field} />
             </FormControl>
             <FormMessage />
           </FormItem>

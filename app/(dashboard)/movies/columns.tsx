@@ -1,8 +1,10 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { currencyFormat } from '@interpriz/lib/utils';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
@@ -22,7 +24,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
 import { deleteMoviesDetail } from '@/services/movies/service';
 import { MovieListResponseType } from '@/services/schema';
 
@@ -100,48 +101,44 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
 };
 
 export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
-  // {
-  //   id: 'poster_url',
-  //   accessorKey: 'poster_url',
-  //   header: ({ column }) => <TableHeaderWrapper column={column} />,
-  //   cell: ({ row }) => (
-  //     <div className="relative aspect-[3/4] overflow-hidden rounded-md">
-  //       <Image
-  //         src={row.original.poster_url ?? ''}
-  //         alt=""
-  //         fill
-  //         className="object-cover"
-  //       />
-  //     </div>
-  //   ),
-  //   enableSorting: false,
-  //   enableColumnFilter: false,
-  // },
   {
-    id: 'title',
-    accessorKey: 'title',
+    id: 'poster_url',
+    accessorKey: 'poster_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.title?.slice(0, 300),
-    enableSorting: true,
+    cell: ({ row }) => (
+      <div className="relative size-16 overflow-hidden rounded-md">
+        <Image
+          src={row.original.poster_url ?? ''}
+          alt="Poster"
+          fill
+          className="absolute inset-0 -z-10 blur-sm"
+        />
+        <Image
+          src={row.original.poster_url ?? ''}
+          alt="Poster"
+          fill
+          className="object-contain"
+        />
+      </div>
+    ),
+    enableSorting: false,
     enableColumnFilter: true,
   },
   {
-    id: 'description',
-    accessorKey: 'description',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    id: 'title',
+    accessorKey: 'title',
+    header: () => <h1>Киноны нэр</h1>,
     cell: ({ row }) => (
-      <span className="opacity-70">
-        {removeHTML(row.original.description?.slice(0, 300))}
-      </span>
+      <h1 className="line-clamp-1 font-semibold">{row.original.title}</h1>
     ),
-    enableSorting: false,
-    enableColumnFilter: false,
+    enableSorting: true,
+    enableColumnFilter: true,
   },
   {
     id: 'type',
     accessorKey: 'type',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.type?.slice(0, 300),
+    cell: ({ row }) => row.original.type,
     enableSorting: true,
     enableColumnFilter: true,
   },
@@ -157,14 +154,15 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
     id: 'price',
     accessorKey: 'price',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.price,
+    cell: ({ row }) => currencyFormat(row.original.price ?? 0),
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
     id: 'is_premium',
     accessorKey: 'is_premium',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: ({ column }) => <h1>Premium</h1>,
+
     cell: ({ row }) => (row.original.is_premium ? 'Active' : 'Inactive'),
     enableSorting: false,
     enableColumnFilter: true,

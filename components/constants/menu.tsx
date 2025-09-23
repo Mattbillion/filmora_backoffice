@@ -1,12 +1,15 @@
 import {
-  ChartPieIcon,
-  CircleDollarSign,
+  ChartPie,
+  Clapperboard,
   FilmIcon,
   GalleryVertical,
+  GalleryVerticalEnd,
+  GemIcon,
+  ImagePlusIcon,
   LayoutGrid,
   type LucideIcon,
+  TvMinimalPlay,
   UserCog,
-  UsersRoundIcon,
 } from 'lucide-react';
 
 export type SubMenuItemType = {
@@ -18,39 +21,53 @@ export type SubMenuItemType = {
   children?: Omit<SubMenuItemType, 'children'>[];
 };
 
-const productManagerRoutes: SubMenuItemType[] = [
-  {
-    title: 'Тайлан',
-    url: '/reports/company-sales',
-    icon: ChartPieIcon,
-    subRoutes: true,
-    permissions: [],
-    children: [],
-  },
-];
-
 const operationsRoutes: SubMenuItemType[] = [
   {
     title: 'Кинонууд',
     url: '/movies',
-    subRoutes: true,
+    subRoutes: false,
     icon: FilmIcon,
-    permissions: ['get_order_list', 'get_order_detail'],
+    permissions: [],
   },
   {
-    title: 'Гүйлгээ',
-    url: '/transactions',
-    icon: CircleDollarSign,
-    subRoutes: true,
+    title: 'Ангилал',
+    url: '/categories',
+    icon: GalleryVerticalEnd,
+    subRoutes: false,
+    permissions: [],
+  },
+  {
+    title: 'Genre',
+    url: '/genres',
+    icon: TvMinimalPlay,
+    subRoutes: false,
     permissions: [],
   },
 ];
 
 const organizationRoutes: SubMenuItemType[] = [
   {
-    title: 'Ажилчид',
-    url: '/employees',
-    icon: UsersRoundIcon,
+    title: 'Багцтэй хэрэглэгчид',
+    url: '/subscriptions',
+    icon: GemIcon,
+    permissions: [],
+  },
+  {
+    title: 'Түрээсийн кино',
+    url: '/rentals',
+    icon: Clapperboard,
+    permissions: [],
+  },
+  {
+    title: 'Борлуулалт',
+    url: '/sales',
+    icon: ChartPie,
+    permissions: [],
+  },
+  {
+    title: 'Media manager',
+    url: '/medias',
+    icon: ImagePlusIcon,
     permissions: [],
   },
 ];
@@ -84,8 +101,7 @@ const systemAdminRoutes: SubMenuItemType[] = [
 ];
 
 export const menuData: Record<string, SubMenuItemType[]> = {
-  order_manager: operationsRoutes,
-  product_manager: productManagerRoutes,
+  General_menu: operationsRoutes,
   organization: organizationRoutes,
   system_settings: systemAdminRoutes,
 };

@@ -133,7 +133,7 @@ export default function CreateMovie() {
   return (
     <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <DrawerTrigger asChild>
-        <Button variant="default">
+        <Button variant="outline">
           <PlusIcon /> Шинэ кино
         </Button>
       </DrawerTrigger>

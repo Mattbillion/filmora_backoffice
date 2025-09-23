@@ -25,18 +25,18 @@ export default async function CategoriesPage(props: {
   const session = await auth();
   const searchParams = await props.searchParams;
   const { data, total_count } = await getCategories(searchParams);
-
   const list = data || [];
+
   const count = total_count ?? list.length;
 
   return (
     <>
       <div className="flex items-start justify-between">
-        <Heading title={`Categories list (${count})`} />
+        <Heading title={`Ангилалууд (${count})`} />
         {checkPermission(session, []) && (
           <CreateDialog>
-            <Button className="text-xs md:text-sm">
-              <Plus className="h-4 w-4" /> Add New
+            <Button className="text-xs md:text-sm" variant="outline">
+              <Plus className="h-4 w-4" /> Шинэ ангилал
             </Button>
           </CreateDialog>
         )}

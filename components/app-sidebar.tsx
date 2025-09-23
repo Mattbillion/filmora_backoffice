@@ -26,17 +26,6 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
     update();
   }, []);
 
-  // const mainMenu = menuData.navMain
-  //   .map((c) =>
-  //     hasPagePermission(role, c.url.replace("/", "") as any) ? c : null
-  //   )
-  //   .filter((c) => !!c);
-  // const adminMenu = menuData.navAdmin
-  //   .map((c) =>
-  //     hasPagePermission(role, c.url.replace("/", "") as any) ? c : null
-  //   )
-  //   .filter((c) => !!c);
-
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
