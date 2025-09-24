@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
-import { ImagePlus } from 'lucide-react';
+import { ImagePlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -46,6 +46,7 @@ export function UploadCover({ field }: { field: FieldValues }) {
   };
 
   const handleUploadImage = async (file: File) => {
+    setIsUploading(true);
     const formData = new FormData();
     formData.append('file', file);
     formData.append('prefix', 'movies');
@@ -57,11 +58,12 @@ export function UploadCover({ field }: { field: FieldValues }) {
       onFieldChange(imageUrl);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const getSelectedImage = async (image: ImageInfoType) => {
-    setIsUploading(true);
     setPreviewUrl(image.image_url);
     onFieldChange(image.image_url);
   };
@@ -69,18 +71,29 @@ export function UploadCover({ field }: { field: FieldValues }) {
   return (
     <FormItem>
       <div className="relative h-[360px] w-full overflow-hidden rounded-xl bg-black">
-        <div
-          className="text-muted-foreground transition-color flex h-full w-full cursor-pointer items-center justify-center gap-2 bg-gray-200/10 duration-300 hover:bg-gray-200/15"
-          onClick={() => inputRef.current?.click()}
-        >
-          <div className="flex flex-col items-center gap-2">
-            <ImagePlus size={20} />
-            <p className="text-center">
-              Энд дарж ковер зургаа оруулна уу? <br /> (png, jpg, jpeg, webp,
-              svg)
-            </p>
+        {isUploading ? (
+          <div
+            className="absolute top-0 left-0 z-10 flex h-full w-full flex-col items-center justify-center bg-black/80"
+            onClick={() => inputRef.current?.click()}
+          >
+            <Loader2 className="size-10 animate-spin items-center justify-center" />
+            <p className="text-center">Уншиж байна...</p>
           </div>
-        </div>
+        ) : (
+          <div
+            className="text-muted-foreground transition-color flex h-full w-full cursor-pointer items-center justify-center gap-2 bg-gray-200/10 duration-300 hover:bg-gray-200/15"
+            onClick={() => inputRef.current?.click()}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <ImagePlus size={20} />
+              <p className="text-center">
+                Энд дарж ковер зургаа оруулна уу? <br /> (png, jpg, jpeg, webp,
+                svg)
+              </p>
+            </div>
+          </div>
+        )}
+
         {!!previewUrl && (
           <>
             <Image

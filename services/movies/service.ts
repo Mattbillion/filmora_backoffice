@@ -2,8 +2,8 @@ import { QueryParams } from '@interpriz/lib/utils';
 
 import { filmoraFetch } from '@/lib/fetch';
 import { ID, PaginatedResType } from '@/lib/fetch/types';
-import { executeRevalidate } from '@/lib/filmora';
 
+import { executeRevalidate } from '../api/helpers';
 import { MoviesBodyType, MoviesItemType, RVK_MOVIES } from './schema';
 
 export async function getMovies(searchParams?: QueryParams) {
@@ -31,8 +31,8 @@ export async function deleteMoviesDetail(param1: string | ID) {
   });
 
   if (error) throw new Error(error);
-
-  executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_${param1}`]);
+  // console.log('deleteMoviesDetail', body);
+  await executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_${param1}`]);
   return { data: body, error: null };
 }
 
@@ -53,7 +53,10 @@ export async function getMoviesDetail(param1: string | ID) {
   }
 }
 
-export async function updateMovie(param1: string | ID, payload: any) {
+export async function updateMovie(
+  param1: string | ID,
+  payload: Record<string, unknown>,
+) {
   const { body, error } = await filmoraFetch<{
     data: MoviesItemType;
     status: string;

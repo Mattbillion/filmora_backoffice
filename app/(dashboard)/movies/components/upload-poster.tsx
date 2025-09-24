@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FieldValues } from 'react-hook-form';
-import { ImageIcon } from 'lucide-react';
+import { ImageIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
@@ -50,6 +50,7 @@ export function UploadPoster({ field }: { field: FieldValues }) {
     formData.append('file', file);
     formData.append('prefix', 'movies');
     try {
+      setIsUploading(true);
       const { body } = await uploadMedia(formData);
       const imageUrl = body.data.images.original;
 
@@ -57,11 +58,12 @@ export function UploadPoster({ field }: { field: FieldValues }) {
       onFieldChange(imageUrl);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsUploading(false);
     }
   };
 
   const getSelectedImage = async (image: ImageInfoType) => {
-    setIsUploading(true);
     setPreviewUrl(image.image_url);
     onFieldChange(image.image_url);
   };
@@ -87,7 +89,20 @@ export function UploadPoster({ field }: { field: FieldValues }) {
           onChange={(e) => handleUploadImage(e.target.files?.[0]!)}
         />
       </FormControl>
-      <div className="relative aspect-[3/4] h-full w-[156px] overflow-hidden rounded-lg bg-black">
+
+      <div
+        className="relative aspect-[3/4] h-full w-[156px] overflow-hidden rounded-lg bg-black"
+        onClick={() => inputRef.current?.click()}
+      >
+        {isUploading && (
+          <div
+            className="absolute top-0 left-0 z-10 flex h-full w-full flex-col items-center justify-center bg-black/80"
+            onClick={() => inputRef.current?.click()}
+          >
+            <Loader2 className="size-6 animate-spin items-center justify-center" />
+          </div>
+        )}
+
         {!!previewUrl && (
           <>
             <Image

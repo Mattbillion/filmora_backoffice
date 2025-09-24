@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -14,13 +21,13 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   PaginationState,
-  RowData,
   SortingState,
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { ColumnVisibility } from '@/components/custom/table/dropdown/column-visibility';
 import {
   Table,
   TableBody,
@@ -29,15 +36,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-
-declare module '@tanstack/react-table' {
-  //allows us to define custom properties for our columns
-  interface ColumnMeta<TData extends RowData, TValue> {
-    filterVariant?: 'text' | 'range' | 'select';
-  }
-}
-
-import { ColumnVisibility } from '@/components/custom/table/dropdown/column-visibility';
 import { useQueryString } from '@/hooks/use-query-string';
 import { objToQs, serializeColumnsFilters } from '@/lib/utils';
 
@@ -57,7 +55,16 @@ export interface DataTableProps<TData, TValue> {
   setDisabled?: any;
   isPending?: boolean;
   children?: ReactNode;
+  disableUrlUpdates?: boolean;
 }
+
+type QueryParamsType = {
+  page: number;
+  page_size: number;
+  filters?: string;
+  sort_by?: string;
+  sort_order?: string;
+};
 
 export function DataTable<TData, TValue>({
   columns,
@@ -72,25 +79,18 @@ export function DataTable<TData, TValue>({
   setDisabled,
   isPending,
   children,
+  disableUrlUpdates = false,
 }: DataTableProps<TData, TValue>) {
   const router = useRouter();
-
   const pathname = usePathname();
+  const isInitialMount = useRef(true);
 
   const { page, page_size, ...qsObj } = useQueryString<QueryParamsType>({
     page: 1,
     page_size: 30,
   });
 
-  type QueryParamsType = {
-    page: number;
-    page_size: number;
-    filters?: string;
-    sort_by?: string;
-    sort_order?: string;
-  };
-
-  //pagination
+  // Initialize state from URL params
   const [{ pageIndex, pageSize }, setPagination] = useState<PaginationState>({
     pageIndex: page - 1,
     pageSize: page_size,
@@ -99,6 +99,7 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  // Memoized pagination state
   const pagination = useMemo(
     () => ({
       pageIndex,
@@ -107,6 +108,15 @@ export function DataTable<TData, TValue>({
     [pageIndex, pageSize],
   );
 
+  // Memoized sorting values
+  const getSortingValue = useCallback((sortingState: SortingState) => {
+    return {
+      sortBy: sortingState[0]?.id || '',
+      sortOrder: sortingState[0]?.desc ? 'desc' : 'asc',
+    };
+  }, []);
+
+  // Memoized table configuration
   const table = useReactTable({
     data,
     columns,
@@ -135,44 +145,47 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  function getSortingValue(sortingState: SortingState) {
-    return {
-      sortBy: sortingState[0]?.id || '',
-      sortOrder: sortingState[0]?.desc ? 'desc' : 'asc',
-    };
-  }
-
   const sortValues = useMemo(() => {
     return getSortingValue(table.getState().sorting);
-  }, [table.getState().sorting]);
+  }, [table.getState().sorting, getSortingValue]);
 
+  // Memoized serialized filters
   const serializedFilters = useMemo(() => {
     return serializeColumnsFilters(table.getState().columnFilters);
   }, [table.getState().columnFilters]);
 
-  console.log(serializedFilters);
+  // Create stable query string for comparison
+  const currentQueryString = useMemo(() => {
+    const queryString = {
+      ...qsObj,
+      page: pageIndex + 1,
+      page_size: pageSize,
+    };
 
-  useEffect(() => {
-    if (!hidePagination) {
-      const queryString = {
-        ...qsObj,
-        page: pageIndex + 1,
-        page_size: pageSize,
-      };
-
-      if (serializedFilters) queryString.filters = serializedFilters;
-      if (sortValues?.sortBy) {
-        queryString.sort_by = sortValues?.sortBy;
-        queryString.sort_order = sortValues?.sortOrder;
-      }
-      router.replace(pathname + `?${objToQs(queryString)}`, { scroll: true });
+    if (serializedFilters) queryString.filters = serializedFilters;
+    if (sortValues?.sortBy) {
+      queryString.sort_by = sortValues?.sortBy;
+      queryString.sort_order = sortValues?.sortOrder;
     }
-  }, [pageIndex, pageSize, serializedFilters, sortValues]);
 
-  // const availableFilters: string[] = table
-  //   .getAllColumns()
-  //   .filter((c) => c.getCanFilter())
-  //   .map((c) => c.id);
+    return objToQs(queryString);
+  }, [pageIndex, pageSize, serializedFilters, sortValues, qsObj]);
+
+  // Optimized URL update effect - only runs when necessary
+  useEffect(() => {
+    if (hidePagination || disableUrlUpdates || isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+
+    const newUrl = `${pathname}?${currentQueryString}`;
+    const currentUrl = `${window.location.pathname}${window.location.search}`;
+
+    // Only update if the URL is actually different
+    if (newUrl !== currentUrl) {
+      router.replace(newUrl, { scroll: false });
+    }
+  }, [currentQueryString, hidePagination, disableUrlUpdates, pathname, router]);
 
   return (
     <div className="w-full">

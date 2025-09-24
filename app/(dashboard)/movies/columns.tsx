@@ -23,7 +23,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { checkPermission } from '@/lib/permission';
-import { deleteMoviesDetail } from '@/services/movies/service';
+import { deleteMovie } from '@/services/movies-generated';
 import { MovieListResponseType } from '@/services/schema';
 
 import UpdateMovie from './update-movie';
@@ -62,9 +62,13 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
               action={() => {
                 setLoading(true);
                 // TODO: Please check after generate
-                deleteMoviesDetail(row.original.id)
-                  .then((c) => toast.success(c.data.message))
-                  .catch((c) => toast.error(c.message))
+                deleteMovie(row.original.id.toString())
+                  .then((c) =>
+                    toast.success(c.message || 'Movie deleted successfully'),
+                  )
+                  .catch((c) =>
+                    toast.error(c.message || 'Failed to delete movie'),
+                  )
                   .finally(() => {
                     deleteDialogRef.current?.close();
                     setLoading(false);
