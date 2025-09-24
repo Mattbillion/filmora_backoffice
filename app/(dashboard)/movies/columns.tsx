@@ -132,15 +132,16 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'type',
     accessorKey: 'type',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.type,
+    header: () => <h1>Төрөл</h1>,
+    cell: ({ row }) =>
+      row.original.type === 'movie' ? 'Нэг ангит кино' : 'Олон ангит сериал',
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
     id: 'year',
     accessorKey: 'year',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: () => <h1>Кино гарсан огноо</h1>,
     cell: ({ row }) => row.original.year,
     enableSorting: true,
     enableColumnFilter: true,
@@ -148,7 +149,7 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'price',
     accessorKey: 'price',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: () => <h1>Үнийн дүн</h1>,
     cell: ({ row }) => currencyFormat(row.original.price ?? 0),
     enableSorting: true,
     enableColumnFilter: true,
@@ -156,7 +157,7 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'is_premium',
     accessorKey: 'is_premium',
-    header: ({ column }) => <h1>Premium</h1>,
+    header: () => <h1>Premium</h1>,
 
     cell: ({ row }) => (row.original.is_premium ? 'Active' : 'Inactive'),
     enableSorting: false,
@@ -166,8 +167,8 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'is_adult',
     accessorKey: 'is_adult',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.is_adult ? 'Active' : 'Inactive'),
+    header: () => <h1>Насанд хүрэгчдэд эсэх</h1>,
+    cell: ({ row }) => (row.original.is_adult ? 'Тийм' : 'Үгүй'),
     enableSorting: false,
     enableColumnFilter: true,
   },

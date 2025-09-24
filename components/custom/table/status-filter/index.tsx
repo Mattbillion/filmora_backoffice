@@ -16,9 +16,11 @@ import { objToQs, qsToObj } from '@/lib/utils';
 const StatusFilter = ({
   name = 'filters.status',
   options,
+  placeholder,
 }: {
   name?: string;
   options: Array<{ value: string; label: string }>;
+  placeholder?: string;
 }) => {
   const searchParams = useSearchParams();
   const queryParams = qsToObj(searchParams.toString());
@@ -41,14 +43,19 @@ const StatusFilter = ({
     router.replace(`?${objToQs(paramsObj)}`);
   };
 
+  const currentValue = (result(queryParams, name) as string) || 'all';
+  const selectedOption = options.find((opt) => opt.value === currentValue);
+  const displayText = selectedOption
+    ? selectedOption.label
+    : placeholder || 'Select...';
+
   return (
-    <div className="flex items-center gap-2">
-      <Select
-        onValueChange={handleSelect}
-        value={result(queryParams, name) || 'all'}
-      >
-        <SelectTrigger className="w-[180px]">
-          <SelectValue placeholder="Төлөв сонгох" />
+    <div className="flex flex-col gap-2">
+      <Select onValueChange={handleSelect} value={currentValue}>
+        <SelectTrigger className="h-9 w-[180px]">
+          <SelectValue placeholder={placeholder || 'Select...'}>
+            {displayText}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
