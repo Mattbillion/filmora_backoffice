@@ -113,7 +113,7 @@ export function UploadCover({ field }: { field: FieldValues }) {
         )}
 
         <div className="absolute bottom-4 left-4 flex gap-2">
-          <MediaDialog updateAction={getSelectedImage} triggerSize="default" />
+          <MediaDialog updateAction={getSelectedImage} />
         </div>
       </div>
       <FormControl>
