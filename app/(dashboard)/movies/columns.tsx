@@ -5,7 +5,6 @@ import { currencyFormat } from '@interpriz/lib/utils';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -27,13 +26,15 @@ import { checkPermission } from '@/lib/permission';
 import { deleteMoviesDetail } from '@/services/movies/service';
 import { MovieListResponseType } from '@/services/schema';
 
+import UpdateMovie from './update-movie';
+
 const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
   const canDelete = checkPermission(data, []);
   const canEdit = checkPermission(data, []);
-  const router = useRouter();
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false);
 
   if (!canEdit && !canDelete) return null;
 
@@ -46,25 +47,13 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {canEdit && (
-            <Button
-              onClick={() => router.push(`/movies/${row.original.id}`)}
-              className="flex w-full items-center justify-start px-2"
-              variant="ghost"
-            >
-              <Edit className="h-4 w-4" /> Edit{' '}
-            </Button>
-            // <UpdateDialog
-            //   initialData={row.original}
-            //   key={JSON.stringify(row.original)}
-            // >
-            //   <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            //     <Edit className="h-4 w-4" /> Edit
-            //   </DropdownMenuItem>
-            // </UpdateDialog>
+            <DropdownMenuItem onClick={() => setEditDrawerOpen(true)}>
+              <Edit className="h-4 w-4" /> Edit
+            </DropdownMenuItem>
           )}
           {canDelete && (
             <DeleteDialog
@@ -96,6 +85,12 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <UpdateMovie
+        id={row.original.id.toString()}
+        buttonVariant="ghost"
+        editDrawerOpen={editDrawerOpen}
+        setEditDrawerOpen={setEditDrawerOpen}
+      />
     </div>
   );
 };

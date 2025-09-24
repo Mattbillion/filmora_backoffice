@@ -1,4 +1,4 @@
-import { revalidate, revalidateClient } from './actions';
+import { revalidate } from './actions';
 
 export type FILMORARevalidateParams = {
   path?: string;
@@ -23,7 +23,7 @@ export function executeRevalidate(
     Promise.any(
       revalidations.map((c) => (typeof c === 'string' ? revalidate(c) : false)),
     );
-    revalidateClient(filmoraOrigin);
+    // revalidateClient(filmoraOrigin);
   } catch (revalidateError) {
     console.error('Revalidation failed:', revalidateError);
   }

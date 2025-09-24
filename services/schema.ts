@@ -328,11 +328,11 @@ export const movieUpdateSchema = z.object({
   type: z.enum(['movie', 'series']).optional(),
   year: z.number().int().min(1900).max(2030).optional(),
   price: z.number().int().min(0).optional(),
-  is_premium: z.boolean().optional(),
+  is_premium: z.boolean(),
   poster_url: z.string().optional(),
-  is_adult: z.boolean().optional(),
-  categories: z.array(z.number().int()).optional(),
-  genres: z.array(z.number().int()).optional(),
+  is_adult: z.boolean(),
+  category_ids: z.array(z.number().int()).optional(),
+  genre_ids: z.array(z.number().int()).optional(),
   load_image_url: z.string().optional(),
 });
 

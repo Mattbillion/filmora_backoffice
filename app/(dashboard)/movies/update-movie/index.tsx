@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoaderIcon, PlusIcon } from 'lucide-react';
+import { LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
@@ -16,7 +16,6 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from '@/components/ui/drawer';
 import {
   Form,
@@ -40,113 +39,137 @@ import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { getCategories } from '@/services/categories';
 import { getGenres } from '@/services/genres';
-import { createMovieAction } from '@/services/movies-generated';
+import { getMovie, updateMovie } from '@/services/movies-generated';
 import {
   CategoryResponseType,
   GenreResponseType,
-  movieCreateSchema,
-  MovieCreateType,
+  movieResponseSchema,
+  MovieResponseType,
+  MovieUpdateType,
 } from '@/services/schema';
 
 import { UploadCover } from '../components/upload-cover';
 import { UploadPoster } from '../components/upload-poster';
 
-export default function CreateMovie() {
+// import { UploadCover } from './upload-cover';
+// import { UploadPoster } from './upload-poster';
+
+export default function UpdateMovie({
+  id,
+  buttonVariant = 'outline',
+  editDrawerOpen,
+  setEditDrawerOpen,
+}: {
+  id: string;
+  buttonVariant?: 'outline' | 'default' | 'ghost';
+  editDrawerOpen: boolean;
+  setEditDrawerOpen: (open: boolean) => void;
+}) {
   const [categories, setCategories] = useState<CategoryResponseType[]>([]);
   const [genres, setGenres] = useState<GenreResponseType[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const fetchCategories = async () => {
-    const result = await getCategories();
-    if (result.status === 'success') {
-      setCategories(result.data || []);
-    }
-    return;
-  };
+  const [initialData, setInitialData] = useState<MovieResponseType>();
 
-  const fetchGenres = async () => {
-    const result = await getGenres();
-    if (result.status === 'success') {
-      setGenres(result.data || []);
+  const fetchCategories = useCallback(async () => {
+    try {
+      const res = await getCategories();
+      if (res.status === 'success') {
+        setCategories(res.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch categories', error);
     }
-    return;
+  }, []);
+
+  const fetchGenres = useCallback(async () => {
+    try {
+      const res = await getGenres();
+      if (res.status === 'success') {
+        setGenres(res.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch genres', error);
+    }
+  }, []);
+
+  const fetchMovie = async () => {
+    try {
+      const response = await getMovie(id);
+      if (response.status === 'success') {
+        setInitialData(response.data);
+      }
+    } catch (err) {
+      console.error('Failed to fetch movie', err);
+    }
   };
 
   useEffect(() => {
     fetchCategories();
     fetchGenres();
+    fetchMovie();
   }, []);
 
-  const form = useForm<MovieCreateType>({
-    resolver: zodResolver(movieCreateSchema),
-    defaultValues: {
-      title: '',
-      description: '',
-      type: 'movie',
-      year: new Date().getFullYear(),
-      price: 0,
-      poster_url: '',
-      load_image_url: '',
-      is_adult: false,
-      is_premium: false,
-      category_ids: [],
-      genre_ids: [],
+  const form = useForm<MovieResponseType>({
+    resolver: zodResolver(movieResponseSchema),
+    values: {
+      title: initialData?.title || '',
+      description: initialData?.description || '',
+      type: initialData?.type || 'movie',
+      year: initialData?.year || 0,
+      price: initialData?.price || 0,
+      is_premium: initialData?.is_premium || false,
+      poster_url: initialData?.poster_url || '',
+      load_image_url: initialData?.load_image_url || '',
+      is_adult: initialData?.is_adult || false,
+      categories: initialData?.categories || [],
+      genres: initialData?.genres || [],
+      movie_id: initialData?.movie_id || '',
+      created_at: '2025-09-24T05:20:30.123Z',
     },
   });
 
   const isSeriesMovie = form.watch('type') === 'series';
 
-  async function onSubmitMovie(d: MovieCreateType) {
-    const body = {
-      title: d.title,
-      description: d.description,
-      type: d.type as 'series' | 'movie',
-      year: Number(d.year),
-      price: Number(d.price),
-      poster_url: d.poster_url || '',
-      load_image_url: d.load_image_url || '',
-      is_adult: d.is_adult || false,
-      is_premium: d.is_premium || false,
-      category_ids: d.category_ids?.map((cat) => Number(cat)),
-      genre_ids: d.genre_ids?.map((genre) => Number(genre)),
-    };
-
+  const onSubmit = async (d: MovieResponseType) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
-      const movieCreated = await createMovieAction(body);
-      if (movieCreated.status === 'success') {
-        toast.success('Кино амжилттай нэмэгдлээ');
-      }
-    } catch (error) {
-      toast.error('Кино оруулахад алдаа гарлаа');
-    } finally {
-      handleCloseDrawer();
-    }
-  }
+      const body: MovieUpdateType = {
+        title: d.title,
+        description: d.description,
+        type: d.type as 'movie' | 'series',
+        year: Number(d.year),
+        price: Number(d.price),
+        is_premium: true,
+        poster_url: d.poster_url,
+        load_image_url: d.load_image_url || '',
+        is_adult: false,
+        category_ids: d.categories?.map((cat) => Number(cat.id)),
+        genre_ids: d.genres?.map((genre) => Number(genre.id)),
+      };
 
-  const handleCloseDrawer = () => {
-    setIsOpen((prev) => !prev);
-    setIsLoading(false);
-    form.reset();
+      const response = await updateMovie(id, body);
+      if (response.status === 'success') {
+        toast.success('Кино амжилттай засгалаа');
+        setEditDrawerOpen(false);
+      }
+    } catch (err) {
+      console.error('Failed to update movie', err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <Drawer open={isOpen} onOpenChange={setIsOpen}>
-      <DrawerTrigger asChild>
-        <Button variant="outline">
-          <PlusIcon /> Шинэ кино
-        </Button>
-      </DrawerTrigger>
-
+    <Drawer open={editDrawerOpen} onOpenChange={setEditDrawerOpen}>
       <DrawerContent className="max-h-[95vh] overflow-hidden">
         <ScrollArea className="h-auto overflow-y-auto">
           <div className="mx-auto max-w-[900px] space-y-4 pt-16 pb-20">
             <DrawerHeader className="bg-background fixed top-0 right-0 left-0 z-10 p-4">
-              <DrawerTitle className="text-lg">Шинээр кино оруулах</DrawerTitle>
+              <DrawerTitle className="text-lg">Кино мэдээлэл засах</DrawerTitle>
             </DrawerHeader>
             <Form {...form}>
               <form
-                onSubmit={form.handleSubmit(onSubmitMovie)}
+                onSubmit={form.handleSubmit(onSubmit)}
                 className="space-y-4"
                 id="create-movie-form"
               >
@@ -222,8 +245,11 @@ export default function CreateMovie() {
 
                 <FormField
                   control={form.control}
-                  name="category_ids"
+                  name="categories"
                   render={({ field }) => {
+                    const currentValues = field.value?.map((cat) =>
+                      cat.id.toString(),
+                    );
                     return (
                       <FormItem className="flex flex-col gap-1">
                         <FormLabel>Кино категори сонгох</FormLabel>
@@ -235,11 +261,24 @@ export default function CreateMovie() {
                                 value: cat.id.toString(),
                               };
                             })}
-                            onValueChange={(selectedValues) =>
-                              field.onChange(
-                                selectedValues.map((value) => Number(value)),
-                              )
-                            }
+                            onValueChange={(selectedValues: string[]) => {
+                              const selectedCategories = selectedValues.map(
+                                (value) => {
+                                  const categoryId = Number(value);
+                                  const category = categories.find(
+                                    (cat) => cat.id === categoryId,
+                                  );
+                                  return {
+                                    id: categoryId,
+                                    name: category?.name || '',
+                                    description: '',
+                                    is_adult: false,
+                                  };
+                                },
+                              );
+                              field.onChange(selectedCategories);
+                            }}
+                            defaultValue={currentValues}
                           />
                         </FormControl>
                         <FormMessage />
@@ -250,8 +289,11 @@ export default function CreateMovie() {
 
                 <FormField
                   control={form.control}
-                  name="genre_ids"
+                  name="genres"
                   render={({ field }) => {
+                    const currentValues = field.value?.map((genre) =>
+                      genre.id.toString(),
+                    );
                     return (
                       <FormItem className="flex flex-col gap-1">
                         <FormLabel>Кино genre сонгох</FormLabel>
@@ -263,11 +305,22 @@ export default function CreateMovie() {
                                 value: genre.id.toString(),
                               };
                             })}
-                            onValueChange={(selectedValues) =>
-                              field.onChange(
-                                selectedValues.map((value) => Number(value)),
-                              )
-                            }
+                            onValueChange={(selectedValues: string[]) => {
+                              const selectedGenres = selectedValues.map(
+                                (value) => {
+                                  const genreId = Number(value);
+                                  const genre = genres.find(
+                                    (g) => g.id === genreId,
+                                  );
+                                  return {
+                                    id: genreId,
+                                    name: genre?.name || '',
+                                  };
+                                },
+                              );
+                              field.onChange(selectedGenres);
+                            }}
+                            defaultValue={currentValues}
                           />
                         </FormControl>
                       </FormItem>
