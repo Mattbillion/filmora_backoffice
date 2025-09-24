@@ -7,7 +7,11 @@ import { getMedia } from '@/lib/functions';
 import { MediaResponse } from '../types';
 import { mediaColumns } from './columns';
 
-export function Content() {
+export function Content({
+  updateAction,
+}: {
+  updateAction?: (image: any) => void;
+}) {
   const [data, setData] = useState<MediaResponse>({
     data: [],
     pagination: {
@@ -27,12 +31,14 @@ export function Content() {
       }
     });
   }, []);
+
   return (
     <ScrollArea className="max-h-[500px] p-4 pt-0">
       <DataTable
         columns={mediaColumns}
         data={data?.data}
         rowCount={data?.pagination.page_size ?? data?.data?.length}
+        disableUrlUpdates={true}
       />
     </ScrollArea>
   );

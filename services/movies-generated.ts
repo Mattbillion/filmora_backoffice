@@ -20,7 +20,7 @@ export async function createMovieAction(body: MovieCreateType) {
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
-  executeRevalidate([RVK_MOVIES]);
+  await executeRevalidate([RVK_MOVIES]);
   return response;
 }
 
@@ -71,8 +71,8 @@ export async function getMovie(movieId: string) {
 }
 
 export async function updateMovie(movieId: string, body: MovieUpdateType) {
-  console.log(body, 'body');
-  console.log(movieId, 'movieId');
+  // console.log(body, 'body');
+  // console.log(movieId, 'movieId');
   const res = await actions.put<BaseResponseUnionMovieResponseNoneTypeType>(
     `/movies/${movieId}`,
     body,
@@ -81,7 +81,7 @@ export async function updateMovie(movieId: string, body: MovieUpdateType) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_movieId_${movieId}`]);
+  await executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_movieId_${movieId}`]);
 
   return response;
 }
@@ -94,7 +94,7 @@ export async function deleteMovie(movieId: string) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_movieId_${movieId}`]);
+  await executeRevalidate([RVK_MOVIES, `${RVK_MOVIES}_movieId_${movieId}`]);
 
   return response;
 }

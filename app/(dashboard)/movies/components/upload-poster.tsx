@@ -50,6 +50,7 @@ export function UploadPoster({ field }: { field: FieldValues }) {
     formData.append('file', file);
     formData.append('prefix', 'movies');
     try {
+      setIsUploading(true);
       const { body } = await uploadMedia(formData);
       const imageUrl = body.data.images.original;
 
@@ -57,6 +58,8 @@ export function UploadPoster({ field }: { field: FieldValues }) {
       onFieldChange(imageUrl);
     } catch (error: any) {
       toast.error(error.message);
+    } finally {
+      setIsUploading(false);
     }
   };
 

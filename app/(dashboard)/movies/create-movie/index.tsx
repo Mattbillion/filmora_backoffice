@@ -73,9 +73,11 @@ export default function CreateMovie() {
   };
 
   useEffect(() => {
-    fetchCategories();
-    fetchGenres();
-  }, []);
+    if (isOpen) {
+      fetchCategories();
+      fetchGenres();
+    }
+  }, [isOpen]);
 
   const form = useForm<MovieCreateType>({
     resolver: zodResolver(movieCreateSchema),
@@ -117,7 +119,7 @@ export default function CreateMovie() {
       if (movieCreated.status === 'success') {
         toast.success('Кино амжилттай нэмэгдлээ');
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error('Кино оруулахад алдаа гарлаа');
     } finally {
       handleCloseDrawer();
@@ -187,7 +189,7 @@ export default function CreateMovie() {
                   control={form.control}
                   name="description"
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col gap-1">
                       <FormLabel>Дэлгэрэнгүй тайлбар</FormLabel>
                       <FormControl>
                         <HtmlTipTapItem field={field} />
@@ -279,7 +281,12 @@ export default function CreateMovie() {
                   control={form.control}
                   name="price"
                   render={({ field }) => (
-                    <FormItem className={cn(isSeriesMovie && 'sr-only')}>
+                    <FormItem
+                      className={cn(
+                        isSeriesMovie && 'sr-only',
+                        'flex flex-col gap-1',
+                      )}
+                    >
                       <FormLabel>Түрээсийн үнэ</FormLabel>
                       <FormControl>
                         <Input
@@ -303,7 +310,12 @@ export default function CreateMovie() {
                   control={form.control}
                   name="year"
                   render={({ field }) => (
-                    <FormItem className={cn(isSeriesMovie && 'sr-only')}>
+                    <FormItem
+                      className={cn(
+                        isSeriesMovie && 'sr-only',
+                        'flex flex-col gap-1',
+                      )}
+                    >
                       <FormLabel>Кино гарсан он</FormLabel>
                       <FormControl>
                         <Input

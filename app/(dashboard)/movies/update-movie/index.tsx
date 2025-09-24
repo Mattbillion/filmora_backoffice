@@ -104,10 +104,12 @@ export default function UpdateMovie({
   };
 
   useEffect(() => {
-    fetchCategories();
-    fetchGenres();
-    fetchMovie();
-  }, []);
+    if (editDrawerOpen) {
+      fetchCategories();
+      fetchGenres();
+      fetchMovie();
+    }
+  }, [editDrawerOpen]);
 
   const form = useForm<MovieResponseType>({
     resolver: zodResolver(movieResponseSchema),

@@ -15,15 +15,17 @@ export function getOrigin() {
   return isProd ? 'filmora' : 'vercel';
 }
 
-export function executeRevalidate(
+export async function executeRevalidate(
   revalidations: (FILMORARevalidateParams | string)[],
 ) {
   try {
-    const filmoraOrigin = getOrigin();
-    Promise.any(
-      revalidations.map((c) => (typeof c === 'string' ? revalidate(c) : false)),
+    const _filmoraOrigin = getOrigin();
+    await Promise.all(
+      revalidations.map((c) =>
+        typeof c === 'string' ? revalidate(c) : Promise.resolve(),
+      ),
     );
-    // revalidateClient(filmoraOrigin);
+    // revalidateClient(_filmoraOrigin);
   } catch (revalidateError) {
     console.error('Revalidation failed:', revalidateError);
   }
@@ -34,6 +36,6 @@ export function isRedirectLike(e: unknown): boolean {
     typeof e === 'object' &&
     e !== null &&
     'message' in e &&
-    (e as any).message === 'NEXT_REDIRECT'
+    (e as { message: string }).message === 'NEXT_REDIRECT'
   );
 }

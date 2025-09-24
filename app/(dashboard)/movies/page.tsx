@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
 import InputFilter from '@/components/custom/input-filter';
 import StatusFilter from '@/components/custom/table/status-filter';
@@ -19,7 +18,6 @@ export const dynamic = 'force-dynamic';
 export default async function MoviesPage(props: {
   searchParams?: SearchParams;
 }) {
-  const _session = await auth();
   const rawSearchParams = await props.searchParams;
 
   // Parse the search params to get filters
@@ -49,7 +47,7 @@ export default async function MoviesPage(props: {
   return (
     <>
       <div className="flex items-start justify-between">
-        <Heading title={`Movies list (${total_count ?? data.length})`} />
+        <Heading title={`Кинонууд (${total_count ?? data.length})`} />
         <CreateMovie />
       </div>
 
@@ -60,16 +58,14 @@ export default async function MoviesPage(props: {
           columns={moviesColumns}
           data={data}
           rowCount={total_count ?? data?.length}
+          disableUrlUpdates={true}
         >
           {/* Filters Section */}
           <div className="flex flex-wrap items-center gap-4">
-            <InputFilter
-              name="filters.title"
-              placeholder="Search by movie title..."
-            />
+            <InputFilter name="filters.title" placeholder="Хайлт хийх" />
             <StatusFilter
               name="filters.type"
-              placeholder="Filter by type..."
+              placeholder="Кино төрөл"
               options={[
                 { value: 'movie', label: 'Нэг ангит кино' },
                 { value: 'series', label: 'Олон ангит сериал' },
@@ -77,7 +73,7 @@ export default async function MoviesPage(props: {
             />
             <StatusFilter
               name="filters.is_premium"
-              placeholder="Filter by premium status..."
+              placeholder="Түрээсийн төлөв"
               options={[
                 { value: 'true', label: 'Premium Active' },
                 { value: 'false', label: 'Premium Inactive' },
@@ -85,7 +81,7 @@ export default async function MoviesPage(props: {
             />
             <StatusFilter
               name="filters.is_adult"
-              placeholder="Filter by age rating..."
+              placeholder="Насны ангилал"
               options={[
                 { value: 'true', label: 'Насанд хүрэгчдэд' },
                 { value: 'false', label: 'Бүх насны' },
