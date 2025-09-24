@@ -42,6 +42,7 @@ const InputFilter = ({
   return (
     <div className="flex items-center gap-2">
       <Input
+        id={name}
         value={q}
         type={'text'}
         className="h-9 w-[200px]"

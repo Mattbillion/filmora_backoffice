@@ -2,9 +2,12 @@ import { Suspense } from 'react';
 
 import { auth } from '@/app/(auth)/auth';
 import { Heading } from '@/components/custom/heading';
+import InputFilter from '@/components/custom/input-filter';
+import StatusFilter from '@/components/custom/table/status-filter';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
+import { qsToObj } from '@/lib/utils';
 // import { getMovies } from '@/services/movies/service';
 import { getMovies } from '@/services/movies-generated';
 
@@ -16,9 +19,32 @@ export const dynamic = 'force-dynamic';
 export default async function MoviesPage(props: {
   searchParams?: SearchParams;
 }) {
-  const session = await auth();
-  const searchParams = await props.searchParams;
-  const { data, total_count } = await getMovies();
+  const _session = await auth();
+  const rawSearchParams = await props.searchParams;
+
+  // Parse the search params to get filters
+  const searchParams = qsToObj(
+    new URLSearchParams(rawSearchParams as Record<string, string>).toString(),
+  );
+
+  // Transform filters to match API format
+  const transformedParams = {
+    page: Number(searchParams?.page) || 1,
+    page_size: Number(searchParams?.page_size) || 30,
+    ...(searchParams?.filters?.title && { title: searchParams.filters.title }),
+    ...(searchParams?.filters?.type && { type: searchParams.filters.type }),
+    ...(searchParams?.filters?.['year.min'] && {
+      year: parseInt(searchParams.filters['year.min']),
+    }),
+    ...(searchParams?.filters?.is_premium && {
+      is_premium: searchParams.filters.is_premium === 'true',
+    }),
+    ...(searchParams?.filters?.is_adult && {
+      is_adult: searchParams.filters.is_adult === 'true',
+    }),
+  };
+
+  const { data, total_count } = await getMovies(transformedParams);
 
   return (
     <>
@@ -28,12 +54,45 @@ export default async function MoviesPage(props: {
       </div>
 
       <Separator />
+
       <Suspense fallback="Loading">
         <DataTable
           columns={moviesColumns}
           data={data}
           rowCount={total_count ?? data?.length}
-        />
+        >
+          {/* Filters Section */}
+          <div className="flex flex-wrap items-center gap-4">
+            <InputFilter
+              name="filters.title"
+              placeholder="Search by movie title..."
+            />
+            <StatusFilter
+              name="filters.type"
+              placeholder="Filter by type..."
+              options={[
+                { value: 'movie', label: 'Нэг ангит кино' },
+                { value: 'series', label: 'Олон ангит сериал' },
+              ]}
+            />
+            <StatusFilter
+              name="filters.is_premium"
+              placeholder="Filter by premium status..."
+              options={[
+                { value: 'true', label: 'Premium Active' },
+                { value: 'false', label: 'Premium Inactive' },
+              ]}
+            />
+            <StatusFilter
+              name="filters.is_adult"
+              placeholder="Filter by age rating..."
+              options={[
+                { value: 'true', label: 'Насанд хүрэгчдэд' },
+                { value: 'false', label: 'Бүх насны' },
+              ]}
+            />
+          </div>
+        </DataTable>
       </Suspense>
     </>
   );

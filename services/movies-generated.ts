@@ -71,6 +71,8 @@ export async function getMovie(movieId: string) {
 }
 
 export async function updateMovie(movieId: string, body: MovieUpdateType) {
+  console.log(body, 'body');
+  console.log(movieId, 'movieId');
   const res = await actions.put<BaseResponseUnionMovieResponseNoneTypeType>(
     `/movies/${movieId}`,
     body,

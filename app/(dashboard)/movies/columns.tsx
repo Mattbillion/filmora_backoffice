@@ -5,7 +5,6 @@ import { currencyFormat } from '@interpriz/lib/utils';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -27,13 +26,15 @@ import { checkPermission } from '@/lib/permission';
 import { deleteMoviesDetail } from '@/services/movies/service';
 import { MovieListResponseType } from '@/services/schema';
 
+import UpdateMovie from './update-movie';
+
 const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
   const canDelete = checkPermission(data, []);
   const canEdit = checkPermission(data, []);
-  const router = useRouter();
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false);
 
   if (!canEdit && !canDelete) return null;
 
@@ -46,25 +47,13 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
             <MoreHorizontal className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
+        <DropdownMenuContent align="end">
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {canEdit && (
-            <Button
-              onClick={() => router.push(`/movies/${row.original.id}`)}
-              className="flex w-full items-center justify-start px-2"
-              variant="ghost"
-            >
-              <Edit className="h-4 w-4" /> Edit{' '}
-            </Button>
-            // <UpdateDialog
-            //   initialData={row.original}
-            //   key={JSON.stringify(row.original)}
-            // >
-            //   <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-            //     <Edit className="h-4 w-4" /> Edit
-            //   </DropdownMenuItem>
-            // </UpdateDialog>
+            <DropdownMenuItem onClick={() => setEditDrawerOpen(true)}>
+              <Edit className="h-4 w-4" /> Edit
+            </DropdownMenuItem>
           )}
           {canDelete && (
             <DeleteDialog
@@ -96,6 +85,12 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
+      <UpdateMovie
+        id={row.original.id.toString()}
+        buttonVariant="ghost"
+        editDrawerOpen={editDrawerOpen}
+        setEditDrawerOpen={setEditDrawerOpen}
+      />
     </div>
   );
 };
@@ -137,15 +132,16 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'type',
     accessorKey: 'type',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.type,
+    header: () => <h1>Төрөл</h1>,
+    cell: ({ row }) =>
+      row.original.type === 'movie' ? 'Нэг ангит кино' : 'Олон ангит сериал',
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
     id: 'year',
     accessorKey: 'year',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: () => <h1>Кино гарсан огноо</h1>,
     cell: ({ row }) => row.original.year,
     enableSorting: true,
     enableColumnFilter: true,
@@ -153,7 +149,7 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'price',
     accessorKey: 'price',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
+    header: () => <h1>Үнийн дүн</h1>,
     cell: ({ row }) => currencyFormat(row.original.price ?? 0),
     enableSorting: true,
     enableColumnFilter: true,
@@ -161,7 +157,7 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'is_premium',
     accessorKey: 'is_premium',
-    header: ({ column }) => <h1>Premium</h1>,
+    header: () => <h1>Premium</h1>,
 
     cell: ({ row }) => (row.original.is_premium ? 'Active' : 'Inactive'),
     enableSorting: false,
@@ -171,8 +167,8 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'is_adult',
     accessorKey: 'is_adult',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (row.original.is_adult ? 'Active' : 'Inactive'),
+    header: () => <h1>Насанд хүрэгчдэд эсэх</h1>,
+    cell: ({ row }) => (row.original.is_adult ? 'Тийм' : 'Үгүй'),
     enableSorting: false,
     enableColumnFilter: true,
   },

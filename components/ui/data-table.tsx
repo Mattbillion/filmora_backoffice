@@ -150,6 +150,8 @@ export function DataTable<TData, TValue>({
     return serializeColumnsFilters(table.getState().columnFilters);
   }, [table.getState().columnFilters]);
 
+  console.log(serializedFilters);
+
   useEffect(() => {
     if (!hidePagination) {
       const queryString = {
