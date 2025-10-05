@@ -5,7 +5,6 @@ import {
   BaseResponseUnionDictNoneTypeType,
   BaseResponseUnionListMovieListResponseNoneTypeType,
   BaseResponseUnionMovieResponseNoneTypeType,
-  BaseResponseUnionMovieResponseNoneTypeType,
   MovieCreateType,
   MovieUpdateType,
   SingleItemReponseMovieResponseType,
@@ -25,19 +24,19 @@ export async function createMovie(body: MovieCreateType) {
   return response;
 }
 
-export async function getMovies(
-  searchParams: {
-    page?: number;
-    page_size?: number;
-    title?: string;
-    type?: string;
-    year?: number;
-    category_id?: number;
-    genre_id?: number;
-    is_premium?: boolean;
-    is_adult?: boolean;
-  } = {},
-) {
+export type GetMoviesSearchParams = {
+  page?: number;
+  page_size?: number;
+  title?: string;
+  type?: string;
+  year?: number;
+  category_id?: number;
+  genre_id?: number;
+  is_premium?: boolean;
+  is_adult?: boolean;
+};
+
+export async function getMovies(searchParams?: GetMoviesSearchParams) {
   const res =
     await actions.get<BaseResponseUnionListMovieListResponseNoneTypeType>(
       `/movies`,

@@ -11,12 +11,12 @@ import {
 
 // Auto-generated service for genres
 
-export async function getGenres(
-  searchParams: {
-    page?: number;
-    page_size?: number;
-  } = {},
-) {
+export type GetGenresSearchParams = {
+  page?: number;
+  page_size?: number;
+};
+
+export async function getGenres(searchParams?: GetGenresSearchParams) {
   const res = await actions.get<BaseResponseUnionListGenreResponseNoneTypeType>(
     `/genres`,
     {

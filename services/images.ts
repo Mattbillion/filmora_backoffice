@@ -5,12 +5,14 @@ import { ImageListResponseType } from './schema';
 
 // Auto-generated service for images
 
+export type GetUploadedImagesSearchParams = {
+  page?: number;
+  page_size?: number;
+  content_type?: string;
+};
+
 export async function getUploadedImages(
-  searchParams: {
-    page?: number;
-    page_size?: number;
-    content_type?: string;
-  } = {},
+  searchParams?: GetUploadedImagesSearchParams,
 ) {
   const res = await actions.get<ImageListResponseType>(`/images`, {
     searchParams,

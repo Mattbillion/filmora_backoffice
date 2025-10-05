@@ -11,14 +11,13 @@ import {
 
 // Auto-generated service for categories
 
-export async function getCategories(
-  searchParams: {
-    page?: number;
-    page_size?: number;
-    is_adult?: boolean;
-    is_featured?: boolean;
-  } = {},
-) {
+export type GetCategoriesSearchParams = {
+  page?: number;
+  page_size?: number;
+  is_adult?: boolean;
+};
+
+export async function getCategories(searchParams?: GetCategoriesSearchParams) {
   const res =
     await actions.get<BaseResponseListUnionCategoryResponseNoneTypeType>(
       `/categories`,

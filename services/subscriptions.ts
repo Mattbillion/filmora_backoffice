@@ -4,15 +4,17 @@ import { BaseResponseUnionListSubscriptionUserDataNoneTypeType } from './schema'
 
 // Auto-generated service for subscriptions
 
+export type GetSubscriptionUsersSearchParams = {
+  status?: string;
+  plan?: string;
+  expires_after?: string;
+  expires_before?: string;
+  limit?: number;
+  offset?: number;
+};
+
 export async function getSubscriptionUsers(
-  searchParams: {
-    status?: string;
-    plan?: string;
-    expires_after?: string;
-    expires_before?: string;
-    limit?: number;
-    offset?: number;
-  } = {},
+  searchParams?: GetSubscriptionUsersSearchParams,
 ) {
   const res =
     await actions.get<BaseResponseUnionListSubscriptionUserDataNoneTypeType>(

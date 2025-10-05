@@ -4,11 +4,13 @@ import { BaseResponseUnionListMovieRentalDataNoneTypeType } from './schema';
 
 // Auto-generated service for rentals
 
+export type GetRentalCountsByUsersSearchParams = {
+  limit?: number;
+  offset?: number;
+};
+
 export async function getRentalCountsByUsers(
-  searchParams: {
-    limit?: number;
-    offset?: number;
-  } = {},
+  searchParams?: GetRentalCountsByUsersSearchParams,
 ) {
   const res = await actions.get<any>(`/rentals/users`, {
     searchParams,
@@ -23,11 +25,13 @@ export async function getRentalCountsByUsers(
   return response;
 }
 
+export type GetMoviesRentalCountsSearchParams = {
+  limit?: number;
+  offset?: number;
+};
+
 export async function getMoviesRentalCounts(
-  searchParams: {
-    limit?: number;
-    offset?: number;
-  } = {},
+  searchParams?: GetMoviesRentalCountsSearchParams,
 ) {
   const res =
     await actions.get<BaseResponseUnionListMovieRentalDataNoneTypeType>(

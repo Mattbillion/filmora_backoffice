@@ -7,12 +7,14 @@ import {
 
 // Auto-generated service for seasons
 
+export type GetSeriesSeasonsSearchParams = {
+  page?: number;
+  page_size?: number;
+};
+
 export async function getSeriesSeasons(
   movieId: string,
-  searchParams: {
-    page?: number;
-    page_size?: number;
-  } = {},
+  searchParams?: GetSeriesSeasonsSearchParams,
 ) {
   const res = await actions.get<BaseResponseUnionListSeriesSeasonDictType>(
     `/seasons/${movieId}`,

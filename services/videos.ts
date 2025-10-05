@@ -1,12 +1,12 @@
 import * as actions from './api/actions';
 import { executeRevalidate } from './api/helpers';
 import { RVK_VIDEOS } from './rvk';
-import { BaseResponseUnionListDictNoneTypeType } from './schema';
+import { BaseResponseUnionListDictStrAnyNoneTypeType } from './schema';
 
 // Auto-generated service for videos
 
 export async function getVideos() {
-  const res = await actions.get<BaseResponseUnionListDictNoneTypeType>(
+  const res = await actions.get<BaseResponseUnionListDictStrAnyNoneTypeType>(
     `/videos`,
     {
       next: {
