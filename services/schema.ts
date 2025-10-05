@@ -338,6 +338,16 @@ export const tagUpdateSchema = z.object({
 
 export type TagUpdateType = z.infer<typeof tagUpdateSchema>;
 
+export const appModelsSchemasMoviesTagResponseSchema = z.object({
+  id: z.number().int(),
+  name: z.string(),
+  description: z.string().optional(),
+});
+
+export type AppModelsSchemasMoviesTagResponseType = z.infer<
+  typeof appModelsSchemasMoviesTagResponseSchema
+>;
+
 export const movieResponseSchema = z.object({
   title: z.string().max(500).min(1),
   description: z.string().max(5000).optional(),
