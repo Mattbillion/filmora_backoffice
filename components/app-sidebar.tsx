@@ -33,16 +33,9 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg group-data-[state=collapsed]:size-7">
             <CommandIcon className="size-4" />
           </div>
-          <div className="flex-1 text-left text-sm leading-tight">
-            <p className="truncate font-semibold">
-              {session?.user?.company_name || 'FILMORA'}
-            </p>
-            {session?.user?.company_register && (
-              <p className="text-muted-foreground text-xs">
-                {session?.user?.company_register}
-              </p>
-            )}
-          </div>
+          <p className="truncate text-sm leading-tight font-semibold">
+            FILMORA
+          </p>
         </div>
       </SidebarHeader>
       <SidebarContent>

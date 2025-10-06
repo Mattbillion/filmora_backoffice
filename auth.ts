@@ -53,13 +53,31 @@ export const {
               String(response.status),
           );
 
-        if (body.access_token)
+        if (body.access_token) {
+          const res = await fetch(
+            `${process.env.FILMORA_DOMAIN}/current-employee`,
+            {
+              headers: {
+                Authorization: `Bearer ${body.access_token}`,
+              },
+            },
+          );
+          const userBody = await res.json();
+          console.log(userBody);
+          if (!res.ok || !userBody?.status)
+            throw new Error(userBody?.error || 'Failed to fetch user');
+
+          const user = userBody.data;
+
           return {
             access_token: body.access_token,
             refresh_token: body.refresh_token,
             expires_at: getExpDateFromJWT(body.access_token),
-            id: body.access_token,
+            id: user.id || body.access_token,
+            role: user.role,
+            full_name: user.full_name,
           } as any;
+        }
 
         return null;
       },
@@ -99,8 +117,8 @@ export const {
           id: user.id || token.sub,
           exp: accessTokenExpires,
           access_token: accessToken,
-          plan: user.plan,
-          plan_expires_at: user.plan_expires_at,
+          role: user.role,
+          full_name: user.full_name,
           refresh_token: refreshToken,
           accessTokenExpires,
           refreshAttempts: 0,
@@ -125,6 +143,8 @@ export const {
         session.user = {
           ...session.user,
           id: token.id || token.sub,
+          role: token.role,
+          full_name: token.full_name,
           access_token: token.access_token ?? null,
           refresh_token: token.refresh_token ?? null,
           refreshAttempts: token.refreshAttempts,

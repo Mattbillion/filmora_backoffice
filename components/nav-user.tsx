@@ -5,7 +5,6 @@ import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
 import { useTheme } from 'next-themes';
 
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,39 +20,30 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { imageResize } from '@/lib/utils';
 
 export function NavUser({ session }: { session: Session }) {
   const { isMobile } = useSidebar();
   const { setTheme, theme } = useTheme();
   const router = useRouter();
 
+  console.log(session.user);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="lg">
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage
-                  src={imageResize(session?.user?.profile ?? '', 'small')}
-                  alt={session?.user?.lastname ?? ''}
-                />
-                <AvatarFallback className="rounded-lg">
-                  {(
-                    (session?.user?.email ||
-                      (session.user?.firstname || '')[0]?.concat(
-                        (session.user?.lastname || '')[0],
-                      )) ??
-                    ''
-                  )?.slice(0, 2)}
-                </AvatarFallback>
-              </Avatar>
+              <div className="bg-sidebar-accent size-8 basis-8 rounded-lg">
+                {(
+                  session?.user?.email ||
+                  session.user?.full_name ||
+                  session.user?.role ||
+                  ''
+                )?.slice(0, 2)}
+              </div>
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <span className="truncate font-semibold">
-                  {[session?.user?.firstname, session?.user?.lastname].join(
-                    ' ',
-                  )}
+                  {session?.user?.full_name}
                 </span>
                 <span className="truncate text-xs">
                   {session?.user?.email ?? ''}
@@ -70,27 +60,15 @@ export function NavUser({ session }: { session: Session }) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage
-                    src={session?.user?.profile ?? ''}
-                    alt={session?.user?.name ?? ''}
-                  />
-                  <AvatarFallback className="rounded-lg">
-                    {(
-                      (session?.user?.email ||
-                        (session.user?.firstname || '')[0]?.concat(
-                          (session.user.lastname || '')[0],
-                        )) ??
-                      ''
-                    )?.slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
+                <div className="h-8 w-8 rounded-lg">
+                  {(
+                    (session?.user?.email || session.user?.full_name) ??
+                    ''
+                  )?.slice(0, 2)}
+                </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-semibold">
-                    {session.user?.firstname?.concat(
-                      ' ',
-                      session.user?.lastname,
-                    ) ?? ''}
+                    {session.user?.full_name}
                   </span>
                   <span className="truncate">{session?.user?.email ?? ''}</span>
                 </div>
