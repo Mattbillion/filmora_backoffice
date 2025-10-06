@@ -18,6 +18,11 @@ const nextConfig = {
         hostname: 'movie-site.*.r2.cloudflarestorage.com',
         pathname: '/images/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'image.tmdb.org',
+        pathname: '**',
+      },
     ],
   },
 
