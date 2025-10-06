@@ -82,7 +82,7 @@ export const {
       const publicExact = new Set(['/login', '/logout']);
       if (publicExact.has(pathname)) return true;
 
-      return false;
+      return !!sessionAuth;
     },
     async jwt({ token, user, trigger, session }: any) {
       // Initial sign-in
