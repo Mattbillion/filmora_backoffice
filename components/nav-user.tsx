@@ -1,5 +1,5 @@
 'use client';
-import { ChevronsUpDown, LogOut, Moon, Settings, Sun } from 'lucide-react';
+import { ChevronsUpDown, LogOut, Moon, Sun } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Session } from 'next-auth';
 import { signOut } from 'next-auth/react';
@@ -26,14 +26,13 @@ export function NavUser({ session }: { session: Session }) {
   const { setTheme, theme } = useTheme();
   const router = useRouter();
 
-  console.log(session.user);
   return (
     <SidebarMenu>
       <SidebarMenuItem>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton size="lg">
-              <div className="bg-sidebar-accent size-8 basis-8 rounded-lg">
+              <div className="bg-sidebar-accent flex aspect-square size-8 basis-8 items-center justify-center rounded-lg">
                 {(
                   session?.user?.email ||
                   session.user?.full_name ||
@@ -60,7 +59,7 @@ export function NavUser({ session }: { session: Session }) {
           >
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <div className="h-8 w-8 rounded-lg">
+                <div className="bg-sidebar-accent flex aspect-square h-8 w-8 items-center justify-center rounded-lg">
                   {(
                     (session?.user?.email || session.user?.full_name) ??
                     ''
@@ -79,13 +78,6 @@ export function NavUser({ session }: { session: Session }) {
             <DropdownMenuGroup>
               <DropdownMenuItem
                 className="cursor-pointer"
-                onClick={() => router.push('/')}
-              >
-                <Settings />
-                Систем тохиргоо
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                className="cursor-pointer"
                 onClick={() => {
                   setTheme(theme === 'dark' ? 'light' : 'dark');
                 }}
@@ -95,7 +87,6 @@ export function NavUser({ session }: { session: Session }) {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => signOut({ redirectTo: '/login' })}
