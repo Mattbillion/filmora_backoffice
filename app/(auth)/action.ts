@@ -3,9 +3,9 @@
 // import { signIn } from "@/lib/auth";
 import { z } from 'zod';
 
+import { signIn } from '@/auth';
 import { validateSchema } from '@/lib/utils';
 
-import { signIn } from './auth';
 import { authFormSchema } from './schema';
 
 export interface LoginActionState {

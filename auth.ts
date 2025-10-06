@@ -2,30 +2,16 @@
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 
-import { authConfig } from './auth.config';
-
 declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
-      name: string;
-      role: 'Super_Admin' | string;
-      firstname: string;
-      lastname: string;
-      phone: string | null;
-      email: string | null;
-      profile: string | null;
-      email_verified: boolean;
-      company_id: number | null;
-      company_name: string | null;
-      company_register: string | null;
-      company_logo: string | null;
-      status: string | null;
-      last_logged_at: string | null;
-      created_at: string | null;
-      updated_at: string | null;
-      created_employee: number | null;
-      permissions: string[];
+      role: 'admin' | 'editor' | 'moderator' | 'support';
+      full_name: string;
+      email: string;
+      is_active: boolean;
+      last_logged_at: string;
+      created_at: string;
     };
   }
 }
@@ -36,7 +22,10 @@ export const {
   signIn,
   signOut,
 } = NextAuth({
-  ...authConfig,
+  pages: {
+    signIn: '/login',
+    error: '/login',
+  },
   providers: [
     Credentials({
       credentials: {},
@@ -46,7 +35,6 @@ export const {
         formData.append('password', password);
 
         const apiUrl = `${process.env.FILMORA_DOMAIN}/auth/employee-login`;
-        console.log('Attempting to login to:', apiUrl);
 
         const response = await fetch(apiUrl, {
           method: 'POST',
@@ -56,29 +44,46 @@ export const {
 
         const body: any = await response.json();
 
-        if (!response.ok || body?.status !== 'success') {
-          const errorMsg =
+        if (!response.ok || !body?.status)
+          throw new Error(
             body?.detail?.[0]?.msg ||
-            body?.error ||
-            (body as any)?.message ||
-            (typeof body?.detail === 'string' ? body?.detail : undefined) ||
-            `HTTP ${response.status}: ${response.statusText}`;
+              body?.error ||
+              (body as any)?.message ||
+              (typeof body?.detail === 'string' ? body?.detail : undefined) ||
+              String(response.status),
+          );
 
-          console.error('Login failed:', errorMsg);
-          throw new Error(errorMsg);
-        }
+        if (body.access_token)
+          return {
+            access_token: body.access_token,
+            refresh_token: body.refresh_token,
+            expires_at: getExpDateFromJWT(body.access_token),
+            id: body.access_token,
+          } as any;
 
-        console.log('Login body information:', JSON.stringify(body));
-        return {
-          access_token: body.access_token,
-          refresh_token: body.refresh_token,
-          expires_at: getExpDateFromJWT(body.access_token),
-          id: body.access_token,
-        } as any;
+        return null;
       },
     }),
   ],
   callbacks: {
+    authorized({ auth: sessionAuth, request }) {
+      const { pathname } = request.nextUrl;
+      const isAssets =
+        pathname.startsWith('/_next') ||
+        pathname.startsWith('/favicon') ||
+        pathname.startsWith('/fonts') ||
+        pathname.startsWith('/images') ||
+        /\.[\w]+$/.test(pathname);
+
+      // Always allow Next.js internals and static assets
+      if (isAssets) return true;
+      if (pathname.startsWith('/api/auth')) return true;
+      // Public routes (unauthenticated users can access)
+      const publicExact = new Set(['/login', '/logout']);
+      if (publicExact.has(pathname)) return true;
+
+      return false;
+    },
     async jwt({ token, user, trigger, session }: any) {
       if (user) {
         return Object.assign(token || {}, user);
@@ -103,8 +108,6 @@ export const {
           );
           const body: any = await response.json();
 
-          console.log(JSON.stringify(body, null, 2));
-          console.log(JSON.stringify(token, null, 2));
           if (!response.ok || body?.status !== 'success')
             throw new Error(
               body?.detail?.[0]?.msg ||

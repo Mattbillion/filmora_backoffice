@@ -1,21 +1,20 @@
-import { NextRequest } from 'next/server';
+import { auth } from '@/auth';
 
-import { auth } from './app/(auth)/auth';
+export default auth((req) => {
+  const path = req.nextUrl.pathname;
+  const isAuth =
+    ['/login', '/logout'].includes(path) || path.startsWith('/api/auth');
 
-export default auth(async function middleware(req: NextRequest) {
-  // Your custom middleware logic goes here
-  console.log(req.nextUrl.pathname);
+  if (!req.auth && !isAuth && path.startsWith('/')) {
+    const newUrl = new URL('/login', req.nextUrl.origin);
+    return Response.redirect(newUrl);
+  } else if (req.auth && isAuth) {
+    const newUrl = new URL('/', req.nextUrl.origin);
+    return Response.redirect(newUrl);
+  }
+  return;
 });
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

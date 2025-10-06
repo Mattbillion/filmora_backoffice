@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
-import { auth, signOut } from '@/app/(auth)/auth';
+import { auth, signOut } from '@/auth';
 
 import {
   clearObj,

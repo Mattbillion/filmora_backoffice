@@ -1,6 +1,6 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/app/(auth)/auth';
+import { auth } from '@/auth';
 import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';

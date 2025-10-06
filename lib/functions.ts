@@ -4,7 +4,7 @@
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
-import { auth } from '@/app/(auth)/auth';
+import { auth } from '@/auth';
 
 import { stringifyError, validateSchema } from './utils';
 

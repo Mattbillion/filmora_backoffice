@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { Plus } from 'lucide-react';
 
-import { auth } from '@/app/(auth)/auth';
+import { auth } from '@/auth';
 import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';

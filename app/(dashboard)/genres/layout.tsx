@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { notFound } from 'next/navigation';
 
-import { auth } from '@/app/(auth)/auth';
+import { auth } from '@/auth';
 import { permissionsByRoute } from '@/components/constants/menu';
 import { checkPermission } from '@/lib/permission';
 

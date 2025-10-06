@@ -4,7 +4,7 @@ import { FetchOptions } from '@interpriz/lib/services';
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { auth } from '@/app/(auth)/auth';
+import { auth } from '@/auth';
 
 import { ExtendedFetchClient } from './fetch-client';
 
