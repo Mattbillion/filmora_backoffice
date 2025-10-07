@@ -2,13 +2,13 @@ import {
   ChartPie,
   Clapperboard,
   FilmIcon,
-  GalleryVertical,
   GalleryVerticalEnd,
   GemIcon,
   ImagePlusIcon,
   LayoutGrid,
   type LucideIcon,
   TvMinimalPlay,
+  UsersRoundIcon,
 } from 'lucide-react';
 
 export type SubMenuItemType = {
@@ -80,16 +80,10 @@ const systemAdminRoutes: SubMenuItemType[] = [
     permissions: [],
   },
   {
-    title: 'Баннер оруулах',
-    url: '/banners',
-    icon: GalleryVertical,
-    permissions: [
-      'get_banner_list',
-      'get_banner',
-      'create_banner',
-      'update_banner',
-      'delete_banner',
-    ],
+    title: 'Ажилчид',
+    url: '/employees',
+    icon: UsersRoundIcon,
+    permissions: [],
   },
 ];
 
