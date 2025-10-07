@@ -80,7 +80,15 @@ export function UpdateDialog({
 
   function onSubmit(values: EmployeeUpdateType) {
     startTransition(() => {
-      updateEmployee(initialData.id, values)
+      const dirtyValues = Object.keys(form.formState.dirtyFields).reduce(
+        (acc, key) => ({
+          ...acc,
+          [key]: values[key as keyof EmployeeUpdateType],
+        }),
+        {} as Partial<EmployeeUpdateType>,
+      );
+
+      updateEmployee(initialData.id, dirtyValues)
         .then(() => {
           toast.success('Updated successfully');
           dialogRef?.current?.close();
