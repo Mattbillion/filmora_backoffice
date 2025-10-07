@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/auth';
 import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -18,7 +17,6 @@ export default async function ImagesPage(props: {
     content_type?: string;
   }>;
 }) {
-  const session = await auth();
   const searchParams = await props.searchParams;
   const { data, total_count, pagination } = await getUploadedImages(
     // Check and fix, its generated and might be dumb

@@ -1,11 +1,13 @@
 import { Suspense } from 'react';
 
+import { auth } from '@/auth';
 import { Heading } from '@/components/custom/heading';
 import InputFilter from '@/components/custom/input-filter';
 import StatusFilter from '@/components/custom/table/status-filter';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
+import { hasPermission } from '@/lib/permission';
 import { qsToObj } from '@/lib/utils';
 // import { getMovies } from '@/services/movies/service';
 import { getMovies } from '@/services/movies-generated';
@@ -19,6 +21,7 @@ export default async function MoviesPage(props: {
   searchParams?: SearchParams;
 }) {
   const rawSearchParams = await props.searchParams;
+  const session = await auth();
 
   // Parse the search params to get filters
   const searchParams = qsToObj(
@@ -48,7 +51,7 @@ export default async function MoviesPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading title={`Кинонууд (${total_count ?? data.length})`} />
-        <CreateMovie />
+        {hasPermission(session, 'movies', 'create') && <CreateMovie />}
       </div>
 
       <Separator />

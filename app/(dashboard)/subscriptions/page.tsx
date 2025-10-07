@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/auth';
 import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -14,8 +13,6 @@ export const dynamic = 'force-dynamic';
 export default async function SubscriptionsPage(props: {
   searchParams?: SearchParams<any>;
 }) {
-  const session = await auth();
-
   const data = await getSubscriptionUsers();
 
   const list = data.data || []; // Check and fix, its generated and might be dumb

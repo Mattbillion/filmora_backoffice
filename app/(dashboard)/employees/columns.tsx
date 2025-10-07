@@ -16,14 +16,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { EmployeeResponseType } from '@/services/schema';
 
 import { UpdateDialog } from './components';
 
 const Action = ({ row }: CellContext<EmployeeResponseType, unknown>) => {
   const { data } = useSession();
-  const canEdit = checkPermission(data, []);
+  const canEdit = hasPermission(data, 'employees', 'update');
 
   if (!canEdit || row.original.full_name === 'filmora') return null;
 

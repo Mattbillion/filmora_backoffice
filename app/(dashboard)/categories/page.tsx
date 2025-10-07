@@ -6,7 +6,7 @@ import { Heading } from '@/components/custom/heading';
 import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { SearchParams } from '@/services/api/types';
 import { getCategories } from '@/services/categories';
 
@@ -33,7 +33,7 @@ export default async function CategoriesPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading title={`Ангилалууд (${count})`} />
-        {checkPermission(session, []) && (
+        {hasPermission(session, 'categories', 'create') && (
           <CreateDialog>
             <Button className="text-xs md:text-sm" variant="outline">
               <Plus className="h-4 w-4" /> Шинэ ангилал

@@ -22,7 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { deleteImage } from '@/services/images';
 import { ImageInfoType } from '@/services/schema';
 
@@ -30,7 +30,7 @@ const Action = ({ row }: CellContext<ImageInfoType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
+  const canDelete = hasPermission(data, 'medias', 'delete');
 
   return (
     <div className="me-2 flex justify-end gap-4">

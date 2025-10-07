@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { deleteGenre } from '@/services/genres';
 import { GenreResponseType } from '@/services/schema';
 
@@ -30,8 +30,8 @@ const Action = ({ row }: CellContext<GenreResponseType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = hasPermission(data, 'genres', 'delete');
+  const canEdit = hasPermission(data, 'genres', 'update');
 
   if (!canEdit && !canDelete) return null;
 

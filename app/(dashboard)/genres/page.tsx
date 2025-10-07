@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/lib/fetch/types';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { getGenres } from '@/services/genres';
 
 import { genresColumns } from './columns';
@@ -26,7 +26,7 @@ export default async function GenresPage(props: {
     <>
       <div className="flex items-start justify-between">
         <Heading title={`Genres list (${total_count ?? data?.length})`} />
-        {checkPermission(session, []) && (
+        {hasPermission(session, 'genres', 'create') && (
           <CreateDialog>
             <Button className="text-xs md:text-sm" variant="outline">
               <Plus className="h-4 w-4" /> Шинэ жанр оруулах

@@ -22,7 +22,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { deleteMovie } from '@/services/movies-generated';
 import { MovieListResponseType } from '@/services/schema';
 
@@ -32,8 +32,8 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = hasPermission(data, 'movies', 'delete');
+  const canEdit = hasPermission(data, 'movies', 'update');
   const [editDrawerOpen, setEditDrawerOpen] = useState(false);
 
   if (!canEdit && !canDelete) return null;
@@ -89,12 +89,14 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
           )}
         </DropdownMenuContent>
       </DropdownMenu>
-      <UpdateMovie
-        id={row.original.id.toString()}
-        buttonVariant="ghost"
-        editDrawerOpen={editDrawerOpen}
-        setEditDrawerOpen={setEditDrawerOpen}
-      />
+      {canEdit && (
+        <UpdateMovie
+          id={row.original.id.toString()}
+          buttonVariant="ghost"
+          editDrawerOpen={editDrawerOpen}
+          setEditDrawerOpen={setEditDrawerOpen}
+        />
+      )}
     </div>
   );
 };

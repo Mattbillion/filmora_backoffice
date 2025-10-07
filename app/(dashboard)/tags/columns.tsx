@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { AppModelsSchemasMoviesTagResponseType } from '@/services/schema';
 import { deleteTag } from '@/services/tags';
 
@@ -32,8 +32,8 @@ const Action = ({
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = hasPermission(data, 'tags', 'delete');
+  const canEdit = hasPermission(data, 'tags', 'update');
 
   if (!canEdit && !canDelete) return null;
 

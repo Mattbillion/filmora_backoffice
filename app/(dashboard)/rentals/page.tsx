@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import { auth } from '@/auth';
 import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
@@ -14,11 +13,7 @@ export const dynamic = 'force-dynamic';
 export default async function RentalsPage(props: {
   searchParams?: SearchParams<any>;
 }) {
-  const session = await auth();
-
   const response = await getMoviesRentalCounts();
-  console.log(response, 'response');
-
   const list = response.data || [];
   const count = response.total_count ?? list.length;
 

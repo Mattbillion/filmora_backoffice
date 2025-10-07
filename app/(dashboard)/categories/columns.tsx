@@ -20,7 +20,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { checkPermission } from '@/lib/permission';
+import { hasPermission } from '@/lib/permission';
 import { removeHTML } from '@/lib/utils';
 import { deleteCategory } from '@/services/categories';
 import { CategoryResponseType } from '@/services/schema';
@@ -31,12 +31,10 @@ const Action = ({ row }: CellContext<CategoryResponseType, unknown>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
-  const canDelete = checkPermission(data, []);
-  const canEdit = checkPermission(data, []);
+  const canDelete = hasPermission(data, 'categories', 'delete');
+  const canEdit = hasPermission(data, 'categories', 'update');
 
   if (!canEdit && !canDelete) return null;
-
-  console.log(row.original, 'row.original');
 
   return (
     <div className="me-2 flex justify-end gap-4">

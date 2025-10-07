@@ -7,6 +7,7 @@ import {
   ImagePlusIcon,
   LayoutGrid,
   type LucideIcon,
+  Tag,
   TvMinimalPlay,
   UsersRoundIcon,
 } from 'lucide-react';
@@ -16,81 +17,77 @@ export type SubMenuItemType = {
   url: string;
   icon?: LucideIcon;
   subRoutes?: boolean;
-  permissions: string[];
   children?: Omit<SubMenuItemType, 'children'>[];
 };
 
-const operationsRoutes: SubMenuItemType[] = [
+export const operationsRoutes = [
   {
     title: 'Кинонууд',
     url: '/movies',
     subRoutes: false,
     icon: FilmIcon,
-    permissions: [],
   },
   {
     title: 'Ангилал',
     url: '/categories',
     icon: GalleryVerticalEnd,
     subRoutes: false,
-    permissions: [],
   },
   {
     title: 'Genre',
     url: '/genres',
     icon: TvMinimalPlay,
     subRoutes: false,
-    permissions: [],
   },
-];
+  {
+    title: 'Tags',
+    url: '/tags',
+    icon: Tag,
+    subRoutes: false,
+  },
+] as const;
 
-const organizationRoutes: SubMenuItemType[] = [
+export const organizationRoutes = [
   {
     title: 'Багцтэй хэрэглэгчид',
     url: '/subscriptions',
     icon: GemIcon,
-    permissions: [],
   },
   {
     title: 'Түрээсийн кино',
     url: '/rentals',
     icon: Clapperboard,
-    permissions: [],
   },
   {
     title: 'Борлуулалт',
     url: '/sales',
     icon: ChartPie,
-    permissions: [],
   },
   {
     title: 'Media manager',
     url: '/medias',
     icon: ImagePlusIcon,
-    permissions: [],
   },
-];
+] as const;
 
-const systemAdminRoutes: SubMenuItemType[] = [
+export const systemAdminRoutes = [
   {
     title: 'Үндсэн категори',
     url: '/categories',
     icon: LayoutGrid,
     subRoutes: true,
-    permissions: [],
   },
   {
     title: 'Ажилчид',
     url: '/employees',
     icon: UsersRoundIcon,
-    permissions: [],
   },
-];
+] as const;
 
 export const menuData: Record<string, SubMenuItemType[]> = {
-  General_menu: operationsRoutes,
-  organization: organizationRoutes,
-  system_settings: systemAdminRoutes,
+  General_menu: [...operationsRoutes],
+  organization: [...organizationRoutes],
+  system_settings: [...systemAdminRoutes],
 };
 
 export const permissionsByRoute: Record<string, string[]> = flattenDeep(
