@@ -15,7 +15,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { checkPermission } from '@/lib/permission';
+import { hasPagePermission } from '@/lib/permission';
 
 import RevalidateMenu from './revalidate-menu';
 
@@ -43,7 +43,7 @@ export function AppSidebar({ ...props }: ComponentProps<typeof Sidebar>) {
           <Suspense key={idx}>
             <SidebarMenuGroup
               items={menus.filter((c) =>
-                checkPermission(session, c.permissions),
+                hasPagePermission(session, c.url.replace('/', '') as any),
               )}
               label={sentenceCase(group)}
             />
