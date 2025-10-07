@@ -135,7 +135,7 @@ export const employeeResponseSchema = z.object({
   id: z.uuid(),
   full_name: z.string(),
   role: z.enum(['admin', 'moderator', 'editor', 'support']),
-  email: z.string().email(),
+  email: z.email(),
   is_active: z.boolean(),
   last_logged_at: z.string().datetime(),
   created_at: z.string().datetime(),
@@ -166,7 +166,7 @@ export type BaseResponseUnionEmployeeResponseNoneTypeType = z.infer<
 >;
 
 export const employeeCreateSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   password: z.string(),
   full_name: z.string().optional(),
   role: z.enum(['admin', 'moderator', 'editor', 'support']).optional(),
@@ -176,7 +176,7 @@ export const employeeCreateSchema = z.object({
 export type EmployeeCreateType = z.infer<typeof employeeCreateSchema>;
 
 export const employeeUpdateSchema = z.object({
-  email: z.string().email().optional(),
+  email: z.email().optional(),
   password: z.string().optional(),
   full_name: z.string().optional(),
   role: z.enum(['admin', 'moderator', 'editor', 'support']).optional(),

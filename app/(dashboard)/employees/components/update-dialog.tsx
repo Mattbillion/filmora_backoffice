@@ -4,6 +4,7 @@ import { ReactNode, useRef, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
+import { z } from 'zod';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import {
@@ -58,7 +59,16 @@ export function UpdateDialog({
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<EmployeeUpdateType>({
-    resolver: zodResolver(employeeUpdateSchema),
+    resolver: zodResolver(
+      employeeUpdateSchema.extend({
+        full_name: z
+          .string()
+          .optional()
+          .refine((val) => !val?.toLowerCase().includes('filmora'), {
+            message: "Full name-д 'Filmora' үг оруулах боломжгүй.",
+          }),
+      }),
+    ),
     defaultValues: {
       email: initialData.email,
       full_name: initialData.full_name,
