@@ -15,7 +15,7 @@ import BreadcrumbLastPage from './breadcrumb';
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   return (
-    <SidebarProvider open={false}>
+    <SidebarProvider defaultOpen={false}>
       <Dayjs />
       <AppSidebar />
       <div className="w-full overflow-x-scroll">

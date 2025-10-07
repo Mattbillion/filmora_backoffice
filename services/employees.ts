@@ -41,6 +41,7 @@ export async function createEmployee(body: EmployeeCreateType) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
+  executeRevalidate([RVK_EMPLOYEES]);
   return response;
 }
 

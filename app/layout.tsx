@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import { ReactNode } from 'react';
 import localFont from 'next/font/local';
 import { SessionProvider } from 'next-auth/react';
 import { Toaster } from 'sonner';
@@ -18,15 +18,10 @@ const geistMono = localFont({
   weight: '100 900',
 });
 
-export const metadata: Metadata = {
-  title: 'FILMORA dashboard',
-  description: 'FILMORA dashbaord next.js',
-};
-
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>

@@ -98,7 +98,7 @@ const FormSheet = forwardRef<FormDialogRef, FormSheetProps>(
             >
               <div
                 className={cn(
-                  'min-h-0 flex-1 space-y-4 overflow-y-scroll px-2 py-1',
+                  'min-h-0 flex-1 space-y-4 overflow-y-scroll p-1',
                   containerClassName,
                 )}
               >

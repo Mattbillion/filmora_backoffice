@@ -79,7 +79,7 @@ module.exports = function (plop) {
           schemas: dashboardPaths[service].schemas,
           endpointList: dashboardPaths[service].endpoints.map(endpoint => ({
             ...endpoint,
-            shouldRevalidate: endpoint.method?.toLowerCase() !== 'get' && endpoint.pathArgs,
+            shouldRevalidate: endpoint.method?.toLowerCase() !== 'get',
             detailTag: endpoint.pathArgs?.split(',')
               .map((arg) => {
                 const argName = arg.split(':')[0]?.trim() || '';
