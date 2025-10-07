@@ -5,7 +5,6 @@ import {
   BaseResponseUnionDictNoneTypeType,
   BaseResponseUnionListMovieListResponseNoneTypeType,
   BaseResponseUnionMovieResponseNoneTypeType,
-  BaseResponseUnionMovieResponseNoneTypeType,
   MovieCreateType,
   MovieUpdateType,
   SingleItemReponseMovieResponseType,

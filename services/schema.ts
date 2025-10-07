@@ -6,10 +6,10 @@ export const seriesSeasonSchema = z.object({
   season_number: z.number().int(),
   title: z.string().optional(),
   description: z.string().optional(),
-  release_date: z.iso.datetime().optional(),
+  release_date: z.string().datetime().optional(),
   cover_image_url: z.string().optional(),
-  created_at: z.iso.datetime(),
-  updated_at: z.iso.datetime().optional(),
+  created_at: z.string().datetime(),
+  updated_at: z.string().datetime().optional(),
 });
 
 export type SeriesSeasonType = z.infer<typeof seriesSeasonSchema>;
@@ -86,7 +86,7 @@ export const seriesSeasonCreateSchema = z.object({
   season_number: z.number().int(),
   title: z.string().optional(),
   description: z.string().optional(),
-  release_date: z.iso.datetime().optional(),
+  release_date: z.string().datetime().optional(),
   cover_image_url: z.string().optional(),
 });
 
@@ -97,7 +97,7 @@ export const seriesSeasonUpdateSchema = z.object({
   season_number: z.number().int().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
-  release_date: z.iso.datetime().optional(),
+  release_date: z.string().datetime().optional(),
   cover_image_url: z.string().optional(),
 });
 
@@ -135,10 +135,10 @@ export const employeeResponseSchema = z.object({
   id: z.uuid(),
   full_name: z.string(),
   role: z.enum(['admin', 'moderator', 'editor', 'support']),
-  email: z.email(),
+  email: z.string().email(),
   is_active: z.boolean(),
-  last_logged_at: z.iso.datetime(),
-  created_at: z.iso.datetime(),
+  last_logged_at: z.string().datetime(),
+  created_at: z.string().datetime(),
 });
 
 export type EmployeeResponseType = z.infer<typeof employeeResponseSchema>;
@@ -166,7 +166,7 @@ export type BaseResponseUnionEmployeeResponseNoneTypeType = z.infer<
 >;
 
 export const employeeCreateSchema = z.object({
-  email: z.email(),
+  email: z.string().email(),
   password: z.string(),
   full_name: z.string().optional(),
   role: z.enum(['admin', 'moderator', 'editor', 'support']).optional(),
@@ -176,7 +176,7 @@ export const employeeCreateSchema = z.object({
 export type EmployeeCreateType = z.infer<typeof employeeCreateSchema>;
 
 export const employeeUpdateSchema = z.object({
-  email: z.email().optional(),
+  email: z.string().email().optional(),
   password: z.string().optional(),
   full_name: z.string().optional(),
   role: z.enum(['admin', 'moderator', 'editor', 'support']).optional(),
@@ -382,7 +382,7 @@ export const movieResponseSchema = z.object({
   m3u8_url: z.string().optional(),
   load_image_url: z.string().optional(),
   movie_id: z.uuid(),
-  created_at: z.iso.datetime(),
+  created_at: z.string().datetime(),
   categories: z.array(categoryResponseSchema).optional(),
   genres: z.array(genreResponseSchema).optional(),
   tags: z.array(appModelsSchemasMoviesTagResponseSchema).optional(),
@@ -432,7 +432,7 @@ export const movieListResponseSchema = z.object({
   load_image_url: z.string().optional(),
   trailer_url: z.string().optional(),
   is_adult: z.boolean().optional(),
-  created_at: z.iso.datetime(),
+  created_at: z.string().datetime(),
   categories: z.array(categoryResponseSchema).optional(),
   genres: z.array(genreResponseSchema).optional(),
   tags: z.array(appModelsSchemasMoviesTagResponseSchema).optional(),
@@ -470,8 +470,8 @@ export const movieUpdateSchema = z.object({
   poster_url: z.string().optional(),
   is_premium: z.boolean().optional(),
   is_adult: z.boolean().optional(),
-  categories: z.array(z.number().int()).optional(),
-  genres: z.array(z.number().int()).optional(),
+  category_ids: z.array(z.number().int()).optional(),
+  genre_ids: z.array(z.number().int()).optional(),
   tag_ids: z.array(z.number().int()).optional(),
   load_image_url: z.string().optional(),
 });
@@ -547,8 +547,8 @@ export const subscriptionUserDataSchema = z.object({
   email: z.string(),
   plan: z.string(),
   status: z.string(),
-  started_at: z.iso.datetime(),
-  expires_at: z.iso.datetime(),
+  started_at: z.string().datetime(),
+  expires_at: z.string().datetime(),
 });
 
 export type SubscriptionUserDataType = z.infer<

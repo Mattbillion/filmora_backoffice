@@ -22,13 +22,13 @@ export default async function SeasonDetailPage(props: {
             selector: params.id,
           },
           seasons: {
-            value: data.title,
+            value: data?.title ?? '—',
             selector: params['season-id'],
           },
         }}
       />
       <div className="flex items-start justify-between">
-        <Heading title={`Seasons: ${data.title}`} />
+        <Heading title={`Seasons: ${data?.title ?? '—'}`} />
       </div>
       <Separator />
       {JSON.stringify(data, null, 2)}

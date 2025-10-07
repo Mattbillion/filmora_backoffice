@@ -7,9 +7,9 @@ import { SubscriptionUserDataType } from '@/services/schema';
 
 export const subscriptionsColumns: ColumnDef<SubscriptionUserDataType>[] = [
   {
-    accessorKey: 'full_name',
+    accessorKey: 'name',
     header: 'Full Name',
-    cell: ({ row }) => row.original.full_name ?? '—',
+    cell: ({ row }) => row.original.name ?? '—',
     enableSorting: true,
     enableColumnFilter: true,
   },
