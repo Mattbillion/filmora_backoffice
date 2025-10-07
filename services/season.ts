@@ -3,8 +3,7 @@ import { executeRevalidate } from './api/helpers';
 import { RVK_SEASON } from './rvk';
 import {
   BaseResponseDictType,
-  BaseResponseUnionSeriesSeasonDictType,
-  BaseResponseUnionSeriesSeasonDictType,
+  BaseResponseUnionSeriesSeasonNoneTypeType,
   SeriesSeasonCreateType,
   SeriesSeasonUpdateType,
 } from './schema';
@@ -12,7 +11,7 @@ import {
 // Auto-generated service for season
 
 export async function createSeriesSeason(body: SeriesSeasonCreateType) {
-  const res = await actions.post<BaseResponseUnionSeriesSeasonDictType>(
+  const res = await actions.post<BaseResponseUnionSeriesSeasonNoneTypeType>(
     `/season`,
     body,
   );
@@ -27,7 +26,7 @@ export async function updateSeriesSeason(
   seasonId: string,
   body: SeriesSeasonUpdateType,
 ) {
-  const res = await actions.put<BaseResponseUnionSeriesSeasonDictType>(
+  const res = await actions.put<BaseResponseUnionSeriesSeasonNoneTypeType>(
     `/season/${seasonId}`,
     body,
   );

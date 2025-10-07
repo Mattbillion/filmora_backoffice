@@ -1,8 +1,8 @@
 import * as actions from './api/actions';
 import { RVK_SEASONS } from './rvk';
 import {
-  BaseResponseUnionListSeriesSeasonDictType,
-  BaseResponseUnionSeriesSeasonDictType,
+  BaseResponseListSeriesSeasonType,
+  InitialResponseUnionSeriesSeasonNoneTypeType,
 } from './schema';
 
 // Auto-generated service for seasons
@@ -16,7 +16,7 @@ export async function getSeriesSeasons(
   movieId: string,
   searchParams?: GetSeriesSeasonsSearchParams,
 ) {
-  const res = await actions.get<BaseResponseUnionListSeriesSeasonDictType>(
+  const res = await actions.get<BaseResponseListSeriesSeasonType>(
     `/seasons/${movieId}`,
     {
       searchParams,
@@ -33,7 +33,7 @@ export async function getSeriesSeasons(
 }
 
 export async function getSeriesSeason(seasonId: string) {
-  const res = await actions.get<BaseResponseUnionSeriesSeasonDictType>(
+  const res = await actions.get<InitialResponseUnionSeriesSeasonNoneTypeType>(
     `/seasons/${seasonId}/details`,
     {
       next: {

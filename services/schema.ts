@@ -14,26 +14,25 @@ export const seriesSeasonSchema = z.object({
 
 export type SeriesSeasonType = z.infer<typeof seriesSeasonSchema>;
 
-export const baseResponseUnionListSeriesSeasonDictSchema = z.object({
+export const baseResponseListSeriesSeasonSchema = z.object({
   status: z.string(),
   message: z.string(),
-  data: z.union([z.array(seriesSeasonSchema), z.object({})]),
+  data: z.array(seriesSeasonSchema),
   total_count: z.number().int().optional(),
 });
 
-export type BaseResponseUnionListSeriesSeasonDictType = z.infer<
-  typeof baseResponseUnionListSeriesSeasonDictSchema
+export type BaseResponseListSeriesSeasonType = z.infer<
+  typeof baseResponseListSeriesSeasonSchema
 >;
 
-export const baseResponseUnionSeriesSeasonDictSchema = z.object({
+export const initialResponseUnionSeriesSeasonNoneTypeSchema = z.object({
   status: z.string(),
   message: z.string(),
-  data: z.union([seriesSeasonSchema, z.object({})]),
-  total_count: z.number().int().optional(),
+  data: seriesSeasonSchema.optional(),
 });
 
-export type BaseResponseUnionSeriesSeasonDictType = z.infer<
-  typeof baseResponseUnionSeriesSeasonDictSchema
+export type InitialResponseUnionSeriesSeasonNoneTypeType = z.infer<
+  typeof initialResponseUnionSeriesSeasonNoneTypeSchema
 >;
 
 export const seriesEpisodeSchema = z.object({
@@ -49,26 +48,37 @@ export const seriesEpisodeSchema = z.object({
 
 export type SeriesEpisodeType = z.infer<typeof seriesEpisodeSchema>;
 
-export const baseResponseUnionListSeriesEpisodeDictSchema = z.object({
+export const baseResponseListSeriesEpisodeSchema = z.object({
   status: z.string(),
   message: z.string(),
-  data: z.union([z.array(seriesEpisodeSchema), z.object({})]),
+  data: z.array(seriesEpisodeSchema),
   total_count: z.number().int().optional(),
 });
 
-export type BaseResponseUnionListSeriesEpisodeDictType = z.infer<
-  typeof baseResponseUnionListSeriesEpisodeDictSchema
+export type BaseResponseListSeriesEpisodeType = z.infer<
+  typeof baseResponseListSeriesEpisodeSchema
 >;
 
-export const baseResponseUnionSeriesEpisodeDictSchema = z.object({
+export const baseResponseUnionSeriesEpisodeNoneTypeSchema = z.object({
   status: z.string(),
   message: z.string(),
-  data: z.union([seriesEpisodeSchema, z.object({})]),
+  data: seriesEpisodeSchema,
   total_count: z.number().int().optional(),
 });
 
-export type BaseResponseUnionSeriesEpisodeDictType = z.infer<
-  typeof baseResponseUnionSeriesEpisodeDictSchema
+export type BaseResponseUnionSeriesEpisodeNoneTypeType = z.infer<
+  typeof baseResponseUnionSeriesEpisodeNoneTypeSchema
+>;
+
+export const baseResponseUnionSeriesSeasonNoneTypeSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: seriesSeasonSchema,
+  total_count: z.number().int().optional(),
+});
+
+export type BaseResponseUnionSeriesSeasonNoneTypeType = z.infer<
+  typeof baseResponseUnionSeriesSeasonNoneTypeSchema
 >;
 
 export const seriesSeasonCreateSchema = z.object({
@@ -123,7 +133,7 @@ export type TokenRefreshRequestType = z.infer<typeof tokenRefreshRequestSchema>;
 
 export const employeeResponseSchema = z.object({
   id: z.uuid(),
-  name: z.string(),
+  full_name: z.string(),
   role: z.enum(['admin', 'moderator', 'editor', 'support']),
   email: z.email(),
   is_active: z.boolean(),
@@ -133,22 +143,33 @@ export const employeeResponseSchema = z.object({
 
 export type EmployeeResponseType = z.infer<typeof employeeResponseSchema>;
 
-export const baseResponseEmployeeResponseSchema = z.object({
+export const baseResponseListEmployeeResponseSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: z.array(employeeResponseSchema),
+  total_count: z.number().int().optional(),
+});
+
+export type BaseResponseListEmployeeResponseType = z.infer<
+  typeof baseResponseListEmployeeResponseSchema
+>;
+
+export const baseResponseUnionEmployeeResponseNoneTypeSchema = z.object({
   status: z.string(),
   message: z.string(),
   data: employeeResponseSchema,
   total_count: z.number().int().optional(),
 });
 
-export type BaseResponseEmployeeResponseType = z.infer<
-  typeof baseResponseEmployeeResponseSchema
+export type BaseResponseUnionEmployeeResponseNoneTypeType = z.infer<
+  typeof baseResponseUnionEmployeeResponseNoneTypeSchema
 >;
 
 export const employeeCreateSchema = z.object({
   email: z.email(),
   password: z.string(),
   full_name: z.string().optional(),
-  role: z.enum(['admin', 'moderator', 'editor', 'support']),
+  role: z.enum(['admin', 'moderator', 'editor', 'support']).optional(),
   is_active: z.boolean().optional(),
 });
 

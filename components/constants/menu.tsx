@@ -9,7 +9,6 @@ import {
   LayoutGrid,
   type LucideIcon,
   TvMinimalPlay,
-  UserCog,
 } from 'lucide-react';
 
 export type SubMenuItemType = {
@@ -91,12 +90,6 @@ const systemAdminRoutes: SubMenuItemType[] = [
       'update_banner',
       'delete_banner',
     ],
-  },
-  {
-    title: 'Role',
-    url: '/role',
-    icon: UserCog,
-    permissions: [],
   },
 ];
 

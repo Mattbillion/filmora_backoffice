@@ -1,14 +1,14 @@
 import * as actions from './api/actions';
 import { RVK_EPISODES } from './rvk';
 import {
-  BaseResponseUnionListSeriesEpisodeDictType,
-  BaseResponseUnionSeriesEpisodeDictType,
+  BaseResponseListSeriesEpisodeType,
+  BaseResponseUnionSeriesEpisodeNoneTypeType,
 } from './schema';
 
 // Auto-generated service for episodes
 
 export async function getSeriesEpisodes(seasonNumber: string) {
-  const res = await actions.get<BaseResponseUnionListSeriesEpisodeDictType>(
+  const res = await actions.get<BaseResponseListSeriesEpisodeType>(
     `/episodes/${seasonNumber}`,
     {
       next: {
@@ -24,7 +24,7 @@ export async function getSeriesEpisodes(seasonNumber: string) {
 }
 
 export async function getSeriesEpisode(episodeId: string) {
-  const res = await actions.get<BaseResponseUnionSeriesEpisodeDictType>(
+  const res = await actions.get<BaseResponseUnionSeriesEpisodeNoneTypeType>(
     `/episodes/${episodeId}/details`,
     {
       next: {
