@@ -64,7 +64,7 @@ function openApiToZodString(schema) {
 				case 'date':
 					return "z.string().date()";
 				case 'email':
-					return "z.string().email()";
+					return "z.email()";
 				case 'uuid':
 					return "z.uuid()";
 				case 'url':
