@@ -1,29 +1,39 @@
 import { z } from 'zod';
 
+export const seriesSeasonCreateSchema = z.object({
+  movie_id: z.uuid().optional(),
+  season_number: z.number().int(),
+  title: z.string().optional(),
+  description: z.string().optional(),
+  release_date: z.iso.datetime().optional(),
+  cover_image_url: z.string().optional(),
+});
+
+export type SeriesSeasonCreateType = z.infer<typeof seriesSeasonCreateSchema>;
+
+export const singleItemReponseSeriesSeasonCreateSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: seriesSeasonCreateSchema,
+});
+
+export type SingleItemReponseSeriesSeasonCreateType = z.infer<
+  typeof singleItemReponseSeriesSeasonCreateSchema
+>;
+
 export const seriesSeasonSchema = z.object({
   id: z.uuid(),
   movie_id: z.uuid().optional(),
   season_number: z.number().int(),
   title: z.string().optional(),
   description: z.string().optional(),
-  release_date: z.string().datetime().optional(),
+  release_date: z.iso.datetime().optional(),
   cover_image_url: z.string().optional(),
-  created_at: z.string().datetime(),
-  updated_at: z.string().datetime().optional(),
+  created_at: z.iso.datetime(),
+  updated_at: z.iso.datetime().optional(),
 });
 
 export type SeriesSeasonType = z.infer<typeof seriesSeasonSchema>;
-
-export const baseResponseListSeriesSeasonSchema = z.object({
-  status: z.string(),
-  message: z.string(),
-  data: z.array(seriesSeasonSchema),
-  total_count: z.number().int().optional(),
-});
-
-export type BaseResponseListSeriesSeasonType = z.infer<
-  typeof baseResponseListSeriesSeasonSchema
->;
 
 export const initialResponseUnionSeriesSeasonNoneTypeSchema = z.object({
   status: z.string(),
@@ -81,23 +91,12 @@ export type BaseResponseUnionSeriesSeasonNoneTypeType = z.infer<
   typeof baseResponseUnionSeriesSeasonNoneTypeSchema
 >;
 
-export const seriesSeasonCreateSchema = z.object({
-  movie_id: z.uuid().optional(),
-  season_number: z.number().int(),
-  title: z.string().optional(),
-  description: z.string().optional(),
-  release_date: z.string().datetime().optional(),
-  cover_image_url: z.string().optional(),
-});
-
-export type SeriesSeasonCreateType = z.infer<typeof seriesSeasonCreateSchema>;
-
 export const seriesSeasonUpdateSchema = z.object({
   movie_id: z.uuid().optional(),
   season_number: z.number().int().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
-  release_date: z.string().datetime().optional(),
+  release_date: z.iso.datetime().optional(),
   cover_image_url: z.string().optional(),
 });
 
@@ -137,8 +136,8 @@ export const employeeResponseSchema = z.object({
   role: z.enum(['admin', 'moderator', 'editor', 'support']),
   email: z.email(),
   is_active: z.boolean(),
-  last_logged_at: z.string().datetime(),
-  created_at: z.string().datetime(),
+  last_logged_at: z.iso.datetime(),
+  created_at: z.iso.datetime(),
 });
 
 export type EmployeeResponseType = z.infer<typeof employeeResponseSchema>;
@@ -169,7 +168,7 @@ export const employeeCreateSchema = z.object({
   email: z.email(),
   password: z.string(),
   full_name: z.string().optional(),
-  role: z.enum(['admin', 'moderator', 'editor', 'support']).optional(),
+  role: z.enum(['admin', 'moderator', 'editor', 'support']),
   is_active: z.boolean().optional(),
 });
 
@@ -260,15 +259,15 @@ export const categoryUpdateSchema = z.object({
 
 export type CategoryUpdateType = z.infer<typeof categoryUpdateSchema>;
 
-export const baseResponseUnionDictNoneTypeSchema = z.object({
+export const appModelsBaseBaseResponseUnionDictNoneTypeSchema = z.object({
   status: z.string(),
   message: z.string(),
   data: z.object({}),
   total_count: z.number().int().optional(),
 });
 
-export type BaseResponseUnionDictNoneTypeType = z.infer<
-  typeof baseResponseUnionDictNoneTypeSchema
+export type AppModelsBaseBaseResponseUnionDictNoneTypeType = z.infer<
+  typeof appModelsBaseBaseResponseUnionDictNoneTypeSchema
 >;
 
 export const genreResponseSchema = z.object({
@@ -323,7 +322,7 @@ export type AppApiApiV1EndpointsDashboardCategoriesTagResponseType = z.infer<
   typeof appApiApiV1EndpointsDashboardCategoriesTagResponseSchema
 >;
 
-export const appModelsBaseBaseResponseUnionListTagResponseNoneType_1Schema =
+export const appModelsBaseBaseResponseUnionListTagResponseNoneTypeSchema =
   z.object({
     status: z.string(),
     message: z.string(),
@@ -331,8 +330,9 @@ export const appModelsBaseBaseResponseUnionListTagResponseNoneType_1Schema =
     total_count: z.number().int().optional(),
   });
 
-export type AppModelsBaseBaseResponseUnionListTagResponseNoneType_1Type =
-  z.infer<typeof appModelsBaseBaseResponseUnionListTagResponseNoneType_1Schema>;
+export type AppModelsBaseBaseResponseUnionListTagResponseNoneTypeType = z.infer<
+  typeof appModelsBaseBaseResponseUnionListTagResponseNoneTypeSchema
+>;
 
 export const baseResponseUnionTagResponseNoneTypeSchema = z.object({
   status: z.string(),
@@ -359,16 +359,6 @@ export const tagUpdateSchema = z.object({
 
 export type TagUpdateType = z.infer<typeof tagUpdateSchema>;
 
-export const appModelsSchemasMoviesTagResponseSchema = z.object({
-  id: z.number().int(),
-  name: z.string(),
-  description: z.string().optional(),
-});
-
-export type AppModelsSchemasMoviesTagResponseType = z.infer<
-  typeof appModelsSchemasMoviesTagResponseSchema
->;
-
 export const movieResponseSchema = z.object({
   title: z.string().max(500).min(1),
   description: z.string().max(5000).optional(),
@@ -382,10 +372,10 @@ export const movieResponseSchema = z.object({
   m3u8_url: z.string().optional(),
   load_image_url: z.string().optional(),
   movie_id: z.uuid(),
-  created_at: z.string().datetime(),
+  created_at: z.iso.datetime(),
   categories: z.array(categoryResponseSchema).optional(),
   genres: z.array(genreResponseSchema).optional(),
-  tags: z.array(appModelsSchemasMoviesTagResponseSchema).optional(),
+  // tags: z.array(appModelsSchemasMoviesTagResponseSchema).optional(),
 });
 
 export type MovieResponseType = z.infer<typeof movieResponseSchema>;
@@ -432,10 +422,10 @@ export const movieListResponseSchema = z.object({
   load_image_url: z.string().optional(),
   trailer_url: z.string().optional(),
   is_adult: z.boolean().optional(),
-  created_at: z.string().datetime(),
+  created_at: z.iso.datetime(),
   categories: z.array(categoryResponseSchema).optional(),
   genres: z.array(genreResponseSchema).optional(),
-  tags: z.array(appModelsSchemasMoviesTagResponseSchema).optional(),
+  // tags: z.array(appModelsSchemasMoviesTagResponseSchema).optional(),
 });
 
 export type MovieListResponseType = z.infer<typeof movieListResponseSchema>;
@@ -470,8 +460,8 @@ export const movieUpdateSchema = z.object({
   poster_url: z.string().optional(),
   is_premium: z.boolean().optional(),
   is_adult: z.boolean().optional(),
-  category_ids: z.array(z.number().int()).optional(),
-  genre_ids: z.array(z.number().int()).optional(),
+  categories: z.array(z.number().int()).optional(),
+  genres: z.array(z.number().int()).optional(),
   tag_ids: z.array(z.number().int()).optional(),
   load_image_url: z.string().optional(),
 });
@@ -489,7 +479,7 @@ export type BaseResponseUnionDictStrAnyNoneTypeType = z.infer<
   typeof baseResponseUnionDictStrAnyNoneTypeSchema
 >;
 
-export const bodyDashboardUploadVideoSchema = z.object({
+export const fastapiCompatV2BodyDashboardUploadVideoSchema = z.object({
   file: z.instanceof(Blob),
   movie_id: z.string(),
   season_id: z.string().optional(),
@@ -497,8 +487,8 @@ export const bodyDashboardUploadVideoSchema = z.object({
   is_trailer: z.boolean().optional(),
 });
 
-export type BodyDashboardUploadVideoType = z.infer<
-  typeof bodyDashboardUploadVideoSchema
+export type FastapiCompatV2BodyDashboardUploadVideoType = z.infer<
+  typeof fastapiCompatV2BodyDashboardUploadVideoSchema
 >;
 
 export const baseResponseUnionListDictStrAnyNoneTypeSchema = z.object({
@@ -547,8 +537,8 @@ export const subscriptionUserDataSchema = z.object({
   email: z.string(),
   plan: z.string(),
   status: z.string(),
-  started_at: z.string().datetime(),
-  expires_at: z.string().datetime(),
+  started_at: z.iso.datetime(),
+  expires_at: z.iso.datetime(),
 });
 
 export type SubscriptionUserDataType = z.infer<
@@ -577,4 +567,43 @@ export const baseResponseListDictStrAnySchema = z.object({
 
 export type BaseResponseListDictStrAnyType = z.infer<
   typeof baseResponseListDictStrAnySchema
+>;
+
+export const taskResponseSchema = z.object({
+  task_id: z.string(),
+  status: z.string(),
+  filename: z.string(),
+  message: z.string(),
+});
+
+export type TaskResponseType = z.infer<typeof taskResponseSchema>;
+
+export const fastapiCompatV2BodyDashboardUploadVideo_2Schema = z.object({
+  file: z.instanceof(Blob),
+  custom_name: z.string().optional(),
+  require_signed_url: z.boolean().optional(),
+});
+
+export type FastapiCompatV2BodyDashboardUploadVideo_2Type = z.infer<
+  typeof fastapiCompatV2BodyDashboardUploadVideo_2Schema
+>;
+
+export const taskStatusResponseSchema = z.object({
+  task_id: z.string(),
+  status: z.string(),
+  result: z.object({}).optional(),
+  error: z.string().optional(),
+});
+
+export type TaskStatusResponseType = z.infer<typeof taskStatusResponseSchema>;
+
+export const episodeUploadInitializeSchema = z.object({
+  title: z.string(),
+  episode_number: z.number().int(),
+  description: z.string().optional(),
+  file_size: z.number().int().optional(),
+});
+
+export type EpisodeUploadInitializeType = z.infer<
+  typeof episodeUploadInitializeSchema
 >;

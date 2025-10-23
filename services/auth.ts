@@ -1,4 +1,6 @@
 import * as actions from './api/actions';
+import { executeRevalidate } from './api/helpers';
+import { RVK_AUTH } from './rvk';
 import {
   BodyDashboardEmployeeLoginType,
   TokenRefreshRequestType,
@@ -12,6 +14,8 @@ export async function employeeLogin(body: BodyDashboardEmployeeLoginType) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
+  executeRevalidate([RVK_AUTH]);
+
   return response;
 }
 
@@ -20,6 +24,8 @@ export async function employeeRefreshToken(body: TokenRefreshRequestType) {
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
+
+  executeRevalidate([RVK_AUTH]);
 
   return response;
 }
