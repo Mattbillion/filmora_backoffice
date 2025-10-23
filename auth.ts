@@ -63,7 +63,7 @@ export const {
             },
           );
           const userBody = await res.json();
-          console.log(userBody);
+
           if (!res.ok || !userBody?.status)
             throw new Error(userBody?.error || 'Failed to fetch user');
 
@@ -197,6 +197,10 @@ async function refreshAccessToken(token: any) {
     };
   } catch (error) {
     console.error('Error refreshing access_token', error);
+    const maxAttemptsReached = (token.refreshAttempts || 0) >= 3;
+
+    if (maxAttemptsReached) return null;
+
     return {
       ...token,
       refreshAttempts: (token.refreshAttempts || 0) + 1,
