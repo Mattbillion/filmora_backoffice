@@ -2,7 +2,7 @@ import * as actions from './api/actions';
 import { executeRevalidate } from './api/helpers';
 import { RVK_GENRES } from './rvk';
 import {
-  BaseResponseUnionDictNoneTypeType,
+  AppModelsBaseBaseResponseUnionDictNoneTypeType,
   BaseResponseUnionGenreResponseNoneTypeType,
   BaseResponseUnionListGenreResponseNoneTypeType,
   GenreCreateType,
@@ -42,6 +42,8 @@ export async function createGenre(body: GenreCreateType) {
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
+  executeRevalidate([RVK_GENRES]);
+
   return response;
 }
 
@@ -76,9 +78,10 @@ export async function updateGenre(genreId: number, body: GenreUpdateType) {
 }
 
 export async function deleteGenre(genreId: number) {
-  const res = await actions.destroy<BaseResponseUnionDictNoneTypeType>(
-    `/genres/${genreId}`,
-  );
+  const res =
+    await actions.destroy<AppModelsBaseBaseResponseUnionDictNoneTypeType>(
+      `/genres/${genreId}`,
+    );
 
   const { body: response, error } = res;
   if (error) throw new Error(error);

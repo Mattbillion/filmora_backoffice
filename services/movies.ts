@@ -2,8 +2,9 @@ import * as actions from './api/actions';
 import { executeRevalidate } from './api/helpers';
 import { RVK_MOVIES } from './rvk';
 import {
-  BaseResponseUnionDictNoneTypeType,
+  AppModelsBaseBaseResponseUnionDictNoneTypeType,
   BaseResponseUnionListMovieListResponseNoneTypeType,
+  BaseResponseUnionMovieResponseNoneTypeType,
   BaseResponseUnionMovieResponseNoneTypeType,
   MovieCreateType,
   MovieUpdateType,
@@ -20,6 +21,8 @@ export async function createMovie(body: MovieCreateType) {
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
+
+  executeRevalidate([RVK_MOVIES]);
 
   return response;
 }
@@ -85,9 +88,10 @@ export async function updateMovie(movieId: string, body: MovieUpdateType) {
 }
 
 export async function deleteMovie(movieId: string) {
-  const res = await actions.destroy<BaseResponseUnionDictNoneTypeType>(
-    `/movies/${movieId}`,
-  );
+  const res =
+    await actions.destroy<AppModelsBaseBaseResponseUnionDictNoneTypeType>(
+      `/movies/${movieId}`,
+    );
 
   const { body: response, error } = res;
   if (error) throw new Error(error);

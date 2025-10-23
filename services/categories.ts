@@ -2,9 +2,9 @@ import * as actions from './api/actions';
 import { executeRevalidate } from './api/helpers';
 import { RVK_CATEGORIES } from './rvk';
 import {
+  AppModelsBaseBaseResponseUnionDictNoneTypeType,
   BaseResponseListUnionCategoryResponseNoneTypeType,
   BaseResponseUnionCategoryResponseNoneTypeType,
-  BaseResponseUnionDictNoneTypeType,
   CategoryCreateType,
   CategoryUpdateType,
 } from './schema';
@@ -43,6 +43,8 @@ export async function createCategory(body: CategoryCreateType) {
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
+
+  executeRevalidate([RVK_CATEGORIES]);
 
   return response;
 }
@@ -84,9 +86,10 @@ export async function updateCategory(
 }
 
 export async function deleteCategory(categoryId: number) {
-  const res = await actions.destroy<BaseResponseUnionDictNoneTypeType>(
-    `/categories/${categoryId}`,
-  );
+  const res =
+    await actions.destroy<AppModelsBaseBaseResponseUnionDictNoneTypeType>(
+      `/categories/${categoryId}`,
+    );
 
   const { body: response, error } = res;
   if (error) throw new Error(error);

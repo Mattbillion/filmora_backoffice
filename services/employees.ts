@@ -42,6 +42,7 @@ export async function createEmployee(body: EmployeeCreateType) {
   if (error) throw new Error(error);
 
   executeRevalidate([RVK_EMPLOYEES]);
+
   return response;
 }
 

@@ -2,8 +2,8 @@ import * as actions from './api/actions';
 import { executeRevalidate } from './api/helpers';
 import { RVK_TAGS } from './rvk';
 import {
-  AppModelsBaseBaseResponseUnionListTagResponseNoneType_1Type,
-  BaseResponseUnionDictNoneTypeType,
+  AppModelsBaseBaseResponseUnionDictNoneTypeType,
+  AppModelsBaseBaseResponseUnionListTagResponseNoneTypeType,
   BaseResponseUnionTagResponseNoneTypeType,
   TagCreateType,
   TagUpdateType,
@@ -18,7 +18,7 @@ export type GetTagsSearchParams = {
 
 export async function getTags(searchParams?: GetTagsSearchParams) {
   const res =
-    await actions.get<AppModelsBaseBaseResponseUnionListTagResponseNoneType_1Type>(
+    await actions.get<AppModelsBaseBaseResponseUnionListTagResponseNoneTypeType>(
       `/tags`,
       {
         searchParams,
@@ -42,6 +42,8 @@ export async function createTag(body: TagCreateType) {
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
+
+  executeRevalidate([RVK_TAGS]);
 
   return response;
 }
@@ -77,9 +79,10 @@ export async function updateTag(tagId: number, body: TagUpdateType) {
 }
 
 export async function deleteTag(tagId: number) {
-  const res = await actions.destroy<BaseResponseUnionDictNoneTypeType>(
-    `/tags/${tagId}`,
-  );
+  const res =
+    await actions.destroy<AppModelsBaseBaseResponseUnionDictNoneTypeType>(
+      `/tags/${tagId}`,
+    );
 
   const { body: response, error } = res;
   if (error) throw new Error(error);

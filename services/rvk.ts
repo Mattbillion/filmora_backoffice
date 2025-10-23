@@ -15,3 +15,5 @@ export const RVK_VIDEOS = 'videos' as const;
 export const RVK_RENTALS = 'rentals' as const;
 export const RVK_SUBSCRIPTIONS = 'subscriptions' as const;
 export const RVK_DM = 'dm' as const;
+export const RVK_MOVIE = 'movie' as const;
+export const RVK_CREATE_EPISODE = 'create-episode' as const;
