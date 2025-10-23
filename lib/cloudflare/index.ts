@@ -62,7 +62,6 @@ export async function fetchStream(params: PaginationParams = {}) {
     }
 
     const data: StreamResponse = await response.json();
-    console.log(data);
 
     // Extract the last video's created date as cursor for next page
     const lastVideo = data.result[data.result.length - 1];
