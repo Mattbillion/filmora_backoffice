@@ -109,19 +109,26 @@ export function stringifyError(error: Error & { error?: string }) {
 }
 
 export const imageResize = (
-  src: string = '',
-  size?: 'medium' | 'small' | 'large',
-) => {
-  const sizePattern = /\/public\/(small|medium|large)\//i;
-  const insertSizePattern = /\/public\/([^/]+)$/i;
-
-  if (!size) return src;
-  if (sizePattern.test(src))
-    return src.replace(sizePattern, `/public/${size}/`);
-
-  return src.replace(insertSizePattern, `/public/${size}/$1`);
-};
+  src: string,
+  size: 'original' | 'tiny' | 'small' | 'medium' = 'original',
+) => src.replace(/_(.*?)\.webp/g, () => `_${size}.webp`);
 
 export function serializeColumnsFilters(filters: ColumnFiltersState): string {
   return filters.map((f) => `${f.id}=${f.value as string}`).join(',');
+}
+
+export function humanizeBytes(bytes: number, decimals = 2): string {
+  if (!Number.isFinite(bytes) || bytes < 0) return '0 B';
+  if (bytes === 0) return '0 B';
+
+  const k = 1024;
+  const dm = Math.max(0, decimals);
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB'];
+  const i = Math.min(
+    Math.floor(Math.log(bytes) / Math.log(k)),
+    sizes.length - 1,
+  );
+
+  const value = bytes / Math.pow(k, i);
+  return `${value.toFixed(dm)} ${sizes[i]}`;
 }

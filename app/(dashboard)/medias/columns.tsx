@@ -1,10 +1,10 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import Zoom from 'react-medium-image-zoom';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
-import { MoreHorizontal, Trash } from 'lucide-react';
-import Image from 'next/image';
+import { Trash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -13,16 +13,9 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+// import { Checkbox } from '@/components/ui/checkbox';
 import { hasPermission } from '@/lib/permission';
+import { cn, humanizeBytes, imageResize } from '@/lib/utils';
 import { deleteImage } from '@/services/images';
 import { ImageInfoType } from '@/services/schema';
 
@@ -32,89 +25,92 @@ const Action = ({ row }: CellContext<ImageInfoType, unknown>) => {
   const { data } = useSession();
   const canDelete = hasPermission(data, 'medias', 'delete');
 
+  if (!canDelete) return null;
   return (
-    <div className="me-2 flex justify-end gap-4">
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="ghost" className="h-8 w-8 p-0">
-            <span className="sr-only">Open menu</span>
-            <MoreHorizontal className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DropdownMenuLabel>Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-          {canDelete && (
-            <DeleteDialog
-              ref={deleteDialogRef}
-              loading={loading}
-              action={() => {
-                setLoading(true);
-                // TODO: Please check after generate
-                deleteImage(row.original.id)
-                  .then((c) => toast.success(c.data.message))
-                  .catch((c) => toast.error(c.message))
-                  .finally(() => {
-                    deleteDialogRef.current?.close();
-                    setLoading(false);
-                  });
-              }}
-              description={
-                <>
-                  Are you sure you want to delete this item? <br /> This action
-                  cannot be undone.
-                </>
-              }
-            >
-              <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
-                <Trash className="h-4 w-4" />
-                Delete
-              </DropdownMenuItem>
-            </DeleteDialog>
-          )}
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
+    <DeleteDialog
+      ref={deleteDialogRef}
+      loading={loading}
+      action={() => {
+        setLoading(true);
+        // TODO: Please check after generate
+        deleteImage(row.original.id)
+          .then((c) => toast.success(c.data.message))
+          .catch((c) => toast.error(c.message))
+          .finally(() => {
+            deleteDialogRef.current?.close();
+            setLoading(false);
+          });
+      }}
+      description={
+        <>
+          Are you sure you want to delete this item? <br /> This action cannot
+          be undone.
+        </>
+      }
+    >
+      <Button variant="secondary" size="icon" className="text-destructive">
+        <Trash className="h-4 w-4" />
+      </Button>
+    </DeleteDialog>
   );
 };
 
+function splitByImageExt(input: string) {
+  const re = /^(.*?)(\.(png|jpe?g|gif|bmp|webp|svg|tiff?))(?:([?#].*))?$/i;
+  const m = input.match(re);
+
+  if (!m) return { base: input, extension: null as string | null };
+
+  const base = m[1];
+  const extension = m[3].toLowerCase();
+
+  return { base, extension };
+}
+
 export const imagesColumns: ColumnDef<ImageInfoType>[] = [
-  {
-    id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && 'indeterminate')
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
-      />
-    ),
-
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
-      />
-    ),
-    enableSorting: false,
-    enableHiding: false,
-  },
-
+  // {
+  //   id: 'select',
+  //   header: ({ table }) => (
+  //     <Checkbox
+  //       checked={
+  //         table.getIsAllPageRowsSelected() ||
+  //         (table.getIsSomePageRowsSelected() && 'indeterminate')
+  //       }
+  //       onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+  //       aria-label="Select all"
+  //     />
+  //   ),
+  //   cell: ({ row }) => (
+  //     <Checkbox
+  //       checked={row.getIsSelected()}
+  //       onCheckedChange={(value) => row.toggleSelected(!!value)}
+  //       aria-label="Select row"
+  //     />
+  //   ),
+  //   enableSorting: false,
+  //   enableHiding: false,
+  // },
   {
     id: 'image_url',
     accessorKey: 'image_url',
-    header: () => <h1>Зураг</h1>,
+    header: () => 'Зураг',
     cell: ({ row }) => (
-      <Image
-        src={row.original.image_url!}
-        alt=""
-        width={48}
-        height={48}
-        className="aspect-square rounded-md object-contain"
-      />
+      <Zoom
+        zoomImg={{
+          src: row.original.image_url!,
+          width: 1080,
+          height: 1080,
+        }}
+      >
+        <img
+          src={imageResize(row.original.image_url!, 'tiny')}
+          alt=""
+          width={70}
+          height={70}
+          unoptimized
+          className="ml-4 aspect-square rounded-md object-contain"
+        />
+      </Zoom>
     ),
     enableSorting: true,
     enableColumnFilter: true,
@@ -122,32 +118,56 @@ export const imagesColumns: ColumnDef<ImageInfoType>[] = [
   {
     id: 'id',
     accessorKey: 'id',
-    header: () => <h1>ID</h1>,
+    header: () => 'ID',
     cell: ({ row }) => row.original.id,
     enableSorting: true,
     enableColumnFilter: true,
   },
-
   {
     id: 'file_name',
     accessorKey: 'file_name',
-    header: () => <div>File Name</div>,
-    cell: ({ row }) => row.original.file_name?.slice(0, 300),
+    header: () => 'File Name',
+    cell: ({ row }) => {
+      const { base, extension } = splitByImageExt(row.original.file_name);
+      let name = base.slice(0, 10) + '...' + base.slice(-10);
+      if (base.length <= 20) name = base;
+
+      return (
+        <span
+          title={row.original.file_name}
+        >{`${name}${extension ? '.' + extension : ''}`}</span>
+      );
+    },
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
     id: 'file_size',
     accessorKey: 'file_size',
-    header: ({ column }) => <h1>File Size</h1>,
-    cell: ({ row }) => row.original.file_size,
+    header: () => <p style={{ width: 100 }}>File Size</p>,
+    cell: ({ row }) => {
+      const size = row.original.file_size || 0;
+      const sizeIsFine = size > 200000;
+      const niggaDi = size > 1000000;
+
+      return (
+        <span
+          className={cn({
+            'text-orange-300': sizeIsFine,
+            'text-destructive': niggaDi,
+          })}
+        >
+          {humanizeBytes(size)}
+        </span>
+      );
+    },
     enableSorting: true,
     enableColumnFilter: true,
   },
   {
     id: 'content_type',
     accessorKey: 'content_type',
-    header: ({ column }) => <h1 className="text-nowrap">Content Type</h1>,
+    header: () => <p className="text-nowrap">Type</p>,
     cell: ({ row }) => row.original.content_type.replace('image/', ''),
     enableSorting: true,
     enableColumnFilter: true,
@@ -155,8 +175,9 @@ export const imagesColumns: ColumnDef<ImageInfoType>[] = [
   {
     id: 'created_at',
     accessorKey: 'created_at',
-    header: ({ column }) => <h1>Created At</h1>,
-    cell: ({ row }) => dayjs(row.original.created_at).format('DD/MM/YYYY'),
+    header: () => <p style={{ width: 120 }}>Created At</p>,
+    cell: ({ row }) =>
+      dayjs(row.original.created_at).format('YYYY.MM.DD HH:mm'),
     enableSorting: true,
     enableColumnFilter: true,
   },
