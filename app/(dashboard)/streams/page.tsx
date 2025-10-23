@@ -1,8 +1,8 @@
-// app/streams/page.tsx
 import { Suspense } from 'react';
 
-import { StreamFilters } from './stream_filters';
-import { StreamList } from './stream_list';
+import { fetchStream } from '@/lib/cloudflare';
+
+import { Client } from './client';
 
 type Props = {
   searchParams: {
@@ -13,14 +13,16 @@ type Props = {
   };
 };
 
-export default function StreamsPage({ searchParams }: Props) {
+export default async function StreamsPage({ searchParams }: Props) {
+  const data = await fetchStream({
+    status: 'ready',
+  });
+
+  if (!data.errors) return;
+
   return (
-    <div>
-      <h1>Cloudflare Streams</h1>
-      <StreamFilters />
-      <Suspense fallback={<div>Loading streams...</div>}>
-        <StreamList searchParams={searchParams} />
-      </Suspense>
-    </div>
+    <Suspense fallback="loading...">
+      <Client data={data.videos} />
+    </Suspense>
   );
 }
