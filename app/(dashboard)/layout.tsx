@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
 
+import 'react-medium-image-zoom/dist/styles.css';
+
 import { AppSidebar } from '@/components/app-sidebar';
 import {
   Breadcrumb,

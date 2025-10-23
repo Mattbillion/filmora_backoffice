@@ -111,7 +111,21 @@ export function stringifyError(error: Error & { error?: string }) {
 export const imageResize = (
   src: string,
   size: 'original' | 'tiny' | 'small' | 'medium' = 'original',
-) => src.replace(/_(.*?)\.webp/g, () => `_${size}.webp`);
+) => {
+  if (src.includes('tmdb.org'))
+    return src.replace(
+      '/original/',
+      `/w${
+        {
+          original: 'original',
+          tiny: '92',
+          small: '185',
+          medium: '500',
+        }[size]
+      }/`,
+    );
+  return src.replace(/_(.*?)\.webp/g, () => `_${size}.webp`);
+};
 
 export function serializeColumnsFilters(filters: ColumnFiltersState): string {
   return filters.map((f) => `${f.id}=${f.value as string}`).join(',');

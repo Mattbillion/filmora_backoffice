@@ -1,7 +1,5 @@
 import { Suspense } from 'react';
 
-import 'react-medium-image-zoom/dist/styles.css';
-
 import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';

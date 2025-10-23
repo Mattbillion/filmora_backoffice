@@ -1,7 +1,6 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import Zoom from 'react-medium-image-zoom';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
 import { Trash } from 'lucide-react';
@@ -12,10 +11,11 @@ import {
   DeleteDialog,
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
+import ZoomableImage from '@/components/custom/zoomable-image';
 import { Button } from '@/components/ui/button';
 // import { Checkbox } from '@/components/ui/checkbox';
 import { hasPermission } from '@/lib/permission';
-import { cn, humanizeBytes, imageResize } from '@/lib/utils';
+import { cn, humanizeBytes } from '@/lib/utils';
 import { deleteImage } from '@/services/images';
 import { ImageInfoType } from '@/services/schema';
 
@@ -94,24 +94,7 @@ export const imagesColumns: ColumnDef<ImageInfoType>[] = [
     id: 'image_url',
     accessorKey: 'image_url',
     header: () => 'Зураг',
-    cell: ({ row }) => (
-      <Zoom
-        zoomImg={{
-          src: row.original.image_url!,
-          width: 1080,
-          height: 1080,
-        }}
-      >
-        <img
-          src={imageResize(row.original.image_url!, 'tiny')}
-          alt=""
-          width={70}
-          height={70}
-          unoptimized
-          className="ml-4 aspect-square rounded-md object-contain"
-        />
-      </Zoom>
-    ),
+    cell: ({ row }) => <ZoomableImage src={row.original.image_url ?? ''} />,
     enableSorting: true,
     enableColumnFilter: true,
   },

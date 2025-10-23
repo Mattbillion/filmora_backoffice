@@ -4,7 +4,6 @@ import { useRef, useState } from 'react';
 import { currencyFormat } from '@interpriz/lib/utils';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
-import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -13,6 +12,7 @@ import {
   DeleteDialogRef,
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
+import ZoomableImage from '@/components/custom/zoomable-image';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -106,22 +106,7 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
     id: 'poster_url',
     accessorKey: 'poster_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => (
-      <div className="relative size-16 overflow-hidden rounded-md">
-        <Image
-          src={row.original.poster_url ?? ''}
-          alt="Poster"
-          fill
-          className="absolute inset-0 -z-10 blur-sm"
-        />
-        <Image
-          src={row.original.poster_url ?? ''}
-          alt="Poster"
-          fill
-          className="object-contain"
-        />
-      </div>
-    ),
+    cell: ({ row }) => <ZoomableImage src={row.original.poster_url} />,
     enableSorting: false,
     enableColumnFilter: true,
   },
