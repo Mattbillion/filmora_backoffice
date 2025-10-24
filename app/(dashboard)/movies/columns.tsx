@@ -3,7 +3,8 @@
 import { useRef, useState } from 'react';
 import { currencyFormat } from '@interpriz/lib/utils';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, GitBranch, MoreHorizontal, Trash } from 'lucide-react';
+import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -13,7 +14,8 @@ import {
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
 import ZoomableImage from '@/components/custom/zoomable-image';
-import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +24,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { hasPermission } from '@/lib/permission';
+import { hasPagePermission, hasPermission } from '@/lib/permission';
+import { cn } from '@/lib/utils';
 import { deleteMovie } from '@/services/movies-generated';
 import { MovieListResponseType } from '@/services/schema';
 
@@ -92,12 +95,29 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
       {canEdit && (
         <UpdateMovie
           id={row.original.id.toString()}
-          buttonVariant="ghost"
           editDrawerOpen={editDrawerOpen}
           setEditDrawerOpen={setEditDrawerOpen}
         />
       )}
     </div>
+  );
+};
+
+const Navigation = ({ row }: CellContext<MovieListResponseType, unknown>) => {
+  const { data } = useSession();
+
+  if (
+    !hasPagePermission(data, 'movies.seasons') ||
+    row.original.type !== 'series'
+  )
+    return null;
+  return (
+    <Link
+      href={`/movies/${row.original.id}/seasons`}
+      className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+    >
+      <GitBranch className="h-4 w-4" /> Цувралууд
+    </Link>
   );
 };
 
@@ -158,10 +178,22 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
   {
     id: 'is_adult',
     accessorKey: 'is_adult',
-    header: () => <h1>Насанд хүрэгчдэд эсэх</h1>,
-    cell: ({ row }) => (row.original.is_adult ? 'Тийм' : 'Үгүй'),
+    header: () => '',
+    cell: ({ row }) => {
+      if (!row.original.is_adult) return null;
+      return (
+        <Badge variant="destructive" className="bg-destructive/50">
+          +18
+        </Badge>
+      );
+    },
     enableSorting: false,
     enableColumnFilter: true,
+  },
+
+  {
+    id: 'navigation',
+    cell: Navigation,
   },
 
   {
