@@ -18,7 +18,6 @@ export function UppyUpload() {
       retryDelays: [0, 1000, 3000, 5000],
       chunkSize: 50 * 1024 ** 2,
       headers: () => {
-        const name = '';
         return {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_CLOUDFLARE_AUTHORIZATION}`,
           'Upload-Metadata': '',
