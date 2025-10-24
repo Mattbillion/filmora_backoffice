@@ -1,7 +1,6 @@
 'use client';
 
 import dayjs from 'dayjs';
-import { FilmIcon } from 'lucide-react';
 import Link from 'next/link';
 
 import { Badge } from '@/components/ui/badge';
@@ -18,10 +17,9 @@ export function Client({ data }: { data: StreamVideo[] }) {
         </div>
         <Link
           href="/streams/upload"
-          className="border-border flex h-10 items-center gap-2 rounded-lg border px-4 py-2 font-medium transition-colors duration-200 hover:bg-black/90"
+          className="border-border h-10 rounded-lg border px-4 py-2 transition-all duration-200 hover:bg-black/90"
         >
-          <FilmIcon className="h-5" />
-          Upload Movie
+          Кино оруулах
         </Link>
       </div>
       <div className="flex flex-col">

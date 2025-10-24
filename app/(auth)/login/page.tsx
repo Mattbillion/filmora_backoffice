@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
 import { login, LoginActionState } from '@/app/(auth)/action';
@@ -10,6 +11,7 @@ import { SubmitButton } from '@/components/custom/submit-button';
 
 export default function Page() {
   const router = useRouter();
+  const session = useSession();
 
   const [state, formAction] = useActionState<LoginActionState, FormData>(
     login,
@@ -24,6 +26,7 @@ export default function Page() {
     } else if (state.status === 'invalid_data') {
       toast.error('Failed validating your submission!');
     } else if (state.status === 'success') {
+      session.update();
       router.refresh();
       router.push('/');
     }

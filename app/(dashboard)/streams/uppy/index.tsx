@@ -1,69 +1,31 @@
 'use client';
-
 import { useState } from 'react';
-import { Uppy } from '@uppy/core';
+import Uppy from '@uppy/core';
 import { Dashboard } from '@uppy/react';
 import Tus from '@uppy/tus';
 
 import '@uppy/core/css/style.min.css';
 import '@uppy/dashboard/css/style.min.css';
 
-import { Input } from '@/components/ui/input';
-
-const UppyUpload = () => {
-  const [movieName, setMovieName] = useState('');
-  const [uppyTus] = useState(() =>
+export function UppyUpload() {
+  const [uppy] = useState(() =>
     new Uppy({
-      debug: true,
       restrictions: {
-        maxFileSize: 10 * 1024 * 1024 * 1024, // 10gb
-        maxNumberOfFiles: 10,
         allowedFileTypes: ['video/*'],
+        maxNumberOfFiles: 1,
       },
     }).use(Tus, {
-      headers: (file) => {
-        const name = movieName || file.name;
-        const nameB64 = btoa(unescape(encodeURIComponent(name!)));
-        const requireSignedB64 = btoa('true');
+      retryDelays: [0, 1000, 3000, 5000],
+      chunkSize: 50 * 1024 ** 2,
+      headers: () => {
         return {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_CLOUDFLARE_AUTHORIZATION}`,
-          'Upload-Metadata': `name ${nameB64},requiresignedurls ${requireSignedB64}`,
+          'Upload-Metadata': '',
         };
       },
-      metadata: {
-        name: 'testing with good intention',
-      },
+
       endpoint: `https://api.cloudflare.com/client/v4/accounts/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_ID}/stream`,
-      removeFingerprintOnSuccess: true,
-      chunkSize: 50 * 1024 ** 2, // 50MB
     }),
   );
-  uppyTus.on('upload-success', (file, response) => {
-    console.log(file);
-    console.log(response);
-  });
-  return (
-    <div className="uppy-container mx-auto mt-16">
-      {uppyTus && (
-        <Dashboard
-          uppy={uppyTus}
-          height={400}
-          hideProgressDetails={false}
-          showLinkToFileUploadResult={true}
-          showRemoveButtonAfterComplete={true}
-          theme="dark"
-          note="Upload up to 10 files, max 100MB each"
-        />
-      )}
-      <Input
-        type="text"
-        value={movieName}
-        onChange={(e) => setMovieName(e.target.value)}
-        placeholder="Enter movie name"
-        className="uppy-input mx-auto"
-      />
-    </div>
-  );
-};
-
-export default UppyUpload;
+  return <Dashboard theme="dark" uppy={uppy} width="100%" height="400px" />;
+}
