@@ -375,7 +375,9 @@ export const movieResponseSchema = z.object({
   created_at: z.iso.datetime(),
   categories: z.array(categoryResponseSchema).optional(),
   genres: z.array(genreResponseSchema).optional(),
-  // tags: z.array(appModelsSchemasMoviesTagResponseSchema).optional(),
+  tags: z
+    .array(appApiApiV1EndpointsDashboardCategoriesTagResponseSchema)
+    .optional(),
 });
 
 export type MovieResponseType = z.infer<typeof movieResponseSchema>;
@@ -460,8 +462,8 @@ export const movieUpdateSchema = z.object({
   poster_url: z.string().optional(),
   is_premium: z.boolean().optional(),
   is_adult: z.boolean().optional(),
-  categories: z.array(z.number().int()).optional(),
-  genres: z.array(z.number().int()).optional(),
+  category_ids: z.array(z.number().int()).optional(),
+  genre_ids: z.array(z.number().int()).optional(),
   tag_ids: z.array(z.number().int()).optional(),
   load_image_url: z.string().optional(),
 });

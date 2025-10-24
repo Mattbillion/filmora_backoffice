@@ -1,27 +1,8 @@
-import { StreamResponse } from '@/lib/cloudflare/type';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { StreamResponse, StreamSearchParams } from '@/lib/cloudflare/type';
+import { objToQs } from '@/lib/utils';
 
-interface PaginationParams {
-  after?: string; // Cursor - Lists videos created after the specified date
-  before?: string; // Cursor - Lists videos created before the specified date
-  asc?: boolean; // Sort order (default: false for desc)
-  creator?: string; // A user-defined identifier for the media creator
-  end?: string; // Lists videos created before the specified date (format: date-time)
-  include_counts?: boolean; // Includes total number of videos with the query parameters
-  search?: string; // Partial word match of the 'name' key in the 'meta' field
-  start?: string; // Lists videos created after the specified date (format: date-time)
-  status?:
-    | 'pendingupload'
-    | 'downloading'
-    | 'queued'
-    | 'inprogress'
-    | 'ready'
-    | 'error'
-    | 'live-inprogress';
-  type?: 'vod' | 'live'; // Filter by video type
-  video_name?: string; // Fast
-}
-
-export async function fetchStream(params: PaginationParams = {}) {
+export async function fetchStream(params: StreamSearchParams = {}) {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
   const apiToken = process.env.CLOUDFLARE_AUTHORIZATION;
 
@@ -29,22 +10,13 @@ export async function fetchStream(params: PaginationParams = {}) {
     throw new Error('Missing Cloudflare credentials');
   }
 
-  const searchParams = new URLSearchParams();
+  // @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  delete params.include_counts;
 
-  if (params.after) searchParams.append('after', params.after);
-  if (params.before) searchParams.append('before', params.before);
-  if (params.asc !== undefined)
-    searchParams.append('asc', params.asc.toString());
-  if (params.creator) searchParams.append('creator', params.creator);
-  if (params.end) searchParams.append('end', params.end);
-  if (params.include_counts) searchParams.append('include_counts', 'true');
-  if (params.search) searchParams.append('search', params.search);
-  if (params.start) searchParams.append('start', params.start);
-  if (params.status) searchParams.append('status', params.status);
-  if (params.type) searchParams.append('type', params.type);
-  if (params.video_name) searchParams.append('video_name', params.video_name);
+  const sp = objToQs(params as any);
 
-  const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream?${searchParams.toString()}`;
+  const url = `https://api.cloudflare.com/client/v4/accounts/${accountId}/stream${sp && '?'}${sp}`;
 
   try {
     const response = await fetch(url, {
@@ -71,7 +43,7 @@ export async function fetchStream(params: PaginationParams = {}) {
       videos: data.result,
       nextCursor, // Use the last video's created date as cursor
       hasMore: data.range ? data.range > 0 : data.result.length > 0,
-      total: data.result.length,
+      total: data.total ?? data.result.length,
       range: data.range,
       success: data.success,
       errors: data.errors,

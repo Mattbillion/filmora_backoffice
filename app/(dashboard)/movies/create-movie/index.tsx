@@ -42,11 +42,13 @@ import { getCategories } from '@/services/categories';
 import { getGenres } from '@/services/genres';
 import { createMovieAction } from '@/services/movies-generated';
 import {
+  AppApiApiV1EndpointsDashboardCategoriesTagResponseType,
   CategoryResponseType,
   GenreResponseType,
   movieCreateSchema,
   MovieCreateType,
 } from '@/services/schema';
+import { getTags } from '@/services/tags';
 
 import { UploadCover } from '../components/upload-cover';
 import { UploadPoster } from '../components/upload-poster';
@@ -54,8 +56,12 @@ import { UploadPoster } from '../components/upload-poster';
 export default function CreateMovie() {
   const [categories, setCategories] = useState<CategoryResponseType[]>([]);
   const [genres, setGenres] = useState<GenreResponseType[]>([]);
+  const [tags, setTags] = useState<
+    AppApiApiV1EndpointsDashboardCategoriesTagResponseType[]
+  >([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
   const fetchCategories = async () => {
     const result = await getCategories();
     if (result.status === 'success') {
@@ -72,10 +78,22 @@ export default function CreateMovie() {
     return;
   };
 
+  const fetchTags = async () => {
+    try {
+      const res = await getTags();
+      if (res.status === 'success') {
+        setTags(res.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch genres', error);
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       fetchCategories();
       fetchGenres();
+      fetchTags();
     }
   }, [isOpen]);
 
@@ -270,6 +288,40 @@ export default function CreateMovie() {
                                 selectedValues.map((value) => Number(value)),
                               )
                             }
+                          />
+                        </FormControl>
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="tag_ids"
+                  render={({ field }) => {
+                    return (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel>Кино tag сонгох</FormLabel>
+                        <FormControl>
+                          <MultiSelect
+                            options={tags.map((tag) => {
+                              return {
+                                label: tag.name,
+                                value: tag.id.toString(),
+                              };
+                            })}
+                            onValueChange={(selectedValues: string[]) => {
+                              field.onChange(
+                                selectedValues.map((value) => {
+                                  const tagId = Number(value);
+                                  const tag = tags.find((g) => g.id === tagId);
+                                  return {
+                                    id: tagId,
+                                    name: tag?.name || '',
+                                  };
+                                }),
+                              );
+                            }}
                           />
                         </FormControl>
                       </FormItem>

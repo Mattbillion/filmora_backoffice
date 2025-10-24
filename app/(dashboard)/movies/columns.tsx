@@ -106,7 +106,7 @@ export const moviesColumns: ColumnDef<MovieListResponseType>[] = [
     id: 'poster_url',
     accessorKey: 'poster_url',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => <ZoomableImage src={row.original.poster_url} />,
+    cell: ({ row }) => <ZoomableImage src={row.original.poster_url!} />,
     enableSorting: false,
     enableColumnFilter: true,
   },

@@ -11,7 +11,7 @@ import '@uppy/dashboard/css/style.min.css';
 import { Input } from '@/components/ui/input';
 
 const UppyUpload = () => {
-  const [movieName, setMovieName] = useState('Sonin');
+  const [movieName, setMovieName] = useState('');
   const [uppyTus] = useState(() =>
     new Uppy({
       debug: true,
@@ -34,9 +34,8 @@ const UppyUpload = () => {
         name: 'testing with good intention',
       },
       endpoint: `https://api.cloudflare.com/client/v4/accounts/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_ID}/stream`,
-      retryDelays: [0, 1000, 3000, 5000],
       removeFingerprintOnSuccess: true,
-      chunkSize: 5 * 1024 ** 3,
+      chunkSize: 50 * 1024 ** 2, // 50MB
     }),
   );
   uppyTus.on('upload-success', (file, response) => {
@@ -44,7 +43,7 @@ const UppyUpload = () => {
     console.log(response);
   });
   return (
-    <div className="uppy-container mx-auto">
+    <div className="uppy-container mx-auto mt-16">
       {uppyTus && (
         <Dashboard
           uppy={uppyTus}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderIcon } from 'lucide-react';
@@ -41,12 +41,14 @@ import { getCategories } from '@/services/categories';
 import { getGenres } from '@/services/genres';
 import { getMovie, updateMovie } from '@/services/movies-generated';
 import {
+  AppApiApiV1EndpointsDashboardCategoriesTagResponseType,
   CategoryResponseType,
   GenreResponseType,
   movieResponseSchema,
   MovieResponseType,
   MovieUpdateType,
 } from '@/services/schema';
+import { getTags } from '@/services/tags';
 
 import { UploadCover } from '../components/upload-cover';
 import { UploadPoster } from '../components/upload-poster';
@@ -56,32 +58,34 @@ import { UploadPoster } from '../components/upload-poster';
 
 export default function UpdateMovie({
   id,
-  buttonVariant = 'outline',
   editDrawerOpen,
   setEditDrawerOpen,
 }: {
   id: string;
-  buttonVariant?: 'outline' | 'default' | 'ghost';
   editDrawerOpen: boolean;
   setEditDrawerOpen: (open: boolean) => void;
 }) {
   const [categories, setCategories] = useState<CategoryResponseType[]>([]);
   const [genres, setGenres] = useState<GenreResponseType[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [tags, setTags] = useState<
+    AppApiApiV1EndpointsDashboardCategoriesTagResponseType[]
+  >([]);
   const [initialData, setInitialData] = useState<MovieResponseType>();
+  const [isLoading, setIsLoading] = useState(false);
 
-  const fetchCategories = useCallback(async () => {
+  const fetchCategories = async () => {
     try {
       const res = await getCategories();
       if (res.status === 'success') {
         setCategories(res.data || []);
       }
+      return [];
     } catch (error) {
       console.error('Failed to fetch categories', error);
     }
-  }, []);
+  };
 
-  const fetchGenres = useCallback(async () => {
+  const fetchGenres = async () => {
     try {
       const res = await getGenres();
       if (res.status === 'success') {
@@ -90,7 +94,18 @@ export default function UpdateMovie({
     } catch (error) {
       console.error('Failed to fetch genres', error);
     }
-  }, []);
+  };
+
+  const fetchTags = async () => {
+    try {
+      const res = await getTags();
+      if (res.status === 'success') {
+        setTags(res.data || []);
+      }
+    } catch (error) {
+      console.error('Failed to fetch genres', error);
+    }
+  };
 
   const fetchMovie = async () => {
     try {
@@ -105,9 +120,10 @@ export default function UpdateMovie({
 
   useEffect(() => {
     if (editDrawerOpen) {
+      fetchMovie();
       fetchCategories();
       fetchGenres();
-      fetchMovie();
+      fetchTags();
     }
   }, [editDrawerOpen]);
 
@@ -125,6 +141,7 @@ export default function UpdateMovie({
       is_adult: initialData?.is_adult || false,
       categories: initialData?.categories || [],
       genres: initialData?.genres || [],
+      tags: initialData?.tags || [],
       movie_id: initialData?.movie_id || '',
       created_at: '2025-09-24T05:20:30.123Z',
     },
@@ -147,6 +164,7 @@ export default function UpdateMovie({
         is_adult: false,
         category_ids: d.categories?.map((cat) => Number(cat.id)),
         genre_ids: d.genres?.map((genre) => Number(genre.id)),
+        tag_ids: d.tags?.map((tag) => Number(tag.id)),
       };
 
       const response = await updateMovie(id, body);
@@ -321,6 +339,44 @@ export default function UpdateMovie({
                                 },
                               );
                               field.onChange(selectedGenres);
+                            }}
+                            defaultValue={currentValues}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    );
+                  }}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="tags"
+                  render={({ field }) => {
+                    const currentValues = field.value?.map((tag) =>
+                      tag.id.toString(),
+                    );
+                    return (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel>Кино tag сонгох</FormLabel>
+                        <FormControl>
+                          <MultiSelect
+                            options={tags.map((tag) => {
+                              return {
+                                label: tag.name,
+                                value: tag.id.toString(),
+                              };
+                            })}
+                            onValueChange={(selectedValues: string[]) => {
+                              field.onChange(
+                                selectedValues.map((value) => {
+                                  const tagId = Number(value);
+                                  const tag = tags.find((g) => g.id === tagId);
+                                  return {
+                                    id: tagId,
+                                    name: tag?.name || '',
+                                  };
+                                }),
+                              );
                             }}
                             defaultValue={currentValues}
                           />

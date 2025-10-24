@@ -25,7 +25,7 @@ export function Client({ data }: { data: StreamVideo[] }) {
         </Link>
       </div>
       <div className="flex flex-col">
-        {data.map((video: StreamVideo) => (
+        {data.map((video) => (
           <Link
             href={video.preview || '#'}
             key={video.uid}
