@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import dayjs from 'dayjs';
-import { Clapperboard } from 'lucide-react';
+import { Clapperboard, Loader2 } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -10,20 +10,60 @@ import { fetchSignedToken, fetchStreamDetail } from '@/lib/cloudflare';
 import { StreamVideo } from '@/lib/cloudflare/type';
 import { humanizeBytes } from '@/lib/utils';
 
+import StreamsDrawer, { StreamsDrawerRef } from './streams-drawer';
+
 export default function VideoPreview({ cfId }: { cfId?: string }) {
   const [cloudflareData, setCloudFlareData] = useState<StreamVideo>();
   const [cfPreview, setCfPreview] = useState<string>('');
+  const [error, setError] = useState('');
+  const [loading, startLoading] = useTransition();
+  const streamsDrawerRef = useRef<StreamsDrawerRef>(null);
 
   useEffect(() => {
     if (cfId) {
-      fetchStreamDetail(cfId).then((cc) => setCloudFlareData(cc.video));
-      fetchSignedToken(cfId).then(setCfPreview);
+      startLoading(() => {
+        Promise.allSettled([
+          fetchStreamDetail(cfId),
+          fetchSignedToken(cfId),
+        ]).then((results) => {
+          const [detailRes, tokenRes] = results;
+
+          if (detailRes.status === 'fulfilled') {
+            setCloudFlareData(detailRes.value.video);
+          } else {
+            setError('Failed to fetch stream detail:' + detailRes.reason);
+          }
+
+          if (tokenRes.status === 'fulfilled') {
+            setCfPreview(tokenRes.value);
+          } else {
+            setError('Failed to fetch signed token:' + tokenRes.reason);
+          }
+        });
+      });
     }
   }, [cfId]);
 
+  if (error)
+    return (
+      <div className="bg-background relative flex aspect-video flex-col items-center justify-center gap-6 overflow-hidden rounded-md">
+        {error}
+        <Button variant="secondary">
+          <Clapperboard /> Видео сонгох
+        </Button>
+      </div>
+    );
+
+  if (loading)
+    return (
+      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
+        <Loader2 className="animate-spin" size={32} />
+      </div>
+    );
   return (
     <>
-      <div className="relative aspect-video overflow-hidden rounded-md">
+      <StreamsDrawer ref={streamsDrawerRef} />
+      <div className="bg-background relative aspect-video overflow-hidden rounded-md">
         {cfPreview ? (
           <iframe
             src={`${cloudflareData?.preview?.match(/^(https:\/\/[^/]+)/)?.[1]}/${cfPreview}/iframe?poster=${cloudflareData?.thumbnail}`}
@@ -33,14 +73,17 @@ export default function VideoPreview({ cfId }: { cfId?: string }) {
             allowFullScreen={false}
           />
         ) : (
-          <div className="bg-background flex h-full flex-col items-center justify-center gap-6">
+          <div className="flex h-full flex-col items-center justify-center gap-6">
             <span className="text-muted-foreground">
               {cfId || cloudflareData
                 ? 'Видео урьдчилсан үзэлт бэлэн болоогүй байна.'
                 : 'Видео мэдээлэл байхгүй байна.'}
             </span>
             {!cfId && !cloudflareData && (
-              <Button variant="secondary">
+              <Button
+                variant="secondary"
+                onClick={() => streamsDrawerRef.current.open()}
+              >
                 <Clapperboard /> Видео сонгох
               </Button>
             )}
@@ -51,6 +94,8 @@ export default function VideoPreview({ cfId }: { cfId?: string }) {
         <Button
           className="!bg-background !text-foreground w-full cursor-pointer"
           size="lg"
+          type="button"
+          onClick={() => streamsDrawerRef.current.open()}
         >
           <Clapperboard /> Видео сонгох
         </Button>
