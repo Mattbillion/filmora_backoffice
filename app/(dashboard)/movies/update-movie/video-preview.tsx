@@ -18,13 +18,15 @@ export default function VideoPreview({ cfId }: { cfId?: string }) {
   const [error, setError] = useState('');
   const [loading, startLoading] = useTransition();
   const streamsDrawerRef = useRef<StreamsDrawerRef>(null);
+  const [selectedCfId, setSelectedCfId] = useState<string | undefined>(cfId);
 
   useEffect(() => {
-    if (cfId) {
+    const idToUse = selectedCfId || cfId;
+    if (idToUse) {
       startLoading(() => {
         Promise.allSettled([
-          fetchStreamDetail(cfId),
-          fetchSignedToken(cfId),
+          fetchStreamDetail(idToUse),
+          fetchSignedToken(idToUse),
         ]).then((results) => {
           const [detailRes, tokenRes] = results;
 
@@ -42,7 +44,7 @@ export default function VideoPreview({ cfId }: { cfId?: string }) {
         });
       });
     }
-  }, [cfId]);
+  }, [cfId, selectedCfId]);
 
   if (error)
     return (
@@ -62,7 +64,13 @@ export default function VideoPreview({ cfId }: { cfId?: string }) {
     );
   return (
     <>
-      <StreamsDrawer ref={streamsDrawerRef} />
+      <StreamsDrawer
+        ref={streamsDrawerRef}
+        onSelect={(video) => {
+          // set selected id so effect triggers to fetch detail + token
+          setSelectedCfId(video.uid);
+        }}
+      />
       <div className="bg-background relative aspect-video overflow-hidden rounded-md">
         {cfPreview ? (
           <iframe
