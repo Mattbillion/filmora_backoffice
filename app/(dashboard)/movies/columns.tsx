@@ -26,7 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { hasPagePermission, hasPermission } from '@/lib/permission';
 import { cn } from '@/lib/utils';
-import { deleteMovie } from '@/services/movies-generated';
+import { deleteMovie, getMovie } from '@/services/movies-generated';
 import { MovieListResponseType } from '@/services/schema';
 
 import UpdateMovie from './update-movie';
@@ -54,7 +54,10 @@ const Action = ({ row }: CellContext<MovieListResponseType, unknown>) => {
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
           {canEdit && (
-            <DropdownMenuItem onClick={() => setEditDrawerOpen(true)}>
+            <DropdownMenuItem
+              onClick={() => setEditDrawerOpen(true)}
+              onClickCapture={() => getMovie(row.original.id.toString())}
+            >
               <Edit className="h-4 w-4" /> Edit
             </DropdownMenuItem>
           )}

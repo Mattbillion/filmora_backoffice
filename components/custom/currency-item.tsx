@@ -9,6 +9,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { cn } from '@/lib/utils';
 
 import { Input } from '../ui/input';
 
@@ -17,15 +18,19 @@ export default function CurrencyItem({
   label,
   placeholder,
   description,
+  className,
+  inputClassName,
 }: {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: ControllerRenderProps<any, any>;
   label?: string;
   placeholder?: string;
   description?: string;
+  className?: string;
+  inputClassName?: string;
 }) {
   return (
-    <FormItem className="flex flex-col">
+    <FormItem className={cn('flex flex-col', className)}>
       {label && <FormLabel>{label}</FormLabel>}
       <NumericFormat
         value={field.value}
@@ -34,6 +39,7 @@ export default function CurrencyItem({
         customInput={Input}
         valueIsNumericString
         placeholder={placeholder}
+        className={inputClassName}
         suffix="₮"
       />
       {description && <FormDescription>{description}</FormDescription>}

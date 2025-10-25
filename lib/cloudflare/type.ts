@@ -77,27 +77,29 @@ export interface StreamVideo {
   watermark?: StreamWatermark;
 }
 
+export interface StreamResponseInfo {
+  code: number;
+  message: string;
+  documentation_url?: string;
+  source?: {
+    pointer: string;
+  };
+}
+
 export interface StreamResponse {
   result: StreamVideo[];
   success: boolean;
-  errors: Array<{
-    code: number;
-    message: string;
-    documentation_url?: string;
-    source?: {
-      pointer: string;
-    };
-  }>;
-  messages: Array<{
-    code: number;
-    message: string;
-    documentation_url?: string;
-    source?: {
-      pointer: string;
-    };
-  }>;
+  errors: StreamResponseInfo[];
+  messages: StreamResponseInfo[];
   range?: number; // The total number of remaining videos based on cursor position
   total?: number; // The total number of videos that match the provided filters
+}
+
+export interface StreamDetailResponse {
+  result: StreamVideo;
+  success: boolean;
+  errors: StreamResponseInfo[];
+  messages: StreamResponseInfo[];
 }
 
 export interface StreamSearchParams {

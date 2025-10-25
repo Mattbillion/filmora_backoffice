@@ -378,6 +378,7 @@ export const movieResponseSchema = z.object({
   tags: z
     .array(appApiApiV1EndpointsDashboardCategoriesTagResponseSchema)
     .optional(),
+  cloudflare_video_id: z.string().optional(),
 });
 
 export type MovieResponseType = z.infer<typeof movieResponseSchema>;

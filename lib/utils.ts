@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { isPath } from '@interpriz/lib/utils';
-import { ColumnFiltersState } from '@tanstack/react-table';
+import type { ColumnFiltersState } from '@tanstack/react-table';
 import { type ClassValue, clsx } from 'clsx';
+import isEq from 'lodash/isEqual';
+import transform from 'lodash/transform';
 import { twMerge } from 'tailwind-merge';
 import { z } from 'zod';
 
@@ -9,6 +11,30 @@ export * from '@interpriz/lib/utils';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
+}
+
+/***
+ * Returns an object containing only the changed values
+ * compared to the initial data.
+ * Decreases vercel's bandwidth by not sending unchanged values
+ *
+ * @param initial - The original object
+ * @param current - The current object (from form)
+ * @returns An object containing only changed key/value pairs
+ ***/
+export function pickChangedValues<T extends Record<string, any>>(
+  initial: T,
+  current: T,
+): Partial<T> {
+  return transform(
+    current,
+    (result, value, key) => {
+      if (!isEq(value, initial[key])) {
+        (result as Record<string, any>)[key] = value;
+      }
+    },
+    {} as Partial<T>,
+  );
 }
 
 export const ensureStartsWith = (
