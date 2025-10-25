@@ -2,8 +2,8 @@ import Zoom from 'react-medium-image-zoom';
 
 import { imageResize } from '@/lib/utils';
 
-export default function ZoomableImage({ src }: { src: string }) {
-  if (!src) return null;
+export default function ZoomableImage({ src }: { src?: string }) {
+  if (!src) return '-';
   return (
     <Zoom
       zoomImg={{

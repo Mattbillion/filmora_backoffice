@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
-import VideoPreview from '@/app/(dashboard)/movies/update-movie/video-preview';
+import CloudflarePreview from '@/components/custom/cloudflare-preview';
 import CurrencyItem from '@/components/custom/currency-item';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import { MultiSelect } from '@/components/custom/multi-select';
@@ -148,6 +148,7 @@ export default function UpdateMovie({
   });
 
   const isPremium = !!form.watch('is_premium');
+  const isSeriesMovie = form.watch('type') === 'series';
 
   const onSubmit = async (d: MovieResponseType) => {
     setIsLoading(true);
@@ -486,13 +487,13 @@ export default function UpdateMovie({
                     )}
                   />
                 </div>
-                {initialData && (
+                {initialData && !isSeriesMovie && (
                   <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
                     <FormField
                       control={form.control}
                       name="cloudflare_video_id"
                       render={({ field }) => (
-                        <VideoPreview
+                        <CloudflarePreview
                           cfId={field.value}
                           onChange={field.onChange}
                           initialTitle={initialData?.title}

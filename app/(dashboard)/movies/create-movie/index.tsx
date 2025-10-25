@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderIcon, PlusIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
-import VideoPreview from '@/app/(dashboard)/movies/update-movie/video-preview';
+import CloudflarePreview from '@/components/custom/cloudflare-preview';
 import CurrencyItem from '@/components/custom/currency-item';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import { MultiSelect } from '@/components/custom/multi-select';
@@ -225,6 +225,7 @@ export default function CreateMovie() {
                         <FormLabel>Кино категори сонгох</FormLabel>
                         <FormControl>
                           <MultiSelect
+                            disabled={loadingData}
                             options={categories.map((cat) => {
                               return {
                                 label: cat.name,
@@ -253,6 +254,7 @@ export default function CreateMovie() {
                         <FormLabel>Кино genre сонгох</FormLabel>
                         <FormControl>
                           <MultiSelect
+                            disabled={loadingData}
                             options={genres.map((genre) => {
                               return {
                                 label: genre.name,
@@ -280,6 +282,7 @@ export default function CreateMovie() {
                         <FormLabel>Кино tag сонгох</FormLabel>
                         <FormControl>
                           <MultiSelect
+                            disabled={loadingData}
                             options={tags.map((tag) => {
                               return {
                                 label: tag.name,
@@ -309,12 +312,7 @@ export default function CreateMovie() {
                   control={form.control}
                   name="year"
                   render={({ field }) => (
-                    <FormItem
-                      className={cn(
-                        isSeriesMovie && 'sr-only',
-                        'flex flex-col gap-1',
-                      )}
-                    >
+                    <FormItem className={cn('flex flex-col gap-1')}>
                       <FormLabel>Кино гарсан он</FormLabel>
                       <FormControl>
                         <Input
@@ -426,18 +424,20 @@ export default function CreateMovie() {
                     )}
                   />
                 </div>
-                <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
-                  <FormField
-                    control={form.control}
-                    name="cloudflare_video_id"
-                    render={({ field }) => (
-                      <VideoPreview
-                        cfId={field.value}
-                        onChange={field.onChange}
-                      />
-                    )}
-                  />
-                </div>
+                {!isSeriesMovie && (
+                  <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
+                    <FormField
+                      control={form.control}
+                      name="cloudflare_video_id"
+                      render={({ field }) => (
+                        <CloudflarePreview
+                          cfId={field.value}
+                          onChange={field.onChange}
+                        />
+                      )}
+                    />
+                  </div>
+                )}
               </form>
             </Form>
 

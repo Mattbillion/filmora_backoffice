@@ -148,7 +148,6 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
             <div className="flex w-full flex-col gap-2">
               <div className="flex items-center justify-between">
                 <DrawerTitle className="text-lg">Кино видео сонгох</DrawerTitle>
-                {/* keep any header actions here if needed */}
               </div>
 
               <form onSubmit={onSubmitSearch} className="flex gap-2">
@@ -255,7 +254,9 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
                             </span>
                           )}
                         </div>
-                        <div>{video.size ? humanizeBytes(video.size) : ''}</div>
+                        <div>
+                          {video.size ? humanizeBytes(video.size) : '-'}
+                        </div>
                       </div>
                     </div>
                   </div>

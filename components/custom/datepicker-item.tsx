@@ -62,13 +62,14 @@ export default function DatePickerItem({
             </Button>
           </FormControl>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
+        <PopoverContent className="p-0" align="start">
           <Calendar
             mode="single"
             selected={field.value}
             onSelect={(c) => field.onChange(c?.toISOString())}
             disabled={calcDisable}
-            initialFocus
+            captionLayout="dropdown"
+            className="w-full"
           />
         </PopoverContent>
       </Popover>

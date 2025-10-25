@@ -13,7 +13,7 @@ import { fetchSignedToken, fetchStreamDetail } from '@/lib/cloudflare';
 import { StreamVideo } from '@/lib/cloudflare/type';
 import { humanizeBytes } from '@/lib/utils';
 
-export default function VideoPreview({
+export default function CloudflarePreview({
   cfId,
   initialTitle,
   onChange,
@@ -72,7 +72,7 @@ export default function VideoPreview({
           <Button
             variant="secondary"
             type="button"
-            onClick={() => streamsDrawerRef.current.open()}
+            onClick={() => streamsDrawerRef.current?.open?.()}
           >
             <Clapperboard /> Видео сонгох
           </Button>
@@ -117,7 +117,7 @@ export default function VideoPreview({
               <Button
                 type="button"
                 variant="secondary"
-                onClick={() => streamsDrawerRef.current.open()}
+                onClick={() => streamsDrawerRef.current?.open?.()}
               >
                 <Clapperboard /> Видео сонгох
               </Button>
@@ -130,7 +130,7 @@ export default function VideoPreview({
           className="!bg-background !text-foreground w-full cursor-pointer"
           size="lg"
           type="button"
-          onClick={() => streamsDrawerRef.current.open()}
+          onClick={() => streamsDrawerRef.current?.open?.()}
         >
           <Clapperboard /> Видео сонгох
         </Button>
