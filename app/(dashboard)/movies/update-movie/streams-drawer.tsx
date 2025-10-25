@@ -71,12 +71,6 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       toggle: () => setOpen((s) => !s),
     }));
 
-    // helper: take first two words of a title
-    const firstTwoWords = (s?: string) => {
-      if (!s) return '';
-      return s.trim().split(/\s+/).slice(0, 2).join(' ');
-    };
-
     const resetAndFetch = async (searchOverride?: string) => {
       setLoading(true);
       setError(null);
@@ -126,12 +120,10 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       if (open) {
         // if there's a defaultFilter and the input is empty, populate it with first two words
         if (defaultFilter && !filter) {
-          const def = firstTwoWords(defaultFilter);
+          const [def] = defaultFilter.split(' ');
           if (def) {
             setFilter(def);
-            // Use the computed default directly for the initial fetch to avoid stale state
-            resetAndFetch(def);
-            return;
+            return resetAndFetch(def);
           }
         }
         // fetch will use the current filter value (which may have been set from defaultFilter)
@@ -175,6 +167,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
                 </Button>
                 <Button
                   variant="ghost"
+                  disabled={!filter}
                   onClick={() => {
                     setFilter('');
                     resetAndFetch('');
@@ -198,7 +191,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
               {!loading && videos.length === 0 && !error && (
                 <div className="text-muted-foreground p-4">
-                  No videos found.
+                  No videos found. Try adjusting your search.
                 </div>
               )}
 

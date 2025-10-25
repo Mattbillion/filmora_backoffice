@@ -488,7 +488,7 @@ export default function UpdateMovie({
                 {initialData && (
                   <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
                     <VideoPreview
-                      cfId={initialData?.cloudflare_video_id || undefined}
+                      cfId={initialData?.cloudflare_video_id}
                       initialTitle={initialData?.title}
                     />
                   </div>

@@ -33,6 +33,7 @@ export async function fetchSignedToken(videoId: string, expiration = 3600) {
     method: 'POST',
     headers: defaultHeader,
     body: JSON.stringify({ expiration }),
+    cache: 'no-store',
   });
   const data = await res.json();
   if (!res.ok || !data.success)

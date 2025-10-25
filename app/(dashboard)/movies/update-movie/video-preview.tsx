@@ -54,12 +54,26 @@ export default function VideoPreview({
 
   if (error)
     return (
-      <div className="bg-background relative flex aspect-video flex-col items-center justify-center gap-6 overflow-hidden rounded-md">
-        {error}
-        <Button variant="secondary">
-          <Clapperboard /> Видео сонгох
-        </Button>
-      </div>
+      <>
+        <StreamsDrawer
+          ref={streamsDrawerRef}
+          onSelect={(video) => {
+            // set selected id so effect triggers to fetch detail + token
+            setSelectedCfId(video.uid);
+          }}
+          defaultFilter={initialTitle}
+        />
+        <div className="bg-background relative flex aspect-video flex-col items-center justify-center gap-6 overflow-hidden rounded-md">
+          {error}
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => streamsDrawerRef.current.open()}
+          >
+            <Clapperboard /> Видео сонгох
+          </Button>
+        </div>
+      </>
     );
 
   if (loading)
@@ -96,6 +110,7 @@ export default function VideoPreview({
             </span>
             {!cfId && !cloudflareData && (
               <Button
+                type="button"
                 variant="secondary"
                 onClick={() => streamsDrawerRef.current.open()}
               >
