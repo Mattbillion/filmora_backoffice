@@ -20,6 +20,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from '@/components/ui/drawer';
+import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { fetchStream } from '@/lib/cloudflare';
 import { StreamSearchParams, StreamVideo } from '@/lib/cloudflare/type';
@@ -39,6 +40,7 @@ interface StreamsDrawerProps {
   initialOpen?: boolean;
   onSelect?: (video: StreamVideo) => void; // called when user selects a stream
   pageSize?: number;
+  defaultFilter?: string; // initial title from movie - used to build default search (first 2 words)
 }
 
 const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
@@ -51,6 +53,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       initialOpen = false,
       onSelect,
       pageSize = 20,
+      defaultFilter,
     },
     ref,
   ) => {
@@ -60,6 +63,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
     const [error, setError] = useState<string | null>(null);
     const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
     const [hasMore, setHasMore] = useState<boolean>(false);
+    const [filter, setFilter] = useState<string>('');
 
     useImperativeHandle(ref, () => ({
       open: () => setOpen(true),
@@ -67,22 +71,28 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       toggle: () => setOpen((s) => !s),
     }));
 
-    const resetAndFetch = async () => {
+    // helper: take first two words of a title
+    const firstTwoWords = (s?: string) => {
+      if (!s) return '';
+      return s.trim().split(/\s+/).slice(0, 2).join(' ');
+    };
+
+    const resetAndFetch = async (searchOverride?: string) => {
       setLoading(true);
       setError(null);
       setVideos([]);
       setNextCursor(undefined);
       setHasMore(false);
 
+      const searchTerm =
+        typeof searchOverride === 'string' ? searchOverride : filter;
+
       try {
-        const params: StreamSearchParams = {
-          /* initial params if needed */
-        };
-        const res = await fetchStream({
-          ...params /* pageSize not part of type, keep default */,
-        } as any);
+        const params: StreamSearchParams = searchTerm
+          ? { search: searchTerm }
+          : {};
+        const res = await fetchStream({ ...params } as any);
         setVideos(res.videos || []);
-        console.log(res.videos || []);
         setNextCursor(res.nextCursor);
         setHasMore(!!res.hasMore);
       } catch (err: any) {
@@ -99,6 +109,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       setError(null);
       try {
         const params: StreamSearchParams = { before: nextCursor };
+        if (filter) params.search = filter;
         const res = await fetchStream(params as any);
         setVideos((prev) => [...prev, ...(res.videos || [])]);
         setNextCursor(res.nextCursor);
@@ -113,9 +124,26 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
     useEffect(() => {
       if (open) {
+        // if there's a defaultFilter and the input is empty, populate it with first two words
+        if (defaultFilter && !filter) {
+          const def = firstTwoWords(defaultFilter);
+          if (def) {
+            setFilter(def);
+            // Use the computed default directly for the initial fetch to avoid stale state
+            resetAndFetch(def);
+            return;
+          }
+        }
+        // fetch will use the current filter value (which may have been set from defaultFilter)
         resetAndFetch();
       }
     }, [open]);
+
+    const onSubmitSearch = async (e?: React.FormEvent) => {
+      e?.preventDefault();
+      // trigger fetch with current filter
+      await resetAndFetch(filter);
+    };
 
     return (
       <Drawer
@@ -129,7 +157,33 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
         <DrawerContent className={cn('h-[90vh]', className)}>
           <DrawerHeader className="bg-background p-4">
-            <DrawerTitle className="text-lg">Кино видео сонгох</DrawerTitle>
+            <div className="flex w-full flex-col gap-2">
+              <div className="flex items-center justify-between">
+                <DrawerTitle className="text-lg">Кино видео сонгох</DrawerTitle>
+                {/* keep any header actions here if needed */}
+              </div>
+
+              <form onSubmit={onSubmitSearch} className="flex gap-2">
+                <Input
+                  placeholder="Search videos by name..."
+                  value={filter}
+                  onChange={(e) => setFilter(e.target.value)}
+                  className="w-full"
+                />
+                <Button type="submit" disabled={loading}>
+                  Search
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setFilter('');
+                    resetAndFetch('');
+                  }}
+                >
+                  Clear
+                </Button>
+              </form>
+            </div>
           </DrawerHeader>
 
           <div className="mx-auto min-h-0 max-w-[900px] flex-1 space-y-4 pt-4 pb-4">
@@ -205,7 +259,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
                       <div className="text-muted-foreground text-right text-xs">
                         <div>
-                          {typeof video.duration === 'number' && (
+                          {video.duration != null && (
                             <span>
                               {Math.floor(video.duration / 60)}m{' '}
                               {video.duration % 60}s

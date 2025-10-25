@@ -12,7 +12,13 @@ import { humanizeBytes } from '@/lib/utils';
 
 import StreamsDrawer, { StreamsDrawerRef } from './streams-drawer';
 
-export default function VideoPreview({ cfId }: { cfId?: string }) {
+export default function VideoPreview({
+  cfId,
+  initialTitle,
+}: {
+  cfId?: string;
+  initialTitle?: string;
+}) {
   const [cloudflareData, setCloudFlareData] = useState<StreamVideo>();
   const [cfPreview, setCfPreview] = useState<string>('');
   const [error, setError] = useState('');
@@ -70,6 +76,7 @@ export default function VideoPreview({ cfId }: { cfId?: string }) {
           // set selected id so effect triggers to fetch detail + token
           setSelectedCfId(video.uid);
         }}
+        defaultFilter={initialTitle}
       />
       <div className="bg-background relative aspect-video overflow-hidden rounded-md">
         {cfPreview ? (
