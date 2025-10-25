@@ -92,17 +92,17 @@ export default function UpdateMovie({
     }
   };
 
-  useEffect(() => {
-    const solveResult = (
-      result: PromiseSettledResult<any>,
-      fallbackData: any,
-    ) => {
-      const isSuccess =
-        result.status === 'fulfilled' && result.value.status === 'success';
-      if (!isSuccess) console.error('Failed to fetch:', result);
-      return isSuccess ? result.value.data || [] : fallbackData;
-    };
+  const solveResult = (
+    result: PromiseSettledResult<any>,
+    fallbackData: any,
+  ) => {
+    const isSuccess =
+      result.status === 'fulfilled' && result.value.status === 'success';
+    if (!isSuccess) console.error('Failed to fetch:', result);
+    return isSuccess ? result.value.data || fallbackData : fallbackData;
+  };
 
+  useEffect(() => {
     if (editDrawerOpen) {
       fetchMovie();
 
@@ -142,6 +142,7 @@ export default function UpdateMovie({
       genres: initialData?.genres || [],
       tags: initialData?.tags || [],
       movie_id: initialData?.movie_id || '',
+      cloudflare_video_id: initialData?.cloudflare_video_id,
       created_at: '2025-09-24T05:20:30.123Z',
     },
   });
@@ -487,9 +488,16 @@ export default function UpdateMovie({
                 </div>
                 {initialData && (
                   <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
-                    <VideoPreview
-                      cfId={initialData?.cloudflare_video_id}
-                      initialTitle={initialData?.title}
+                    <FormField
+                      control={form.control}
+                      name="cloudflare_video_id"
+                      render={({ field }) => (
+                        <VideoPreview
+                          cfId={field.value}
+                          onChange={field.onChange}
+                          initialTitle={initialData?.title}
+                        />
+                      )}
                     />
                   </div>
                 )}

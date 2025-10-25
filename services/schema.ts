@@ -406,6 +406,7 @@ export const movieCreateSchema = z.object({
   trailer_url: z.string().optional(),
   m3u8_url: z.string().optional(),
   load_image_url: z.string().optional(),
+  cloudflare_video_id: z.string().optional(),
   category_ids: z.array(z.number().int()).optional(),
   genre_ids: z.array(z.number().int()).optional(),
   tag_ids: z.array(z.number().int()).optional(),
@@ -467,6 +468,7 @@ export const movieUpdateSchema = z.object({
   genre_ids: z.array(z.number().int()).optional(),
   tag_ids: z.array(z.number().int()).optional(),
   load_image_url: z.string().optional(),
+  cloudflare_video_id: z.string().optional(),
 });
 
 export type MovieUpdateType = z.infer<typeof movieUpdateSchema>;

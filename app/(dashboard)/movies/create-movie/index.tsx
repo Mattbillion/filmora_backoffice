@@ -1,11 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoaderIcon, PlusIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
+import VideoPreview from '@/app/(dashboard)/movies/update-movie/video-preview';
+import CurrencyItem from '@/components/custom/currency-item';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import { MultiSelect } from '@/components/custom/multi-select';
 import { Button } from '@/components/ui/button';
@@ -54,46 +56,43 @@ import { UploadCover } from '../components/upload-cover';
 import { UploadPoster } from '../components/upload-poster';
 
 export default function CreateMovie() {
-  const [categories, setCategories] = useState<CategoryResponseType[]>([]);
-  const [genres, setGenres] = useState<GenreResponseType[]>([]);
-  const [tags, setTags] = useState<
-    AppApiApiV1EndpointsDashboardCategoriesTagResponseType[]
-  >([]);
+  const [{ tags, categories, genres }, setDropdownData] = useState<{
+    tags: AppApiApiV1EndpointsDashboardCategoriesTagResponseType[];
+    genres: GenreResponseType[];
+    categories: CategoryResponseType[];
+  }>({
+    tags: [],
+    genres: [],
+    categories: [],
+  });
+  const [loadingData, startLoadingData] = useTransition();
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
-  const fetchCategories = async () => {
-    const result = await getCategories();
-    if (result.status === 'success') {
-      setCategories(result.data || []);
-    }
-    return;
-  };
-
-  const fetchGenres = async () => {
-    const result = await getGenres();
-    if (result.status === 'success') {
-      setGenres(result.data || []);
-    }
-    return;
-  };
-
-  const fetchTags = async () => {
-    try {
-      const res = await getTags();
-      if (res.status === 'success') {
-        setTags(res.data || []);
-      }
-    } catch (error) {
-      console.error('Failed to fetch genres', error);
-    }
+  const solveResult = (
+    result: PromiseSettledResult<any>,
+    fallbackData: any,
+  ) => {
+    const isSuccess =
+      result.status === 'fulfilled' && result.value.status === 'success';
+    if (!isSuccess) console.error('Failed to fetch:', result);
+    return isSuccess ? result.value.data || fallbackData : fallbackData;
   };
 
   useEffect(() => {
     if (isOpen) {
-      fetchCategories();
-      fetchGenres();
-      fetchTags();
+      startLoadingData(() => {
+        Promise.allSettled([getGenres(), getTags(), getCategories()]).then(
+          ([genreRes, tagRes, catRes]) => {
+            setDropdownData((prev) => ({
+              ...prev,
+              genres: solveResult(genreRes, prev.genres),
+              tags: solveResult(tagRes, prev.tags),
+              categories: solveResult(catRes, prev.categories),
+            }));
+          },
+        );
+      });
     }
   }, [isOpen]);
 
@@ -115,6 +114,7 @@ export default function CreateMovie() {
   });
 
   const isSeriesMovie = form.watch('type') === 'series';
+  const isPremium = !!form.watch('is_premium');
 
   async function onSubmitMovie(d: MovieCreateType) {
     const body = {
@@ -218,30 +218,6 @@ export default function CreateMovie() {
 
                 <FormField
                   control={form.control}
-                  name="type"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1">
-                      <FormLabel>Кино төрөл сонгох</FormLabel>
-                      <FormControl>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select Type" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="movie">Movie</SelectItem>
-                            <SelectItem value="series">Series</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="category_ids"
                   render={({ field }) => {
                     return (
@@ -331,35 +307,6 @@ export default function CreateMovie() {
 
                 <FormField
                   control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem
-                      className={cn(
-                        isSeriesMovie && 'sr-only',
-                        'flex flex-col gap-1',
-                      )}
-                    >
-                      <FormLabel>Түрээсийн үнэ</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          placeholder="Enter Price"
-                          {...field}
-                          value={field.value || ''}
-                          className="shadow-none"
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            field.onChange(value === '' ? 0 : Number(value));
-                          }}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
                   name="year"
                   render={({ field }) => (
                     <FormItem
@@ -390,61 +337,107 @@ export default function CreateMovie() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="is_premium"
-                  render={({ field }) => (
-                    <FormItem
-                      className={cn(
-                        isSeriesMovie
-                          ? 'sr-only'
-                          : 'flex flex-row items-center justify-between rounded-lg border p-4',
-                      )}
-                    >
-                      <div className="flex flex-col gap-1">
-                        <FormLabel className="text-md font-semibold">
-                          Түрээсийн кино эсэх
-                        </FormLabel>
-                        <FormDescription className="text-muted-foreground">
-                          Багцад үл хамаарсан зөвхөн түрээслэн үзэх боломжтой
-                          кино
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value || false}
-                          onCheckedChange={(checked) => field.onChange(checked)}
-                          aria-readonly
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
+                <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
+                  <FormField
+                    control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel>Кино төрөл сонгох</FormLabel>
+                        <FormControl>
+                          <Select onValueChange={field.onChange}>
+                            <SelectTrigger className="bg-background border-destructive/15 mb-0">
+                              <SelectValue placeholder="Select Type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="movie">Movie</SelectItem>
+                              <SelectItem value="series">Series</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="is_adult"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
-                      <div className="flex flex-col gap-1">
-                        <FormLabel className="text-md font-semibold">
-                          Насанд хүрэгчдийн кино эсэх
-                        </FormLabel>
-                        <FormDescription className="text-muted-foreground">
-                          Хэрвээ таны оруулж буй кино +21 насанд хүрэгчдэд
-                          зориулсан эсэх?
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value || false}
-                          onCheckedChange={(checked) => field.onChange(checked)}
-                          aria-readonly
+                  <FormField
+                    control={form.control}
+                    name="is_premium"
+                    render={({ field }) => (
+                      <FormItem className="bg-background border-destructive/15 flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="flex flex-col gap-1">
+                          <FormLabel className="text-md font-semibold">
+                            Түрээсийн кино эсэх
+                          </FormLabel>
+                          <FormDescription className="text-muted-foreground">
+                            Багцад үл хамаарсан зөвхөн түрээслэн үзэх боломжтой
+                            кино
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            onCheckedChange={(checked) =>
+                              field.onChange(checked)
+                            }
+                            aria-readonly
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+
+                  {isPremium && (
+                    <FormField
+                      control={form.control}
+                      name="price"
+                      render={({ field }) => (
+                        <CurrencyItem
+                          label="Түрээсийн үнэ"
+                          placeholder="Enter Price"
+                          field={field}
+                          inputClassName="bg-background border-destructive/15"
                         />
-                      </FormControl>
-                    </FormItem>
+                      )}
+                    />
                   )}
-                />
+
+                  <FormField
+                    control={form.control}
+                    name="is_adult"
+                    render={({ field }) => (
+                      <FormItem className="bg-background border-destructive/15 flex flex-row items-center justify-between rounded-lg border p-4">
+                        <div className="flex flex-col gap-1">
+                          <FormLabel className="text-md font-semibold">
+                            Насанд хүрэгчдийн кино эсэх
+                          </FormLabel>
+                          <FormDescription className="text-muted-foreground">
+                            Хэрвээ таны оруулж буй кино +21 насанд хүрэгчдэд
+                            зориулсан эсэх?
+                          </FormDescription>
+                        </div>
+                        <FormControl>
+                          <Switch
+                            onCheckedChange={(checked) =>
+                              field.onChange(checked)
+                            }
+                            aria-readonly
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
+                  <FormField
+                    control={form.control}
+                    name="cloudflare_video_id"
+                    render={({ field }) => (
+                      <VideoPreview
+                        cfId={field.value}
+                        onChange={field.onChange}
+                      />
+                    )}
+                  />
+                </div>
               </form>
             </Form>
 

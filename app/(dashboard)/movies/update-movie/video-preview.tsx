@@ -4,20 +4,23 @@ import { useEffect, useRef, useState, useTransition } from 'react';
 import dayjs from 'dayjs';
 import { Clapperboard, Loader2 } from 'lucide-react';
 
+import StreamsDrawer, {
+  StreamsDrawerRef,
+} from '@/components/custom/streams-drawer';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { fetchSignedToken, fetchStreamDetail } from '@/lib/cloudflare';
 import { StreamVideo } from '@/lib/cloudflare/type';
 import { humanizeBytes } from '@/lib/utils';
 
-import StreamsDrawer, { StreamsDrawerRef } from './streams-drawer';
-
 export default function VideoPreview({
   cfId,
   initialTitle,
+  onChange,
 }: {
   cfId?: string;
   initialTitle?: string;
+  onChange?: (cfId: string) => void;
 }) {
   const [cloudflareData, setCloudFlareData] = useState<StreamVideo>();
   const [cfPreview, setCfPreview] = useState<string>('');
@@ -60,6 +63,7 @@ export default function VideoPreview({
           onSelect={(video) => {
             // set selected id so effect triggers to fetch detail + token
             setSelectedCfId(video.uid);
+            onChange?.(video.uid);
           }}
           defaultFilter={initialTitle}
         />
@@ -89,6 +93,7 @@ export default function VideoPreview({
         onSelect={(video) => {
           // set selected id so effect triggers to fetch detail + token
           setSelectedCfId(video.uid);
+          onChange?.(video.uid);
         }}
         defaultFilter={initialTitle}
       />

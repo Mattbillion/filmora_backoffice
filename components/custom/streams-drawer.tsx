@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  FormEvent,
   forwardRef,
   ReactNode,
   useEffect,
@@ -38,9 +39,8 @@ interface StreamsDrawerProps {
   footer?: ReactNode;
   onOpenChange?: (open: boolean) => void;
   initialOpen?: boolean;
-  onSelect?: (video: StreamVideo) => void; // called when user selects a stream
-  pageSize?: number;
-  defaultFilter?: string; // initial title from movie - used to build default search (first 2 words)
+  onSelect?: (video: StreamVideo) => void;
+  defaultFilter?: string;
 }
 
 const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
@@ -52,8 +52,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       onOpenChange,
       initialOpen = false,
       onSelect,
-      pageSize = 20,
-      defaultFilter,
+      defaultFilter = '',
     },
     ref,
   ) => {
@@ -118,20 +117,17 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
     useEffect(() => {
       if (open) {
-        // if there's a defaultFilter and the input is empty, populate it with first two words
-        if (defaultFilter && !filter) {
+        let f = '';
+        if (defaultFilter) {
           const [def] = defaultFilter.split(' ');
-          if (def) {
-            setFilter(def);
-            return resetAndFetch(def);
-          }
+          f = def;
+          if (def) setFilter(def);
         }
-        // fetch will use the current filter value (which may have been set from defaultFilter)
-        resetAndFetch();
+        resetAndFetch(f);
       }
     }, [open]);
 
-    const onSubmitSearch = async (e?: React.FormEvent) => {
+    const onSubmitSearch = async (e?: FormEvent) => {
       e?.preventDefault();
       // trigger fetch with current filter
       await resetAndFetch(filter);
