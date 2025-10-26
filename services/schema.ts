@@ -45,6 +45,17 @@ export type InitialResponseUnionSeriesSeasonNoneTypeType = z.infer<
   typeof initialResponseUnionSeriesSeasonNoneTypeSchema
 >;
 
+export const initialResponseUnionSeriesSeasonListTypeSchema = z.object({
+  status: z.string(),
+  message: z.string(),
+  data: z.array(seriesSeasonSchema),
+  total_count: z.number().int().optional(),
+});
+
+export type InitialResponseUnionSeriesSeasonListType = z.infer<
+  typeof initialResponseUnionSeriesSeasonListTypeSchema
+>;
+
 export const seriesEpisodeSchema = z.object({
   episode_id: z.uuid(),
   season_id: z.uuid(),

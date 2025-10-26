@@ -3,7 +3,9 @@
 import { useRef, useState } from 'react';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import dayjs from 'dayjs';
-import { Edit, MoreHorizontal, Trash } from 'lucide-react';
+import { Edit, FilmIcon, MoreHorizontal, Trash } from 'lucide-react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 
@@ -13,7 +15,7 @@ import {
 } from '@/components/custom/delete-dialog';
 import { TableHeaderWrapper } from '@/components/custom/table-header-wrapper';
 import ZoomableImage from '@/components/custom/zoomable-image';
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,8 +24,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { hasPermission } from '@/lib/permission';
-import { removeHTML } from '@/lib/utils';
+import { hasPagePermission, hasPermission } from '@/lib/permission';
+import { cn, removeHTML } from '@/lib/utils';
 import { SeriesSeasonType } from '@/services/schema';
 import { deleteSeriesSeason } from '@/services/season';
 
@@ -94,6 +96,21 @@ const Action = ({ row }: CellContext<SeriesSeasonType, unknown>) => {
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
+  );
+};
+
+const Navigation = ({ row }: CellContext<SeriesSeasonType, unknown>) => {
+  const { data } = useSession();
+  const params = useParams();
+
+  if (!hasPagePermission(data, 'movies.episodes')) return null;
+  return (
+    <Link
+      href={`/movies/${params.id}/seasons/${row.original.id}`}
+      className={cn(buttonVariants({ variant: 'outline', size: 'cxs' }))}
+    >
+      <FilmIcon className="h-4 w-4" /> Ангиуд
+    </Link>
   );
 };
 
@@ -173,5 +190,6 @@ export const seasonsColumns: ColumnDef<SeriesSeasonType>[] = [
     enableSorting: true,
     enableColumnFilter: true,
   },
+  { id: 'navigations', cell: Navigation },
   { id: 'actions', cell: Action },
 ];
