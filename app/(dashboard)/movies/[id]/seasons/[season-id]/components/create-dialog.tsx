@@ -1,0 +1,135 @@
+'use client';
+
+import { ReactNode, useRef, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useParams } from 'next/navigation';
+import { toast } from 'sonner';
+
+import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { createEpisode } from '@/services/create_episode';
+import {
+  seriesEpisodeCreateSchema,
+  SeriesEpisodeCreateType,
+} from '@/services/schema';
+
+export function CreateDialog({ children }: { children: ReactNode }) {
+  const dialogRef = useRef<FormDialogRef>(null);
+  const [isPending, startTransition] = useTransition();
+  const params = useParams();
+
+  const form = useForm<SeriesEpisodeCreateType>({
+    resolver: zodResolver(seriesEpisodeCreateSchema),
+    defaultValues: {
+      episode_number: 1,
+      season_id: params['season-id'] as unknown as string,
+    },
+  });
+
+  function onSubmit(values: SeriesEpisodeCreateType) {
+    startTransition(() => {
+      createEpisode(values)
+        .then(() => {
+          toast.success('Episode created successfully');
+          dialogRef?.current?.close();
+          form.reset();
+        })
+        .catch((e) => toast.error(e.message));
+    });
+  }
+
+  return (
+    <FormDialog
+      ref={dialogRef}
+      form={form}
+      onSubmit={onSubmit}
+      loading={isPending}
+      title="Create new episode"
+      submitText="Create"
+      trigger={children}
+    >
+      <FormField
+        control={form.control}
+        name="title"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Title</FormLabel>
+            <FormControl>
+              <Input placeholder="Episode title" {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="episode_number"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Episode number</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                min={1}
+                {...field}
+                value={field.value ?? 1}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <HtmlTipTapItem field={field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="playback_url"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Playback URL (optional)</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="season_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input type="hidden" {...field} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+    </FormDialog>
+  );
+}

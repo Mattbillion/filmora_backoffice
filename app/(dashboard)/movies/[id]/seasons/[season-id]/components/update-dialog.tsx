@@ -1,0 +1,177 @@
+'use client';
+
+import { ReactNode, useRef, useTransition } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
+
+import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { updateEpisode } from '@/services/episodes';
+import {
+  SeriesEpisodeType,
+  seriesEpisodeUpdateSchema,
+  SeriesEpisodeUpdateType,
+} from '@/services/schema';
+
+export function UpdateDialog({
+  children,
+  initialData,
+}: {
+  children: ReactNode;
+  initialData: SeriesEpisodeType;
+}) {
+  const dialogRef = useRef<FormDialogRef>(null);
+  const [isPending, startTransition] = useTransition();
+
+  const form = useForm<SeriesEpisodeUpdateType>({
+    resolver: zodResolver(seriesEpisodeUpdateSchema),
+    defaultValues: initialData,
+  });
+
+  function onSubmit(values: SeriesEpisodeUpdateType) {
+    startTransition(() => {
+      updateEpisode(initialData.id, values)
+        .then(() => {
+          toast.success('Updated successfully');
+          dialogRef?.current?.close();
+          form.reset(values);
+        })
+        .catch((e) => toast.error(e.message));
+    });
+  }
+
+  return (
+    <FormDialog
+      ref={dialogRef}
+      form={form}
+      onSubmit={onSubmit}
+      loading={isPending}
+      title="Update episode"
+      submitText="Update"
+      trigger={children}
+    >
+      <FormField
+        control={form.control}
+        name="title"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Title</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="episode_number"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Episode number</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                min={1}
+                {...field}
+                value={field.value ?? 1}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Description</FormLabel>
+            <FormControl>
+              <HtmlTipTapItem field={field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="playback_url"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Playback URL</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="duration"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Duration (seconds)</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                min={0}
+                {...field}
+                value={field.value ?? undefined}
+                onChange={(e) =>
+                  field.onChange(
+                    e.target.value ? Number(e.target.value) : undefined,
+                  )
+                }
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="thumbnail"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Thumbnail URL</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="cloudflare_video_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Cloudflare video id</FormLabel>
+            <FormControl>
+              <Input {...field} />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </FormDialog>
+  );
+}

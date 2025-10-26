@@ -57,14 +57,15 @@ export type InitialResponseUnionSeriesSeasonListType = z.infer<
 >;
 
 export const seriesEpisodeSchema = z.object({
-  episode_id: z.uuid(),
+  id: z.uuid(),
   season_id: z.uuid(),
-  title: z.string().optional(),
-  episode_number: z.number().int().optional(),
-  m3u8_url: z.string(),
-  duration: z.string().optional(),
-  thumbnail: z.string(),
-  description: z.string().optional(),
+  title: z.string().min(1).max(200),
+  episode_number: z.number().int().gt(0),
+  description: z.string().max(500).optional(),
+  playback_url: z.string().optional(),
+  duration: z.number().int().optional(),
+  thumbnail: z.string().optional(),
+  cloudflare_video_id: z.string().optional(),
 });
 
 export type SeriesEpisodeType = z.infer<typeof seriesEpisodeSchema>;
@@ -623,3 +624,25 @@ export const episodeUploadInitializeSchema = z.object({
 export type EpisodeUploadInitializeType = z.infer<
   typeof episodeUploadInitializeSchema
 >;
+
+export const seriesEpisodeUpdateSchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  episode_number: z.number().int().gt(0).optional(),
+  description: z.string().max(500).optional(),
+  playback_url: z.string().optional(),
+  duration: z.number().int().optional(),
+  thumbnail: z.string().optional(),
+  cloudflare_video_id: z.string().optional(),
+});
+
+export type SeriesEpisodeUpdateType = z.infer<typeof seriesEpisodeUpdateSchema>;
+
+export const seriesEpisodeCreateSchema = z.object({
+  title: z.string().min(1).max(200),
+  episode_number: z.number().int().gt(0),
+  description: z.string().max(500).optional(),
+  season_id: z.uuid(),
+  playback_url: z.string().max(500).optional(),
+});
+
+export type SeriesEpisodeCreateType = z.infer<typeof seriesEpisodeCreateSchema>;
