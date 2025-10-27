@@ -31,7 +31,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
   const form = useForm<SeriesEpisodeCreateType>({
     resolver: zodResolver(seriesEpisodeCreateSchema),
     defaultValues: {
-      episode_number: 1,
       season_id: params['season-id'] as unknown as string,
     },
   });
@@ -95,7 +94,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
                 type="number"
                 min={1}
                 {...field}
-                value={field.value ?? 1}
+                value={field.value}
                 onChange={(e) => field.onChange(Number(e.target.value))}
               />
             </FormControl>
