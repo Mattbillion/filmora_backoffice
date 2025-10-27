@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
+import { UploadCover } from '@/app/(dashboard)/movies/components/upload-cover';
 import CloudflarePreview from '@/components/custom/cloudflare-preview';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
@@ -135,15 +136,7 @@ export function UpdateDialog({
       <FormField
         control={form.control}
         name="thumbnail"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Thumbnail URL</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
+        render={({ field }) => <UploadCover field={field} />}
       />
 
       <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
@@ -151,7 +144,14 @@ export function UpdateDialog({
           control={form.control}
           name="cloudflare_video_id"
           render={({ field }) => (
-            <CloudflarePreview cfId={field.value} onChange={field.onChange} />
+            <CloudflarePreview
+              cfId={field.value}
+              onChange={(c) => {
+                field.onChange(c.uid);
+                if (form.getValues('duration') !== Math.round(c.duration))
+                  form.setValue('duration', Math.round(c.duration));
+              }}
+            />
           )}
         />
       </div>

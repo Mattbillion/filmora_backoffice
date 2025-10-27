@@ -631,7 +631,7 @@ export const seriesEpisodeUpdateSchema = z.object({
   description: z.string().max(500).optional(),
   playback_url: z.string().optional(),
   duration: z.number().int().optional(),
-  thumbnail: z.string().optional(),
+  thumbnail: z.string().optional().nullable(),
   cloudflare_video_id: z.string().optional(),
 });
 
@@ -643,6 +643,7 @@ export const seriesEpisodeCreateSchema = z.object({
   description: z.string().max(500).optional(),
   season_id: z.uuid(),
   playback_url: z.string().max(500).optional(),
+  duration: z.number().int().optional(),
   cloudflare_video_id: z.string().optional(),
 });
 

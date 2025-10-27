@@ -432,7 +432,7 @@ export default function CreateMovie() {
                       render={({ field }) => (
                         <CloudflarePreview
                           cfId={field.value}
-                          onChange={field.onChange}
+                          onChange={(c) => field.onChange(c.uid)}
                         />
                       )}
                     />

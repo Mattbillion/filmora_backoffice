@@ -6,7 +6,7 @@ import { ImagePlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
-import { FormControl, FormItem } from '@/components/ui/form';
+import { FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import { uploadMedia } from '@/services/media/service';
 import { ImageInfoType } from '@/services/schema';
 
@@ -125,6 +125,7 @@ export function UploadCover({ field }: { field: FieldValues }) {
           onChange={(e) => handleUploadImage(e.target.files?.[0]!)}
         />
       </FormControl>
+      <FormMessage />
     </FormItem>
   );
 }

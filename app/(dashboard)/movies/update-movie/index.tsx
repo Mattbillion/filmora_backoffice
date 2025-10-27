@@ -495,7 +495,7 @@ export default function UpdateMovie({
                       render={({ field }) => (
                         <CloudflarePreview
                           cfId={field.value}
-                          onChange={field.onChange}
+                          onChange={(c) => field.onChange(c.uid)}
                           initialTitle={initialData?.title}
                         />
                       )}

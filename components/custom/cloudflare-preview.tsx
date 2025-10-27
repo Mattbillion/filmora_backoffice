@@ -20,7 +20,7 @@ export default function CloudflarePreview({
 }: {
   cfId?: string;
   initialTitle?: string;
-  onChange?: (cfId: string) => void;
+  onChange?: (video: StreamVideo) => void;
 }) {
   const [cloudflareData, setCloudFlareData] = useState<StreamVideo>();
   const [cfPreview, setCfPreview] = useState<string>('');
@@ -63,7 +63,7 @@ export default function CloudflarePreview({
           onSelect={(video) => {
             // set selected id so effect triggers to fetch detail + token
             setSelectedCfId(video.uid);
-            onChange?.(video.uid);
+            onChange?.(video);
           }}
           defaultFilter={initialTitle}
         />
@@ -93,7 +93,7 @@ export default function CloudflarePreview({
         onSelect={(video) => {
           // set selected id so effect triggers to fetch detail + token
           setSelectedCfId(video.uid);
-          onChange?.(video.uid);
+          onChange?.(video);
         }}
         defaultFilter={initialTitle}
       />
