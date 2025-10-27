@@ -643,6 +643,7 @@ export const seriesEpisodeCreateSchema = z.object({
   description: z.string().max(500).optional(),
   season_id: z.uuid(),
   playback_url: z.string().max(500).optional(),
+  cloudflare_video_id: z.string().optional(),
 });
 
 export type SeriesEpisodeCreateType = z.infer<typeof seriesEpisodeCreateSchema>;

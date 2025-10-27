@@ -1,6 +1,7 @@
 'use client';
 
 import { useRef, useState } from 'react';
+import { formatDuration } from '@interpriz/lib/utils';
 import { CellContext, ColumnDef } from '@tanstack/react-table';
 import { Edit, MoreHorizontal, Trash } from 'lucide-react';
 import { useSession } from 'next-auth/react';
@@ -143,31 +144,21 @@ export const episodesColumns: ColumnDef<SeriesEpisodeType>[] = [
     enableColumnFilter: false,
   },
   {
-    id: 'playback_url',
-    accessorKey: 'playback_url',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) =>
-      row.original.playback_url ? (
-        <a
-          className="text-muted-foreground text-xs break-all"
-          href={row.original.playback_url}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {row.original.playback_url}
-        </a>
-      ) : (
-        <span className="text-muted-foreground">-</span>
-      ),
-    enableSorting: false,
-    enableColumnFilter: true,
-  },
-  {
     id: 'duration',
     accessorKey: 'duration',
     header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) =>
-      row.original.duration != null ? `${row.original.duration}s` : '-',
+    cell: ({ row }) => {
+      const dur = row.original.duration || 0;
+
+      if (dur) {
+        const [seconds, minutes, hours] = formatDuration(dur)
+          .split(':')
+          .reverse();
+        return `${hours ? hours + 'h ' : ''}${minutes ? minutes + 'm ' : ''}${seconds ? seconds + 's' : ''}`.trim();
+      }
+
+      return '-';
+    },
     enableSorting: true,
     enableColumnFilter: true,
   },

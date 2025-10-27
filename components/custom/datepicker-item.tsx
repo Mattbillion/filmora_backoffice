@@ -32,11 +32,11 @@ export default function DatePickerItem({
   label?: string;
   className?: string;
   description?: string;
-  disableBy?: 'feature' | 'past' | 'none';
+  disableBy?: 'future' | 'past' | 'none';
 }) {
   const calcDisable = (date: Date) => {
     if (disableBy === 'past') return date < new Date();
-    if (disableBy === 'feature') return date > new Date();
+    if (disableBy === 'future') return date > new Date();
     return false;
   };
   return (

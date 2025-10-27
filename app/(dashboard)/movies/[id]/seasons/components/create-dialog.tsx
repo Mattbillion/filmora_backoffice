@@ -5,7 +5,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { ZodUUID } from 'zod';
 
 import { UploadCover } from '@/app/(dashboard)/movies/components/upload-cover';
 import DatePickerItem from '@/components/custom/datepicker-item';
@@ -34,7 +33,7 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     resolver: zodResolver(seriesSeasonCreateSchema),
     defaultValues: {
       season_number: 1,
-      movie_id: params.id as unknown as ZodUUID,
+      movie_id: params.id as unknown as string,
     },
   });
 

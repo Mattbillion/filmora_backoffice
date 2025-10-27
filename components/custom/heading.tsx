@@ -6,11 +6,7 @@ interface HeadingProps {
   className?: string;
 }
 
-export const Heading: React.FC<HeadingProps> = ({
-  title,
-  description,
-  className,
-}) => {
+export const Heading = ({ title, description, className }: HeadingProps) => {
   return (
     <div className={className}>
       <h2 className="text-xl font-bold tracking-tight">{title}</h2>

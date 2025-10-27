@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useParams } from 'next/navigation';
 import { toast } from 'sonner';
 
+import CloudflarePreview from '@/components/custom/cloudflare-preview';
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
@@ -59,6 +60,18 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     >
       <FormField
         control={form.control}
+        name="season_id"
+        render={({ field }) => (
+          <FormItem>
+            <FormControl>
+              <Input type="hidden" {...field} />
+            </FormControl>
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
         name="title"
         render={({ field }) => (
           <FormItem>
@@ -105,31 +118,15 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         )}
       />
 
-      <FormField
-        control={form.control}
-        name="playback_url"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel>Playback URL (optional)</FormLabel>
-            <FormControl>
-              <Input {...field} />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-
-      <FormField
-        control={form.control}
-        name="season_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <Input type="hidden" {...field} />
-            </FormControl>
-          </FormItem>
-        )}
-      />
+      <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
+        <FormField
+          control={form.control}
+          name="cloudflare_video_id"
+          render={({ field }) => (
+            <CloudflarePreview cfId={field.value} onChange={field.onChange} />
+          )}
+        />
+      </div>
     </FormDialog>
   );
 }

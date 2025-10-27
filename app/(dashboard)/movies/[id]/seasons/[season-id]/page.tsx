@@ -1,3 +1,4 @@
+import { PlusIcon } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 import { auth } from '@/auth';
@@ -52,7 +53,9 @@ export default async function SeasonEpisodesPage(props: {
         />
         {hasPermission(session, 'movies.episodes', 'create') && (
           <CreateDialog>
-            <Button variant="outline">+ New Episode</Button>
+            <Button variant="outline">
+              <PlusIcon /> New Episode
+            </Button>
           </CreateDialog>
         )}
       </div>
