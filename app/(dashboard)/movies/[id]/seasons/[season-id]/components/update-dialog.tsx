@@ -17,6 +17,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { pickChangedValues } from '@/lib/utils';
 import { updateEpisode } from '@/services/episodes';
 import {
   SeriesEpisodeType,
@@ -41,7 +42,7 @@ export function UpdateDialog({
 
   function onSubmit(values: SeriesEpisodeUpdateType) {
     startTransition(() => {
-      updateEpisode(initialData.id, values)
+      updateEpisode(initialData.id, pickChangedValues(initialData, values))
         .then(() => {
           toast.success('Updated successfully');
           dialogRef?.current?.close();
