@@ -20,7 +20,7 @@ export async function executeRevalidate(
 ) {
   try {
     const _filmoraOrigin = getOrigin();
-    await Promise.all(
+    await Promise.allSettled(
       revalidations.map((c) =>
         typeof c === 'string' ? revalidate(c) : Promise.resolve(),
       ),

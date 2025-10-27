@@ -33,13 +33,12 @@ export function CreateDialog({ children }: { children: ReactNode }) {
     resolver: zodResolver(seriesSeasonCreateSchema),
     defaultValues: {
       season_number: 1,
-      movie_id: params.id as unknown as string,
     },
   });
 
   function onSubmit(values: SeriesSeasonCreateType) {
     startTransition(() => {
-      createSeriesSeason(values)
+      createSeriesSeason(params.id as unknown as string, values)
         .then(() => {
           toast.success('Created successfully');
           dialogRef?.current?.close();
@@ -48,20 +47,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
         .catch((e) => toast.error(e.message));
     });
   }
-
-  // helper to convert ISO string to datetime-local input value (YYYY-MM-DDTHH:mm)
-  const toDateTimeLocal = (iso?: string) => {
-    if (!iso) return '';
-    try {
-      const d = new Date(iso);
-      // adjust to local by removing timezone offset
-      const offset = d.getTimezoneOffset();
-      const local = new Date(d.getTime() - offset * 60000);
-      return local.toISOString().slice(0, 16);
-    } catch (e) {
-      return '';
-    }
-  };
 
   return (
     <FormDialog
@@ -73,18 +58,6 @@ export function CreateDialog({ children }: { children: ReactNode }) {
       submitText="Create"
       trigger={children}
     >
-      <FormField
-        control={form.control}
-        name="movie_id"
-        render={({ field }) => (
-          <FormItem>
-            <FormControl>
-              <Input type="hidden" {...field} />
-            </FormControl>
-          </FormItem>
-        )}
-      />
-
       <FormField
         control={form.control}
         name="cover_image_url"

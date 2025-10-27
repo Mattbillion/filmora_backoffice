@@ -1,6 +1,6 @@
 export const RVK_SEASONS = 'seasons' as const;
 export const RVK_EPISODES = 'episodes' as const;
-export const RVK_SEASON = 'season' as const;
+export const RVK_SEASON = 'seasons' as const;
 export const RVK_AUTH = 'auth' as const;
 export const RVK_CURRENT_EMPLOYEE = 'current-employee' as const;
 export const RVK_EMPLOYEES = 'employees' as const;

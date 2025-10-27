@@ -1,40 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
 
-import { revalidatePath, revalidateTag } from 'next/cache';
 import { z } from 'zod';
 
 import { auth } from '@/auth';
 
 import { stringifyError, validateSchema } from './utils';
-
-export async function revalidate(tagName: string) {
-  revalidateTag(tagName);
-}
-
-export async function revalidateLocal() {
-  revalidatePath('/', 'layout');
-}
-
-export async function revalidateClient(origin: 'vercel' | 'filmora') {
-  const url = {
-    vercel:
-      process.env.FRONT_VERCEL_DOMAIN || 'https://filmora-client.vercel.app',
-    filmora: process.env.FRONT_DOMAIN || 'https://filmora.mn',
-  }[origin];
-
-  const endpoint = `${url}/api/revalidate?secret=ps_ez&path=/`;
-  try {
-    const res = await fetch(endpoint, { method: 'POST', cache: 'no-store' });
-    const result = await res.json();
-
-    if (!res.ok) throw new Error('Something went wrong:' + result.message);
-    return { result };
-  } catch (err) {
-    console.error('Revalidation url:', endpoint);
-    console.error('Revalidation error:', err);
-  }
-}
 
 const MAX_FILE_SIZE = 5000000; // 5MB
 const ACCEPTED_IMAGE_TYPES = [

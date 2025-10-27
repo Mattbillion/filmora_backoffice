@@ -10,15 +10,19 @@ import {
 
 // Auto-generated service for season
 
-export async function createSeriesSeason(body: SeriesSeasonCreateType) {
+export async function createSeriesSeason(
+  movieId: string,
+  body: SeriesSeasonCreateType,
+) {
   const res = await actions.post<BaseResponseUnionSeriesSeasonNoneTypeType>(
-    `/season`,
+    `/seasons/${movieId}`,
     body,
   );
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
+  executeRevalidate([RVK_SEASON]);
   return response;
 }
 
@@ -27,14 +31,14 @@ export async function updateSeriesSeason(
   body: SeriesSeasonUpdateType,
 ) {
   const res = await actions.put<BaseResponseUnionSeriesSeasonNoneTypeType>(
-    `/season/${seasonId}`,
+    `/seasons/${seasonId}`,
     body,
   );
 
   const { body: response, error } = res;
   if (error) throw new Error(error);
 
-  executeRevalidate([RVK_SEASON, `${RVK_SEASON}_season_id_${seasonId}`]);
+  await executeRevalidate([RVK_SEASON, `${RVK_SEASON}_season_id_${seasonId}`]);
 
   return response;
 }

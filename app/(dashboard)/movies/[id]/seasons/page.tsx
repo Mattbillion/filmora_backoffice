@@ -16,8 +16,6 @@ import { getSeriesSeasons } from '@/services/seasons';
 import { seasonsColumns } from './columns';
 import { CreateDialog } from './components';
 
-export const dynamic = 'force-dynamic';
-
 export default async function SeasonsPage(props: {
   params: Promise<{ id: string }>;
   searchParams?: SearchParams<{

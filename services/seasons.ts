@@ -21,7 +21,7 @@ export async function getSeriesSeasons(
     {
       searchParams,
       next: {
-        tags: [RVK_SEASONS, `${RVK_SEASONS}_movie_id_${movieId}`],
+        tags: [RVK_SEASONS],
       },
     },
   );

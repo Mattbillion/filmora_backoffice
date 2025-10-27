@@ -1,7 +1,6 @@
 import { z } from 'zod';
 
 export const seriesSeasonCreateSchema = z.object({
-  movie_id: z.uuid().optional(),
   season_number: z.number().int(),
   title: z.string().optional(),
   description: z.string().optional(),
@@ -104,11 +103,10 @@ export type BaseResponseUnionSeriesSeasonNoneTypeType = z.infer<
 >;
 
 export const seriesSeasonUpdateSchema = z.object({
-  movie_id: z.uuid().optional(),
   season_number: z.number().int().optional(),
   title: z.string().optional(),
   description: z.string().optional(),
-  release_date: z.iso.datetime().optional(),
+  release_date: z.iso.datetime().optional().nullable(),
   cover_image_url: z.string().optional(),
 });
 
