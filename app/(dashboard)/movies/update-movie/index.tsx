@@ -166,6 +166,7 @@ export default function UpdateMovie({
         category_ids: d.categories?.map((cat) => Number(cat.id)),
         genre_ids: d.genres?.map((genre) => Number(genre.id)),
         tag_ids: d.tags?.map((tag) => Number(tag.id)),
+        cloudflare_video_id: d.cloudflare_video_id,
       };
 
       const response = await updateMovie(id, body);
