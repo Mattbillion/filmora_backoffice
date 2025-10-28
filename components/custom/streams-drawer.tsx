@@ -129,6 +129,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
     const onSubmitSearch = async (e?: FormEvent) => {
       e?.preventDefault();
+      e?.stopPropagation();
       // trigger fetch with current filter
       await resetAndFetch(filter);
     };
