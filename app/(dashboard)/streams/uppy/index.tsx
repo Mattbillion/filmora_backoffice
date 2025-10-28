@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useEffect, useMemo } from 'react';
 import Uppy from '@uppy/core';
 import { Dashboard } from '@uppy/react';
 import Tus from '@uppy/tus';
@@ -7,9 +7,11 @@ import Tus from '@uppy/tus';
 import '@uppy/core/css/style.min.css';
 import '@uppy/dashboard/css/style.min.css';
 
-export function UppyUpload() {
-  const [uppy] = useState(() =>
-    new Uppy({
+export function UppyUpload({ isTrailer }: { isTrailer: boolean }) {
+  const uppy = useMemo(() => {
+    const metadata = isTrailer ? '' : 'requiresignedurls ' + btoa('true');
+
+    return new Uppy({
       restrictions: {
         allowedFileTypes: ['video/*'],
         maxNumberOfFiles: 1,
@@ -20,12 +22,30 @@ export function UppyUpload() {
       headers: () => {
         return {
           Authorization: `Bearer ${process.env.NEXT_PUBLIC_CLOUDFLARE_AUTHORIZATION}`,
-          'Upload-Metadata': '',
+          'Upload-Metadata': metadata,
         };
       },
 
       endpoint: `https://api.cloudflare.com/client/v4/accounts/${process.env.NEXT_PUBLIC_CLOUDFLARE_ACCOUNT_ID}/stream`,
-    }),
+    });
+  }, [isTrailer]);
+
+  useEffect(() => {
+    return () => {
+      uppy.cancelAll();
+    };
+  }, [uppy]);
+
+  return (
+    <div className="rounded-lg border bg-card">
+      <Dashboard 
+        theme="dark" 
+        uppy={uppy} 
+        width="100%" 
+        height="400px"
+        proudlyDisplayPoweredByUppy={false}
+        note="Зөвхөн видео файлууд зөвшөөрөгдөнө"
+      />
+    </div>
   );
-  return <Dashboard theme="dark" uppy={uppy} width="100%" height="400px" />;
 }

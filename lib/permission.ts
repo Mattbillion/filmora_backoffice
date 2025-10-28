@@ -39,6 +39,7 @@ const subjects = {
   genres: [],
   subscriptions: [],
   tags: [],
+  streams: ['upload'],
 } as const satisfies Record<UrlEnumType, string[]>;
 
 type FilterNonEmtArr<T extends Record<string, readonly string[]>> = {
@@ -78,6 +79,8 @@ const roles: Record<Role, Record<Subject, Record<Action, boolean>>> = {
     genres: full,
     subscriptions: full,
     tags: full,
+    streams: full,
+    'streams.upload': full,
   },
   editor: {
     categories: modify,
@@ -89,6 +92,8 @@ const roles: Record<Role, Record<Subject, Record<Action, boolean>>> = {
     'movies.season-detail': modify,
     'movies.episodes': modify,
     'movies.episode-detail': modify,
+    streams: modify,
+    'streams.upload': modify,
     tags: modify,
     employees: restricted,
     rentals: restricted,
@@ -110,6 +115,8 @@ const roles: Record<Role, Record<Subject, Record<Action, boolean>>> = {
     rentals: read,
     sales: read,
     subscriptions: read,
+    streams: read,
+    'streams.upload': read,
   },
   support: {
     categories: read,
@@ -126,6 +133,8 @@ const roles: Record<Role, Record<Subject, Record<Action, boolean>>> = {
     rentals: restricted,
     sales: restricted,
     subscriptions: restricted,
+    streams: restricted,
+    'streams.upload': restricted,
   },
 };
 

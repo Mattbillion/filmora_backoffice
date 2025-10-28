@@ -10,6 +10,7 @@ import {
   Tag,
   TvMinimalPlay,
   UsersRoundIcon,
+  VideoIcon,
 } from 'lucide-react';
 
 export type SubMenuItemType = {
@@ -43,6 +44,12 @@ export const operationsRoutes = [
     title: 'Tags',
     url: '/tags',
     icon: Tag,
+    subRoutes: false,
+  },
+  {
+    title: 'Streams',
+    url: '/streams',
+    icon: VideoIcon,
     subRoutes: false,
   },
 ] as const;
