@@ -107,16 +107,16 @@ export interface StreamSearchParams {
   video_name?: string; // Fast
 }
 
+export type SupportedCaptionLanguages =
+  (typeof CLOUDFLARE_LANGUAGES)[number]['code'];
+
 export interface StreamCaption {
   // Whether the caption was generated via AI.
   generated?: boolean;
   // The language label displayed in the native language to users.
   label?: string;
   // The language tag in BCP 47 format.
-  language?: string;
+  language?: SupportedCaptionLanguages;
   // The status of a generated caption.
   status?: 'ready' | 'inprogress' | 'error';
 }
-
-export type SupportedCaptionLanguages =
-  (typeof CLOUDFLARE_LANGUAGES)[number]['code'];

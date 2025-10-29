@@ -9,7 +9,7 @@ import {
   StreamVideo,
   SupportedCaptionLanguages,
 } from '@/lib/cloudflare/type';
-import { objToQs } from '@/lib/utils';
+import { objToFormData, objToQs } from '@/lib/utils';
 
 const cfInfo = () => {
   const [accId, tkn] = [
@@ -203,4 +203,60 @@ export async function generateCaptions(
     console.error('Error generating captions:', error);
     throw error;
   }
+}
+
+export async function fetchCaptionVTT(
+  streamId: string,
+  language: SupportedCaptionLanguages,
+) {
+  const { defaultHeader, baseURL } = cfInfo();
+  try {
+    const url = `${baseURL}/${streamId}/captions/${encodeURIComponent(
+      language,
+    )}/vtt`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: defaultHeader,
+      next: { revalidate: 86400 }, // Cache for 1 day
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    return await response.text();
+  } catch (error) {
+    console.error('Error generating captions:', error);
+    throw error;
+  }
+}
+
+export async function uploadCaptionToCloudflare(
+  streamId: string,
+  language: SupportedCaptionLanguages,
+  file: File | Blob,
+) {
+  const { defaultHeader, baseURL } = cfInfo();
+
+  const url = `${baseURL}/${streamId}/captions/${encodeURIComponent(language)}`;
+  const headers = { ...defaultHeader };
+  headers['Content-Type'] = 'multipart/form-data';
+
+  const response = await fetch(url, {
+    method: 'PUT',
+    headers: headers,
+    body: objToFormData(file),
+  });
+
+  const data: StreamDetailResponse<StreamCaption> = await response.json();
+
+  if (!response.ok || !data.success) {
+    console.error('Upload failed:', data.errors);
+    throw new Error(
+      data.errors?.[0]?.message || `Upload failed: ${response.status}`,
+    );
+  }
+
+  return data;
 }

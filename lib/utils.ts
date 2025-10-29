@@ -172,3 +172,15 @@ export function humanizeBytes(bytes: number, decimals = 2): string {
   const value = bytes / Math.pow(k, i);
   return `${value.toFixed(dm)} ${sizes[i]}`;
 }
+
+export function splitByVideoExt(input: string) {
+  const re = /^(.*?)(\.(mp4|webm|mkv|mov|avi|flv|wmv|m4v|ts|m2ts|3gp|ogv))?$/i;
+  const m = input.match(re);
+
+  if (!m) return { base: input, extension: null as string | null };
+
+  const base = m[1];
+  const extension = m[3] ? m[3].toLowerCase() : null;
+
+  return { base, extension };
+}
