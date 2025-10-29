@@ -37,11 +37,11 @@ export function UppyUpload({ isTrailer }: { isTrailer: boolean }) {
   }, [uppy]);
 
   return (
-    <div className="rounded-lg border bg-card">
-      <Dashboard 
-        theme="dark" 
-        uppy={uppy} 
-        width="100%" 
+    <div className="bg-card rounded-lg border">
+      <Dashboard
+        theme="dark"
+        uppy={uppy}
+        width="100%"
         height="400px"
         proudlyDisplayPoweredByUppy={false}
         note="Зөвхөн видео файлууд зөвшөөрөгдөнө"

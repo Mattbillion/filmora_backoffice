@@ -1,15 +1,15 @@
 'use client';
 
+import { useState } from 'react';
 import dayjs from 'dayjs';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { StreamVideo } from '@/lib/cloudflare/type';
-import { humanizeBytes } from '@/lib/utils';
-import { useSession } from 'next-auth/react';
 import { hasPermission } from '@/lib/permission';
+import { humanizeBytes } from '@/lib/utils';
 
 const isTrailer = (video: StreamVideo) => {
   // If requireSignedURLs is false or undefined, it's a public trailer
@@ -24,11 +24,8 @@ export function Client({ data }: { data: StreamVideo[] }) {
   const trailers = data.filter((video) => isTrailer(video));
   const movies = data.filter((video) => !isTrailer(video));
 
-  const filteredData = filter === 'trailer' 
-    ? trailers 
-    : filter === 'movie' 
-    ? movies 
-    : data;
+  const filteredData =
+    filter === 'trailer' ? trailers : filter === 'movie' ? movies : data;
 
   return (
     <div className="space-y-4">
@@ -96,7 +93,9 @@ export function Client({ data }: { data: StreamVideo[] }) {
                 <div className="flex justify-between gap-1 p-4">
                   <div className="flex-1">
                     <div className="mb-1 flex items-center gap-2">
-                      <h1 className="text-lg font-medium">{video.meta?.name}</h1>
+                      <h1 className="text-lg font-medium">
+                        {video.meta?.name}
+                      </h1>
                       {trailer && (
                         <Badge variant="secondary" className="h-fit w-fit">
                           Public
@@ -115,7 +114,10 @@ export function Client({ data }: { data: StreamVideo[] }) {
 
                   <div className="flex flex-col items-end gap-1">
                     {video.readyToStream && (
-                      <Badge variant="outline" className="flex h-fit w-fit gap-1">
+                      <Badge
+                        variant="outline"
+                        className="flex h-fit w-fit gap-1"
+                      >
                         <div className="size-2.5 rounded-full bg-green-600" />
                         Ready to stream
                       </Badge>

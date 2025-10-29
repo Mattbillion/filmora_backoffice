@@ -4,11 +4,17 @@ import { ArrowLeft, Film, Play } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { UppyUpload } from '@/app/(dashboard)/streams/uppy';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Badge } from '@/components/ui/badge';
 
 export default function Page() {
   const router = useRouter();
@@ -23,10 +29,12 @@ export default function Page() {
         </Button>
         <div>
           <h1 className="text-2xl font-bold">Видео оруулах</h1>
-          <p className="text-muted-foreground">Cloudflare Stream ашиглан видео оруулах</p>
+          <p className="text-muted-foreground">
+            Cloudflare Stream ашиглан видео оруулах
+          </p>
         </div>
       </div>
-      
+
       {/* Video Type Selection */}
       <Card>
         <CardHeader>
@@ -41,11 +49,13 @@ export default function Page() {
         <CardContent>
           <RadioGroup
             value={videoType}
-            onValueChange={(value) => setVideoType(value as 'movie' | 'trailer')}
+            onValueChange={(value) =>
+              setVideoType(value as 'movie' | 'trailer')
+            }
             className="grid grid-cols-1 gap-4 md:grid-cols-2"
           >
-            <div 
-              className="flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted/50 cursor-pointer"
+            <div
+              className="hover:bg-muted/50 flex cursor-pointer items-center space-x-3 rounded-lg border p-4 transition-colors"
               onClick={() => setVideoType('movie')}
             >
               <RadioGroupItem value="movie" id="movie" />
@@ -57,15 +67,15 @@ export default function Page() {
                   <Badge variant="secondary" className="text-xs">
                     Signed URL
                   </Badge>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-muted-foreground text-sm">
                     Хамгаалалттай хандалт
                   </span>
                 </div>
               </div>
             </div>
-            
-            <div 
-              className="flex items-center space-x-3 rounded-lg border p-4 transition-colors hover:bg-muted/50 cursor-pointer"
+
+            <div
+              className="hover:bg-muted/50 flex cursor-pointer items-center space-x-3 rounded-lg border p-4 transition-colors"
               onClick={() => setVideoType('trailer')}
             >
               <RadioGroupItem value="trailer" id="trailer" />
@@ -77,7 +87,7 @@ export default function Page() {
                   <Badge variant="outline" className="text-xs">
                     Нийтийн
                   </Badge>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-muted-foreground text-sm">
                     Хүн бүр хандаж болно
                   </span>
                 </div>
@@ -95,10 +105,9 @@ export default function Page() {
             Видео оруулах
           </CardTitle>
           <CardDescription>
-            {videoType === 'movie' 
+            {videoType === 'movie'
               ? 'Кино файлыг оруулах - зөвхөн зөвшөөрөгдсөн хэрэглэгчид хандаж болно'
-              : 'Trailer файлыг оруулах - хүн бүр үзэж болно'
-            }
+              : 'Trailer файлыг оруулах - хүн бүр үзэж болно'}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -108,4 +117,3 @@ export default function Page() {
     </div>
   );
 }
-
