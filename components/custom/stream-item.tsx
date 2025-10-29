@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { FormEvent, useEffect, useState, useTransition } from 'react';
 import dayjs from 'dayjs';
 import { Loader2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 import {
   AccordionContent,
@@ -10,15 +11,180 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
-import { fetchSignedToken, fetchStreamDetail } from '@/lib/cloudflare';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  fetchSignedToken,
+  fetchStreamDetail,
+  updateStream,
+} from '@/lib/cloudflare';
 import { StreamVideo } from '@/lib/cloudflare/type';
-import { humanizeBytes } from '@/lib/utils';
+import { cn, humanizeBytes } from '@/lib/utils';
+
+function splitByVideoExt(input: string) {
+  const re = /^(.*?)(\.(mp4|webm|mkv|mov|avi|flv|wmv|m4v|ts|m2ts|3gp|ogv))?$/i;
+  const m = input.match(re);
+
+  if (!m) return { base: input, extension: null as string | null };
+
+  const base = m[1];
+  const extension = m[3] ? m[3].toLowerCase() : null;
+
+  return { base, extension };
+}
+
+function InfoTab({
+  data,
+  onUpdate,
+}: {
+  data?: StreamVideo;
+  onUpdate?: (v: StreamVideo) => void;
+}) {
+  const { base, extension } = splitByVideoExt(data?.meta?.name || '');
+  const [name, setName] = useState(base);
+  const [requireSigned, setRequireSigned] = useState(!!data?.requireSignedURLs);
+  const [updating, startUpdateTransition] = useTransition();
+
+  // Sync when data changes (e.g., loaded after mount)
+  useEffect(() => {
+    setName(base);
+    setRequireSigned(!!data?.requireSignedURLs);
+  }, [data?.meta?.name, data?.requireSignedURLs]);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!data) return;
+    startUpdateTransition(async () => {
+      try {
+        const body = {
+          streamId: data.uid,
+          meta: { name: `${name}${extension ? `.${extension}` : ''}` },
+          requireSignedURLs: requireSigned,
+        };
+
+        const res = await updateStream(data.uid, body);
+
+        const updated = (res.result || res) as StreamVideo;
+        onUpdate?.(updated);
+        toast.success('Stream updated successfully');
+      } catch (errorUnknown: unknown) {
+        toast.error((errorUnknown as any)?.message || String(errorUnknown));
+      }
+    });
+  };
+
+  return (
+    <form className="space-y-3" onSubmit={handleSubmit}>
+      <div>
+        <label className="mb-1 block text-sm font-medium">Бичлэгийн нэр</label>
+        <Input
+          value={name}
+          onChange={(e) => setName((e.target as HTMLInputElement).value)}
+        />
+      </div>
+
+      <div className="border-destructive/30 bg-destructive/5 flex items-center justify-between rounded-md border p-2">
+        <div>
+          <label className="mb-1 block text-sm font-medium">
+            Бичлэгийн төрөл
+          </label>
+          <p className="text-muted-foreground text-sm">
+            Идэвхижүүлснээр бичлэгийг кино болгон тохируулна. Үгүй бол трейлер
+            болно.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="secondary"
+            className={cn(
+              'rounded-full text-xs',
+              requireSigned ? 'bg-destructive/30' : 'bg-input',
+            )}
+          >
+            {requireSigned ? 'Кино' : 'Трейлер'}
+          </Badge>
+          <Switch
+            checked={requireSigned}
+            onCheckedChange={(v) => setRequireSigned(Boolean(v))}
+            className="data-[state=checked]:bg-destructive/30"
+            thumbClassName="bg-background/75 data-[state=checked]:bg-background"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-2">
+        <Button size="sm" type="submit" disabled={updating}>
+          {updating && <Loader2 className="animate-spin" />}
+          Update
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function PreviewTab({ video }: { video?: StreamVideo }) {
+  const [cfPreview, setCfPreview] = useState<string>('');
+  const [loading, startLoading] = useTransition();
+
+  useEffect(() => {
+    if (video) {
+      startLoading(() => {
+        fetchSignedToken(video.uid).then((c) => setCfPreview(c));
+      });
+    }
+  }, [video]);
+
+  if (!video)
+    return (
+      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
+        No preview available.
+      </div>
+    );
+
+  if (loading)
+    return (
+      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+
+  return (
+    <div className="bg-background relative aspect-video overflow-hidden rounded-md">
+      {cfPreview ? (
+        <iframe
+          src={`${video.preview?.match(/^(https:\/\/[^/]+)/)?.[1]}/${cfPreview}/iframe?poster=${video.thumbnail}`}
+          height="720"
+          width="1280"
+          className="h-full w-full object-contain"
+          allowFullScreen={false}
+        />
+      ) : (
+        <div className="text-muted-foreground py-4 text-sm">
+          No preview available.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CaptionsTab() {
+  return (
+    <div className="space-y-2 py-2">
+      <div className="text-muted-foreground text-sm">
+        No captions available for this stream.
+      </div>
+    </div>
+  );
+}
 
 export default function StreamItem({ video }: { video: StreamVideo }) {
   const [open, setOpen] = useState(false);
   const [loading, startTransition] = useTransition();
   const [cloudflareData, setCloudFlareData] = useState<StreamVideo>();
-  const [cfPreview, setCfPreview] = useState<string>('');
   const [error, setError] = useState<string | null>(null);
 
   const isTrailer = !video.requireSignedURLs;
@@ -27,24 +193,9 @@ export default function StreamItem({ video }: { video: StreamVideo }) {
     if (cloudflareData || loading) return;
 
     startTransition(() => {
-      Promise.allSettled([
-        fetchStreamDetail(video.uid),
-        fetchSignedToken(video.uid),
-      ]).then((results) => {
-        const [detailRes, tokenRes] = results;
-
-        if (detailRes.status === 'fulfilled') {
-          setCloudFlareData(detailRes.value.video);
-        } else {
-          setError('Failed to fetch stream detail:' + detailRes.reason);
-        }
-
-        if (tokenRes.status === 'fulfilled') {
-          setCfPreview(tokenRes.value);
-        } else {
-          setError('Failed to fetch signed token:' + tokenRes.reason);
-        }
-      });
+      fetchStreamDetail(video.uid)
+        .then((res) => setCloudFlareData(res.video))
+        .catch((e) => setError(e?.message || String(e)));
     });
   };
 
@@ -67,11 +218,11 @@ export default function StreamItem({ video }: { video: StreamVideo }) {
               <h1 className="text-lg font-medium">{video.meta?.name}</h1>
               {isTrailer ? (
                 <Badge variant="secondary" className="h-fit w-fit">
-                  Public
+                  Трейлер
                 </Badge>
               ) : (
                 <Badge variant="outline" className="h-fit w-fit">
-                  Protected
+                  Кино
                 </Badge>
               )}
             </div>
@@ -105,59 +256,30 @@ export default function StreamItem({ video }: { video: StreamVideo }) {
           <div className="text-destructive text-center text-sm">{error}</div>
         ) : (
           <div className="space-y-2 py-2">
-            {cloudflareData && cfPreview && (
-              <div className="bg-background relative aspect-video overflow-hidden rounded-md">
-                <iframe
-                  src={`${cloudflareData?.preview?.match(/^(https:\/\/[^/]+)/)?.[1]}/${cfPreview}/iframe?poster=${cloudflareData?.thumbnail}`}
-                  height="720"
-                  width="1280"
-                  className="h-full w-full object-contain"
-                  allowFullScreen={false}
+            <Tabs defaultValue="info" className="w-full">
+              <TabsList>
+                <TabsTrigger value="info">Stream Info</TabsTrigger>
+                <TabsTrigger value="preview">Preview</TabsTrigger>
+                <TabsTrigger value="captions">Captions</TabsTrigger>
+              </TabsList>
+
+              <TabsContent value="info" className="bg-muted rounded-lg p-2">
+                <InfoTab
+                  data={cloudflareData}
+                  onUpdate={(v) =>
+                    setCloudFlareData((prev) => ({ ...prev, ...v }))
+                  }
                 />
-              </div>
-            )}
+              </TabsContent>
 
-            {cloudflareData ? (
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">uid:</span>
-                  <span>{cloudflareData.uid}</span>
-                </div>
+              <TabsContent value="preview" className="bg-muted rounded-lg p-2">
+                <PreviewTab video={cloudflareData} />
+              </TabsContent>
 
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">status:</span>
-                  <span>{cloudflareData.status?.state || 'unknown'}</span>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">duration:</span>
-                  <span>
-                    {Math.floor(cloudflareData.duration / 60)}m{' '}
-                    {cloudflareData.duration % 60}s
-                  </span>
-                </div>
-
-                {cloudflareData.size && (
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium">size:</span>
-                    <span>{humanizeBytes(cloudflareData.size)}</span>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2">
-                  <span className="font-medium">created:</span>
-                  <span>
-                    {dayjs(cloudflareData.created).format(
-                      'YYYY-MM-DD HH:mm:ss',
-                    )}
-                  </span>
-                </div>
-              </div>
-            ) : (
-              <div className="text-muted-foreground text-sm">
-                No details loaded.
-              </div>
-            )}
+              <TabsContent value="captions" className="bg-muted rounded-lg p-2">
+                <CaptionsTab />
+              </TabsContent>
+            </Tabs>
           </div>
         )}
       </AccordionContent>

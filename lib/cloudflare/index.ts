@@ -111,3 +111,30 @@ export async function fetchStream(params: StreamSearchParams = {}) {
     throw error;
   }
 }
+
+export async function updateStream(streamId: string, payload: any) {
+  const { defaultHeader, baseURL } = cfInfo();
+
+  try {
+    const response = await fetch(`${baseURL}/${streamId}`, {
+      method: 'POST',
+      headers: defaultHeader,
+      body: JSON.stringify(payload),
+      cache: 'no-store',
+    });
+
+    const data = await response.json();
+
+    if (!response.ok || !data.success) {
+      throw new Error(
+        data.errors?.[0]?.message ||
+          `Failed to update stream: ${response.status}`,
+      );
+    }
+
+    return data; // return full CF response
+  } catch (error) {
+    console.error('Error updating Stream:', error);
+    throw error;
+  }
+}
