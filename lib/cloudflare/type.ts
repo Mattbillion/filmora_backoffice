@@ -1,20 +1,4 @@
-export interface CloudflareError {
-  code: number;
-  message: string;
-  documentation_url?: string;
-  source?: {
-    pointer?: string;
-  };
-}
-
-export interface CloudflareMessage {
-  code: number;
-  message: string;
-  documentation_url?: string;
-  source?: {
-    pointer?: string;
-  };
-}
+import { CLOUDFLARE_LANGUAGES } from './languages';
 
 export interface StreamInput {
   height: number;
@@ -95,8 +79,8 @@ export interface StreamResponse {
   total?: number; // The total number of videos that match the provided filters
 }
 
-export interface StreamDetailResponse {
-  result: StreamVideo;
+export interface StreamDetailResponse<T> {
+  result: T;
   success: boolean;
   errors: StreamResponseInfo[];
   messages: StreamResponseInfo[];
@@ -122,3 +106,17 @@ export interface StreamSearchParams {
   type?: 'vod' | 'live'; // Filter by video type
   video_name?: string; // Fast
 }
+
+export interface StreamCaption {
+  // Whether the caption was generated via AI.
+  generated?: boolean;
+  // The language label displayed in the native language to users.
+  label?: string;
+  // The language tag in BCP 47 format.
+  language?: string;
+  // The status of a generated caption.
+  status?: 'ready' | 'inprogress' | 'error';
+}
+
+export type SupportedCaptionLanguages =
+  (typeof CLOUDFLARE_LANGUAGES)[number]['code'];

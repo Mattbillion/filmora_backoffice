@@ -1,8 +1,9 @@
 'use client';
 
 import { FormEvent, useEffect, useState, useTransition } from 'react';
+import { handleCopy } from '@interpriz/lib';
 import dayjs from 'dayjs';
-import { Loader2 } from 'lucide-react';
+import { Copy, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 import {
@@ -33,152 +34,6 @@ function splitByVideoExt(input: string) {
   const extension = m[3] ? m[3].toLowerCase() : null;
 
   return { base, extension };
-}
-
-function InfoTab({
-  data,
-  onUpdate,
-}: {
-  data?: StreamVideo;
-  onUpdate?: (v: StreamVideo) => void;
-}) {
-  const { base, extension } = splitByVideoExt(data?.meta?.name || '');
-  const [name, setName] = useState(base);
-  const [requireSigned, setRequireSigned] = useState(!!data?.requireSignedURLs);
-  const [updating, startUpdateTransition] = useTransition();
-
-  // Sync when data changes (e.g., loaded after mount)
-  useEffect(() => {
-    setName(base);
-    setRequireSigned(!!data?.requireSignedURLs);
-  }, [data?.meta?.name, data?.requireSignedURLs]);
-
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    if (!data) return;
-    startUpdateTransition(async () => {
-      try {
-        const body = {
-          streamId: data.uid,
-          meta: { name: `${name}${extension ? `.${extension}` : ''}` },
-          requireSignedURLs: requireSigned,
-        };
-
-        const res = await updateStream(data.uid, body);
-
-        const updated = (res.result || res) as StreamVideo;
-        onUpdate?.(updated);
-        toast.success('Stream updated successfully');
-      } catch (errorUnknown: unknown) {
-        toast.error((errorUnknown as any)?.message || String(errorUnknown));
-      }
-    });
-  };
-
-  return (
-    <form className="space-y-3" onSubmit={handleSubmit}>
-      <div>
-        <label className="mb-1 block text-sm font-medium">Бичлэгийн нэр</label>
-        <Input
-          value={name}
-          onChange={(e) => setName((e.target as HTMLInputElement).value)}
-        />
-      </div>
-
-      <div className="border-destructive/30 bg-destructive/5 flex items-center justify-between rounded-md border p-2">
-        <div>
-          <label className="mb-1 block text-sm font-medium">
-            Бичлэгийн төрөл
-          </label>
-          <p className="text-muted-foreground text-sm">
-            Идэвхижүүлснээр бичлэгийг кино болгон тохируулна. Үгүй бол трейлер
-            болно.
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <Badge
-            variant="secondary"
-            className={cn(
-              'rounded-full text-xs',
-              requireSigned ? 'bg-destructive/30' : 'bg-input',
-            )}
-          >
-            {requireSigned ? 'Кино' : 'Трейлер'}
-          </Badge>
-          <Switch
-            checked={requireSigned}
-            onCheckedChange={(v) => setRequireSigned(Boolean(v))}
-            className="data-[state=checked]:bg-destructive/30"
-            thumbClassName="bg-background/75 data-[state=checked]:bg-background"
-          />
-        </div>
-      </div>
-
-      <div className="flex justify-end gap-2">
-        <Button size="sm" type="submit" disabled={updating}>
-          {updating && <Loader2 className="animate-spin" />}
-          Update
-        </Button>
-      </div>
-    </form>
-  );
-}
-
-function PreviewTab({ video }: { video?: StreamVideo }) {
-  const [cfPreview, setCfPreview] = useState<string>('');
-  const [loading, startLoading] = useTransition();
-
-  useEffect(() => {
-    if (video) {
-      startLoading(() => {
-        fetchSignedToken(video.uid).then((c) => setCfPreview(c));
-      });
-    }
-  }, [video]);
-
-  if (!video)
-    return (
-      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
-        No preview available.
-      </div>
-    );
-
-  if (loading)
-    return (
-      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
-        <Loader2 className="animate-spin" />
-      </div>
-    );
-
-  return (
-    <div className="bg-background relative aspect-video overflow-hidden rounded-md">
-      {cfPreview ? (
-        <iframe
-          src={`${video.preview?.match(/^(https:\/\/[^/]+)/)?.[1]}/${cfPreview}/iframe?poster=${video.thumbnail}`}
-          height="720"
-          width="1280"
-          className="h-full w-full object-contain"
-          allowFullScreen={false}
-        />
-      ) : (
-        <div className="text-muted-foreground py-4 text-sm">
-          No preview available.
-        </div>
-      )}
-    </div>
-  );
-}
-
-function CaptionsTab() {
-  return (
-    <div className="space-y-2 py-2">
-      <div className="text-muted-foreground text-sm">
-        No captions available for this stream.
-      </div>
-    </div>
-  );
 }
 
 export default function StreamItem({ video }: { video: StreamVideo }) {
@@ -284,5 +139,171 @@ export default function StreamItem({ video }: { video: StreamVideo }) {
         )}
       </AccordionContent>
     </AccordionItem>
+  );
+}
+
+function InfoTab({
+  data,
+  onUpdate,
+}: {
+  data?: StreamVideo;
+  onUpdate?: (v: StreamVideo) => void;
+}) {
+  const { base, extension } = splitByVideoExt(data?.meta?.name || '');
+  const [name, setName] = useState(base);
+  const [requireSigned, setRequireSigned] = useState(!!data?.requireSignedURLs);
+  const [updating, startUpdateTransition] = useTransition();
+
+  // Sync when data changes (e.g., loaded after mount)
+  useEffect(() => {
+    setName(base);
+    setRequireSigned(!!data?.requireSignedURLs);
+  }, [data?.meta?.name, data?.requireSignedURLs]);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (!data) return;
+    startUpdateTransition(async () => {
+      try {
+        const body = {
+          streamId: data.uid,
+          meta: { name: `${name}${extension ? `.${extension}` : ''}` },
+          requireSignedURLs: requireSigned,
+        };
+
+        const res = await updateStream(data.uid, body);
+
+        const updated = (res.result || res) as StreamVideo;
+        onUpdate?.(updated);
+        toast.success('Stream updated successfully');
+      } catch (errorUnknown: unknown) {
+        toast.error((errorUnknown as any)?.message || String(errorUnknown));
+      }
+    });
+  };
+
+  return (
+    <form className="space-y-4" onSubmit={handleSubmit}>
+      <div>
+        <label className="mb-1 block text-sm font-medium">Бичлэгийн нэр</label>
+        <Input
+          value={name}
+          onChange={(e) => setName((e.target as HTMLInputElement).value)}
+        />
+      </div>
+
+      <div>
+        <label className="mb-1 block text-sm font-medium">Cloudflare ID</label>
+        <div className="relative">
+          <Input value={data?.uid} disabled placeholder="Cloudflare ID" />
+          {data?.uid && (
+            <button
+              type="button"
+              className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer"
+              onClick={() =>
+                handleCopy(data.uid, () =>
+                  toast.success('ID copied to clipboard'),
+                )
+              }
+            >
+              <Copy size={16} />
+            </button>
+          )}
+        </div>
+      </div>
+
+      <div className="border-destructive/30 bg-destructive/5 flex items-center justify-between rounded-md border p-2">
+        <div>
+          <label className="mb-1 block text-sm font-medium">
+            Бичлэгийн төрөл
+          </label>
+          <p className="text-muted-foreground text-sm">
+            Идэвхижүүлснээр бичлэгийг кино болгон тохируулна. Үгүй бол трейлер
+            болно.
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Badge
+            variant="secondary"
+            className={cn(
+              'rounded-full text-xs',
+              requireSigned ? 'bg-destructive/30' : 'bg-input',
+            )}
+          >
+            {requireSigned ? 'Кино' : 'Трейлер'}
+          </Badge>
+          <Switch
+            checked={requireSigned}
+            onCheckedChange={(v) => setRequireSigned(Boolean(v))}
+            className="data-[state=checked]:bg-destructive/30"
+            thumbClassName="bg-background/75 data-[state=checked]:bg-background"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-2">
+        <Button size="sm" type="submit" disabled={updating}>
+          {updating && <Loader2 className="animate-spin" />}
+          Update
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function PreviewTab({ video }: { video?: StreamVideo }) {
+  const [cfPreview, setCfPreview] = useState<string>('');
+  const [loading, startLoading] = useTransition();
+
+  useEffect(() => {
+    if (video) {
+      startLoading(() => {
+        fetchSignedToken(video.uid).then((c) => setCfPreview(c));
+      });
+    }
+  }, [video]);
+
+  if (!video)
+    return (
+      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
+        No preview available.
+      </div>
+    );
+
+  if (loading)
+    return (
+      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
+        <Loader2 className="animate-spin" />
+      </div>
+    );
+
+  return (
+    <div className="bg-background relative aspect-video overflow-hidden rounded-md">
+      {cfPreview ? (
+        <iframe
+          src={`${video.preview?.match(/^(https:\/\/[^/]+)/)?.[1]}/${cfPreview}/iframe?poster=${video.thumbnail}`}
+          height="720"
+          width="1280"
+          className="h-full w-full object-contain"
+          allowFullScreen={false}
+        />
+      ) : (
+        <div className="text-muted-foreground py-4 text-sm">
+          No preview available.
+        </div>
+      )}
+    </div>
+  );
+}
+
+function CaptionsTab() {
+  return (
+    <div className="space-y-2 py-2">
+      <div className="text-muted-foreground text-sm">
+        No captions available for this stream.
+      </div>
+    </div>
   );
 }

@@ -2,9 +2,12 @@
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import {
+  StreamCaption,
   StreamDetailResponse,
   StreamResponse,
   StreamSearchParams,
+  StreamVideo,
+  SupportedCaptionLanguages,
 } from '@/lib/cloudflare/type';
 import { objToQs } from '@/lib/utils';
 
@@ -56,7 +59,7 @@ export async function fetchStreamDetail(streamId: string) {
       throw new Error(`API request failed: ${response.status}`);
     }
 
-    const data: StreamDetailResponse = await response.json();
+    const data: StreamDetailResponse<StreamVideo> = await response.json();
 
     return {
       video: data.result,
@@ -135,6 +138,69 @@ export async function updateStream(streamId: string, payload: any) {
     return data; // return full CF response
   } catch (error) {
     console.error('Error updating Stream:', error);
+    throw error;
+  }
+}
+
+export async function fetchCaptions(streamId: string) {
+  const { defaultHeader, baseURL } = cfInfo();
+
+  try {
+    const response = await fetch(`${baseURL}/${streamId}/captions`, {
+      method: 'GET',
+      headers: defaultHeader,
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    const data: StreamDetailResponse<StreamCaption[]> = await response.json();
+
+    if (!data.success) {
+      throw new Error(data.errors?.[0]?.message || 'Failed to fetch captions');
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching captions:', error);
+    throw error;
+  }
+}
+
+export async function generateCaptions(
+  streamId: string,
+  language: SupportedCaptionLanguages,
+) {
+  const { defaultHeader, baseURL } = cfInfo();
+
+  try {
+    const url = `${baseURL}/${streamId}/captions/${encodeURIComponent(
+      language,
+    )}/generate`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: defaultHeader,
+      cache: 'no-store',
+    });
+
+    if (!response.ok) {
+      throw new Error(`API request failed: ${response.status}`);
+    }
+
+    const data: StreamDetailResponse<StreamCaption> = await response.json();
+
+    if (!data.success) {
+      throw new Error(
+        data.errors?.[0]?.message || 'Failed to generate captions',
+      );
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error generating captions:', error);
     throw error;
   }
 }
