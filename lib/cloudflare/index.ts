@@ -1,6 +1,8 @@
 'use server';
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
+import { revalidateTag } from 'next/cache';
+
 import {
   StreamCaption,
   StreamDetailResponse,
@@ -9,7 +11,7 @@ import {
   StreamVideo,
   SupportedCaptionLanguages,
 } from '@/lib/cloudflare/type';
-import { objToFormData, objToQs } from '@/lib/utils';
+import { objToQs } from '@/lib/utils';
 
 const cfInfo = () => {
   const [accId, tkn] = [
@@ -218,7 +220,7 @@ export async function fetchCaptionVTT(
     const response = await fetch(url, {
       method: 'GET',
       headers: defaultHeader,
-      next: { revalidate: 86400 }, // Cache for 1 day
+      next: { revalidate: 86400, tags: [`caption_${language}`] }, // Cache for 1 day
     });
 
     if (!response.ok) {
@@ -235,18 +237,27 @@ export async function fetchCaptionVTT(
 export async function uploadCaptionToCloudflare(
   streamId: string,
   language: SupportedCaptionLanguages,
-  file: File | Blob,
+  formData: FormData,
 ) {
   const { defaultHeader, baseURL } = cfInfo();
 
   const url = `${baseURL}/${streamId}/captions/${encodeURIComponent(language)}`;
-  const headers = { ...defaultHeader };
-  headers['Content-Type'] = 'multipart/form-data';
+
+  try {
+    await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        Authorization: defaultHeader.Authorization,
+      },
+    });
+  } catch (_) {
+    // Ignore errors during deletion
+  }
 
   const response = await fetch(url, {
     method: 'PUT',
-    headers: headers,
-    body: objToFormData(file),
+    headers: { Authorization: defaultHeader.Authorization }, // Let browser set Content-Type with boundary
+    body: formData,
   });
 
   const data: StreamDetailResponse<StreamCaption> = await response.json();
@@ -258,5 +269,6 @@ export async function uploadCaptionToCloudflare(
     );
   }
 
+  revalidateTag(`caption_${language}`);
   return data;
 }

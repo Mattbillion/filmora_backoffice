@@ -1,10 +1,27 @@
 'use client';
 
-import { Fragment, useEffect, useState, useTransition } from 'react';
+import {
+  FormEvent,
+  Fragment,
+  ReactNode,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
 import { Download, Loader2, Sparkles, Upload } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,16 +29,24 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import {
   fetchCaptions,
   fetchCaptionVTT,
   generateCaptions,
+  uploadCaptionToCloudflare,
 } from '@/lib/cloudflare';
 import { CLOUDFLARE_LANGUAGES } from '@/lib/cloudflare/languages';
 import {
   StreamCaption,
   SupportedCaptionLanguages,
 } from '@/lib/cloudflare/type';
-import { cn, downloadToPreview } from '@/lib/utils';
+import { cn, downloadToPreview, objToFormData } from '@/lib/utils';
 
 export function CaptionsTab({
   streamId,
@@ -39,14 +64,25 @@ export function CaptionsTab({
   >();
   const [loadedCap, setLoadedCap] = useState<string>('');
 
+  const handleUpdateCaptions = (newCaptions: StreamCaption[]) =>
+    setCaptions((prev) =>
+      Array.from(
+        new Map([...prev, ...newCaptions].map((c) => [c.language, c])).values(),
+      ),
+    );
+
   const loadCaptions = () => {
     if (streamId) {
       startLoading(() => {
         fetchCaptions(streamId)
-          .then((c) => setCaptions(c.result))
-          .catch((e) => {
+          .then((c) => handleUpdateCaptions(c.result || []))
+          .catch((err) => {
             setCaptions([]);
-            toast.error(e.message);
+            const msg =
+              typeof err === 'object' && err !== null && 'message' in err
+                ? (err as { message?: unknown }).message
+                : String(err);
+            toast.error(msg as string);
           });
       });
     }
@@ -85,7 +121,7 @@ export function CaptionsTab({
               size="sm"
               onClick={() =>
                 downloadToPreview(
-                  new Blob([loadedCap], { type: 'text/plain;charset=utf-8' }),
+                  new Blob([loadedCap], { type: 'text/vtt;charset=utf-8' }),
                   `${videoName}-${selectedCap}.vtt`,
                 )
               }
@@ -93,9 +129,19 @@ export function CaptionsTab({
               <Download /> Download
             </Button>
           )}
-          <Button type="button" size="sm">
-            <Upload /> Upload
-          </Button>
+
+          <UploadCaptionDialog
+            streamId={streamId}
+            onUpload={(newCaption) => {
+              handleUpdateCaptions([newCaption]);
+              loadCaptionVtt(newCaption.language);
+            }}
+          >
+            <Button type="button" size="sm">
+              <Upload /> Upload
+            </Button>
+          </UploadCaptionDialog>
+
           {!!streamId && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild disabled={loading || generating}>
@@ -117,7 +163,7 @@ export function CaptionsTab({
                     onSelect={() =>
                       startGenerateLoading(() => {
                         generateCaptions(streamId, caption.code).then((c) =>
-                          setCaptions((prev) => [...prev, c.result]),
+                          handleUpdateCaptions([c.result]),
                         );
                       })
                     }
@@ -145,7 +191,7 @@ export function CaptionsTab({
               <button
                 key={i}
                 className={cn(
-                  'hover:bg-foreground/10 w-full cursor-pointer rounded-md px-2 py-2 !text-left text-sm font-medium',
+                  'hover:bg-foreground/10 relative w-full cursor-pointer rounded-md px-2 py-2 !text-left text-sm font-medium',
                   {
                     'bg-background': selectedCap === c.language,
                   },
@@ -154,6 +200,16 @@ export function CaptionsTab({
                 onClick={() => loadCaptionVtt(c.language)}
               >
                 {c.label}
+                <span
+                  className={cn(
+                    'absolute top-1/2 right-2 size-1 -translate-y-1/2 rounded-full',
+                    {
+                      'bg-green-500': c.status === 'ready',
+                      'bg-yellow-500': c.status === 'inprogress',
+                      'bg-red-500': c.status === 'error',
+                    },
+                  )}
+                />
               </button>
             ))}
           </div>
@@ -194,5 +250,122 @@ export function CaptionsTab({
         </div>
       )}
     </div>
+  );
+}
+
+function UploadCaptionDialog({
+  streamId,
+  onUpload,
+  children,
+}: {
+  streamId?: string;
+  onUpload: (caption: StreamCaption) => void;
+  children: ReactNode;
+}) {
+  const [open, setOpen] = useState(false);
+  const [uploadLang, setUploadLang] = useState<string>('');
+  const [uploadFile, setUploadFile] = useState<File | null>(null);
+  const [uploading, startUploading] = useTransition();
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  const resetForm = () => {
+    setUploadLang('');
+    setUploadFile(null);
+    if (inputRef.current) inputRef.current.value = '';
+  };
+
+  const handleUploadSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!streamId) return;
+    if (!uploadLang) return toast.error('Please select a language');
+    if (!uploadFile) return toast.error('Please choose a caption file');
+
+    startUploading(() => {
+      uploadCaptionToCloudflare(
+        streamId,
+        uploadLang as SupportedCaptionLanguages,
+        objToFormData({ file: uploadFile }),
+      )
+        .then((res) => {
+          // res.result is single StreamCaption, append to list
+          onUpload(res.result);
+          resetForm();
+          setOpen(false);
+          toast.success('Uploaded caption');
+        })
+        .catch((err) => {
+          const msg =
+            typeof err === 'object' && err !== null && 'message' in err
+              ? (err as { message?: unknown }).message
+              : String(err);
+          toast.error(msg as string);
+        });
+    });
+  };
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={(c) => {
+        setOpen(c);
+        if (!c) resetForm();
+      }}
+    >
+      <DialogTrigger asChild disabled={uploading}>
+        {children}
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Upload caption</DialogTitle>
+          <DialogDescription>
+            Upload a caption file (.VTT). Choose language before uploading.
+          </DialogDescription>
+        </DialogHeader>
+
+        <form onSubmit={handleUploadSubmit} className="space-y-4">
+          <div>
+            <label className="mb-1 block text-sm font-medium">Language</label>
+            <Select value={uploadLang} onValueChange={(v) => setUploadLang(v)}>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select language" />
+              </SelectTrigger>
+              <SelectContent>
+                {[
+                  { code: 'mn', name: 'Mongolia' },
+                  ...CLOUDFLARE_LANGUAGES,
+                ].map((c) => (
+                  <SelectItem key={c.code} value={c.code}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-sm font-medium">File</label>
+            <input
+              ref={inputRef}
+              type="file"
+              accept=".vtt,text/vtt,text/plain"
+              disabled={uploading}
+              onChange={(e) => setUploadFile(e.target.files?.[0] ?? null)}
+            />
+          </div>
+
+          <div className="flex items-center justify-end gap-2">
+            <Button type="submit" size="sm" disabled={uploading}>
+              {uploading && <Loader2 className="animate-spin" />} Upload
+            </Button>
+            <DialogClose asChild disabled={uploading}>
+              <Button variant="outline" size="sm" type="button">
+                Cancel
+              </Button>
+            </DialogClose>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
