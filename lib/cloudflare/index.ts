@@ -3,6 +3,9 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { revalidateTag } from 'next/cache';
 
+import { objToQs } from '@/lib/utils';
+
+import { RVK_CAPTIONS, RVK_STREAM_DETAIL, RVK_STREAMS } from './rvk';
 import {
   StreamCaption,
   StreamDetailResponse,
@@ -10,8 +13,11 @@ import {
   StreamSearchParams,
   StreamVideo,
   SupportedCaptionLanguages,
-} from '@/lib/cloudflare/type';
-import { objToQs } from '@/lib/utils';
+} from './type';
+
+export const revalidateByTag = async (cacheTag: string) => {
+  revalidateTag(cacheTag);
+};
 
 const cfInfo = () => {
   const [accId, tkn] = [
@@ -54,7 +60,9 @@ export async function fetchStreamDetail(streamId: string) {
     const response = await fetch(`${baseURL}/${streamId}`, {
       method: 'GET',
       headers: defaultHeader,
-      cache: 'no-store', // or use Next.js revalidate
+      next: {
+        tags: [`${RVK_STREAM_DETAIL}_${streamId}`],
+      },
     });
 
     if (!response.ok) {
@@ -89,7 +97,9 @@ export async function fetchStream(params: StreamSearchParams = {}) {
     const response = await fetch(url, {
       method: 'GET',
       headers: defaultHeader,
-      cache: 'no-store', // or use Next.js revalidate
+      next: {
+        tags: [RVK_STREAMS],
+      },
     });
 
     if (!response.ok) {
@@ -137,7 +147,9 @@ export async function updateStream(streamId: string, payload: any) {
       );
     }
 
-    return data; // return full CF response
+    revalidateTag(`${RVK_STREAM_DETAIL}_${streamId}`);
+    revalidateTag(RVK_STREAMS);
+    return data;
   } catch (error) {
     console.error('Error updating Stream:', error);
     throw error;
@@ -151,7 +163,9 @@ export async function fetchCaptions(streamId: string) {
     const response = await fetch(`${baseURL}/${streamId}/captions`, {
       method: 'GET',
       headers: defaultHeader,
-      cache: 'no-store',
+      next: {
+        tags: [RVK_CAPTIONS],
+      },
     });
 
     if (!response.ok) {
@@ -200,6 +214,7 @@ export async function generateCaptions(
       );
     }
 
+    revalidateTag(RVK_CAPTIONS);
     return data;
   } catch (error) {
     console.error('Error generating captions:', error);
@@ -220,7 +235,7 @@ export async function fetchCaptionVTT(
     const response = await fetch(url, {
       method: 'GET',
       headers: defaultHeader,
-      next: { revalidate: 86400, tags: [`caption_${language}`] }, // Cache for 1 day
+      next: { revalidate: 86400, tags: [`${RVK_CAPTIONS}_${language}`] },
     });
 
     if (!response.ok) {
@@ -269,6 +284,6 @@ export async function uploadCaptionToCloudflare(
     );
   }
 
-  revalidateTag(`caption_${language}`);
+  revalidateTag(`${RVK_CAPTIONS}_${language}`);
   return data;
 }

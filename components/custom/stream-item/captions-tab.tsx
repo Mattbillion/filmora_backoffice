@@ -181,22 +181,22 @@ export function CaptionsTab({
           <Loader2 className="animate-spin" />
         </div>
       ) : captions.length === 0 ? (
-        <div className="text-muted-foreground text-sm">
+        <div className="text-muted-foreground flex flex-col items-center justify-center py-6 text-sm">
           No captions available for this stream.
         </div>
       ) : (
-        <div className="flex max-h-screen min-h-96 items-stretch gap-2">
+        <div className="flex max-h-[calc(80dvh)] min-h-96 items-stretch gap-2">
           <div className="w-1/4">
             {captions.map((c, i) => (
               <button
                 key={i}
                 className={cn(
-                  'hover:bg-foreground/10 relative w-full cursor-pointer rounded-md px-2 py-2 !text-left text-sm font-medium',
+                  'hover:bg-foreground/10 relative w-full cursor-pointer rounded-md px-2 py-2 !text-left text-sm font-medium disabled:cursor-not-allowed disabled:opacity-60',
                   {
                     'bg-background': selectedCap === c.language,
                   },
                 )}
-                disabled={loadingVtt}
+                disabled={loadingVtt || c.status !== 'ready'}
                 onClick={() => loadCaptionVtt(c.language)}
               >
                 {c.label}
@@ -229,20 +229,22 @@ export function CaptionsTab({
               <p>Select caption to preview</p>
               {!!captions.length && (
                 <div className="flex items-center gap-2">
-                  {captions.map((c, i) => (
-                    <Fragment key={i}>
-                      {i > 0 && (
-                        <span className="bg-foreground/70 block size-1 rounded-full" />
-                      )}
-                      <button
-                        type="button"
-                        className="cursor-pointer text-xs underline opacity-70 hover:opacity-100"
-                        onClick={() => loadCaptionVtt(c.language)}
-                      >
-                        {c.label}
-                      </button>
-                    </Fragment>
-                  ))}
+                  {captions
+                    .filter((c) => c.status === 'ready')
+                    .map((c, i) => (
+                      <Fragment key={i}>
+                        {i > 0 && (
+                          <span className="bg-foreground/70 block size-1 rounded-full" />
+                        )}
+                        <button
+                          type="button"
+                          className="cursor-pointer text-xs underline opacity-70 hover:opacity-100"
+                          onClick={() => loadCaptionVtt(c.language)}
+                        >
+                          {c.label}
+                        </button>
+                      </Fragment>
+                    ))}
                 </div>
               )}
             </div>
