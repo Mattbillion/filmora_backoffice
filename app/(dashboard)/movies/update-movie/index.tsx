@@ -7,6 +7,7 @@ import { LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import CloudflarePreview from '@/components/custom/cloudflare-preview';
+import CloudflareTrailer from '@/components/custom/cloudflare-trailer';
 import CurrencyItem from '@/components/custom/currency-item';
 import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import { MultiSelect } from '@/components/custom/multi-select';
@@ -394,6 +395,24 @@ export default function UpdateMovie({
                   )}
                 />
 
+                {initialData && !isSeriesMovie && (
+                  <FormField
+                    control={form.control}
+                    name="trailer_url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Trailer:</FormLabel>
+                        <div className="border-input mt-2 rounded-md border p-3">
+                          <CloudflareTrailer
+                            hlsUrl={field.value}
+                            onChange={(c) => field.onChange(c.playback?.hls)}
+                          />
+                        </div>
+                      </FormItem>
+                    )}
+                  />
+                )}
+
                 <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
                   <FormField
                     control={form.control}
@@ -488,6 +507,7 @@ export default function UpdateMovie({
                     )}
                   />
                 </div>
+
                 {initialData && !isSeriesMovie && (
                   <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
                     <FormField

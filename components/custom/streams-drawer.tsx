@@ -47,7 +47,8 @@ interface StreamsDrawerProps {
   onOpenChange?: (open: boolean) => void;
   initialOpen?: boolean;
   onSelect?: (video: StreamVideo) => void;
-  defaultFilter?: string;
+  defaultFilter?: 'all' | 'movie' | 'trailer';
+  defaultQuery?: string;
 }
 
 const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
@@ -59,7 +60,8 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       onOpenChange,
       initialOpen = false,
       onSelect,
-      defaultFilter = '',
+      defaultFilter = 'all',
+      defaultQuery = '',
     },
     ref,
   ) => {
@@ -71,7 +73,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
     const [hasMore, setHasMore] = useState<boolean>(false);
     const [query, setQuery] = useState<string>('');
     const [filter, setFilter] = useState<'all' | 'movie' | 'trailer' | string>(
-      'all',
+      defaultFilter,
     );
 
     useImperativeHandle(ref, () => ({
@@ -128,8 +130,8 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
     useEffect(() => {
       if (open) {
         let f = '';
-        if (defaultFilter) {
-          const [def] = defaultFilter.split(' ');
+        if (defaultQuery) {
+          const [def] = defaultQuery.split(' ');
           f = def;
           if (def) setQuery(def);
         }
@@ -140,9 +142,8 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
     useDebounce(resetAndFetch, 400, query);
 
     const filteredVideos = videos.filter((video) => {
-      if (filter === 'all') return true;
-      if (filter === 'movie') return !video.requireSignedURLs;
-      if (filter === 'trailer') return video.requireSignedURLs;
+      if (filter === 'movie') return video.requireSignedURLs;
+      if (filter === 'trailer') return !video.requireSignedURLs;
       return true;
     });
 
@@ -275,15 +276,15 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
                         <div className="flex flex-col items-end gap-2">
                           <div className="flex items-center gap-2">
                             {video.requireSignedURLs ? (
+                              <Badge variant="outline" className="h-fit w-fit">
+                                Кино
+                              </Badge>
+                            ) : (
                               <Badge
                                 variant="secondary"
                                 className="h-fit w-fit"
                               >
                                 Трейлер
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="h-fit w-fit">
-                                Кино
                               </Badge>
                             )}
                           </div>

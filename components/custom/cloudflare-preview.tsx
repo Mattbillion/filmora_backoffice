@@ -65,7 +65,8 @@ export default function CloudflarePreview({
             setSelectedCfId(video.uid);
             onChange?.(video);
           }}
-          defaultFilter={initialTitle}
+          defaultQuery={initialTitle}
+          defaultFilter="movie"
         />
         <div className="bg-background relative flex aspect-video flex-col items-center justify-center gap-6 overflow-hidden rounded-md">
           {error}
@@ -96,7 +97,8 @@ export default function CloudflarePreview({
           setSelectedCfId(video.uid);
           onChange?.(video);
         }}
-        defaultFilter={initialTitle}
+        defaultQuery={initialTitle}
+        defaultFilter="movie"
       />
       <div className="bg-background relative aspect-video overflow-hidden rounded-md">
         {cfPreview ? (
