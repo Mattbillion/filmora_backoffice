@@ -2,7 +2,9 @@
 
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { revalidateTag } from 'next/cache';
+import { redirect } from 'next/navigation';
 
+import { auth } from '@/auth';
 import { objToQs } from '@/lib/utils';
 
 import { RVK_CAPTIONS, RVK_STREAM_DETAIL, RVK_STREAMS } from './rvk';
@@ -19,7 +21,15 @@ export const revalidateByTag = async (cacheTag: string) => {
   revalidateTag(cacheTag);
 };
 
-const cfInfo = () => {
+const cfInfo = async () => {
+  try {
+    const session = await auth();
+    const accessToken = (session?.user as any)?.access_token as string | null;
+    if (!accessToken) throw new Error('Unauthorized');
+  } catch (_) {
+    redirect('/logout?redirectTo=/login');
+    throw _;
+  }
   const [accId, tkn] = [
     process.env.CLOUDFLARE_ACCOUNT_ID,
     process.env.CLOUDFLARE_AUTHORIZATION,
@@ -37,13 +47,17 @@ const cfInfo = () => {
   };
 };
 
-export async function fetchSignedToken(videoId: string, expiration = 3600) {
-  const { defaultHeader, baseURL } = cfInfo();
+const TOKEN_LIMIT = 5 * 60;
+export async function fetchSignedToken(videoId: string) {
+  const { defaultHeader, baseURL } = await cfInfo();
+
+  const now = Math.floor(Date.now() / 1000);
+  const exp = now + TOKEN_LIMIT;
 
   const res = await fetch(`${baseURL}/${videoId}/token`, {
     method: 'POST',
     headers: defaultHeader,
-    body: JSON.stringify({ expiration }),
+    body: JSON.stringify({ expiration: TOKEN_LIMIT, downloadable: false, exp }),
     cache: 'no-store',
   });
   const data = await res.json();
@@ -54,7 +68,7 @@ export async function fetchSignedToken(videoId: string, expiration = 3600) {
 }
 
 export async function fetchStreamDetail(streamId: string) {
-  const { defaultHeader, baseURL } = cfInfo();
+  const { defaultHeader, baseURL } = await cfInfo();
 
   try {
     const response = await fetch(`${baseURL}/${streamId}`, {
@@ -83,7 +97,7 @@ export async function fetchStreamDetail(streamId: string) {
 }
 
 export async function fetchStream(params: StreamSearchParams = {}) {
-  const { defaultHeader, baseURL } = cfInfo();
+  const { defaultHeader, baseURL } = await cfInfo();
 
   // @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -128,7 +142,7 @@ export async function fetchStream(params: StreamSearchParams = {}) {
 }
 
 export async function updateStream(streamId: string, payload: any) {
-  const { defaultHeader, baseURL } = cfInfo();
+  const { defaultHeader, baseURL } = await cfInfo();
 
   try {
     const response = await fetch(`${baseURL}/${streamId}`, {
@@ -157,7 +171,7 @@ export async function updateStream(streamId: string, payload: any) {
 }
 
 export async function fetchCaptions(streamId: string) {
-  const { defaultHeader, baseURL } = cfInfo();
+  const { defaultHeader, baseURL } = await cfInfo();
 
   try {
     const response = await fetch(`${baseURL}/${streamId}/captions`, {
@@ -189,7 +203,7 @@ export async function generateCaptions(
   streamId: string,
   language: SupportedCaptionLanguages,
 ) {
-  const { defaultHeader, baseURL } = cfInfo();
+  const { defaultHeader, baseURL } = await cfInfo();
 
   try {
     const url = `${baseURL}/${streamId}/captions/${encodeURIComponent(
@@ -226,7 +240,7 @@ export async function fetchCaptionVTT(
   streamId: string,
   language: SupportedCaptionLanguages,
 ) {
-  const { defaultHeader, baseURL } = cfInfo();
+  const { defaultHeader, baseURL } = await cfInfo();
   try {
     const url = `${baseURL}/${streamId}/captions/${encodeURIComponent(
       language,
@@ -254,7 +268,7 @@ export async function uploadCaptionToCloudflare(
   language: SupportedCaptionLanguages,
   formData: FormData,
 ) {
-  const { defaultHeader, baseURL } = cfInfo();
+  const { defaultHeader, baseURL } = await cfInfo();
 
   const url = `${baseURL}/${streamId}/captions/${encodeURIComponent(language)}`;
 
