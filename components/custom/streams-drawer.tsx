@@ -25,7 +25,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { fetchStream } from '@/lib/cloudflare';
 import { StreamSearchParams, StreamVideo } from '@/lib/cloudflare/type';
-import { cn, humanizeBytes } from '@/lib/utils';
+import { cn, formatDuration, humanizeBytes } from '@/lib/utils';
 
 export interface StreamsDrawerRef {
   open: () => void;
@@ -194,13 +194,13 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
               {videos.map((video) => (
                 <div
                   key={video.uid}
-                  className="flex cursor-pointer items-center gap-4 border-b px-4 py-3 hover:bg-black/90"
+                  className="border-b-border/30 flex cursor-pointer items-center gap-4 border-b py-3 hover:bg-black/90"
                   onClick={() => {
                     onSelect?.(video);
                     setOpen(false);
                   }}
                 >
-                  <div className="bg-muted h-20 w-36 flex-shrink-0 overflow-hidden rounded-md">
+                  <div className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md">
                     {/* thumbnail or preview */}
                     {video.thumbnail ? (
                       // eslint-disable-next-line @next/next/no-img-element
@@ -221,6 +221,11 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
                         No thumbnail
                       </div>
                     )}
+                    {video.duration != null && (
+                      <span className="absolute right-0.5 bottom-0.5 rounded-sm bg-black/65 px-2 py-0.5 font-mono text-xs text-white">
+                        {formatDuration(video.duration)}
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex flex-1 items-start justify-between gap-4">
@@ -237,27 +242,19 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
                     <div className="flex flex-col items-end gap-2">
                       <div className="flex items-center gap-2">
-                        {video.readyToStream ? (
-                          <Badge variant="outline">Ready</Badge>
+                        {video.requireSignedURLs ? (
+                          <Badge variant="secondary" className="h-fit w-fit">
+                            Трейлер
+                          </Badge>
                         ) : (
-                          <Badge variant="destructive">
-                            {video.status?.pctComplete || 'Not ready'}
+                          <Badge variant="outline" className="h-fit w-fit">
+                            Кино
                           </Badge>
                         )}
                       </div>
 
                       <div className="text-muted-foreground text-right text-xs">
-                        <div>
-                          {video.duration != null && (
-                            <span>
-                              {Math.floor(video.duration / 60)}m{' '}
-                              {video.duration % 60}s
-                            </span>
-                          )}
-                        </div>
-                        <div>
-                          {video.size ? humanizeBytes(video.size) : '-'}
-                        </div>
+                        {video.size ? humanizeBytes(video.size) : '-'}
                       </div>
                     </div>
                   </div>

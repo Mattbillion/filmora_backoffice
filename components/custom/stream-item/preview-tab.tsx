@@ -20,20 +20,20 @@ export function PreviewTab({ video }: { video?: StreamVideo }) {
 
   if (!video)
     return (
-      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
+      <div className="bg-background relative mx-auto flex aspect-video max-w-4xl flex-col items-center justify-center overflow-hidden rounded-md">
         No preview available.
       </div>
     );
 
   if (loading)
     return (
-      <div className="bg-background relative flex aspect-video flex-col items-center justify-center overflow-hidden rounded-md">
+      <div className="bg-background relative mx-auto flex aspect-video max-w-4xl flex-col items-center justify-center overflow-hidden rounded-md">
         <Loader2 className="animate-spin" />
       </div>
     );
 
   return (
-    <div className="bg-background relative aspect-video overflow-hidden rounded-md">
+    <div className="bg-background relative mx-auto aspect-video max-w-4xl overflow-hidden rounded-md">
       {cfPreview ? (
         <iframe
           src={`${video.preview?.match(/^(https:\/\/[^/]+)/)?.[1]}/${cfPreview}/iframe?poster=${video.thumbnail}`}
