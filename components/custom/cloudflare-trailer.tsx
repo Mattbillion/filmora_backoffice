@@ -53,19 +53,6 @@ export default function CloudflareTrailer({
         </Button>
       </div>
     );
-  if (!cloudflareData)
-    return (
-      <div className="flex cursor-pointer items-center gap-4">
-        <div className="flex-1">Trailer видеог оруулаагүй байна.</div>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={() => streamsDrawerRef.current?.open?.()}
-        >
-          Видео сонгох
-        </Button>
-      </div>
-    );
   return (
     <>
       <StreamsDrawer
@@ -73,37 +60,50 @@ export default function CloudflareTrailer({
         defaultFilter="trailer"
         onSelect={(video) => onChange?.(video)}
       />
-      <div className="flex cursor-pointer items-center gap-4">
-        <div className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md">
-          <img src={cloudflareData?.thumbnail + '?time=5s'} alt="" />
-          {cloudflareData?.duration != null && (
-            <span className="absolute right-0.5 bottom-0.5 rounded-sm bg-black/65 px-2 py-0.5 font-mono text-xs text-white">
-              {formatDuration(cloudflareData?.duration)}
-            </span>
-          )}
+      {!cloudflareData ? (
+        <div className="flex cursor-pointer items-center gap-4">
+          <div className="flex-1">Trailer видеог оруулаагүй байна.</div>
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => streamsDrawerRef.current?.open?.()}
+          >
+            Видео сонгох
+          </Button>
         </div>
-
-        <div className="flex-1 space-y-1">
-          <h4 className="text-sm font-medium">
-            {cloudflareData?.meta?.name || cloudflareData?.uid}
-          </h4>
-          <p className="text-muted-foreground text-xs">
-            {cloudflareData?.uploaded
-              ? dayjs(cloudflareData?.uploaded).format('YYYY/MM/DD')
-              : dayjs(cloudflareData?.created).format('YYYY/MM/DD')}
-          </p>
-          <div className="text-muted-foreground text-xs">
-            {cloudflareData?.size ? humanizeBytes(cloudflareData?.size) : '-'}
+      ) : (
+        <div className="flex cursor-pointer items-center gap-4">
+          <div className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md">
+            <img src={cloudflareData?.thumbnail + '?time=5s'} alt="" />
+            {cloudflareData?.duration != null && (
+              <span className="absolute right-0.5 bottom-0.5 rounded-sm bg-black/65 px-2 py-0.5 font-mono text-xs text-white">
+                {formatDuration(cloudflareData?.duration)}
+              </span>
+            )}
           </div>
+
+          <div className="flex-1 space-y-1">
+            <h4 className="text-sm font-medium">
+              {cloudflareData?.meta?.name || cloudflareData?.uid}
+            </h4>
+            <p className="text-muted-foreground text-xs">
+              {cloudflareData?.uploaded
+                ? dayjs(cloudflareData?.uploaded).format('YYYY/MM/DD')
+                : dayjs(cloudflareData?.created).format('YYYY/MM/DD')}
+            </p>
+            <div className="text-muted-foreground text-xs">
+              {cloudflareData?.size ? humanizeBytes(cloudflareData?.size) : '-'}
+            </div>
+          </div>
+          <Button
+            variant="secondary"
+            type="button"
+            onClick={() => streamsDrawerRef.current?.open?.()}
+          >
+            Видео сонгох
+          </Button>
         </div>
-        <Button
-          variant="secondary"
-          type="button"
-          onClick={() => streamsDrawerRef.current?.open?.()}
-        >
-          Видео сонгох
-        </Button>
-      </div>
+      )}
     </>
   );
 }
