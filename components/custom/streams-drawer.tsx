@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  FormEvent,
   forwardRef,
   ReactNode,
   useEffect,
@@ -9,7 +8,7 @@ import {
   useState,
 } from 'react';
 import dayjs from 'dayjs';
-import { Loader2 } from 'lucide-react';
+import { Loader2, X } from 'lucide-react';
 
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -23,6 +22,14 @@ import {
 } from '@/components/ui/drawer';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useDebounce } from '@/hooks/use-debounce';
 import { fetchStream } from '@/lib/cloudflare';
 import { StreamSearchParams, StreamVideo } from '@/lib/cloudflare/type';
 import { cn, formatDuration, humanizeBytes } from '@/lib/utils';
@@ -62,7 +69,10 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
     const [error, setError] = useState<string | null>(null);
     const [nextCursor, setNextCursor] = useState<string | undefined>(undefined);
     const [hasMore, setHasMore] = useState<boolean>(false);
-    const [filter, setFilter] = useState<string>('');
+    const [query, setQuery] = useState<string>('');
+    const [filter, setFilter] = useState<'all' | 'movie' | 'trailer' | string>(
+      'all',
+    );
 
     useImperativeHandle(ref, () => ({
       open: () => setOpen(true),
@@ -78,7 +88,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       setHasMore(false);
 
       const searchTerm =
-        typeof searchOverride === 'string' ? searchOverride : filter;
+        typeof searchOverride === 'string' ? searchOverride : query;
 
       try {
         const params: StreamSearchParams = searchTerm
@@ -102,7 +112,7 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
       setError(null);
       try {
         const params: StreamSearchParams = { before: nextCursor };
-        if (filter) params.search = filter;
+        if (query) params.search = query;
         const res = await fetchStream(params as any);
         setVideos((prev) => [...prev, ...(res.videos || [])]);
         setNextCursor(res.nextCursor);
@@ -121,18 +131,20 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
         if (defaultFilter) {
           const [def] = defaultFilter.split(' ');
           f = def;
-          if (def) setFilter(def);
+          if (def) setQuery(def);
         }
         resetAndFetch(f);
       }
     }, [open]);
 
-    const onSubmitSearch = async (e?: FormEvent) => {
-      e?.preventDefault();
-      e?.stopPropagation();
-      // trigger fetch with current filter
-      await resetAndFetch(filter);
-    };
+    useDebounce(resetAndFetch, 400, query);
+
+    const filteredVideos = videos.filter((video) => {
+      if (filter === 'all') return true;
+      if (filter === 'movie') return !video.requireSignedURLs;
+      if (filter === 'trailer') return video.requireSignedURLs;
+      return true;
+    });
 
     return (
       <Drawer
@@ -146,133 +158,158 @@ const StreamsDrawer = forwardRef<StreamsDrawerRef, StreamsDrawerProps>(
 
         <DrawerContent className={cn('h-[90vh]', className)}>
           <DrawerHeader className="bg-background p-4">
-            <div className="flex w-full flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <DrawerTitle className="text-lg">Кино видео сонгох</DrawerTitle>
-              </div>
-
-              <form onSubmit={onSubmitSearch} className="flex gap-2">
-                <Input
-                  placeholder="Search videos by name..."
-                  value={filter}
-                  onChange={(e) => setFilter(e.target.value)}
-                  className="w-full"
-                />
-                <Button type="submit" disabled={loading}>
-                  Search
-                </Button>
-                <Button
-                  variant="ghost"
-                  disabled={!filter}
-                  onClick={() => {
-                    setFilter('');
-                    resetAndFetch('');
-                  }}
-                >
-                  Clear
-                </Button>
-              </form>
+            <div className="flex items-center justify-between">
+              <DrawerTitle className="text-lg">Кино видео сонгох</DrawerTitle>
             </div>
           </DrawerHeader>
 
-          <div className="mx-auto min-h-0 max-w-[900px] flex-1 space-y-4 pt-4 pb-4">
-            <ScrollArea className="h-full space-y-2 overflow-y-auto">
-              {loading && videos.length === 0 && (
-                <div className="flex items-center justify-center p-8">
-                  <Loader2 className="animate-spin" />
-                </div>
-              )}
-
-              {error && <div className="text-destructive p-4">{error}</div>}
-
-              {!loading && videos.length === 0 && !error && (
-                <div className="text-muted-foreground p-4">
-                  No videos found. Try adjusting your search.
-                </div>
-              )}
-
-              {videos.map((video) => (
-                <div
-                  key={video.uid}
-                  className="border-b-border/30 flex cursor-pointer items-center gap-4 border-b py-3 hover:bg-black/90"
+          <div className="flex min-h-0 flex-1 flex-col space-y-4 pt-4 pb-4">
+            <div className="mx-auto flex w-3xl items-center gap-2">
+              <Select value={filter} onValueChange={setFilter}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Select a fruit" />
+                </SelectTrigger>
+                <SelectContent defaultValue="all">
+                  <SelectItem value="all">Бүх бичлэг</SelectItem>
+                  <SelectItem value="movie">Кино</SelectItem>
+                  <SelectItem value="trailer">Трэйлэр</SelectItem>
+                </SelectContent>
+              </Select>
+              <div className="relative flex-1">
+                <Input
+                  placeholder="Search videos by name..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className="w-full"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={cn(
+                    'absolute top-1/2 right-1 z-10 -translate-y-1/2 cursor-pointer opacity-100',
+                    'transition-opacity duration-200',
+                    {
+                      'pointer-events-none !opacity-0': !query,
+                    },
+                  )}
+                  disabled={!query}
                   onClick={() => {
-                    onSelect?.(video);
-                    setOpen(false);
+                    setQuery('');
+                    resetAndFetch('');
                   }}
                 >
-                  <div className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md">
-                    {/* thumbnail or preview */}
-                    {video.thumbnail ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={video.thumbnail}
-                        alt={video.meta?.name || video.uid}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : video.preview ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={video.preview}
-                        alt={video.meta?.name || video.uid}
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
-                        No thumbnail
-                      </div>
-                    )}
-                    {video.duration != null && (
-                      <span className="absolute right-0.5 bottom-0.5 rounded-sm bg-black/65 px-2 py-0.5 font-mono text-xs text-white">
-                        {formatDuration(video.duration)}
-                      </span>
-                    )}
+                  <X />
+                </Button>
+              </div>
+            </div>
+            <div className="min-h-0 flex-1">
+              <ScrollArea className="h-full space-y-2 overflow-y-auto">
+                {loading && filteredVideos.length === 0 && (
+                  <div className="mx-auto flex w-3xl items-center justify-center p-8">
+                    <Loader2 className="animate-spin" />
                   </div>
+                )}
 
-                  <div className="flex flex-1 items-start justify-between gap-4">
-                    <div>
-                      <h4 className="text-sm font-medium">
-                        {video.meta?.name || video.uid}
-                      </h4>
-                      <p className="text-muted-foreground text-xs">
-                        {video.uploaded
-                          ? dayjs(video.uploaded).format('YYYY/MM/DD')
-                          : dayjs(video.created).format('YYYY/MM/DD')}
-                      </p>
-                    </div>
+                {error && (
+                  <div className="text-destructive mx-auto w-3xl p-4">
+                    {error}
+                  </div>
+                )}
 
-                    <div className="flex flex-col items-end gap-2">
-                      <div className="flex items-center gap-2">
-                        {video.requireSignedURLs ? (
-                          <Badge variant="secondary" className="h-fit w-fit">
-                            Трейлер
-                          </Badge>
+                {!loading && filteredVideos.length === 0 && !error && (
+                  <div className="text-muted-foreground mx-auto w-3xl p-4">
+                    No videos found. Try adjusting your search.
+                  </div>
+                )}
+
+                <div className="mx-auto w-3xl">
+                  {filteredVideos.map((video) => (
+                    <div
+                      key={video.uid}
+                      className="border-b-border/30 flex cursor-pointer items-center gap-4 border-b py-3 hover:bg-black/90"
+                      onClick={() => {
+                        onSelect?.(video);
+                        setOpen(false);
+                      }}
+                    >
+                      <div className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md">
+                        {/* thumbnail or preview */}
+                        {video.thumbnail ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={video.thumbnail}
+                            alt={video.meta?.name || video.uid}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : video.preview ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={video.preview}
+                            alt={video.meta?.name || video.uid}
+                            className="h-full w-full object-cover"
+                          />
                         ) : (
-                          <Badge variant="outline" className="h-fit w-fit">
-                            Кино
-                          </Badge>
+                          <div className="text-muted-foreground flex h-full items-center justify-center text-sm">
+                            No thumbnail
+                          </div>
+                        )}
+                        {video.duration != null && (
+                          <span className="absolute right-0.5 bottom-0.5 rounded-sm bg-black/65 px-2 py-0.5 font-mono text-xs text-white">
+                            {formatDuration(video.duration)}
+                          </span>
                         )}
                       </div>
 
-                      <div className="text-muted-foreground text-right text-xs">
-                        {video.size ? humanizeBytes(video.size) : '-'}
+                      <div className="flex flex-1 items-start justify-between gap-4">
+                        <div>
+                          <h4 className="text-sm font-medium">
+                            {video.meta?.name || video.uid}
+                          </h4>
+                          <p className="text-muted-foreground text-xs">
+                            {video.uploaded
+                              ? dayjs(video.uploaded).format('YYYY/MM/DD')
+                              : dayjs(video.created).format('YYYY/MM/DD')}
+                          </p>
+                        </div>
+
+                        <div className="flex flex-col items-end gap-2">
+                          <div className="flex items-center gap-2">
+                            {video.requireSignedURLs ? (
+                              <Badge
+                                variant="secondary"
+                                className="h-fit w-fit"
+                              >
+                                Трейлер
+                              </Badge>
+                            ) : (
+                              <Badge variant="outline" className="h-fit w-fit">
+                                Кино
+                              </Badge>
+                            )}
+                          </div>
+
+                          <div className="text-muted-foreground text-right text-xs">
+                            {video.size ? humanizeBytes(video.size) : '-'}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
 
-              {hasMore && (
-                <div className="flex items-center justify-center py-4">
-                  <Button onClick={loadMore} disabled={loading}>
-                    {loading ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      'Load more'
-                    )}
-                  </Button>
-                </div>
-              )}
-            </ScrollArea>
+                {hasMore && (
+                  <div className="flex items-center justify-center py-4">
+                    <Button onClick={loadMore} disabled={loading}>
+                      {loading ? (
+                        <Loader2 className="animate-spin" />
+                      ) : (
+                        'Load more'
+                      )}
+                    </Button>
+                  </div>
+                )}
+              </ScrollArea>
+            </div>
 
             {footer && (
               <DrawerFooter className="px-4 pt-4">{footer}</DrawerFooter>

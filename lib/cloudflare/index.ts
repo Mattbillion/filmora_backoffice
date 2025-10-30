@@ -112,7 +112,7 @@ export async function fetchStream(params: StreamSearchParams = {}) {
       method: 'GET',
       headers: defaultHeader,
       next: {
-        tags: [RVK_STREAMS],
+        tags: [RVK_STREAMS, RVK_STREAMS + JSON.stringify(sp)],
       },
     });
 
