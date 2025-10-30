@@ -56,12 +56,7 @@ export default function CloudflareTrailer({
   if (!cloudflareData)
     return (
       <div className="flex cursor-pointer items-center gap-4">
-        <div className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md" />
-        <div className="flex-1 space-y-1">
-          <div className="bg-muted h-4 w-3/4 rounded" />
-          <div className="bg-muted h-3 w-1/2 rounded" />
-          <div className="bg-muted h-3 w-1/3 rounded" />
-        </div>
+        <div className="flex-1">Trailer видеог оруулаагүй байна.</div>
         <Button
           variant="secondary"
           type="button"

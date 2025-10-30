@@ -408,6 +408,7 @@ export default function UpdateMovie({
                             onChange={(c) => field.onChange(c.playback?.hls)}
                           />
                         </div>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />
