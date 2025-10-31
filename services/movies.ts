@@ -5,7 +5,6 @@ import {
   AppModelsBaseBaseResponseUnionDictNoneTypeType,
   BaseResponseUnionListMovieListResponseNoneTypeType,
   BaseResponseUnionMovieResponseNoneTypeType,
-  BaseResponseUnionMovieResponseNoneTypeType,
   MovieCreateType,
   MovieUpdateType,
   SingleItemReponseMovieResponseType,
