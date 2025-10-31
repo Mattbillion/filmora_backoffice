@@ -162,12 +162,12 @@ export function UpdateDialog({
               <RadioGroup
                 value={field.value}
                 onValueChange={field.onChange}
-                className="border-destructive/50 flex flex-col gap-0 rounded-md border"
+                className="border-destructive/20 bg-destructive/5 flex flex-col gap-0 rounded-md border"
               >
                 {ALLOWED_ROLES.map((role, idx) => (
                   <FormItem
                     key={idx}
-                    className="hover:bg-foreground/10 border-destructive/50 flex cursor-pointer items-start gap-3 p-4 not-last:border-b"
+                    className="hover:bg-foreground/10 border-destructive/20 flex cursor-pointer items-start gap-3 p-4 not-last:border-b"
                   >
                     <FormControl>
                       <RadioGroupItem value={role.value} />
