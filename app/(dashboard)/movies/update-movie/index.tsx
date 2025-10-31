@@ -137,6 +137,7 @@ export default function UpdateMovie({
       price: initialData?.price || 0,
       is_premium: initialData?.is_premium || false,
       poster_url: initialData?.poster_url || '',
+      trailer_url: initialData?.trailer_url || '',
       load_image_url: initialData?.load_image_url || '',
       is_adult: initialData?.is_adult || false,
       categories: initialData?.categories || [],
@@ -162,6 +163,7 @@ export default function UpdateMovie({
         price: Number(d.price),
         is_premium: true,
         poster_url: d.poster_url,
+        trailer_url: d.trailer_url,
         load_image_url: d.load_image_url || '',
         is_adult: false,
         category_ids: d.categories?.map((cat) => Number(cat.id)),
@@ -395,24 +397,22 @@ export default function UpdateMovie({
                   )}
                 />
 
-                {initialData && !isSeriesMovie && (
-                  <FormField
-                    control={form.control}
-                    name="trailer_url"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Trailer:</FormLabel>
-                        <div className="border-input mt-2 rounded-md border p-3">
-                          <CloudflareTrailer
-                            hlsUrl={field.value}
-                            onChange={(c) => field.onChange(c.playback?.hls)}
-                          />
-                        </div>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                )}
+                <FormField
+                  control={form.control}
+                  name="trailer_url"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Trailer:</FormLabel>
+                      <div className="border-destructive/15 bg-destructive/5 mt-2 rounded-md border p-3">
+                        <CloudflareTrailer
+                          hlsUrl={field.value}
+                          onChange={(c) => field.onChange(c.playback?.hls)}
+                        />
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <div className="border-destructive/15 bg-destructive/5 !my-6 space-y-4 rounded-md border p-4">
                   <FormField

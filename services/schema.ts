@@ -478,6 +478,7 @@ export const movieUpdateSchema = z.object({
   genre_ids: z.array(z.number().int()).optional(),
   tag_ids: z.array(z.number().int()).optional(),
   load_image_url: z.string().optional(),
+  trailer_url: z.string().optional(),
   cloudflare_video_id: z.string().optional(),
 });
 

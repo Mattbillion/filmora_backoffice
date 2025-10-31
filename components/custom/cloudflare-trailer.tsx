@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useTransition } from 'react';
 import dayjs from 'dayjs';
+import Link from 'next/link';
 
 import StreamsDrawer, {
   StreamsDrawerRef,
@@ -73,19 +74,27 @@ export default function CloudflareTrailer({
         </div>
       ) : (
         <div className="flex cursor-pointer items-center gap-4">
-          <div className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md">
+          <Link
+            href={cloudflareData?.preview || '#'}
+            target="_blank"
+            className="bg-muted relative h-20 w-36 flex-shrink-0 overflow-hidden rounded-md"
+          >
             <img src={cloudflareData?.thumbnail + '?time=5s'} alt="" />
             {cloudflareData?.duration != null && (
               <span className="absolute right-0.5 bottom-0.5 rounded-sm bg-black/65 px-2 py-0.5 font-mono text-xs text-white">
                 {formatDuration(cloudflareData?.duration)}
               </span>
             )}
-          </div>
+          </Link>
 
           <div className="flex-1 space-y-1">
-            <h4 className="text-sm font-medium">
+            <Link
+              href={cloudflareData?.preview || '#'}
+              target="_blank"
+              className="text-sm font-medium"
+            >
               {cloudflareData?.meta?.name || cloudflareData?.uid}
-            </h4>
+            </Link>
             <p className="text-muted-foreground text-xs">
               {cloudflareData?.uploaded
                 ? dayjs(cloudflareData?.uploaded).format('YYYY/MM/DD')
