@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useRef, useState, useTransition } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import { ImagePlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
 import { FormControl, FormItem, FormMessage } from '@/components/ui/form';
-import { objToFormData } from '@/lib/utils';
+import { imageResize, objToFormData } from '@/lib/utils';
 import { uploadMedia } from '@/services/media/service';
 
 import { MediaDialog } from '../[id]/media-dialog';
@@ -16,7 +16,7 @@ export function UploadCover({ field }: { field: FieldValues }) {
   const { clearErrors, setError } = useFormContext();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [uploading, startUploading] = useTransition();
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     setPreviewUrl(field.value || null);
@@ -32,16 +32,13 @@ export function UploadCover({ field }: { field: FieldValues }) {
     <FormItem>
       <div className="relative h-[360px] w-full overflow-hidden rounded-xl bg-black">
         {uploading ? (
-          <div
-            className="absolute top-0 left-0 z-10 flex h-full w-full flex-col items-center justify-center bg-black/80"
-            onClick={() => inputRef.current?.click()}
-          >
+          <div className="absolute top-0 left-0 z-10 flex h-full w-full flex-col items-center justify-center bg-black/80">
             <Loader2 className="size-10 animate-spin items-center justify-center" />
             <p className="text-center">Уншиж байна...</p>
           </div>
         ) : (
           <div
-            className="text-muted-foreground transition-color flex h-full w-full cursor-pointer items-center justify-center gap-2 bg-gray-200/10 duration-300 hover:bg-gray-200/15"
+            className="text-muted-foreground transition-color flex h-full w-full cursor-pointer items-center justify-center gap-2 bg-gray-500/20 duration-300 hover:bg-gray-500/15"
             onClick={() => inputRef.current?.click()}
           >
             <div className="flex flex-col items-center gap-2">
@@ -57,13 +54,13 @@ export function UploadCover({ field }: { field: FieldValues }) {
         {!!previewUrl && (
           <>
             <Image
-              src={previewUrl}
+              src={imageResize(previewUrl, 'tiny')}
               alt="cover background"
               fill
               className="object-cover blur-xl"
             />
             <Image
-              src={previewUrl}
+              src={imageResize(previewUrl, 'medium')}
               alt="cover"
               fill
               className="object-contain"
@@ -89,23 +86,23 @@ export function UploadCover({ field }: { field: FieldValues }) {
             const [file] = e.target.files || [];
             if (!file) return;
 
-            startUploading(() => {
-              uploadMedia(objToFormData({ file }))
-                .then((result) =>
-                  handleFieldChange(result.body.data.images.original),
-                )
-                .catch((error) => {
-                  toast.error(error.message);
-                  setError(
-                    field.name,
-                    { message: error.message },
-                    { shouldFocus: true },
-                  );
-                })
-                .finally(() => {
-                  if (inputRef.current) inputRef.current.value = '';
-                });
-            });
+            setUploading(true);
+            uploadMedia(objToFormData({ file }))
+              .then((result) =>
+                handleFieldChange(result.body.data.images.original),
+              )
+              .catch((error) => {
+                toast.error(error.message);
+                setError(
+                  field.name,
+                  { message: error.message || 'Зураг оруулахад алдаа гарлаа.' },
+                  { shouldFocus: true },
+                );
+              })
+              .finally(() => {
+                setUploading(false);
+                if (inputRef.current) inputRef.current.value = '';
+              });
           }}
         />
       </FormControl>

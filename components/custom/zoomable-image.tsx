@@ -6,8 +6,9 @@ export default function ZoomableImage({ src }: { src?: string }) {
   if (!src) return '-';
   return (
     <Zoom
+      classDialog="[&>[data-rmiz-modal-overlay=visible]]:!bg-black/90 [&>[data-rmiz-modal-overlay=visible]]:backdrop-blur-xs"
       zoomImg={{
-        src: src,
+        src: imageResize(src, 'original'),
         width: 1080,
         height: 1080,
       }}
@@ -17,7 +18,6 @@ export default function ZoomableImage({ src }: { src?: string }) {
         alt=""
         width={70}
         height={70}
-        unoptimized
         className="ml-4 aspect-square rounded-md object-contain"
       />
     </Zoom>

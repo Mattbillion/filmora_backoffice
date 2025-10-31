@@ -132,12 +132,12 @@ export const imageResize = (
   if (src.includes('tmdb.org'))
     return src.replace(
       '/original/',
-      `/w${
+      `/${
         {
           original: 'original',
-          tiny: '150',
-          small: '300',
-          medium: '500',
+          tiny: 'w154',
+          small: 'w300',
+          medium: 'w500',
         }[size]
       }/`,
     );

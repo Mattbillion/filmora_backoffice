@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import { FieldValues } from 'react-hook-form';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ImageIcon, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
 import { FormControl, FormItem, FormMessage } from '@/components/ui/form';
+import { imageResize, objToFormData } from '@/lib/utils';
 import { uploadMedia } from '@/services/media/service';
-import { ImageInfoType } from '@/services/schema';
 
 import { MediaDialog } from '../[id]/media-dialog';
 
@@ -19,6 +19,7 @@ export function UploadPoster({
   field: FieldValues;
   className?: string;
 }) {
+  const { clearErrors, setError } = useFormContext();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -27,32 +28,10 @@ export function UploadPoster({
     setPreviewUrl(field.value || null);
   }, [field.value]);
 
-  const onFieldChange = async (imageUrl: string) => {
-    await field.onChange(imageUrl);
-    return imageUrl;
-  };
-
-  const handleUploadImage = async (file: File) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('prefix', 'movies');
-    try {
-      setIsUploading(true);
-      const { body } = await uploadMedia(formData);
-      const imageUrl = body.data.images.original;
-
-      setPreviewUrl(imageUrl);
-      onFieldChange(imageUrl);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const getSelectedImage = async (image: ImageInfoType) => {
-    setPreviewUrl(image.image_url);
-    onFieldChange(image.image_url);
+  const handleFieldChange = (imageUrl: string) => {
+    clearErrors(field.name);
+    field.onChange(imageUrl);
+    setPreviewUrl(imageUrl);
   };
 
   return (
@@ -65,7 +44,10 @@ export function UploadPoster({
             <span className="font-bold">(png, jpg, jpeg, webp)</span> форматтай
             зураг оруулна уу
           </p>
-          <MediaDialog updateAction={getSelectedImage} triggerSize="lg" />
+          <MediaDialog
+            updateAction={(image) => handleFieldChange(image.image_url)}
+            triggerSize="lg"
+          />
         </div>
 
         <FormControl>
@@ -74,7 +56,30 @@ export function UploadPoster({
             accept="image/*"
             className="sr-only"
             ref={inputRef}
-            onChange={(e) => handleUploadImage(e.target.files?.[0]!)}
+            onChange={(e) => {
+              const [file] = e.target.files || [];
+              if (!file) return;
+
+              setIsUploading(true);
+              uploadMedia(objToFormData({ file }))
+                .then((result) =>
+                  handleFieldChange(result.body.data.images.original),
+                )
+                .catch((error) => {
+                  toast.error(error.message);
+                  setError(
+                    field.name,
+                    {
+                      message: error.message || 'Зураг оруулахад алдаа гарлаа.',
+                    },
+                    { shouldFocus: true },
+                  );
+                })
+                .finally(() => {
+                  setIsUploading(false);
+                  if (inputRef.current) inputRef.current.value = '';
+                });
+            }}
           />
         </FormControl>
 
@@ -83,10 +88,7 @@ export function UploadPoster({
           onClick={() => inputRef.current?.click()}
         >
           {isUploading && (
-            <div
-              className="absolute top-0 left-0 z-10 flex h-full w-full flex-col items-center justify-center bg-black/80"
-              onClick={() => inputRef.current?.click()}
-            >
+            <div className="absolute top-0 left-0 z-10 flex h-full w-full flex-col items-center justify-center bg-black/80">
               <Loader2 className="size-6 animate-spin items-center justify-center" />
             </div>
           )}
@@ -94,20 +96,20 @@ export function UploadPoster({
           {!!previewUrl && (
             <>
               <Image
-                src={previewUrl}
+                src={imageResize(previewUrl, 'tiny')}
                 alt="cover background"
                 fill
                 className="object-cover blur-sm"
               />
               <Image
-                src={previewUrl || ''}
+                src={imageResize(previewUrl, 'tiny')}
                 alt="cover"
                 fill
                 className="object-contain"
               />
             </>
           )}
-          <div className="text-muted-foreground flex h-full flex-col items-center justify-center gap-2 bg-gray-500/20 p-2 text-center text-sm">
+          <div className="text-muted-foreground flex h-full flex-col items-center justify-center gap-2 bg-gray-500/20 p-2 text-center text-sm duration-300 hover:bg-gray-500/15">
             <ImageIcon size={24} />
             Постер зураг оруулна уу
           </div>
