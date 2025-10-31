@@ -1,5 +1,4 @@
 import * as actions from './api/actions';
-import { RVK_RENTALS } from './rvk';
 import { BaseResponseUnionListMovieRentalDataNoneTypeType } from './schema';
 
 // Auto-generated service for rentals
@@ -14,9 +13,7 @@ export async function getRentalCountsByUsers(
 ) {
   const res = await actions.get<any>(`/rentals/users`, {
     searchParams,
-    next: {
-      tags: [RVK_RENTALS],
-    },
+    cache: 'no-store',
   });
 
   const { body: response, error } = res;
@@ -38,9 +35,7 @@ export async function getMoviesRentalCounts(
       `/rentals/movies`,
       {
         searchParams,
-        next: {
-          tags: [RVK_RENTALS],
-        },
+        cache: 'no-store',
       },
     );
 

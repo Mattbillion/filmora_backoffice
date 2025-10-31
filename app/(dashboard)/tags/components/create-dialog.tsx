@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
   FormControl,
   FormField,
@@ -57,6 +58,19 @@ export function CreateDialog({ children }: { children: ReactNode }) {
               <Input placeholder="Тааг нэр" {...field} />
             </FormControl>
             <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Дэлгэрэнгүй тайлбар</FormLabel>
+            <FormControl>
+              <HtmlTipTapItem field={field} />
+            </FormControl>
           </FormItem>
         )}
       />

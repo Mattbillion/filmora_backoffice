@@ -4,19 +4,29 @@ import { Heading } from '@/components/custom/heading';
 import { DataTable } from '@/components/ui/data-table';
 import { Separator } from '@/components/ui/separator';
 import { SearchParams } from '@/services/api/types';
-import { getSubscriptionUsers } from '@/services/subscriptions';
+import {
+  getSubscriptionUsers,
+  GetSubscriptionUsersSearchParams,
+} from '@/services/subscriptions';
 
 import { subscriptionsColumns } from './columns';
 
 export const dynamic = 'force-dynamic';
 
 export default async function SubscriptionsPage(props: {
-  searchParams?: SearchParams<any>;
+  searchParams?: SearchParams<
+    GetSubscriptionUsersSearchParams & { page?: number; page_size?: number }
+  >;
 }) {
-  const data = await getSubscriptionUsers();
+  const sp = (await props.searchParams) || {};
+  const data = await getSubscriptionUsers({
+    ...sp,
+    limit: sp.page_size,
+    offset: sp.page && sp.page_size ? (sp.page - 1) * sp.page_size : undefined,
+  });
 
-  const list = data.data || []; // Check and fix, its generated and might be dumb
-  const count = data?.total_count ?? list.length; // Check and fix, its generated and might be dumb
+  const list = data.data || [];
+  const count = data?.total_count ?? list.length;
 
   return (
     <>

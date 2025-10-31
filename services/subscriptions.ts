@@ -1,5 +1,4 @@
 import * as actions from './api/actions';
-import { RVK_SUBSCRIPTIONS } from './rvk';
 import { BaseResponseUnionListSubscriptionUserDataNoneTypeType } from './schema';
 
 // Auto-generated service for subscriptions
@@ -21,9 +20,7 @@ export async function getSubscriptionUsers(
       `/subscriptions/users`,
       {
         searchParams,
-        next: {
-          tags: [RVK_SUBSCRIPTIONS],
-        },
+        cache: 'no-store',
       },
     );
 

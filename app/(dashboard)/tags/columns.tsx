@@ -21,14 +21,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { hasPermission } from '@/lib/permission';
-import { AppModelsSchemasMoviesTagResponseType } from '@/services/schema';
+import { removeHTML } from '@/lib/utils';
+import { AppApiApiV1EndpointsDashboardCategoriesTagResponseType } from '@/services/schema';
 import { deleteTag } from '@/services/tags';
 
 import { UpdateDialog } from './components';
 
 const Action = ({
   row,
-}: CellContext<AppModelsSchemasMoviesTagResponseType, unknown>) => {
+}: CellContext<
+  AppApiApiV1EndpointsDashboardCategoriesTagResponseType,
+  unknown
+>) => {
   const [loading, setLoading] = useState(false);
   const deleteDialogRef = useRef<DeleteDialogRef>(null);
   const { data } = useSession();
@@ -65,9 +69,8 @@ const Action = ({
               loading={loading}
               action={() => {
                 setLoading(true);
-                // TODO: Please check after generate
                 deleteTag(row.original.id)
-                  .then((c) => toast.success(c.data.message))
+                  .then(() => toast.success('Tag deleted successfully'))
                   .catch((c) => toast.error(c.message))
                   .finally(() => {
                     deleteDialogRef.current?.close();
@@ -93,18 +96,31 @@ const Action = ({
   );
 };
 
-export const tagsColumns: ColumnDef<AppModelsSchemasMoviesTagResponseType>[] = [
-  {
-    id: 'name',
-    accessorKey: 'name',
-    header: ({ column }) => <TableHeaderWrapper column={column} />,
-    cell: ({ row }) => row.original.name?.slice(0, 300),
-    enableSorting: true,
-    enableColumnFilter: true,
-  },
-  {
-    id: 'actions',
-    cell: Action,
-    enableHiding: false,
-  },
-];
+export const tagsColumns: ColumnDef<AppApiApiV1EndpointsDashboardCategoriesTagResponseType>[] =
+  [
+    {
+      id: 'name',
+      accessorKey: 'name',
+      header: ({ column }) => <TableHeaderWrapper column={column} />,
+      cell: ({ row }) => row.original.name?.slice(0, 300),
+      enableSorting: true,
+      enableColumnFilter: true,
+    },
+    {
+      id: 'description',
+      accessorKey: 'description',
+      header: ({ column }) => <TableHeaderWrapper column={column} />,
+      cell: ({ row }) => (
+        <span className="opacity-70">
+          {removeHTML(row.original.description?.slice(0, 300)) || '-'}
+        </span>
+      ),
+      enableSorting: false,
+      enableColumnFilter: false,
+    },
+    {
+      id: 'actions',
+      cell: Action,
+      enableHiding: false,
+    },
+  ];

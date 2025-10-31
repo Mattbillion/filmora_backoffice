@@ -11,9 +11,13 @@ import { rentalsColumns } from './columns';
 export const dynamic = 'force-dynamic';
 
 export default async function RentalsPage(props: {
-  searchParams?: SearchParams<any>;
+  searchParams?: SearchParams<{ page: number; page_size: number }>;
 }) {
-  const response = await getMoviesRentalCounts();
+  const sp = await props.searchParams;
+  const response = await getMoviesRentalCounts({
+    limit: sp?.page_size ?? 30,
+    offset: ((sp?.page ?? 1) - 1) * (sp?.page_size ?? 30),
+  });
   const list = response.data || [];
   const count = response.total_count ?? list.length;
 

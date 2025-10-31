@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { toast } from 'sonner';
 
 import FormDialog, { FormDialogRef } from '@/components/custom/form-dialog';
+import HtmlTipTapItem from '@/components/custom/html-tiptap-item';
 import {
   FormControl,
   FormField,
@@ -15,7 +16,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import {
-  AppModelsSchemasMoviesTagResponseType,
+  AppApiApiV1EndpointsDashboardCategoriesTagResponseType,
   tagUpdateSchema,
   TagUpdateType,
 } from '@/services/schema';
@@ -26,14 +27,17 @@ export function UpdateDialog({
   initialData,
 }: {
   children: ReactNode;
-  initialData: AppModelsSchemasMoviesTagResponseType;
+  initialData: AppApiApiV1EndpointsDashboardCategoriesTagResponseType;
 }) {
   const dialogRef = useRef<FormDialogRef>(null);
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<TagUpdateType>({
     resolver: zodResolver(tagUpdateSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      name: initialData.name,
+      description: initialData.description || undefined,
+    },
   });
 
   function onSubmit(values: TagUpdateType) {
@@ -68,6 +72,19 @@ export function UpdateDialog({
               <Input placeholder="Enter Name" {...field} />
             </FormControl>
             <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <FormField
+        control={form.control}
+        name="description"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Дэлгэрэнгүй тайлбар</FormLabel>
+            <FormControl>
+              <HtmlTipTapItem field={field} />
+            </FormControl>
           </FormItem>
         )}
       />

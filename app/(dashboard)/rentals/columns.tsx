@@ -10,15 +10,15 @@ export const rentalsColumns: ColumnDef<MovieRentalDataType>[] = [
   {
     id: 'poster_url',
     accessorKey: 'poster_url',
-    header: () => <h1>Постер зураг</h1>,
-    cell: ({ row }) => <ZoomableImage src={row.original.poster_url ?? ''} />,
+    header: () => <p>Постер зураг</p>,
+    cell: ({ row }) => <ZoomableImage src={row.original.poster_url} />,
   },
   {
     id: 'title',
     accessorKey: 'title',
-    header: () => <h1>Киноны нэр</h1>,
+    header: () => <p>Киноны нэр</p>,
     cell: ({ row }) => (
-      <h1 className="line-clamp-1 font-semibold">{row.original.title}</h1>
+      <p className="line-clamp-1 font-semibold">{row.original.title}</p>
     ),
     enableSorting: true,
     enableColumnFilter: true,
@@ -26,11 +26,9 @@ export const rentalsColumns: ColumnDef<MovieRentalDataType>[] = [
   {
     id: 'total_rentals',
     accessorKey: 'total_rentals',
-    header: () => <h1>Нийт дэлгэцүүд</h1>,
+    header: () => <h1>Худалдаалсан тоо</h1>,
     cell: ({ row }) => (
-      <h1 className="line-clamp-1 font-semibold">
-        {row.original.total_rentals}
-      </h1>
+      <p className="line-clamp-1 font-semibold">{row.original.total_rentals}</p>
     ),
     enableSorting: true,
     enableColumnFilter: true,
@@ -38,9 +36,9 @@ export const rentalsColumns: ColumnDef<MovieRentalDataType>[] = [
   {
     id: 'movie_id',
     accessorKey: 'movie_id',
-    header: () => <h1>Киноны ID</h1>,
+    header: () => <p>Киноны ID</p>,
     cell: ({ row }) => (
-      <h1 className="line-clamp-1 font-semibold">{row.original.movie_id}</h1>
+      <p className="line-clamp-1 font-semibold">{row.original.movie_id}</p>
     ),
     enableSorting: true,
     enableColumnFilter: true,
@@ -48,13 +46,11 @@ export const rentalsColumns: ColumnDef<MovieRentalDataType>[] = [
   {
     id: 'is_adult',
     accessorKey: 'is_adult',
-    header: () => <h1>Насанд хүрэгчдийн кино эсэх</h1>,
+    header: () => <p>Насанд хүрэгчдийн кино эсэх</p>,
     cell: ({ row }) => (
-      <h1 className="line-clamp-1 font-semibold">
-        <Badge variant="secondary">
-          {row.original.is_adult ? 'Тийм' : 'Үгүй'}
-        </Badge>
-      </h1>
+      <Badge variant="secondary" className="font-semibold">
+        {row.original.is_adult ? 'Тийм' : 'Үгүй'}
+      </Badge>
     ),
     enableSorting: true,
     enableColumnFilter: true,

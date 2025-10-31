@@ -5,7 +5,6 @@ import {
   GalleryVerticalEnd,
   GemIcon,
   ImagePlusIcon,
-  LayoutGrid,
   type LucideIcon,
   Tag,
   TvMinimalPlay,
@@ -78,12 +77,6 @@ export const organizationRoutes = [
 ] as const;
 
 export const systemAdminRoutes = [
-  {
-    title: 'Үндсэн категори',
-    url: '/categories',
-    icon: LayoutGrid,
-    subRoutes: true,
-  },
   {
     title: 'Ажилчид',
     url: '/employees',
