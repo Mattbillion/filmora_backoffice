@@ -107,15 +107,6 @@ export function validateSchema<T>(
   throw new ValidationError(result.error.format());
 }
 
-export const INITIAL_PAGINATION = {
-  total: 0,
-  pageCount: 0,
-  start: 0,
-  limit: 0,
-  nextPage: 0,
-  prevPage: 0,
-};
-
 export function extractActionError(e: Error): {
   message: string;
   errObj?: Record<string, { _errors: string[] }>;
@@ -144,8 +135,8 @@ export const imageResize = (
       `/w${
         {
           original: 'original',
-          tiny: '92',
-          small: '185',
+          tiny: '150',
+          small: '300',
           medium: '500',
         }[size]
       }/`,

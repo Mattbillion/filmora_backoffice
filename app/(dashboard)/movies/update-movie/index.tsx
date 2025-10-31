@@ -3,6 +3,7 @@
 import { useEffect, useState, useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { omit } from 'lodash';
 import { LoaderIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -48,7 +49,6 @@ import {
   GenreResponseType,
   movieResponseSchema,
   MovieResponseType,
-  MovieUpdateType,
 } from '@/services/schema';
 import { getTags } from '@/services/tags';
 
@@ -155,30 +155,20 @@ export default function UpdateMovie({
   const onSubmit = async (d: MovieResponseType) => {
     setIsLoading(true);
     try {
-      const body: MovieUpdateType = {
-        title: d.title,
-        description: d.description,
-        type: d.type as 'movie' | 'series',
-        year: Number(d.year),
-        price: Number(d.price),
-        is_premium: true,
-        poster_url: d.poster_url,
-        trailer_url: d.trailer_url,
-        load_image_url: d.load_image_url || '',
-        is_adult: false,
+      const response = await updateMovie(id, {
+        ...omit(d, ['categories', 'genres', 'tags', 'created_at']),
         category_ids: d.categories?.map((cat) => Number(cat.id)),
         genre_ids: d.genres?.map((genre) => Number(genre.id)),
         tag_ids: d.tags?.map((tag) => Number(tag.id)),
-        cloudflare_video_id: d.cloudflare_video_id,
-      };
+      });
 
-      const response = await updateMovie(id, body);
-      if (response.status === 'success') {
-        toast.success('Кино амжилттай засгалаа');
-        setEditDrawerOpen(false);
-      }
+      if (response.status === 'error') throw Error(response.message);
+
+      toast.success('Кино амжилттай засгалаа');
+      setEditDrawerOpen(false);
     } catch (err) {
       console.error('Failed to update movie', err);
+      toast.error((err as Error).message || 'Кино засахад алдаа гарлаа');
     } finally {
       setIsLoading(false);
     }
@@ -207,10 +197,10 @@ export default function UpdateMovie({
                   control={form.control}
                   name="poster_url"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1">
-                      <UploadPoster field={field} />
-                      <FormMessage />
-                    </FormItem>
+                    <UploadPoster
+                      field={field}
+                      className="flex flex-col gap-1"
+                    />
                   )}
                 />
                 <FormField
@@ -383,14 +373,7 @@ export default function UpdateMovie({
                           {...field}
                           value={field.value || ''}
                           className="shadow-none"
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            field.onChange(
-                              value === ''
-                                ? new Date().getFullYear()
-                                : Number(value),
-                            );
-                          }}
+                          onChange={(e) => field.onChange(e.target.value)}
                         />
                       </FormControl>
                     </FormItem>

@@ -86,7 +86,6 @@ export default function CreateMovie() {
         Promise.allSettled([getGenres(), getTags(), getCategories()]).then(
           ([genreRes, tagRes, catRes]) => {
             setDropdownData((prev) => ({
-              ...prev,
               genres: solveResult(genreRes, prev.genres),
               tags: solveResult(tagRes, prev.tags),
               categories: solveResult(catRes, prev.categories),
@@ -121,33 +120,35 @@ export default function CreateMovie() {
     const body = {
       title: d.title,
       description: d.description,
-      type: d.type as 'series' | 'movie',
+      type: d.type,
       year: Number(d.year),
       price: Number(d.price),
+      trailer_url: d.trailer_url,
       poster_url: d.poster_url || '',
       load_image_url: d.load_image_url || '',
-      is_adult: d.is_adult || false,
-      trailer_url: d.trailer_url,
-      is_premium: d.is_premium || false,
+      is_adult: d.is_adult ?? false,
+      is_premium: d.is_premium ?? false,
       category_ids: d.category_ids?.map((cat) => Number(cat)),
       genre_ids: d.genre_ids?.map((genre) => Number(genre)),
+      tag_ids: d.tag_ids?.map((tag) => Number(tag)),
+      cloudflare_video_id: isSeriesMovie ? undefined : d.cloudflare_video_id,
     };
 
     try {
-      setIsLoading(true);
       const movieCreated = await createMovieAction(body);
       if (movieCreated.status === 'success') {
         toast.success('Кино амжилттай нэмэгдлээ');
+        handleCloseDrawer();
       }
     } catch (_error) {
       toast.error('Кино оруулахад алдаа гарлаа');
     } finally {
-      handleCloseDrawer();
+      setIsLoading(true);
     }
   }
 
   const handleCloseDrawer = () => {
-    setIsOpen((prev) => !prev);
+    setIsOpen(false);
     setIsLoading(false);
     form.reset();
   };
@@ -181,10 +182,10 @@ export default function CreateMovie() {
                   control={form.control}
                   name="poster_url"
                   render={({ field }) => (
-                    <FormItem className="flex flex-col gap-1">
-                      <UploadPoster field={field} />
-                      <FormMessage />
-                    </FormItem>
+                    <UploadPoster
+                      field={field}
+                      className="flex flex-col gap-1"
+                    />
                   )}
                 />
                 <FormField
@@ -221,58 +222,46 @@ export default function CreateMovie() {
                 <FormField
                   control={form.control}
                   name="category_ids"
-                  render={({ field }) => {
-                    return (
-                      <FormItem className="flex flex-col gap-1">
-                        <FormLabel>Кино категори сонгох</FormLabel>
-                        <FormControl>
-                          <MultiSelect
-                            disabled={loadingData}
-                            options={categories.map((cat) => {
-                              return {
-                                label: cat.name,
-                                value: cat.id.toString(),
-                              };
-                            })}
-                            onValueChange={(selectedValues) =>
-                              field.onChange(
-                                selectedValues.map((value) => Number(value)),
-                              )
-                            }
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    );
-                  }}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col gap-1">
+                      <FormLabel>Кино категори сонгох</FormLabel>
+                      <FormControl>
+                        <MultiSelect
+                          disabled={loadingData}
+                          options={categories.map((cat) => ({
+                            label: cat.name,
+                            value: cat.id.toString(),
+                          }))}
+                          onValueChange={(ids) =>
+                            field.onChange(ids.map((c) => Number(c)))
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
 
                 <FormField
                   control={form.control}
                   name="genre_ids"
-                  render={({ field }) => {
-                    return (
-                      <FormItem className="flex flex-col gap-1">
-                        <FormLabel>Кино genre сонгох</FormLabel>
-                        <FormControl>
-                          <MultiSelect
-                            disabled={loadingData}
-                            options={genres.map((genre) => {
-                              return {
-                                label: genre.name,
-                                value: genre.id.toString(),
-                              };
-                            })}
-                            onValueChange={(selectedValues) =>
-                              field.onChange(
-                                selectedValues.map((value) => Number(value)),
-                              )
-                            }
-                          />
-                        </FormControl>
-                      </FormItem>
-                    );
-                  }}
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col gap-1">
+                      <FormLabel>Кино genre сонгох</FormLabel>
+                      <FormControl>
+                        <MultiSelect
+                          disabled={loadingData}
+                          options={genres.map((genre) => ({
+                            label: genre.name,
+                            value: genre.id.toString(),
+                          }))}
+                          onValueChange={(ids) =>
+                            field.onChange(ids.map((c) => Number(c)))
+                          }
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
                 />
 
                 <FormField
@@ -285,24 +274,13 @@ export default function CreateMovie() {
                         <FormControl>
                           <MultiSelect
                             disabled={loadingData}
-                            options={tags.map((tag) => {
-                              return {
-                                label: tag.name,
-                                value: tag.id.toString(),
-                              };
-                            })}
-                            onValueChange={(selectedValues: string[]) => {
-                              field.onChange(
-                                selectedValues.map((value) => {
-                                  const tagId = Number(value);
-                                  const tag = tags.find((g) => g.id === tagId);
-                                  return {
-                                    id: tagId,
-                                    name: tag?.name || '',
-                                  };
-                                }),
-                              );
-                            }}
+                            options={tags.map((tag) => ({
+                              label: tag.name,
+                              value: tag.id.toString(),
+                            }))}
+                            onValueChange={(ids) =>
+                              field.onChange(ids.map((c) => Number(c)))
+                            }
                           />
                         </FormControl>
                       </FormItem>
@@ -323,14 +301,7 @@ export default function CreateMovie() {
                           {...field}
                           value={field.value || ''}
                           className="shadow-none"
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            field.onChange(
-                              value === ''
-                                ? new Date().getFullYear()
-                                : Number(value),
-                            );
-                          }}
+                          onChange={(e) => field.onChange(e.target.value)}
                         />
                       </FormControl>
                     </FormItem>

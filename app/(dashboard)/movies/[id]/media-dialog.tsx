@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { CheckIcon } from 'lucide-react';
 import Image from 'next/image';
 
@@ -14,6 +14,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { imageResize } from '@/lib/utils';
 import { getUploadedImages } from '@/services/images';
 import { ImageInfoType } from '@/services/schema';
 
@@ -28,22 +29,21 @@ export function MediaDialog({
   const [selectedImage, setSelectedImage] = useState<ImageInfoType | null>(
     null,
   );
-  useEffect(() => {
-    const fetchImages = async () => {
-      const response = await getUploadedImages({
-        page_size: 100,
-      });
-      setImages(response.data);
-    };
-    fetchImages();
-  }, []);
 
-  const handleSelectImage = (image: ImageInfoType) => {
-    setSelectedImage(image);
+  const fetchImages = async () => {
+    const response = await getUploadedImages({
+      page_size: 100,
+    });
+    setImages(response.data);
   };
 
   return (
-    <Dialog>
+    <Dialog
+      onOpenChange={(c) => {
+        if (c && !images.length) fetchImages();
+        setSelectedImage(null);
+      }}
+    >
       <DialogTrigger asChild>
         <Button variant="outline" size={triggerSize as ButtonProps['size']}>
           Зураг сонгох
@@ -51,9 +51,9 @@ export function MediaDialog({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[720px]">
         <DialogHeader>
-          <DialogTitle>Edit profile</DialogTitle>
+          <DialogTitle>Зураг сонгох</DialogTitle>
           <DialogDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
+            Доорх хадгалагдсан зургуудын аль нэгийг сонгоно уу.
           </DialogDescription>
         </DialogHeader>
         <ScrollArea className="h-[480px]">
@@ -61,14 +61,16 @@ export function MediaDialog({
             {images.map((img) => (
               <div
                 key={img.id}
-                onClick={() => handleSelectImage(img)}
+                onClick={() => setSelectedImage(img)}
                 className="group/hover-image relative aspect-[4/3] cursor-pointer overflow-hidden rounded-md bg-black"
               >
                 <Image
                   key={img.id}
-                  src={img.image_url ?? ''}
+                  src={imageResize(img.image_url ?? '', 'tiny')}
                   alt={img.file_name}
+                  loading="lazy"
                   fill
+                  // unoptimized
                   className="transition-color object-cover duration-300 group-hover/hover-image:opacity-50"
                 />
 
@@ -85,14 +87,14 @@ export function MediaDialog({
         </ScrollArea>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline">Болих</Button>
           </DialogClose>
           <DialogClose asChild>
             <Button
               onClick={() => updateAction(selectedImage!)}
               disabled={!selectedImage}
             >
-              Upload
+              Сонгох
             </Button>
           </DialogClose>
         </DialogFooter>

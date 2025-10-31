@@ -1,77 +1,37 @@
 'use client';
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { FieldValues } from 'react-hook-form';
+import React, { useEffect, useRef, useState, useTransition } from 'react';
+import { FieldValues, useFormContext } from 'react-hook-form';
 import { ImagePlus, Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 
 import { FormControl, FormItem, FormMessage } from '@/components/ui/form';
+import { objToFormData } from '@/lib/utils';
 import { uploadMedia } from '@/services/media/service';
-import { ImageInfoType } from '@/services/schema';
 
 import { MediaDialog } from '../[id]/media-dialog';
 
 export function UploadCover({ field }: { field: FieldValues }) {
+  const { clearErrors, setError } = useFormContext();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [uploading, startUploading] = useTransition();
 
   useEffect(() => {
     setPreviewUrl(field.value || null);
   }, [field.value]);
 
-  const handleUpload = useCallback(async (file: File) => {
-    if (!file) return;
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('prefix', 'movies');
-
-      const { body } = await uploadMedia(formData);
-      const newImageUrl = body.data.images.original;
-
-      setPreviewUrl(newImageUrl);
-      onFieldChange(newImageUrl);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsUploading(false);
-    }
-  }, []);
-
-  const onFieldChange = async (imageUrl: string) => {
-    await field.onChange(imageUrl);
-    return imageUrl;
-  };
-
-  const handleUploadImage = async (file: File) => {
-    setIsUploading(true);
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('prefix', 'movies');
-    try {
-      const { body } = await uploadMedia(formData);
-      const imageUrl = body.data.images.original;
-
-      setPreviewUrl(imageUrl);
-      onFieldChange(imageUrl);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const getSelectedImage = async (image: ImageInfoType) => {
-    setPreviewUrl(image.image_url);
-    onFieldChange(image.image_url);
+  const handleFieldChange = (imageUrl: string) => {
+    clearErrors(field.name);
+    field.onChange(imageUrl);
+    setPreviewUrl(imageUrl);
   };
 
   return (
     <FormItem>
       <div className="relative h-[360px] w-full overflow-hidden rounded-xl bg-black">
-        {isUploading ? (
+        {uploading ? (
           <div
             className="absolute top-0 left-0 z-10 flex h-full w-full flex-col items-center justify-center bg-black/80"
             onClick={() => inputRef.current?.click()}
@@ -113,7 +73,9 @@ export function UploadCover({ field }: { field: FieldValues }) {
         )}
 
         <div className="absolute bottom-4 left-4 flex gap-2">
-          <MediaDialog updateAction={getSelectedImage} />
+          <MediaDialog
+            updateAction={(image) => handleFieldChange(image.image_url)}
+          />
         </div>
       </div>
       <FormControl>
@@ -122,7 +84,29 @@ export function UploadCover({ field }: { field: FieldValues }) {
           accept="image/*"
           className="sr-only"
           ref={inputRef}
-          onChange={(e) => handleUploadImage(e.target.files?.[0]!)}
+          disabled={uploading}
+          onChange={(e) => {
+            const [file] = e.target.files || [];
+            if (!file) return;
+
+            startUploading(() => {
+              uploadMedia(objToFormData({ file }))
+                .then((result) =>
+                  handleFieldChange(result.body.data.images.original),
+                )
+                .catch((error) => {
+                  toast.error(error.message);
+                  setError(
+                    field.name,
+                    { message: error.message },
+                    { shouldFocus: true },
+                  );
+                })
+                .finally(() => {
+                  if (inputRef.current) inputRef.current.value = '';
+                });
+            });
+          }}
         />
       </FormControl>
       <FormMessage />
